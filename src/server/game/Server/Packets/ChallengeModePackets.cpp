@@ -50,7 +50,7 @@ WorldPacket const* WorldPackets::ChallengeMode::ChangePlayerDifficultyResult::Wr
 WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
 {
     _worldPacket << (uint32)MapID;
-    _worldPacket << (int32)ChallengeID;
+    _worldPacket << (uint32)ChallengeID;
     _worldPacket << (uint32)ChallengeLevel;
 
     for (uint32 v : Affixes)

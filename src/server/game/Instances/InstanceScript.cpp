@@ -1388,9 +1388,9 @@ void InstanceScript::CompleteChallengeMode()
     });
 
     WorldPackets::ChallengeMode::Complete complete;
-    complete.Duration = totalDuration;
-    complete.MapId = instance->GetId();
-    complete.ChallengeId = mapChallengeModeEntry->ID;
+    complete.CompletionMilliseconds = totalDuration;
+    complete.MapID = instance->GetId();
+    complete.ChallengeID = mapChallengeModeEntry->ID;
     complete.ChallengeLevel = _challengeModeLevel + mythicIncrement;
     instance->SendToPlayers(complete.Write());
 
@@ -1459,8 +1459,8 @@ void InstanceScript::CompleteChallengeMode()
         if (sChallengeModeMgr->CheckBestMemberMapId(member.guid, challengeData))
         {
             WorldPackets::ChallengeMode::NewPlayerRecord newplayerrecord;
-            newplayerrecord.Duration = totalDurations;
-            newplayerrecord.MapId = instance->GetId();
+            newplayerrecord.CompletionMilliseconds = totalDurations;
+            newplayerrecord.MapID = instance->GetId();
             newplayerrecord.ChallengeLevel = _challengeModeLevel;
             player->GetSession()->SendPacket(newplayerrecord.Write());
         }
@@ -1505,8 +1505,8 @@ void InstanceScript::SendChallengeModeStart(Player* player/* = nullptr*/) const
         return;
 
     WorldPackets::ChallengeMode::Start start;
-    start.MapId = instance->GetId();
-    start.ChallengeId = mapChallengeModeEntry->ID;
+    start.MapID = instance->GetId();
+    start.ChallengeID = mapChallengeModeEntry->ID;
     start.ChallengeLevel = _challengeModeLevel;
     instance->SendToPlayers(start.Write());
 
@@ -1555,8 +1555,8 @@ void InstanceScript::SendChallengeModeMapStatsUpdate(Player * player, uint32 cha
 
     WorldPackets::ChallengeMode::NewPlayerRecord update;
 
-    update.MapId = instance->GetId();
-    update.Duration = best->RecordTime;
+    update.MapID = instance->GetId();
+    update.CompletionMilliseconds = best->RecordTime;
     update.ChallengeLevel = challengeId;
 
     if (player)

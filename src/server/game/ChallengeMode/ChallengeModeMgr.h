@@ -105,6 +105,7 @@ public:
     void GenerateOploteLoot(bool manual = false);
 
     void GenerateCurrentWeekAffixes();
+    void GenerateManualAffixes();
     uint8 GetActiveAffixe();
 
     static uint32 GetLootTreeMod(int32& levelBonus, uint32& challengeLevel, bool isOplote);
