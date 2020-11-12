@@ -1,4 +1,4 @@
-# Nordrassil Core
+# Zandalar-Proyect Core
 
 --------------
 
