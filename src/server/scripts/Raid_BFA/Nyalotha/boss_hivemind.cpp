@@ -1,0 +1,6 @@
+
+
+void AddSC_hivemind()
+{
+	
+}
