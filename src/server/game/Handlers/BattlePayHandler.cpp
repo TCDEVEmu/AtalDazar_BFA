@@ -19,6 +19,7 @@
 #include "BattlePay.h"
 #include "BattlePayPackets.h"
 #include "Chat.h"
+#include "..\Server\WorldSession.h"
 
 void WorldSession::HandleGetProductList(WorldPackets::BattlePayPackets::GetProductList& /*getProductList*/)
 {
@@ -256,4 +257,24 @@ void WorldSession::SendAckFailed(BattlePay::Purchase* purchase, BattlePay::Error
     packet.PurchaseID = purchase ? purchase->PurchaseID : 1;
 
     SendPacket(packet.Write());
+}
+
+void WorldSession::AddAuthFlag(AuthFlags f)
+{
+    atAuthFlag = AuthFlags(atAuthFlag | f);
+    SaveAuthFlag();
+}
+
+void WorldSession::RemoveAuthFlag(AuthFlags f)
+{
+    atAuthFlag = AuthFlags(atAuthFlag & ~f);
+    SaveAuthFlag();
+}
+
+void WorldSession::SaveAuthFlag()
+{
+    LoginDatabasePreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_AT_AUTH_FLAG);
+    stmt->setUInt16(0, atAuthFlag);
+    stmt->setUInt32(1, GetAccountId());
+    LoginDatabase.Execute(stmt);
 }
