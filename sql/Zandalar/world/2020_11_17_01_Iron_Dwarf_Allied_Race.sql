@@ -558,3 +558,53 @@ The Alliance needs our strength, $p. Get out there and show \'em the might o\' t
 (46735, 0, -1, 0, 110, 0, 110, 0, 143, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 100728840, 33554432, 0, 0, 0, 0, 0, 0, 152654, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2045, 0, 0, 0, 0, 4, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 18446744073709551615, 0, 0, 0, 0, 'Contribute to Command Center', '', '', '', '', 1226, 0, 0, 0, 75, 0, 0, 0, '', '', '', '', 0, 0, 31478), -- 46735
 (46277, 0, -1, 0, 110, 0, 110, 0, 143, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 100729096, 33554432, 0, 0, 0, 0, 0, 0, 152654, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2045, 0, 0, 0, 0, 4, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 18446744073709551615, 0, 6, 0, 0, 'Contribute to Mage Tower', '', '', '', '', 1226, 0, 0, 0, 75, 0, 0, 0, '', '', '', '', 0, 0, 31478); -- 46277
 
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=1;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 1, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=2;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 2, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=3;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 3, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=4;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 4, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=5;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 5, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=6;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 6, 2297, 12952, 456.015, -2123.81, 842.279, 3.05334);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=7;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 7, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=8;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 8, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=9;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 9, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=34 AND `class`=10;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (34, 10, 2081, 0, 1621.13, 536.649, 201.48, 0);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=1;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 1, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=3;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 3, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=4;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 4, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=5;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 5, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=6;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 6, 2297, 12952, 456.015, -2123.81, 842.279, 3.05334);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=7;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 7, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=8;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 8, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+DELETE FROM `playercreateinfo` WHERE `race`=36 AND `class`=10;
+INSERT INTO `playercreateinfo` (`race`, `class`, `map`, `zone`, `position_x`, `position_y`, `position_z`, `orientation`) VALUES (36, 10, 1, 14, 1567.38, -4189.12, 53.6794, 2.2874);
+
+DELETE FROM `playercreateinfo_cast_spell` WHERE `raceMask`=34 AND `classMask`=6 AND `spell`=270562;
+INSERT INTO `playercreateinfo_cast_spell` (`raceMask`, `classMask`, `spell`, `note`) VALUES (34, 6, 270562, 'Dark Iron Dwarf Paladin - Darkforge Ram Mount');
+DELETE FROM `playercreateinfo_cast_spell` WHERE `raceMask`=8192 AND `classMask`=4 AND `spell`=274905;
+INSERT INTO `playercreateinfo_cast_spell` (`raceMask`, `classMask`, `spell`, `note`) VALUES (8192, 4, 274905, 'Maghar Orc - Hunter - Shadowmoon Stalker');
+
+DELETE FROM `playercreateinfo_item` WHERE `race`=34 AND `class`=0 AND `itemid`=161331;
+INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (34, 0, 161331, 1);
+DELETE FROM `playercreateinfo_item` WHERE `race`=34 AND `class`=0 AND `itemid`=161329;
+INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (34, 0, 161329, 1);
+DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=161330;
+INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161330, 1);
+DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=161328;
+INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161328, 1);
