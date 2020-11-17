@@ -1029,11 +1029,17 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                         case RACE_VOID_ELF:
                             pCurrChar->GetSceneMgr().PlayScene(1903);
                             break;
-                        /*case RACE_DARK_IRON_DWARF:
+                        case RACE_DARK_IRON_DWARF:
                             pCurrChar->GetSceneMgr().PlaySceneByPackageId(2086, 2);
-                            break;*/
+                            break;
                         case RACE_MAGHAR_ORC:
                             pCurrChar->GetSceneMgr().PlaySceneByPackageId(2085, 2);
+                            break;
+                        case RACE_KUL_TIRAN:
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2494, 2);
+                            break;
+                        case RACE_ZANDALARI_TROLL:
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2087, 2);
                             break;
                         default:
                             break;
