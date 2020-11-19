@@ -40,6 +40,9 @@ void AddSC_boss_yazma();
 void AddSC_atal_dazar();
 void AddSC_instance_atal_dazar();
 
+//Script Races Allied Horde
+void AddSC_allied_races_horde();
+
 void AddZandalarScripts()
 {
     AddSC_zone_nazmir();
@@ -66,4 +69,6 @@ void AddZandalarScripts()
     AddSC_boss_yazma();
     AddSC_atal_dazar();
     AddSC_instance_atal_dazar();
+	
+	AddSC_allied_races_horde();
 }

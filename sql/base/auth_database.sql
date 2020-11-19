@@ -44,6 +44,7 @@ CREATE TABLE `account` (
   `mutetime` bigint(20) NOT NULL DEFAULT '0',
   `mutereason` varchar(255) NOT NULL DEFAULT '',
   `muteby` varchar(50) NOT NULL DEFAULT '',
+  `AtAuthFlag` smallint(3) unsigned NOT NULL DEFAULT '0',
   `locale` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `os` varchar(4) NOT NULL DEFAULT '',
   `recruiter` int(10) unsigned NOT NULL DEFAULT '0',
@@ -59,11 +60,6 @@ CREATE TABLE `account` (
 -- ----------------------------
 -- Records of account
 -- ----------------------------
-INSERT INTO `account` VALUES ('1', '1#1', 0xFD5BC88C87057F2490D7DDC1FE36717942A6D425A7081BB73141FD5A6243688F, 0xD34138E26B5BF926FF8B853093177F99CE69FD7032D98A3736EF4E25BDA66481, null, 0x79924A90D4122C934FC034A15C4609C2701C185C17363D829B53E043D4672D0D017CF5BAF4F58267, '', 'dummy value, use `verifier` instead', 'dummy value, use `salt` instead', '', 'MISTIX@WOW', 'MISTIX@WOW', '2020-10-03 21:06:41', '127.0.0.1', '127.0.0.1', '0', '0', '00', '2020-10-03 20:51:31', '0', '7', '0', '', '', '7', 'Wn64', '0', '0', '1', '1');
-INSERT INTO `account` VALUES ('2', '2#1', 0x23355C57A7D130EDAE4E8E802CB2C6F00403BFEA8110125C9F8D64C30F01FBD9, 0x61A70D6A391F5D5EEB1742A9AD1B5286089E20B0CD501F7FE7EE6B6869731932, null, 0x16F6AFE10DB9B9DA9B6FD83AF86FF9E22182ADDD11D551BDEF67AD9F5C865A81A3B64CD573B2AD8C, '', 'dummy value, use `verifier` instead', 'dummy value, use `salt` instead', '', 'TEST@TEST', 'TEST@TEST', '2020-10-03 21:31:46', '127.0.0.1', '127.0.0.1', '0', '0', '00', '2020-10-03 21:32:28', '0', '7', '0', '', '', '7', 'Wn64', '0', '0', '2', '1');
-INSERT INTO `account` VALUES ('3', '3#1', 0xEFC58B8AC35415BEF748E99761DBAA24E9304A7828F2E3439E8144EFE588E294, 0x76F9ACA2C385C462788E0C7797323232DC18DB3618EA8E55DEFBE4145F6F582D, null, 0x82BC84D8884267F5F6FAEE123A77F3DAA51615AAFD92159F3AE7541B1769FB872388B43B259378B3, '', 'dummy value, use `verifier` instead', 'dummy value, use `salt` instead', '', 'TEST1@TEST', 'TEST1@TEST', '2020-10-03 21:36:36', '127.0.0.1', '127.0.0.1', '0', '0', '00', '2020-10-03 20:46:14', '0', '7', '0', '', '', '7', 'Wn64', '0', '0', '3', '1');
-INSERT INTO `account` VALUES ('4', '4#1', 0x5921DD7C7CA51DB054F67D8E87553C8C743F342B03CA0260387CFA9C50EC7A06, 0xB5B106D6FFC6B378BE81EB20344E636A32FE62FFE4F8B0C90C1244737D54FD10, null, 0xBB5163BC33497EACB379B5EF9825315BF4F912E5E75EC0982792C894E31E955E59CDD92E48F313B7, '', 'dummy value, use `verifier` instead', 'dummy value, use `salt` instead', '', 'TEST2@WOW', 'TEST2@WOW', '2020-10-03 20:47:20', '127.0.0.1', '127.0.0.1', '0', '0', '00', '2020-10-03 20:47:40', '0', '7', '0', '', '', '7', 'Wn64', '0', '0', '4', '1');
-INSERT INTO `account` VALUES ('5', '5#1', 0xA76F2631E90FE4541C8D25C4668F5564187189B47B5C7F6866A0B40EFCDE8C5B, 0x9196E25F35E3DCFFFF61F41E3D5110801EF50CC79568FAF13206E41AAD165417, null, 0xEFD4D98AD02EB2EDB111DE8B5BD0ADB6A3A57426BBC5C17807BBF8F08C9777FB659D03B019560FB3, '', 'dummy value, use `verifier` instead', 'dummy value, use `salt` instead', '', 'TEST3@TEST', 'TEST3@TEST', '2020-10-03 20:49:40', '127.0.0.1', '127.0.0.1', '0', '0', '00', '2020-10-03 20:49:57', '0', '7', '0', '', '', '7', 'Wn64', '0', '0', '5', '1');
 
 -- ----------------------------
 -- Table structure for account_access
@@ -118,11 +114,7 @@ CREATE TABLE `account_last_played_character` (
 -- ----------------------------
 -- Records of account_last_played_character
 -- ----------------------------
-INSERT INTO `account_last_played_character` VALUES ('1', '1', '1', '1', 'Hello', '1', '1601752121');
-INSERT INTO `account_last_played_character` VALUES ('2', '1', '1', '1', 'Pauntunfle', '2', '1601753763');
-INSERT INTO `account_last_played_character` VALUES ('3', '1', '1', '1', 'Cosita', '3', '1601750807');
-INSERT INTO `account_last_played_character` VALUES ('4', '1', '1', '1', 'Coloso', '4', '1601750943');
-INSERT INTO `account_last_played_character` VALUES ('5', '1', '1', '1', 'Ger', '6', '1601752133');
+
 
 -- ----------------------------
 -- Table structure for account_muted
@@ -183,11 +175,6 @@ CREATE TABLE `battlenet_accounts` (
 -- ----------------------------
 -- Records of battlenet_accounts
 -- ----------------------------
-INSERT INTO `battlenet_accounts` VALUES ('1', 'MISTIX@WOW', 'D704DFF61BEE51F07E4BB999C0C10748D81B482067DD911F72194A864945D628', '2020-10-03 21:06:41', '127.0.0.1', '0', '0', '00', '2020-10-03 20:51:31', '0', '7', 'Wn64', '0', 'TC-92792E4A792B14A65982976DE130689403DBE436', '1601754691');
-INSERT INTO `battlenet_accounts` VALUES ('2', 'TEST@TEST', '8E60301FDE221B3E7EE6908BAF8DB5C5A335C08C52FED799C60E3795DF52B8C8', '2020-10-03 21:31:46', '127.0.0.1', '0', '0', '00', '2020-10-03 21:32:27', '0', '7', 'Wn64', '0', 'TC-88EAC4C089445BB5C8A5C1F22168BE008D0AEE19', '1601757146');
-INSERT INTO `battlenet_accounts` VALUES ('3', 'TEST1@TEST', '7449549CB6068F2630CB422C4C2C8849D2187C0C039E6CDE6FE307605DA71129', '2020-10-03 21:36:36', '127.0.0.1', '0', '0', '00', '2020-10-03 20:46:14', '0', '7', 'Wn64', '0', 'TC-99048A75764D7FABF28814D7B373BA139ECDD825', '1601754373');
-INSERT INTO `battlenet_accounts` VALUES ('4', 'TEST2@WOW', '71EA3B0AB9DF72BB9ECF37AA4487F8093AEA651753D1C154C68D68F61ED331BE', '2020-10-03 20:47:19', '127.0.0.1', '0', '0', '00', '2020-10-03 20:47:39', '0', '7', 'Wn64', '0', 'TC-5CC941AB77FABB9EA2C4421A6C9EBA416E7FA0B3', '1601754459');
-INSERT INTO `battlenet_accounts` VALUES ('5', 'TEST3@TEST', '0006141DEF46C53E653D23F43A4AD4D8D74A33ACE08E8D61A825B40DE6EFB19C', '2020-10-03 20:49:40', '127.0.0.1', '0', '0', '00', '2020-10-03 20:49:56', '0', '7', 'Wn64', '0', 'TC-68FD61BCDBCE60EA12DB4495BC5AA8811E763F26', '1601754596');
 
 -- ----------------------------
 -- Table structure for battlenet_account_bans
