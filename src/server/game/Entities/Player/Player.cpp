@@ -29481,6 +29481,9 @@ void Player::RemoveSpecializationSpells()
 
 void Player::RemoveEquipedSpecializationItems()
 {
+    if (getLevel() < MIN_SPECIALIZATION_LEVEL)
+        return;
+
     for (uint8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; i++)
         if (Item* item = GetItemByPos(INVENTORY_SLOT_BAG_0, i))
             if (!item->GetTemplate()->IsUsableBySpecialization(GetSpecializationId(), getLevel(), false) || CanUseItem(item) != EQUIP_ERR_OK)
