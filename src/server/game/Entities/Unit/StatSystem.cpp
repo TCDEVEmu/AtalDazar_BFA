@@ -710,7 +710,7 @@ void Player::UpdateDodgePercentage()
     // Dodge from SPELL_AURA_MOD_DODGE_PERCENT aura
     nondiminishing += GetTotalAuraModifier(SPELL_AURA_MOD_DODGE_PERCENT);
     // Dodge from SPELL_AURA_MOD_DODGE_BY_CRIT_PCT aura
-    nondiminishing += GetFloatValue(PLAYER_CRIT_PERCENTAGE)*(GetTotalAuraModifier(SPELL_AURA_MOD_DODGE_BY_CRIT_PCT) / 100);
+    nondiminishing += GetRatingBonusValue(CR_CRIT_MELEE) * (GetTotalAuraModifier(SPELL_AURA_MOD_DODGE_BY_CRIT_PCT) / 100);
     // Dodge from rating
     diminishing += GetRatingBonusValue(CR_DODGE);
 
