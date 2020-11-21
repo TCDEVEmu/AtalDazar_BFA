@@ -31,7 +31,7 @@
 
 enum conversationyasma
 {
-    CONVERSATION_YAZMA_INTRO = 6320,
+    CONVERSATION_YAZMA_INTRO = 7947,
 };
 
 struct instance_atal_dazar : public InstanceScript
@@ -46,10 +46,10 @@ struct instance_atal_dazar : public InstanceScript
         cont = 0;
     }
 
-    //Agregado la conversation actors de introducion del dungeons by MistX asi es en Blizzard
+    //Blizz Conversation Intro AtalDazar
     void OnPlayerEnter(Player* player) override
     {
-        SetCheckPointPos({ -839.0337f, -2092.268f, 725.8119f, 0.41233432f }); //esta es la posision de donde comienza la conversation
+        SetCheckPointPos({ -839.0337f, -2092.268f, 725.8119f, 0.41233432f });
         Conversation::CreateConversation(CONVERSATION_YAZMA_INTRO, player, player->GetPosition(), { player->GetGUID() });
     };
 

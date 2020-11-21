@@ -31,6 +31,7 @@
 #include "ScriptedCreature.h"
 #include "SpellInfo.h"
 #include "TemporarySummon.h"
+#include "Conversation.h"
 
 
 enum PriestessAlunzaSpells : uint32
@@ -106,6 +107,11 @@ enum Actions
 enum PriestessMisc : uint32
 {
     OUT_OF_COMBAT_ANIM_ID = 1346
+};
+
+enum conversationalunza
+{
+    CONVERSATION_ALUNZA_DEATH = 6323,
 };
 
 // 122967 - Priestess Alunza
@@ -188,6 +194,7 @@ struct boss_priestess_alunza : public BossAI
         me->GetPlayerListInGrid(playerList, 100.0f);
         for (auto player : playerList)
         {
+            Conversation::CreateConversation(CONVERSATION_ALUNZA_DEATH, player, player->GetPosition(), { player->GetGUID() });
             if (player->HasAura(SPELL_UNSTABLE_HEX))
             {
                 int cont = instance->GetData(DATA_ACHIEVEMENT_COUNT);
