@@ -112,10 +112,14 @@ struct instance_scenario_zuldazar : public InstanceScript
                 });
             }
             break;
-        case CRITERIA_TREE_ASSAULT_DAZAR_ALOR_TO_REACH_ZUL_BEFORE_HE_CAN_DESTROY_THE_PYRAMID:
+        case CRITERIA_TREE_ASSAULT_DAZAR_ALOR_TO_REACH_ZUL_BEFORE_HE_CAN_DESTROY_THE_PYRAMID:         
             DoOnPlayers([](Player* player)
             {
-                player->TeleportTo(1642, Position(-1115.32f, 804.83f, 497.08f, 3.12117f));
+                player->AddMovieDelayedAction(863, [player]
+                {
+                    player->TeleportTo(1642, Position(-1115.32f, 804.83f, 497.08f, 3.12117f));
+                });
+                player->SendMovieStart(863);
             });
             break;
         default:
