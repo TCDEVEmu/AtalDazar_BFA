@@ -2472,6 +2472,9 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         std::string GetMapAreaAndZoneString() const;
         std::string GetCoordsMapAreaAndZoneString() const;
 
+        // Completed CriteriaTree By Id
+        void CompletedCriteriaTreeId(uint32 treeId);
+
         // Void Storage
         bool IsVoidStorageUnlocked() const { return HasPlayerFlag(PLAYER_FLAGS_VOID_UNLOCKED); }
         void UnlockVoidStorage() { AddPlayerFlag(PLAYER_FLAGS_VOID_UNLOCKED); }

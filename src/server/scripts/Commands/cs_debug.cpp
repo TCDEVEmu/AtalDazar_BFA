@@ -118,6 +118,7 @@ public:
             { "transportState", rbac::RBAC_PERM_COMMAND_DEBUG,              false, &HandleDebugTransportStateCommand,   "" },
             { "worldstate" ,   rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugWorldStateCommand,       "" },
             { "wsexpression" , rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugWSExpressionCommand,     "" },
+            { "completecriteriatree",      rbac::RBAC_PERM_COMMAND_DEBUG,               false, &HandleDebugCompleteCriteriaTreeCommand,         "" },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -1587,6 +1588,19 @@ public:
             handler->PSendSysMessage("Expression %u meet", expressionId);
         else
             handler->PSendSysMessage("Expression %u not meet", expressionId);
+
+        return true;
+    }
+    
+    static bool HandleDebugCompleteCriteriaTreeCommand(ChatHandler* handler, char const* args)
+    {
+        if (!args)
+            return false;
+
+        uint32 treeId = atoi(args);
+        Player* player = handler->getSelectedPlayerOrSelf();
+
+        player->CompletedCriteriaTreeId(treeId);
 
         return true;
     }

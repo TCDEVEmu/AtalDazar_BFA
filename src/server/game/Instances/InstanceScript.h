@@ -294,6 +294,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
         void DoAddItemByClassOnPlayers(uint8 classId, uint32 itemId, uint32 count);
 
         void DoSendScenarioEvent(uint32 eventId);
+        void DoSendScenarioEventByType(CriteriaTypes type, uint32 eventId, uint32 value = 0) { DoUpdateCriteria(type, eventId, value, nullptr); }
 
         // Return wether server allow two side groups or not
         bool ServerAllowsTwoSideGroups();

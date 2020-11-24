@@ -78,6 +78,7 @@ class TC_GAME_API Scenario : public CriteriaHandler
         ScenarioStepEntry const* GetStep() const { return _currentstep; }
         ScenarioStepEntry const* GetFirstStep() const;
         void CompleteCurrStep();
+        void CompletedCriteriaTreeById(uint32 criteriaTreeId, Player* referencePlayer) { CompletedCriteriaTree(sCriteriaMgr->GetCriteriaTree(criteriaTreeId), referencePlayer); }
 
         void SendScenarioState(Player* player);
         void SendBootPlayer(Player* player);

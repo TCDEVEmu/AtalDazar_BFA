@@ -73,6 +73,7 @@
 #include "InstancePackets.h"
 #include "InstanceSaveMgr.h"
 #include "InstanceScript.h"
+#include "InstanceScenario.h"
 #include "ItemPackets.h"
 #include "KillRewarder.h"
 #include "LFGMgr.h"
@@ -29081,6 +29082,13 @@ std::string Player::GetCoordsMapAreaAndZoneString() const
     std::ostringstream str;
     str << Position::ToString() << " " << GetMapAreaAndZoneString();
     return str.str();
+}
+
+void Player::CompletedCriteriaTreeId(uint32 treeId)
+{
+    if (InstanceScript* instanceScript = GetInstanceScript())
+        if (InstanceScenario* inScenario = instanceScript->instance->GetInstanceScenario())
+            inScenario->CompletedCriteriaTreeById(treeId, this);
 }
 
 Guild* Player::GetGuild()
