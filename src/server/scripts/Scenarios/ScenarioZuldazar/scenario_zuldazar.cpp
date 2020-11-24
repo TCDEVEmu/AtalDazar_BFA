@@ -37,12 +37,7 @@ struct npc_old_kzlotec_134460 : public ScriptedAI
         {
             player->CompletedCriteriaTreeId(CRITERIA_TREE_GATHER_YOUR_FORCES_AND_MOUNT_OLD_K_ZLOTEC);
             me->SetFaction(player->GetFaction());
-            //me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
-            
-          
-            if (instance)
-                instance->DoSendScenarioEventByType(CRITERIA_TYPE_KILL_CREATURE, me->GetEntry(), 1);
-            player->UpdateCriteria(CRITERIA_TYPE_KILL_CREATURE, me->GetEntry(), 1, 0, me);
+            me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
         }
     }
 
@@ -53,17 +48,12 @@ struct npc_old_kzlotec_134460 : public ScriptedAI
             passenger->SetDisableGravity(apply);
 
             if (!apply)
+            {
                 passenger->ToPlayer()->SetClientControl(passenger, true);
+                me->DespawnOrUnsummon(5000);
+            }
         }
     }
-
-    void DamageTaken(Unit* /*attacker*/, uint32& damage) override
-    {
-        damage = 0;
-    }
-
-
-
 private:
     InstanceScript* instance;
 };
@@ -179,7 +169,11 @@ private:
 
 struct npc_gonk_134492 : public ScriptedAI
 {
-    npc_gonk_134492(Creature* creature) : ScriptedAI(creature) { instance = creature->GetInstanceScript(); }
+    npc_gonk_134492(Creature* creature) : ScriptedAI(creature)
+    {
+        instance = creature->GetInstanceScript();
+        IsLock = false;
+    }
 
     void MoveInLineOfSight(Unit* who) override
     {
@@ -206,7 +200,11 @@ private:
 
 struct npc_king_rastakhan_136324 : public ScriptedAI
 {
-    npc_king_rastakhan_136324(Creature* creature) : ScriptedAI(creature) { instance = creature->GetInstanceScript(); }
+    npc_king_rastakhan_136324(Creature* creature) : ScriptedAI(creature)
+    {
+        instance = creature->GetInstanceScript();
+        IsLock = false;
+    }
 
     enum king_rastakhan_Spells
     {
@@ -247,9 +245,11 @@ struct npc_king_rastakhan_136324 : public ScriptedAI
                 {
                     instance->DoPlayConversation(7434);
                     instance->DoSendScenarioEvent(SCENARIO_EVENT_FIND_KING_RASTAKHAN_AT_THE_ENTRANCE_TO_DAZAR_ALOR);
+                    player->CompletedCriteriaTreeId(CRITERIA_TREE_FIND_KING_RASTAKHAN_AT_THE_ENTRANCE_TO_DAZAR_ALOR);
                 }
                 me->GetScheduler().Schedule(10s, [=](TaskContext /*context*/)
                 {
+                    me->SetHomePosition(Position(-825.56f, 970.363f, 320.82f, 0.8f));
                     me->GetMotionMaster()->MovePoint(1, Position(-825.56f, 970.363f, 320.82f, 0.8f), true);
                 });
             }
@@ -383,7 +383,26 @@ private:
 };
 //278857 Sanguine Eruption ->278848 Sanguine Eruption
 
+struct npc_rastari_spirit_136384 : public ScriptedAI
+{
+    npc_rastari_spirit_136384(Creature* creature) : ScriptedAI(creature) { }
 
+    bool isSaved = false;
+
+    void Reset() override
+    {
+        if (isSaved)
+            me->RemoveAurasDueToSpell(257852);
+    }
+
+    void SetData(uint32 /*id*/, uint32 /*value*/) override
+    {
+        isSaved = true;
+        me->RemoveAurasDueToSpell(257852);
+        me->SetHomePosition(Position(-825.56f, 970.363f, 320.82f, 0.8f));
+        me->GetMotionMaster()->MovePoint(1, Position(-825.56f, 970.363f, 320.82f, 0.8f), true);
+    }
+};
 void AddSC_scenario_zuldazar()
 {
     RegisterCreatureAI(npc_king_rastakhan_135890);
@@ -395,4 +414,5 @@ void AddSC_scenario_zuldazar()
     RegisterCreatureAI(npc_king_rastakhan_136324);
     RegisterCreatureAI(npc_warlord_kara_na_131018);
     RegisterCreatureAI(npc_mada_renkala_142765);
+    RegisterCreatureAI(npc_rastari_spirit_136384);
 }

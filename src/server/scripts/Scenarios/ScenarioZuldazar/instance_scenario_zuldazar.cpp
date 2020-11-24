@@ -31,6 +31,7 @@ struct instance_scenario_zuldazar : public InstanceScript
 
     bool isFirstIntro = false;
     uint32 SecondCount = 0;
+    bool isThirdIntro = false;
     uint32 FiveCount1 = 0;
     uint32 FiveCount2 = 0;
 
@@ -56,14 +57,17 @@ struct instance_scenario_zuldazar : public InstanceScript
         case CRITERIA_TREE_DESTROY_THE_NAZMANI_INVADERS_IN_THE_SLIVER:
             DoOnPlayers([](Player* player)
             {
-                player->GetScheduler().Schedule(5s, [=](TaskContext /*context*/)
+                player->GetScheduler().Schedule(10s, [=](TaskContext /*context*/)
                 {
                     player->CompletedCriteriaTreeId(CRITERIA_TREE_SECURE_THE_BRIDGE_TO_DAZAR_ALOR);
                 });
             });
             break;
         case CRITERIA_TREE_SECURE_THE_BRIDGE_TO_DAZAR_ALOR:
+            if (isThirdIntro)
+                return;
 
+            isThirdIntro = true;
             //蛤蟆跳桥头 NPC_KRAGWA_THE_HUGE -496.65f, 574.15f, 220.54f, 6.269f
             if (Creature* kragwa = GetKragwa())
             {
@@ -80,7 +84,6 @@ struct instance_scenario_zuldazar : public InstanceScript
             DoPlayConversation(7135);
             break;
         case CRITERIA_TREE_RESCUE_THE_CIVILIANS_OF_THE_ZOCALO_AND_SLAY_THE_SETHRAK_ARMY_THERE:
-            DoPlayScenePackageIdOnPlayers(SCENE_3);
             DoOnPlayers([](Player* player)
             {
                 player->GetScheduler().Schedule(5s, [=](TaskContext /*context*/)
@@ -105,10 +108,7 @@ struct instance_scenario_zuldazar : public InstanceScript
                     std::list<Creature*> list;
                     bwonsamdi->GetCreatureListWithEntryInGrid(list, NPC_RASTARI_SPIRIT);
                     for (Creature* spirit : list)
-                    {
-                        spirit->RemoveAurasDueToSpell(257852);
-                        spirit->GetMotionMaster()->MovePoint(1, Position(-825.56f, 970.363f, 320.82f, 0.8f), true);
-                    }                   
+                        spirit->AI()->SetData(1, 1);                  
                 });
             }
             break;
@@ -132,13 +132,18 @@ struct instance_scenario_zuldazar : public InstanceScript
         case NPC_BLOOD_TROLL:
         case NPC_SIEGE_MONSTROSITY:
         case NPC_BLOOD_TROLL_WARMOTHER:
-            //for (uint8 i = 1; i <= 100; ++i)
+            for (uint8 i = 1; i <= 10; ++i)
             {
-                DoSendScenarioEventByType(CRITERIA_TYPE_KILL_CREATURE, SCENARIO_EVENT_BLOOD_TROLL_ARMY_SLAIN, 200);
+                DoSendScenarioEventByType(CRITERIA_TYPE_KILL_CREATURE, SCENARIO_EVENT_BLOOD_TROLL_ARMY_SLAIN, 1);
 
                 SecondCount++;
             }
-          
+            //KilledMonsterCredit
+            DoOnPlayers([](Player* player)
+            {
+                player->KilledMonsterCredit(SCENARIO_EVENT_BLOOD_TROLL_ARMY_SLAIN);
+            });
+            //printf("first  entry=%u  kill count =%u \n", unit->GetEntry(), SecondCount);
             if (SecondCount >= 200)
             {
                 DoOnPlayers([](Player* player)
