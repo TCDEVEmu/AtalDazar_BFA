@@ -19,6 +19,8 @@ void AddSC_stormwind_extraction();
 void AddSC_scenario_stormwind_extraction();
 void AddSC_scenario_zuldazar();
 void AddSC_instance_scenario_zuldazar();
+void AddSC_uncharted_island_tutorial();
+void AddSC_scenario_uncharted_island_tutorial();
 
 void AddScenariosScripts()
 {
@@ -26,4 +28,6 @@ void AddScenariosScripts()
     AddSC_scenario_stormwind_extraction();
     AddSC_scenario_zuldazar();
     AddSC_instance_scenario_zuldazar();
+    AddSC_uncharted_island_tutorial();
+    AddSC_scenario_uncharted_island_tutorial();
 }
