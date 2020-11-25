@@ -34,8 +34,6 @@ INSERT INTO `gameobject_template_addon` (`entry`, `faction`, `flags`) VALUES
 DELETE FROM `conversation_actor_template` WHERE `Id` = '144152';
 INSERT INTO `conversation_actor_template` (`Id`, `CreatureId`, `CreatureModelId`, `VerifiedBuild`) VALUES ('144152', '144152', '82772', '32978');
 
-UPDATE `creature_template` SET `Scriptname`= "npc_Thaurissan_Iron_Dwarf" WHERE `entry`=144125;
-
 UPDATE `creature_template` SET `faction`=84,`minlevel`=120, `maxlevel`=120, `npcflag`=0 WHERE `entry`=144125;
 UPDATE `creature_template` SET `faction`=84,`minlevel`=120, `maxlevel`=120, `npcflag`=0 WHERE `entry`=144133;
 UPDATE `creature_template` SET `faction`=84,`minlevel`=120, `maxlevel`=120, `npcflag`=0 WHERE `entry`=143567;
@@ -614,3 +612,5 @@ DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=1
 INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161330, 1);
 DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=161328;
 INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161328, 1);
+
+UPDATE `creature_template` SET `Scriptname`= "npc_Thaurissan_Iron_Dwarf" WHERE `entry`='144152';

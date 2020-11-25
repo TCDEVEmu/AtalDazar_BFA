@@ -59,8 +59,6 @@ public:
         SPELL_DRUID_CLASS_HALL_TP           = 204874,
         SPELL_CREATE_CLASS_HALL_ALLIANCE    = 185506,
         SPELL_CREATE_CLASS_HALL_HORDE       = 192191,
-
-        CONVERSATION_KHADGAR_BLINK_OF_EYE   = 3827,
     };
 
     void OnLogin(Player* player, bool firstLogin) override
@@ -100,7 +98,6 @@ public:
 
         if (player->GetQuestStatus(QUEST_BLINK_OF_AN_EYE) == QUEST_STATUS_NONE)
         {
-            Conversation::CreateConversation(CONVERSATION_KHADGAR_BLINK_OF_EYE, player, player->GetPosition(), { player->GetGUID() });
 
             if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_BLINK_OF_AN_EYE))
                 player->AddQuest(quest, nullptr);
@@ -270,6 +267,7 @@ public:
         return true;
     }
 };
+
 
 class npc_great_eagle : public CreatureScript
 {
