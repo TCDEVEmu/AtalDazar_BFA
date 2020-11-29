@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1846,15 +1846,24 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         uint32 GetWeekGames(uint8 slot) const { return GetRatedInfo(slot).WeeklyPlayed; }
         uint32 GetSeasonGames(uint8 slot) const { return GetRatedInfo(slot).SeasonPlayed; }
         uint32 GetArenaMatchMakerRating(uint8 slot) const { return GetRatedInfo(slot).MatchMakerRating; }
+        uint32 GetProjectedConquestCap(uint8 slot) const { return m_ratedInfos[slot].ProjectedConquestCap; }
+        uint32 GetRanking(uint8 slot) const { return m_ratedInfos[slot].Ranking; }
+        uint32 GetDayWins(uint8 braket) const { return m_DayWins[braket]; }
+        uint32 GetDayGames(uint8 braket) const { return m_DayGames[braket]; }
+        bool HasWinInBracket(BattlegroundBracketType bracketType, bool daily) const;
         uint32 GetMaxRating() const;
         void SetArenaPersonalRating(uint8 slot, uint32 value);
         void SetArenaMatchMakerRating(uint8 slot, uint32 value);
         void IncrementWeekGames(uint8 slot);
         void IncrementWeekWins(uint8 slot);
+		void IncrementDayWins(uint8 slot);
+		void IncrementDayGames(uint8 slot);
         void IncrementSeasonGames(uint8 slot);
         void IncrementSeasonWins(uint8 slot);
         void FinishWeek();
+        void FinishDay();
 
+        uint32 GetBattlegroundRewardCrate() const;
         Difficulty GetDifficultyID(MapEntry const* mapEntry) const;
         Difficulty GetDungeonDifficultyID() const { return m_dungeonDifficulty; }
         Difficulty GetRaidDifficultyID() const { return m_raidDifficulty; }
@@ -3045,6 +3054,10 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         ArchaeologyPlayerMgr m_archaeologyPlayerMgr;
 
         ObjectGuid m_lastQuestGiverGUID;
+
+        // Day
+        uint32 m_DayWins[(uint8)BattlegroundBracketType::Max];
+        uint32 m_DayGames[(uint8)BattlegroundBracketType::Max];
 };
 
 TC_GAME_API void AddItemsSetItem(Player* player, Item* item);

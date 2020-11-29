@@ -453,9 +453,7 @@ namespace WorldPackets
                 int32 BestWeeklyRating = 0;
                 int32 LastWeeksBestRating = 0;
                 int32 BestSeasonRating = 0;
-                int32 PvpTierID = 0;
-                int32 Unused3 = 0;
-                bool Unused4 = false;
+                int32 ProjectedConquestCap = 0;
 
                 int32 LastWeekWon = 0;
                 int32 LastWeekPlayed = 0;
@@ -498,6 +496,28 @@ namespace WorldPackets
             int32 Duration = 0;
             Optional<PVPLogData> LogData;
         };
+
+        class SendPvpBrawlInfo final : public ServerPacket
+        {
+        public:
+            SendPvpBrawlInfo() : ServerPacket(SMSG_REQUEST_PVP_BRAWL_INFO_RESPONSE) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 BrawlType = 0;
+            uint32 TimeToEnd = 0;
+            bool IsActive = false;
+
+        };
+
+        class RequestPvpBrawlInfo final : public ClientPacket
+        {
+        public:
+            RequestPvpBrawlInfo(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_PVP_BRAWL_INFO, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
     }
 }
 

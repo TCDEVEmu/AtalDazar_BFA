@@ -323,11 +323,8 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::RatedBattle
     data << int32(bracketInfo.WeeklyPlayed);
     data << int32(bracketInfo.WeeklyWon);
     data << int32(bracketInfo.BestWeeklyRating);
-    data << int32(bracketInfo.LastWeeksBestRating);
+    data << int32(bracketInfo.ProjectedConquestCap);
     data << int32(bracketInfo.BestSeasonRating);
-    data << int32(bracketInfo.PvpTierID);
-    data << int32(bracketInfo.Unused3);
-    data.WriteBit(bracketInfo.Unused4);
     data.FlushBits();
 
     return data;
@@ -367,4 +364,15 @@ WorldPacket const* WorldPackets::Battleground::PVPMatchEnd::Write()
         _worldPacket << *LogData;
 
     return &_worldPacket;
+}
+
+WorldPacket const * WorldPackets::Battleground::SendPvpBrawlInfo::Write()
+{
+    _worldPacket << BrawlType;
+    _worldPacket << TimeToEnd;
+    _worldPacket.FlushBits();
+    _worldPacket.WriteBit(IsActive);
+
+    return &_worldPacket;
+
 }

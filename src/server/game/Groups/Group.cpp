@@ -821,6 +821,7 @@ void Group::OfflineMemberLost(ObjectGuid guid, uint32 againstMatchmakerRating, u
                 // update personal played stats
                 p->IncrementWeekGames(slot);
                 p->IncrementSeasonGames(slot);
+                p->IncrementDayGames(slot);
                 return;
             }
         }
@@ -844,6 +845,7 @@ void Group::MemberLost(Player* player, uint32 againstMatchmakerRating, uint8 slo
             // Update personal played stats
             player->IncrementWeekGames(slot);
             player->IncrementSeasonGames(slot);
+            player->IncrementDayGames(slot);
             return;
         }
     }
@@ -915,6 +917,8 @@ void Group::WonAgainst(uint32 Own_MMRating, uint32 Opponent_MMRating, int32& rat
 
             player->IncrementWeekWins(slot);
             player->IncrementSeasonWins(slot);
+            player->IncrementDayGames(slot);
+            player->IncrementDayWins(slot);
             player->IncrementWeekGames(slot);
             player->IncrementSeasonGames(slot);
 
@@ -945,6 +949,7 @@ void Group::LostAgainst(uint32 Own_MMRating, uint32 Opponent_MMRating, int32& ra
 
             player->IncrementWeekGames(slot);
             player->IncrementSeasonGames(slot);
+            player->IncrementDayGames(slot);
         }
     }
 }
@@ -963,6 +968,7 @@ void Group::FinishGame(int32 rating_change, uint8 slot)
             player->SetArenaPersonalRating(slot, std::max(0, (int)player->GetArenaPersonalRating(slot) + rating_change));
             player->IncrementWeekGames(slot);
             player->IncrementSeasonGames(slot);
+            player->IncrementDayGames(slot);
         }
     }
 }
