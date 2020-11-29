@@ -6769,4 +6769,44 @@ enum class MountResult : uint32
     Ok             = 10 // never sent
 };
 
+enum ChallengeModeTimer
+{
+    CHALLENGE_NOT_IN_TIMER = 0,
+    CHALLENGE_TIMER_LEVEL_1 = 1,
+    CHALLENGE_TIMER_LEVEL_2 = 2,
+    CHALLENGE_TIMER_LEVEL_3 = 3
+};
+
+enum Affixes : uint32
+{
+    Overflowing = 1,
+    Skittish = 2,
+    Volcanic = 3,
+    Necrotic = 4,
+    Teeming = 5,
+    Raging = 6,
+    Bolstering = 7,
+    Sanguine = 8,
+    Tyrannical = 9,
+    Fortified = 10,
+    Bursting = 11,
+    Grievous = 12,
+    FelExplosives = 13,
+    Quaking = 14,
+    Relentless = 15,
+    Infested = 16,
+    Reaping = 117,
+    Beguiling = 119,
+    Awakened = 120,
+    MaxAffixes
+};
+
+constexpr auto AFFIXES_ALL =
+((1 << Affixes::Overflowing) | (1 << Affixes::Skittish) | (1 << Affixes::Volcanic) |
+(1 << Affixes::Necrotic) | (1 << Affixes::Teeming) | (1 << Affixes::Raging) |
+(1 << Affixes::Bolstering) | (1 << Affixes::Sanguine) | (1 << Affixes::Tyrannical) |
+(1 << Affixes::Fortified) | (1 << Affixes::Bursting) | (1 << Affixes::Grievous) |
+(1 << Affixes::FelExplosives) | (1 << Affixes::Quaking) | (1 << Affixes::Relentless) |
+(1 << Affixes::Infested));//| (1 << Affixes::Reaping) | (1 << Affixes::Beguiling) | (1 << Affixes::Awakened)
+
 #endif

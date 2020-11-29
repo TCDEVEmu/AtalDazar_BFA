@@ -364,6 +364,10 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void ReenableHealthRegen() { m_disableHealthRegen = false; }
         bool HealthRegenDisabled() const { return m_disableHealthRegen; }
 
+        uint8 GetAffixState() const { return GetCreatureTemplate()->AffixState; }
+
+        bool disableAffix;
+        bool IsAffixDisabled() const { return disableAffix; }
     protected:
         bool CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data = nullptr, uint32 vehId = 0);
         bool InitEntry(uint32 entry, CreatureData const* data = nullptr);

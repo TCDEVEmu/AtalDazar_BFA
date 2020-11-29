@@ -15,6 +15,13 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "AreaTrigger.h"
+#include "AreaTriggerAI.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
+#include "SpellScript.h"
+#include "SpellAuras.h"
+#include "SpellAuraEffects.h"
 #include "ScriptMgr.h"
 #include "waycrest_manor.h"
 

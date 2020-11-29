@@ -27,6 +27,7 @@
 #include <memory>
 #include <set>
 #include <sstream>
+#include <bitset>  
 
 #define OUT_SAVE_INST_DATA             TC_LOG_DEBUG("scripts", "Saving Instance Data for Instance %s (Map %d, Instance Id %d)", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_SAVE_INST_DATA_COMPLETE    TC_LOG_DEBUG("scripts", "Saving Instance Data for Instance %s (Map %d, Instance Id %d) completed.", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
@@ -47,6 +48,7 @@ struct Position;
 enum CriteriaTypes : uint8;
 enum CriteriaTimedTypes : uint8;
 enum EncounterCreditType : uint8;
+enum Affixes : uint32;
 
 namespace WorldPackets
 {
@@ -98,11 +100,44 @@ enum DoorType
 
 enum ChallengeMode
 {
-    GOB_CHALLENGER_DOOR     = 239408,
+    GOB_CHALLENGER_DOOR          = 239408,
+    GOB_CHALLENGER_DOOR_LINE235  = 239323,
+    GO_FONT_OF_POWER             = 246779,
 
-    SPELL_CHALLENGER_MIGHT  = 206150,
-    SPELL_CHALLENGER_BURDEN = 206151
+    SPELL_CHALLENGER_MIGHT       = 206150,
+    SPELL_CHALLENGER_BURDEN      = 206151,
+    SPELL_BATTLE_HARDENED        = 158082,
 };
+
+enum ChallengeSpells : uint32
+{
+    ChallengersMight = 206150, /// generic creature aura
+    ChallengersBurden = 206151, /// generic player aura
+    ChallengerBolstering = 209859,
+    ChallengerNecrotic = 209858,
+    ChallengerOverflowing = 221772,
+    ChallengerSanguine = 226489,
+    ChallengerRaging = 228318,
+    ChallengerSummonVolcanicPlume = 209861,
+    ChallengerVolcanicPlume = 209862,
+    ChallengerBursting = 240443,
+    ChallengerQuake = 240447,
+
+    //Explosive
+    SPELL_FEL_EXPLOSIVES_SUMMON_1 = 240444, //Short dist
+    SPELL_FEL_EXPLOSIVES_SUMMON_2 = 243110, //Long dist
+    SPELL_FEL_EXPLOSIVES_VISUAL = 240445,
+    SPELL_FEL_EXPLOSIVES_DMG = 240446,
+};
+
+enum ChallengeNpcs : uint32
+{
+    NpcVolcanicPlume = 105877,
+    NPC_FEL_EXPLOSIVES = 120651,
+};
+
+static uint32 const ChallengeModeOrb = 246779;
+static uint32 const ChallengeModeDoor = 239323;
 
 struct DoorData
 {
@@ -388,22 +423,36 @@ class TC_GAME_API InstanceScript : public ZoneScript
         uint32 GetCombatResurrectionChargeInterval() const;
 
         // Challenge Modes
-        void StartChallengeMode(uint8 level);
+        void StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3);
         void CompleteChallengeMode();
 
         bool IsChallengeModeStarted() const { return _challengeModeStarted; }
+        uint8 GetChallengeModeId() const { return _challengeModeId; }
         uint8 GetChallengeModeLevel() const { return _challengeModeLevel; }
+        std::array<uint32, 3> GetAffixes() const;
+        bool HasAffix(Affixes affix);
         uint32 GetChallengeModeCurrentDuration() const;
 
         void SendChallengeModeStart(Player* player = nullptr) const;
         void SendChallengeModeDeathCount(Player* player = nullptr) const;
         void SendChallengeModeElapsedTimer(Player* player = nullptr) const;
+        void SendChallengeModeMapStatsUpdate(Player* player, uint32 challengeId, uint32 recordTime) const;
 
         void CastChallengeCreatureSpell(Creature* creature);
         void CastChallengePlayerSpell(Player* player);
 
         void SetChallengeDoorPos(Position pos) { _challengeModeDoorPosition = pos; }
         virtual void SpawnChallengeModeRewardChest() { }
+
+        void AddChallengeModeChests(ObjectGuid chestGuid, uint8 chestLevel);
+        ObjectGuid GetChellngeModeChests(uint8 chestLevel);
+        void AddChallengeModeDoor(ObjectGuid doorGuid);
+        void AddChallengeModeOrb(ObjectGuid orbGuid);
+
+        std::vector<ObjectGuid> _challengeDoorGuids;
+        std::vector<ObjectGuid> _challengeChestGuids;
+        ObjectGuid _challengeOrbGuid;
+        ObjectGuid _challengeChest;
 
         void DoOnPlayers(std::function<void(Player*)>&& function);
 
@@ -463,11 +512,14 @@ class TC_GAME_API InstanceScript : public ZoneScript
         std::map<uint32, std::list<ObjectGuid>> summonBySummonGroupIDs;
 
         bool _challengeModeStarted;
+        uint8 _challengeModeId;
         uint8 _challengeModeLevel;
         uint32 _challengeModeStartTime;
         uint32 _challengeModeDeathCount;
         Optional<Position> _challengeModeDoorPosition;
         Optional<Position> _checkPointPosition;
+        std::array<uint32, 3> _affixes;
+        std::bitset<size_t(121)> _affixesTest;//Affixes::MaxAffixes
 
     #ifdef TRINITY_API_USE_DYNAMIC_LINKING
         // Strong reference to the associated script module
