@@ -33,6 +33,7 @@
 #include "BattlegroundTVA.h"
 #include "BattlegroundWS.h"
 #include "BattlegroundDG.h"
+#include "BattlegroundAF.h"
 #include "Common.h"
 #include "Containers.h"
 #include "DatabaseEnv.h"
@@ -383,6 +384,9 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
         case BATTLEGROUND_DG:
             bg = new BattlegroundDG(*(BattlegroundDG*)bg_template);
             break;
+		case BATTLEGROUND_AF:
+            bg = new BattlegroundAF(*(BattlegroundAF*)bg_template);
+            break;
         case BATTLEGROUND_RB:
         case BATTLEGROUND_AA:
         case BATTLEGROUND_RANDOM_EPIC:
@@ -470,6 +474,9 @@ bool BattlegroundMgr::CreateBattleground(BattlegroundTemplate const* bgTemplate)
                 break;
             case BATTLEGROUND_DG:
                 bg = new BattlegroundDG(bgTemplate);
+                break;
+			case BATTLEGROUND_AF:
+                bg = new BattlegroundAF(bgTemplate);
                 break;
             default:
                 return false;
@@ -618,6 +625,7 @@ bool BattlegroundMgr::IsArenaType(BattlegroundTypeId bgTypeId)
             || bgTypeId == BATTLEGROUND_RV
             || bgTypeId == BATTLEGROUND_RL
             || bgTypeId == BATTLEGROUND_TTP
+			|| bgTypeId == BATTLEGROUND_AF
             || bgTypeId == BATTLEGROUND_TVA;
 }
 
