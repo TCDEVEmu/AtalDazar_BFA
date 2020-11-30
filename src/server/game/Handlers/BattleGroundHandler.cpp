@@ -86,6 +86,19 @@ void WorldSession::HandleBattlemasterJoinOpcode(WorldPackets::Battleground::Batt
 
     BattlegroundTypeId bgTypeId = BattlegroundTypeId(bgQueueTypeId.BattlemasterListId);
 
+    uint8 role = battlemasterJoin.Roles;
+    uint8 rolepacket = 0;
+    if (role == 6 || role == 12 || role == 10 || role == 16)
+        rolepacket = _player->GetRoleForGroup();
+    if (role == 2)
+        rolepacket = 0;
+    if (role == 4)
+        rolepacket = 1;
+    if (role == 8)
+        rolepacket = 2;
+    _player->Variables.Set("rolesdata", uint8(rolepacket));
+
+
     // ignore if player is already in BG
     if (_player->InBattleground())
         return;
@@ -511,6 +524,18 @@ void WorldSession::HandleBattlemasterJoinArena(WorldPackets::Battleground::Battl
         ChatHandler(this).PSendSysMessage(LANG_ARENA_DISABLED);
         return;
     }
+  
+    uint8 role = packet.Roles;
+    uint8 rolepacket = 0;
+    if (role == 6 || role == 12 || role == 10 || role == 16)
+        rolepacket = _player->GetRoleForGroup();
+    if (role == 2)
+        rolepacket = 0;
+    if (role == 4)
+        rolepacket = 1;
+    if (role == 8)
+        rolepacket = 2;
+    _player->Variables.Set("rolesdata", uint8(rolepacket));
 
     BattlegroundTypeId bgTypeId = bg->GetTypeID();
     BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(bgTypeId, BattlegroundQueueIdType::Arena, true, arenatype);

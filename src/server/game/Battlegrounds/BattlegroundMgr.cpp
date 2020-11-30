@@ -219,7 +219,8 @@ void BattlegroundMgr::BuildBattlegroundStatusNeedConfirmation(WorldPackets::Batt
     BuildBattlegroundStatusHeader(&battlefieldStatus->Hdr, bg, player, ticketId, joinTime, bg->GetQueueId(), arenaType);
     battlefieldStatus->Mapid = bg->GetMapId();
     battlefieldStatus->Timeout = timeout;
-    battlefieldStatus->Role = 0;
+    uint8 rolexdata = player->Variables.GetValue<uint8>("rolesdata");
+    battlefieldStatus->Role = rolexdata;
 }
 
 void BattlegroundMgr::BuildBattlegroundStatusActive(WorldPackets::Battleground::BattlefieldStatusActive* battlefieldStatus, Battleground* bg, Player* player, uint32 ticketId, uint32 joinTime, uint32 arenaType)
