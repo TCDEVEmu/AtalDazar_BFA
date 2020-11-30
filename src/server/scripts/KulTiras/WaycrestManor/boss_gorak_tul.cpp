@@ -45,7 +45,74 @@ enum gorakEvents : uint8
     EVENT_SUMMON_DEATHTOUCHED_SLAVER = 3,
 };
 
+struct boss_gorak_tul : public BossAI
+{
+    boss_gorak_tul(Creature* creature) : BossAI(creature, DATA_GORAK_TUL) { }
+
+    void InitializeAI() override
+    {
+        BossAI::InitializeAI();
+    }
+
+    void Reset() override
+    {
+        BossAI::Reset();
+    }
+
+    void EnterCombat(Unit* who) override
+    {
+        Talk(TALK_AGGRO);
+        events.ScheduleEvent(EVENT_DARKENED_LIGHTHING, 6000);
+        events.ScheduleEvent(EVENT_DREAD_ESSENCE, 3000);
+        events.ScheduleEvent(EVENT_SUMMON_DEATHTOUCHED_SLAVER, 5000);
+
+        BossAI::EnterCombat(who);
+    }
+
+    void JustDied(Unit* killer) override
+    {
+        Talk(TALK_DEATH);
+        BossAI::JustDied(killer);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+
+            switch (eventId)
+            {
+            case EVENT_DARKENED_LIGHTHING:
+                DoCastVictim(SPELL_DARKENED_LIGHTHING);
+                events.ScheduleEvent(EVENT_DARKENED_LIGHTHING, 10000);
+                break;
+            case EVENT_DREAD_ESSENCE:
+                DoCastVictim(SPELL_DREAD_ESSENCE);
+                events.ScheduleEvent(EVENT_DREAD_ESSENCE, 25000);
+                break;
+            case EVENT_SUMMON_DEATHTOUCHED_SLAVER:
+                DoCastVictim(SPELL_SUMMON_DEATHTOUCHED_SLAVER);
+                events.ScheduleEvent(EVENT_SUMMON_DEATHTOUCHED_SLAVER, 20000);
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
 void AddSC_boss_gorak_tul()
 {
-
+    RegisterCreatureAI(boss_gorak_tul);
 }
