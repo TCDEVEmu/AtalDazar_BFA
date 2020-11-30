@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -78,6 +78,7 @@
 #include "ItemPackets.h"
 #include "KillRewarder.h"
 #include "LFGMgr.h"
+#include "LFGPackets.h"
 #include "Language.h"
 #include "Log.h"
 #include "LootItemStorage.h"
@@ -356,7 +357,23 @@ Player::Player(WorldSession* session) : Unit(true), m_sceneMgr(this), m_archaeol
     for (WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo& slotInfo : m_ratedInfos)
     {
         slotInfo.PersonalRating    = sWorld->getIntConfig(CONFIG_ARENA_START_PERSONAL_RATING);
-        slotInfo.MatchMakerRating  = sWorld->getIntConfig(CONFIG_ARENA_START_MATCHMAKER_RATING);
+        slotInfo.LastWeeksBestRating = 0;
+        slotInfo.BestSeasonRating = 0;
+        slotInfo.MatchMakerRating = sWorld->getIntConfig(CONFIG_ARENA_START_MATCHMAKER_RATING);
+        slotInfo.WeeklyWon = 0;
+        slotInfo.LastWeekWon = 0;
+        slotInfo.LastWeekPlayed = 0;
+        slotInfo.SeasonWon = 0;
+        slotInfo.WeeklyPlayed = 0;
+        slotInfo.SeasonPlayed = 0;
+        slotInfo.ProjectedConquestCap = 0;
+        slotInfo.Ranking = sWorld->getBoolConfig(CONFIG_ARENA_SEASON_IN_PROGRESS) ? 1 : 0;
+    }
+
+    for (uint8 bracket = 0; bracket < (uint8)BattlegroundBracketType::Max; ++bracket)
+    {
+        m_DayWins[bracket] = 0;
+        m_DayGames[bracket] = 0;
     }
 
     _cinematicMgr = new CinematicMgr(this);
@@ -7047,10 +7064,80 @@ void Player::SendCurrencies() const
     GetSession()->SendPacket(packet.Write());
 }
 
+uint32 Player::GetBattlegroundRewardCrate() const
+{
+    //Hacky Hacky if you find the logic change this shit :)
+    if (getLevel() >= 10 && getLevel() < 40)
+        return 135539;
+    else if (getLevel() >= 40 && getLevel() < 60)
+        return 135540;
+    else if (getLevel() >= 60 && getLevel() < 70)
+        return 135541;
+    else if (getLevel() >= 70 && getLevel() < 80)
+        return 135542;
+    else if (getLevel() >= 80 && getLevel() < 90)
+        return 135543;
+    else if (getLevel() >= 90 && getLevel() < 100)
+        return 135545;
+    else if (getLevel() >= 100 && getLevel() < 110)
+        return 135546;
+
+    return 0;
+}
+
 void Player::SendPvpRewards() const
 {
-    //WorldPacket packet(SMSG_REQUEST_PVP_REWARDS_RESPONSE, 24);
-    //GetSession()->SendPacket(&packet);
+    WorldPackets::LFG::RequestPVPRewardsResponse rewards;
+    uint32 const rewardCrate = GetBattlegroundRewardCrate();
+
+    auto BuildPvpRewardDataForBracket = [&rewards, rewardCrate, this](BattlegroundBracketType bracket, uint32 mask) -> void
+    {
+        int32 honorReward = HonorRewardPerBracket[(uint8)bracket];
+        int32 conquestReward = ConquestRewardPerBracket[(uint8)bracket];
+        int32 azeriteReward = AzeriteRewardPerBracket[(uint8)bracket];
+        std::vector<WorldPackets::LFG::LfgPlayerQuestRewardCurrency> Currency;
+        std::vector<WorldPackets::LFG::LfgPlayerQuestRewardItem> Items;
+        // First of the day bonus
+        if (!HasWinInBracket(bracket, true))
+            honorReward *= 2;
+
+        //Show Conquest if you have level 120
+        if (getLevel() >= 120)
+            Currency.push_back(WorldPackets::LFG::LfgPlayerQuestRewardCurrency(int32(CURRENCY_TYPE_CONQUEST_BFA), conquestReward * CURRENCY_PRECISION));
+        //Show Azerite if you have level 110
+        if (getLevel() >= 110)
+            Currency.push_back(WorldPackets::LFG::LfgPlayerQuestRewardCurrency(int32(CURRENCY_TYPE_AZERITE), azeriteReward));
+
+        if (bracket == BattlegroundBracketType::RandomBattleground || bracket == BattlegroundBracketType::EpicBattleground)
+        {
+            //Add crate if you have less than level 120
+            if (rewardCrate)
+                Items.push_back(WorldPackets::LFG::LfgPlayerQuestRewardItem(rewardCrate, 1));
+        }
+
+        rewards.Rewards[(uint8)bracket].Mask = mask;
+        rewards.Rewards[(uint8)bracket].Item = Items;
+        rewards.Rewards[(uint8)bracket].Currency = Currency;
+        rewards.Rewards[(uint8)bracket].Honor = honorReward;
+    };
+
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::RandomBattleground, 0x4BC9E950);               //Random Battleground
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::Battleground10v10, 0);                         //10 vs 10
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::ArenaSkirmish, 0xA4DFCD60);                    //Skirmish
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::Arena2v2, 0);                                  //2c2
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::Arena3v3, 0x57928278);                         //3vs3
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::BattlegroundBraw, 0);                                      //Unk Brawl?
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::ArenaBraw, 0);                                      //Unk Brawl?
+    BuildPvpRewardDataForBracket(BattlegroundBracketType::EpicBattleground, 0);                          //Epic Battleground
+
+    //GetSession()->SendPacket(rewards.Write());
+    rewards.HasWon10vs10 = GetDayWins((uint8)BattlegroundBracketType::Battleground10v10) ? true : false;
+    rewards.HasWonSkirmish = GetDayWins((uint8)BattlegroundBracketType::ArenaSkirmish) ? true : false;
+    rewards.HasWon2vs2 = GetDayWins((uint8)BattlegroundBracketType::Arena2v2) ? true : false;
+    rewards.HasWon3vs3 = GetDayWins((uint8)BattlegroundBracketType::Arena3v3) ? true : false;
+
+    GetSession()->SendPacket(rewards.Write());
+
 }
 
 uint32 Player::GetCurrency(uint32 id) const
@@ -18233,8 +18320,8 @@ void Player::_LoadTransmogOutfits(PreparedQueryResult result)
 
 void Player::_LoadArenaData(PreparedQueryResult result)
 {
-    //        0     1       2                 3                   4                 5          6         7              8             9            10
-    // SELECT slot, rating, bestRatingOfWeek, bestRatingOfSeason, matchMakerRating, weekGames, weekWins, prevWeekGames, prevWeekWins, seasonGames, seasonWins FROM character_arena_data WHERE guid = ?
+    //        0     1       2                 3                   4                 5          6         7              8             9            10           11          12      13
+    // SELECT slot, rating, bestRatingOfWeek, bestRatingOfSeason, matchMakerRating, weekGames, weekWins, prevWeekGames, prevWeekWins, seasonGames, seasonWins, ranking, dayGames, dayWins FROM character_arena_data WHERE guid = ?
     if (!result)
         return;
 
@@ -18260,6 +18347,9 @@ void Player::_LoadArenaData(PreparedQueryResult result)
         slotInfo.LastWeekWon        = fields[8].GetUInt32();
         slotInfo.SeasonPlayed       = fields[9].GetUInt32();
         slotInfo.SeasonWon          = fields[10].GetUInt32();
+        slotInfo.Ranking            = fields[11].GetUInt32();
+        m_DayWins[slot]             = fields[12].GetUInt32();
+        m_DayGames[slot]            = fields[13].GetUInt32();
 
     } while (result->NextRow());
 }
@@ -22928,6 +23018,8 @@ void Player::SetArenaPersonalRating(uint8 slot, uint32 value)
     if (slot >= MAX_PVP_SLOT)
         return;
 
+    uint32 conquestRatingValue = value;
+
     GetAchievementMgr()->UpdateCriteria(CRITERIA_TYPE_HIGHEST_PERSONAL_RATING, value, ArenaHelper::GetTypeBySlot(slot));
 
     WorldPackets::Battleground::RatedBattlefieldInfo::BracketInfo& slotInfo = m_ratedInfos[slot];
@@ -22938,6 +23030,15 @@ void Player::SetArenaPersonalRating(uint8 slot, uint32 value)
 
     if (slotInfo.BestSeasonRating < int32(value))
         slotInfo.BestSeasonRating = value;
+
+    if (slotInfo.Ranking > (uint32)Rank::Unranked && slotInfo.Ranking < (uint32)Rank::Gladiator)
+        if (value > TopRank[(uint8)slotInfo.Ranking])
+            slotInfo.Ranking++;
+
+    //Add Rating for Gladiator Reward Season 1 BFA
+    //if conquestRatingValue < 0 then earn rating else lost rating
+    conquestRatingValue = GetCurrency(CURRENCY_TYPE_BFA_SEASON_RATED) - value;
+    ModifyCurrency(CURRENCY_TYPE_BFA_SEASON_RATED, conquestRatingValue * -1, false, true);
 }
 
 void Player::SetArenaMatchMakerRating(uint8 slot, uint32 value)
@@ -22963,6 +23064,22 @@ void Player::IncrementWeekWins(uint8 slot)
         return;
 
     ++m_ratedInfos[slot].WeeklyWon;
+}
+
+void Player::IncrementDayWins(uint8 slot)
+{
+    if (slot >= (uint8)BattlegroundBracketType::Max)
+        return;
+
+    ++m_DayWins[slot];
+}
+
+void Player::IncrementDayGames(uint8 slot)
+{
+    if (slot >= (uint8)BattlegroundBracketType::Max)
+        return;
+
+    ++m_DayGames[slot];
 }
 
 void Player::IncrementSeasonGames(uint8 slot)
@@ -27687,6 +27804,9 @@ void Player::_SaveArenaData(CharacterDatabaseTransaction& trans)
         stmt->setUInt32(9,  slotInfo.LastWeekWon);
         stmt->setUInt32(10, slotInfo.SeasonPlayed);
         stmt->setUInt32(11, slotInfo.SeasonWon);
+        stmt->setUInt32(12, slotInfo.Ranking);
+        stmt->setUInt32(13, m_DayWins[slot]);
+        stmt->setUInt32(14, m_DayGames[slot]);
         trans->Append(stmt);
     }
 }
@@ -28543,6 +28663,11 @@ void Player::SendItemRetrievalMail(uint32 itemEntry, uint32 count, ItemContext c
 
     draft.SendMailTo(trans, MailReceiver(this, GetGUID().GetCounter()), sender);
     CharacterDatabase.CommitTransaction(trans);
+}
+
+bool Player::HasWinInBracket(BattlegroundBracketType bracketType, bool daily) const
+{
+    return daily ? m_DayWins[(uint8)bracketType] : GetWeekWins((uint8)bracketType);
 }
 
 void Player::SetRandomWinner(bool isWinner)
@@ -30132,6 +30257,15 @@ void Player::FinishWeek()
         slotInfo.LastWeekPlayed     = slotInfo.WeeklyPlayed;
         slotInfo.WeeklyWon          = 0;
         slotInfo.WeeklyPlayed       = 0;
+    }
+}
+
+void Player::FinishDay()
+{
+    for (uint8 bracket = 0; bracket < (uint8)BattlegroundBracketType::Max; ++bracket)
+    {
+        m_DayGames[bracket] = 0;
+        m_DayWins[bracket] = 0;
     }
 }
 

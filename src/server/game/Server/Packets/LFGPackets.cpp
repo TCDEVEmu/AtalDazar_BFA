@@ -423,3 +423,25 @@ WorldPacket const* WorldPackets::LFG::LFGTeleportDenied::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::LFG::RequestPVPRewardsResponse::Write()
+{
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::RandomBattleground];
+
+    _worldPacket.WriteBit(HasWon10vs10);
+    _worldPacket.WriteBit(HasWonSkirmish);
+    _worldPacket.WriteBit(HasWon2vs2);
+    _worldPacket.WriteBit(HasWon3vs3);
+    _worldPacket.FlushBits();
+
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::Battleground10v10];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::ArenaSkirmish];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::Arena2v2];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::Arena3v3];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::BattlegroundBraw];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::ArenaBraw];
+    _worldPacket << Rewards[(uint8)BattlegroundBracketType::EpicBattleground];
+
+    return &_worldPacket;
+
+}

@@ -3534,6 +3534,14 @@ void World::ResetRandomBG()
         if (itr->second->GetPlayer())
             itr->second->GetPlayer()->SetRandomWinner(false);
 
+    CharacterDatabase.Execute("UPDATE character_arena_data SET dayGames = 0, dayWins = 0");
+
+    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if (Player* player = itr->second->GetPlayer())
+            player->FinishDay();
+    }
+
     m_NextRandomBGReset = time_t(m_NextRandomBGReset + DAY);
     sWorld->setWorldState(WS_BG_DAILY_RESET_TIME, uint32(m_NextRandomBGReset));
 }
