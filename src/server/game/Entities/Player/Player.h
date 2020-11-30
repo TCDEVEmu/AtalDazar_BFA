@@ -1030,6 +1030,25 @@ private:
     SpecializationInfo& operator=(SpecializationInfo const&) = delete;
 };
 
+struct ChallengeKeyInfo
+{
+    ChallengeKeyInfo() : InstanceID(0), timeReset(0), ID(0), Level(2), Affix(0), Affix1(0), Affix2(0), KeyIsCharded(1), needSave(false), needUpdate(false) { }
+
+    bool IsActive() { return ID != 0; }
+
+    MapChallengeModeEntry const* challengeEntry = nullptr;
+    uint32 InstanceID;
+    uint32 timeReset;
+    uint16 ID;
+    uint8 Level;
+    uint8 Affix;
+    uint8 Affix1;
+    uint8 Affix2;
+    uint8 KeyIsCharded;
+    bool needSave;
+    bool needUpdate;
+};
+
 uint32 constexpr PLAYER_MAX_HONOR_LEVEL = 500;
 uint8 constexpr PLAYER_LEVEL_MIN_HONOR = 110;
 uint32 constexpr SPELL_PVP_RULES_ENABLED = 134735;
@@ -1358,6 +1377,13 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool AddItem(uint32 itemId, uint32 count);
         bool AddChallengeKey(uint32 challengeId, uint32 challengeLevel = 2);
 
+        ChallengeKeyInfo m_challengeKeyInfo;
+        bool InitChallengeKey(Item* item);
+        void UpdateChallengeKey(Item* item);
+        void CreateChallengeKey(Item* item);
+        void ResetChallengeKey();
+        void ChallengeKeyCharded(Item* item, uint32 challengeLevel, bool runRand = true);
+
         uint32 m_stableSlots;
 
         /*********************************************************/
@@ -1670,6 +1696,8 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetPrimarySpecialization(uint32 spec) { SetUpdateFieldValue(m_values.ModifyValue(&Player::m_playerData).ModifyValue(&UF::PlayerData::CurrentSpecID), spec); }
         uint8 GetActiveTalentGroup() const { return _specializationInfo.ActiveGroup; }
         void SetActiveTalentGroup(uint8 group){ _specializationInfo.ActiveGroup = group; }
+
+        bool isInTankSpec() const;
         uint32 GetDefaultSpecId() const;
         TalentSpecialization GetSpecializationId() const { return (TalentSpecialization)GetPrimarySpecialization(); }
         uint32 GetRoleForGroup() const;

@@ -1,4 +1,4 @@
-﻿/*
+/*
 LYOSKY
 */
 #include "Player.h"
@@ -37,6 +37,7 @@ struct instance_scenario_zuldazar : public InstanceScript
 
     void OnPlayerEnter(Player* player) override
     {
+        SetCheckPointPos({ 61.2f, 627.71f, 119.63f, 6.28179f });
         if (isFirstIntro)
             return;
 
@@ -68,12 +69,12 @@ struct instance_scenario_zuldazar : public InstanceScript
                 return;
 
             isThirdIntro = true;
-            //蛤蟆跳桥头 NPC_KRAGWA_THE_HUGE -496.65f, 574.15f, 220.54f, 6.269f
+            //NPC_KRAGWA_THE_HUGE -496.65f, 574.15f, 220.54f, 6.269f
             if (Creature* kragwa = GetKragwa())
             {
                 kragwa->GetMotionMaster()->MoveJump(Position(-496.65f, 574.15f, 220.54f), 10.0f, 10.0f);
             }
-           //召唤飞行NPC NPC_PA_KU 
+           //NPC NPC_PA_KU 
             if (TempSummon* paku = instance->SummonCreature(NPC_PA_KU, Position(-545.9045f, 595.3007f, 222.849f)))
             {
               

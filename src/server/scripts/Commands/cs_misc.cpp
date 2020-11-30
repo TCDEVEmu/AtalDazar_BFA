@@ -72,6 +72,7 @@ public:
             { "additem",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddItemCommand,          "" },
             { "additemset",       rbac::RBAC_PERM_COMMAND_ADDITEMSET,       false, &HandleAddItemSetCommand,       "" },
             { "addmkey",          rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddMKeyCommand,          "" },
+            { "addmkeybymap",     rbac::RBAC_PERM_COMMAND_ADDITEM,          false, &HandleAddMKeyByMapCommand,     "" },
             { "appear",           rbac::RBAC_PERM_COMMAND_APPEAR,           false, &HandleAppearCommand,           "" },
             { "aura",             rbac::RBAC_PERM_COMMAND_AURA,             false, &HandleAuraCommand,             "" },
             { "bank",             rbac::RBAC_PERM_COMMAND_BANK,             false, &HandleBankCommand,             "" },
@@ -1486,6 +1487,34 @@ public:
         return true;
     }
 
+    static bool HandleAddMKeyByMapCommand(ChatHandler* handler, char const* args)
+    {
+        CommandArgs cArgs = CommandArgs(handler, args, { CommandArgs::ARG_UINT, CommandArgs::ARG_UINT_OPTIONAL });
+        if (!cArgs.ValidArgs())
+            return false;
+
+        uint32 challangeId = 0;
+        switch (cArgs.GetArg<uint32>(0))
+        {
+        case 1763: challangeId = 244; break;
+        case 1754: challangeId = 245; break;
+        case 1771: challangeId = 246; break;
+        case 1594: challangeId = 247; break;
+        case 1862: challangeId = 248; break;
+        case 1762: challangeId = 249; break;
+        case 1877: challangeId = 250; break;
+        case 1841: challangeId = 251; break;
+        case 1864: challangeId = 252; break;
+        case 1822: challangeId = 353; break;
+        case 2097: challangeId = roll_chance_i(50) ? 369 : 370; break;
+        default:
+            challangeId = 244;
+            break;
+        }
+
+        handler->getSelectedPlayerOrSelf()->AddChallengeKey(challangeId, cArgs.GetArg<uint32>(1, 2));
+        return true;
+    }
     static bool HandleBankCommand(ChatHandler* handler, char const* /*args*/)
     {
         handler->GetSession()->SendShowBank(handler->GetSession()->GetPlayer()->GetGUID());

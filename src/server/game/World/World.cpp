@@ -39,6 +39,7 @@
 #include "CharacterCache.h"
 #include "CharacterDatabaseCleaner.h"
 #include "CharacterTemplateDataStore.h"
+#include "ChallengeModeMgr.h"
 #include "Chat.h"
 #include "ChatPackets.h"
 #include "Config.h"
@@ -135,6 +136,7 @@ World::World()
     m_NextRandomBGReset = 0;
     m_NextGuildReset = 0;
     m_NextCurrencyReset = 0;
+    m_NextChallengeKeyReset = 0;
 
     m_defaultDbcLocale = LOCALE_enUS;
     m_availableDbcLocaleMask = 0;
@@ -990,6 +992,9 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_INSTANCE_RESET_TIME_HOUR]  = sConfigMgr->GetIntDefault("Instance.ResetTimeHour", 4);
     m_int_configs[CONFIG_INSTANCE_UNLOAD_DELAY] = sConfigMgr->GetIntDefault("Instance.UnloadDelay", 30 * MINUTE * IN_MILLISECONDS);
     m_int_configs[CONFIG_DAILY_QUEST_RESET_TIME_HOUR] = sConfigMgr->GetIntDefault("Quests.DailyResetTime", 3);
+
+    m_int_configs[CONFIG_CHALLENGE_KEY_RESET] = sConfigMgr->GetIntDefault("Challenge.Key.Reset", 7);
+    m_bool_configs[CONFIG_CHALLENGE_ENABLED] = sConfigMgr->GetBoolDefault("Challenge.Enabled", true);
 
     m_int_configs[CONFIG_MAX_PRIMARY_TRADE_SKILL] = sConfigMgr->GetIntDefault("MaxPrimaryTradeSkill", 2);
     m_int_configs[CONFIG_MIN_PETITION_SIGNS] = sConfigMgr->GetIntDefault("MinPetitionSigns", 4);
@@ -2086,6 +2091,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO("server.loading", "Loading Autobroadcasts...");
     LoadAutobroadcasts();
 
+    TC_LOG_INFO("server.loading", "Loading challenge save info...");
+    sChallengeModeMgr->LoadFromDB();
+
     ///- Load and initialize scripts
     sObjectMgr->LoadSpellScripts();                              // must be after load Creature/Gameobject(Template/Data)
     sObjectMgr->LoadEventScripts();                              // must be after load Creature/Gameobject(Template/Data)
@@ -2569,6 +2577,9 @@ void World::Update(uint32 diff)
 
     // update the instance reset times
     sInstanceSaveMgr->Update();
+
+    if (currentGameTime > m_NextChallengeKeyReset)
+        ChallengeKeyResetTime();
 
     // And last, but not least handle the issued cli commands
     ProcessCliCommands();
@@ -3333,6 +3344,35 @@ void World::InitCurrencyResetTime()
         sWorld->setWorldState(WS_CURRENCY_RESET_TIME, uint32(m_NextCurrencyReset));
 }
 
+void World::InitChallengeKeyResetTime()
+{
+    time_t insttime = sWorld->getWorldState(WS_CHALLENGE_KEY_RESET_TIME);
+
+    // generate time by config
+    time_t curTime = time(nullptr);
+    tm localTm = *localtime(&curTime);
+    localTm.tm_wday = 3;
+    localTm.tm_hour = getIntConfig(CONFIG_INSTANCE_RESET_TIME_HOUR);
+    localTm.tm_min = 0;
+    localTm.tm_sec = 0;
+
+    // Daily reset time
+    time_t nextResetTime = mktime(&localTm);
+
+    // next reset time before current moment
+    while (curTime >= nextResetTime)
+        nextResetTime += getIntConfig(CONFIG_CHALLENGE_KEY_RESET) * DAY;
+
+    // normalize reset time
+    m_NextChallengeKeyReset = insttime ? insttime : nextResetTime;
+
+    if (!insttime)
+        sWorld->setWorldState(WS_CHALLENGE_KEY_RESET_TIME, m_NextChallengeKeyReset);
+
+    if (!sWorld->getWorldState(WS_CHALLENGE_LAST_RESET_TIME))
+        sWorld->setWorldState(WS_CHALLENGE_LAST_RESET_TIME, m_NextChallengeKeyReset - (7 * DAY));
+}
+
 void World::DailyReset()
 {
     TC_LOG_INFO("misc", "Daily quests reset for all characters.");
@@ -3362,6 +3402,30 @@ void World::ResetCurrencyWeekCap()
 
     m_NextCurrencyReset = time_t(m_NextCurrencyReset + DAY * getIntConfig(CONFIG_CURRENCY_RESET_INTERVAL));
     sWorld->setWorldState(WS_CURRENCY_RESET_TIME, uint32(m_NextCurrencyReset));
+}
+
+void World::ChallengeKeyResetTime()
+{
+    sChallengeModeMgr->GenerateCurrentWeekAffixes();
+    sChallengeModeMgr->GenerateOploteLoot();
+
+    CharacterDatabase.PQuery("DELETE FROM challenge_key WHERE timeReset < %u OR Level < 5", m_NextChallengeKeyReset);
+    CharacterDatabase.Query("DELETE FROM item_instance WHERE itemEntry = 138019");
+    CharacterDatabase.Query("UPDATE challenge_key SET Level = Level * 0.7");
+
+    for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        if (Player* player = itr->second->GetPlayer())
+            player->ResetChallengeKey();
+
+    time_t curTime = time(nullptr);
+    time_t m_LastChallengeKeyReset = m_NextChallengeKeyReset;
+    m_NextChallengeKeyReset = time_t(m_NextChallengeKeyReset + DAY * getIntConfig(CONFIG_CHALLENGE_KEY_RESET));
+
+    while (curTime >= m_NextChallengeKeyReset)
+        m_NextChallengeKeyReset += getIntConfig(CONFIG_CHALLENGE_KEY_RESET) * DAY;
+
+    sWorld->setWorldState(WS_CHALLENGE_KEY_RESET_TIME, m_NextChallengeKeyReset);
+    sWorld->setWorldState(WS_CHALLENGE_LAST_RESET_TIME, m_LastChallengeKeyReset);
 }
 
 void World::LoadDBAllowedSecurityLevel()

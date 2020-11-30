@@ -1176,6 +1176,23 @@ bool Creature::Create(ObjectGuid::LowType guidlow, Map* map, uint32 entry, float
         m_wildBattlePet->Initialize();
     }
 
+    disableAffix = GetAffixState();
+    if (disableAffix == 0)
+    {
+        if (IsDungeonBoss())
+            disableAffix = ((1 << Affixes::Sanguine) | (1 << Affixes::Bursting) | (1 << Affixes::Bolstering) | (1 << Affixes::FelExplosives));
+        else if (GetOwner() && GetOwner()->IsCreature())
+        {
+            if (auto owner = GetOwner()->ToCreature())
+            {
+                if (owner->IsDungeonBoss())
+                    disableAffix = AFFIXES_ALL;
+                else
+                    disableAffix = owner->GetAffixState();
+            }
+        }
+    }
+
     return true;
 }
 

@@ -412,6 +412,7 @@ struct TC_GAME_API CreatureTemplate
     std::pair<int16, int16> GetMinMaxLevel() const;
     int32 GetHealthScalingExpansion() const;
     CreatureLevelScaling const* GetLevelScaling(Difficulty difficulty) const;
+    uint8 AffixState = 0;
 
     // helpers
     SkillType GetRequiredLootSkill() const
