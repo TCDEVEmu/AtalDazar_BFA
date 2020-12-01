@@ -2,7 +2,7 @@ DELETE FROM smart_scripts WHERE entryorguid=98986;
 UPDATE creature_template SET ScriptName="npc_q39495_prolifica" WHERE entry=98986;
 
 /* quest 4077 waypoints */
-insert  into `waypoint_data`(`id`,`point`,`position_x`,`position_y`,`position_z`,`orientation`,`delay`,`move_type`,`action`,`action_chance`,`wpguid`) values 
+replace  into `waypoint_data`(`id`,`point`,`position_x`,`position_y`,`position_z`,`orientation`,`delay`,`move_type`,`action`,`action_chance`,`wpguid`) values 
 (10267107,1,1178.73,3203.94,51.5596,0,0,1,0,100,0),
 (10267107,2,1169.01,3206.02,51.7205,0,0,1,0,100,0),
 (10267107,3,1157.38,3202.05,48.5555,0,0,1,0,100,0),
