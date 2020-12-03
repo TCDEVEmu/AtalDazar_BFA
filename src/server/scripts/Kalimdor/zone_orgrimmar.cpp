@@ -136,9 +136,14 @@ struct npc_skyhorn_eagle : public ScriptedAI
             result = false;
             return;
         }
-
+		
+		//2015	8.0 Zuldazar - Quest ("Welcome to Zuldazar", Intro Scene ) - ZTO
         KillCreditMe(player);
-        player->CastSpell(player, SPELL_START_SE_SCENARIO);
+        player->CastSpell(player, 263950);
+        player->AddMovieDelayedAction(857, [player]
+        {
+            player->CastSpell(player, 263948, true);
+        });               
     }
 };
 
@@ -193,7 +198,6 @@ struct npc_nathanos_orgrimmar : public ScriptedAI
         if (quest->GetQuestId() == 51443)
         {
             player->PlayConversation(9570);
-            me->DestroyForPlayer(player);
         }
         if (quest->GetQuestId() == 53028)
         {
