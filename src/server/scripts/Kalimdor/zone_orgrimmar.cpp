@@ -17,6 +17,8 @@
 
 #include "GameObject.h"
 #include "ScriptedCreature.h"
+#include "Conversation.h"
+#include "ObjectMgr.h"
 
 enum OrgrimmarQuests
 {
@@ -140,12 +142,75 @@ struct npc_skyhorn_eagle : public ScriptedAI
     }
 };
 
+//zone orgrimmar 1637
+class zone_orgrimmar_start_bfa : public ZoneScript
+{
+public:
+    zone_orgrimmar_start_bfa() : ZoneScript("zone_orgrimmar_start_bfa") { }
+
+    void OnPlayerEnter(Player* player) override
+    {
+        if (player->GetQuestStatus(53372) == QUEST_STATUS_NONE)
+        {
+            Conversation::CreateConversation(8423, player, player->GetPosition(), { player->GetGUID() });
+
+            if (const Quest * quest = sObjectMgr->GetQuestTemplate(53372))
+                player->AddQuest(quest, nullptr);
+        }
+    }
+};
+
+//139093
+class npc_orgrimmar_isabella : public CreatureScript
+{
+public:
+    npc_orgrimmar_isabella() : CreatureScript("npc_orgrimmar_isabella") { }
+
+    enum Credits
+    {
+        Speak_with_Isabella      = 139178,
+        The_Battle_for_Lordaeron = 139094,
+    };
+
+    // prueba 
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        player->KilledMonsterCredit(Credits::Speak_with_Isabella);
+        player->KilledMonsterCredit(Credits::The_Battle_for_Lordaeron);
+        player->TeleportTo(1, 1425.619995f, -4356.950195f, 74.003601f, 3.804530f);
+        return false;
+    }
+
+};
+
+//140176
+struct npc_nathanos_orgrimmar : public ScriptedAI
+{
+    npc_nathanos_orgrimmar(Creature* creature) : ScriptedAI(creature) { }
+
+    void QuestAccept(Player * player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == 51443)
+        {
+            player->PlayConversation(9570);
+            me->DestroyForPlayer(player);
+        }
+        if (quest->GetQuestId() == 53028)
+        {
+            Conversation::CreateConversation(9316, player, player->GetPosition(), { player->GetGUID() });
+        }
+    }
+};
+
 void AddSC_orgrimmar()
 {
     RegisterCreatureAI(npc_orgri_mission_orders_speak_sylvanas);
     RegisterSceneScript(scene_orgri_secret_weapon);
     RegisterCreatureAI(npc_orgri_mission_orders_meet_team);
-    RegisterCreatureAI(npc_nathanos_team_meeting);
+    RegisterCreatureAI(npc_nathanos_team_meeting);  
     RegisterQuestScript(quest_stormwind_extraction);
     RegisterCreatureAI(npc_skyhorn_eagle);
+    new npc_orgrimmar_isabella();
+    new zone_orgrimmar_start_bfa();
+    RegisterCreatureAI(npc_nathanos_orgrimmar);
 }

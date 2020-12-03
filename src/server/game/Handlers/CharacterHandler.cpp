@@ -1041,6 +1041,12 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                         case RACE_ZANDALARI_TROLL:
                             pCurrChar->GetSceneMgr().PlaySceneByPackageId(2087, 2);
                             break;
+                        case RACE_VULPERA:
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2790, 2);
+                            break;
+                        case RACE_MECHAGNOME:
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2763, 2);
+                            break;
                         default:
                             break;
                     }
