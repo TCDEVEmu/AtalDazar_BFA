@@ -16,6 +16,7 @@
  */
 
 #include "ChallengeModePackets.h"
+#include "ChallengeModeMgr.h"
 #include "InstanceScript.h"
 #include "Item.h"
 #include "Log.h"
@@ -66,3 +67,76 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     // Blizzard do not delete the key at challenge start, will require mort research
     _player->DestroyItem(start.Bag, start.Slot, true);
 }
+
+ void WorldSession::HandleChallengeModeRequestMapStatsOpcode(WorldPackets::ChallengeMode::RequestMapStats & request)
+ {
+     WorldPackets::ChallengeMode::AllMapStats stats;
+     if (ChallengeByMap* last = sChallengeModeMgr->LastForMember(_player->GetGUID()))
+     {
+         //printf("HandleChallengeModeRequestMapStatsOpcode size %zu\n", last->size());
+         for (auto const& v : *last)
+         {
+             WorldPackets::ChallengeMode::ChallengeModeMap modeMap;
+             modeMap.ChallengeID = v.second->ChallengeID;
+             modeMap.BestMedalDate = v.second->Date;
+             modeMap.MapId = v.second->MapID;
+             modeMap.CompletedChallengeLevel = v.second->ChallengeLevel;
+
+             modeMap.LastCompletionMilliseconds = v.second->RecordTime;
+             if (ChallengeData* _lastData = sChallengeModeMgr->BestForMemberMap(_player->GetGUID(), v.second->ChallengeID))
+                 modeMap.BestCompletionMilliseconds = _lastData->RecordTime;
+             else
+                 modeMap.BestCompletionMilliseconds = v.second->RecordTime;
+
+             modeMap.Affixes = v.second->Affixes;
+
+             for (auto const& z : v.second->member)
+                 modeMap.BestSpecID.push_back(z.specId);
+
+             stats.ChallengeModeMaps.push_back(modeMap);
+         }
+     }
+
+     SendPacket(stats.Write());
+ }
+
+ void WorldSession::HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards & getRewards)
+ {
+     WorldPackets::ChallengeMode::ChallengeModeRewards result;
+     result.LastWeekMapChallengeKeyEntry = 0;
+     result.LastWeekHighestKeyCompleted = 0;
+     result.CurrentWeekHighestKeyCompleted = 0;
+     result.IsWeeklyRewardAvailable = sChallengeModeMgr->HasOploteLoot(_player->GetGUID());
+     uint32 keyID = 0;
+     uint32 capTime = 0;
+     uint32 capLevel = -1;
+
+     for (uint32 i = 0; i < sMapChallengeModeStore.GetNumRows(); ++i)
+         if (MapChallengeModeEntry const* challengeModeEntry = sMapChallengeModeStore.LookupEntry(i))
+             if (ChallengeData *  challengeData = sChallengeModeMgr->LastForMemberMap(_player->GetGUID(), challengeModeEntry->ID))
+                 if (challengeData->ChallengeLevel >= result.LastWeekHighestKeyCompleted && (challengeData->Date + 86400 * 7) < time(nullptr))
+                 {
+                     result.LastWeekHighestKeyCompleted = challengeData->ChallengeLevel;
+                     result.LastWeekMapChallengeKeyEntry = challengeModeEntry->ID;
+                 }
+
+     for (uint32 i = 0; i < sMapChallengeModeStore.GetNumRows(); ++i)
+         if (MapChallengeModeEntry const* challengeModeEntry = sMapChallengeModeStore.LookupEntry(i))
+             if (ChallengeData *  challengeData = sChallengeModeMgr->BestForMemberMap(_player->GetGUID(), challengeModeEntry->ID))
+                 if (challengeData->ChallengeLevel >= result.CurrentWeekHighestKeyCompleted && (challengeData->Date + 86400 * 7) > time(nullptr))
+                 {
+                     result.CurrentWeekHighestKeyCompleted = challengeData->ChallengeLevel;
+                     //printf("keyID %d CurrentWeekHighestKeyCompleted=%d\n", challengeModeEntry->ID, result.CurrentWeekHighestKeyCompleted);
+                 }
+                 else  if (challengeData->ChallengeLevel >= result.LastWeekHighestKeyCompleted && (challengeData->Date + 86400 * 7) < time(nullptr))
+                 {
+                     result.LastWeekHighestKeyCompleted = challengeData->ChallengeLevel;
+                     result.LastWeekMapChallengeKeyEntry = challengeModeEntry->ID;
+                     //printf("keyID else %d LastWeekHighestKeyCompleted=%d\n", challengeModeEntry->ID, result.LastWeekHighestKeyCompleted);
+                 }
+
+     //printf("result.LastWeekMapChallengeKeyEntry =%d CurrentWeekHighestKeyCompleted = %d LastWeekHighestKeyCompleted=%d\n", result.LastWeekMapChallengeKeyEntry, result.CurrentWeekHighestKeyCompleted, result.LastWeekHighestKeyCompleted);
+     if (result.CurrentWeekHighestKeyCompleted > 0)
+         result.IsWeeklyRewardAvailable = true;
+     SendPacket(result.Write());
+ }

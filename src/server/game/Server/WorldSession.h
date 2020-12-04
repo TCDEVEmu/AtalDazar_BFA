@@ -252,6 +252,9 @@ namespace WorldPackets
         class Start;
         class Reset;
         class UpdateDeathCount;
+        class RequestMapStats;
+        class GetChallengeModeRewards;
+        class ChallengeModeRewards;
     }
 
     namespace Character
@@ -1887,6 +1890,8 @@ class TC_GAME_API WorldSession
 
         // Challenge Modes
         void HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRequest& /*start*/);
+        void HandleChallengeModeRequestMapStatsOpcode(WorldPackets::ChallengeMode::RequestMapStats& request);
+        void HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards & getRewards);
 
         // Azerite
         void HandleAzeriteEssenceUnlockMilestone(WorldPackets::Azerite::AzeriteEssenceUnlockMilestone& azeriteEssenceUnlockMilestone);

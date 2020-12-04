@@ -90,6 +90,26 @@ WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
     return &_worldPacket;
 }
 
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ChallengeModeMap const& challengeModeMap)
+{
+    data << challengeModeMap.MapId;
+    data << challengeModeMap.ChallengeID;
+    data << challengeModeMap.BestCompletionMilliseconds;
+    data << challengeModeMap.LastCompletionMilliseconds;
+    data << challengeModeMap.CompletedChallengeLevel;
+    data.AppendPackedTime(challengeModeMap.BestMedalDate);
+
+    data << static_cast<uint32>(challengeModeMap.BestSpecID.size());
+
+    for (auto const& v : challengeModeMap.Affixes)
+        data << v;
+
+    for (auto const& map : challengeModeMap.BestSpecID)
+        data << map;
+
+    return data;
+}
+
 WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 {
     _worldPacket << (uint32)MapId;
@@ -98,3 +118,26 @@ WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::ChallengeMode::AllMapStats::Write()
+{
+    _worldPacket << static_cast<uint32>(ChallengeModeMaps.size());
+    for (auto const& map : ChallengeModeMaps)
+        _worldPacket << map;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::ChallengeMode::RequestMapStats::Read() {}
+
+WorldPacket const * WorldPackets::ChallengeMode::ChallengeModeRewards::Write()
+{
+    _worldPacket.WriteBit(IsWeeklyRewardAvailable);
+    _worldPacket << (uint32)LastWeekHighestKeyCompleted;
+    _worldPacket << (uint32)LastWeekMapChallengeKeyEntry;
+    _worldPacket << (uint32)CurrentWeekHighestKeyCompleted;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::ChallengeMode::GetChallengeModeRewards::Read() {}

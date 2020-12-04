@@ -25,6 +25,18 @@ namespace WorldPackets
 {
     namespace ChallengeMode
     {
+        struct ChallengeModeMap
+        {
+            uint32 MapId = 0;
+            uint32 BestCompletionMilliseconds = 0;
+            uint32 LastCompletionMilliseconds = 0;
+            uint32 CompletedChallengeLevel = 0;
+            uint32 ChallengeID = 0;
+            time_t BestMedalDate = time(nullptr);
+            std::vector<uint16> BestSpecID;
+            std::array<uint32, 3> Affixes;
+        };
+
         class StartRequest final : public ClientPacket
         {
         public:
@@ -113,6 +125,45 @@ namespace WorldPackets
             uint32 MapId;
             uint32 Duration;
             uint32 ChallengeLevel;
+        };
+
+        class AllMapStats final : public ServerPacket
+        {
+        public:
+            AllMapStats() : ServerPacket(SMSG_CHALLENGE_MODE_ALL_MAP_STATS, 4) { }
+
+            WorldPacket const* Write() override;
+
+            std::vector<ChallengeModeMap> ChallengeModeMaps;
+        };
+
+        class RequestMapStats final : public ClientPacket
+        {
+        public:
+            RequestMapStats(WorldPacket&& packet) : ClientPacket(CMSG_CHALLENGE_MODE_REQUEST_MAP_STATS, std::move(packet)) { }
+
+            void Read() override;
+        };
+
+        class ChallengeModeRewards final : public ServerPacket
+        {
+        public:
+            ChallengeModeRewards() : ServerPacket(SMSG_CHALLENGE_MODE_REWARDS, 4) { }
+
+            WorldPacket const* Write() override;
+
+            bool IsWeeklyRewardAvailable = true;
+            uint32 LastWeekHighestKeyCompleted = -1;
+            uint32 LastWeekMapChallengeKeyEntry = -1;
+            uint32 CurrentWeekHighestKeyCompleted = -1;
+        };
+
+        class GetChallengeModeRewards final : public ClientPacket
+        {
+        public:
+            GetChallengeModeRewards(WorldPacket&& packet) : ClientPacket(CMSG_GET_CHALLENGE_MODE_REWARDS, std::move(packet)) { }
+
+            void Read() override;
         };
     }
 }
