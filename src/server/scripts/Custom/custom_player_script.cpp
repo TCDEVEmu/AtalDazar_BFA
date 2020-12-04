@@ -28,50 +28,48 @@
 
 // TODO : this script is temp fix,
 // remove it when lordaeron battle is properly fixed
-class OnBfaArrival : public PlayerScript
-{
-public:
-    OnBfaArrival() : PlayerScript("OnBfaArrival") { }
-
-    enum queststartbfa
-    {
-        QUEST_DYING_WORLD_A = 52946,
-        QUEST_DYING_WORLD_H = 53028,
-
-        SPELL_CREATE_WAR_CAMPAIGN_H = 273381,
-        SPELL_CREATE_WAR_CAMPAIGN_A = 273382,
-
-        CONVERSATION_MAGNI_DYING_WORLD = 9316,
-    };
-
-    void OnLogin(Player* player, bool /*firstLogin*/) override
-    {
-        if (player->getLevel() >= 110)
-            HandleBFAStart(player);
-    }
-
-    void OnLevelChanged(Player * player, uint8 oldLevel) override
-    {
-        if (oldLevel < 110 && player->getLevel() >= 110)
-            HandleBFAStart(player);
-    }
-
-    void HandleBFAStart(Player * player)
-    {
-        if (player->GetQuestStatus(QUEST_DYING_WORLD_A) == QUEST_STATUS_NONE &&
-            player->GetQuestStatus(QUEST_DYING_WORLD_H) == QUEST_STATUS_NONE)
-        {
-            player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_WAR_CAMPAIGN_A : SPELL_CREATE_WAR_CAMPAIGN_H, true);
-
-            Conversation::CreateConversation(CONVERSATION_MAGNI_DYING_WORLD, player, player->GetPosition(), { player->GetGUID() });
-
-            if (const Quest * quest = sObjectMgr->GetQuestTemplate(player->IsInAlliance() ? QUEST_DYING_WORLD_A : QUEST_DYING_WORLD_H))
-                player->AddQuest(quest, nullptr);
-        }
-    }
-};
+//class OnBfaArrival : public PlayerScript
+//{
+//public:
+//    OnBfaArrival() : PlayerScript("OnBfaArrival") { }
+//
+//    enum queststartbfa
+//    {
+//        QUEST_DYING_WORLD_A = 52946,
+//
+//        SPELL_CREATE_WAR_CAMPAIGN_H = 273381,
+//        SPELL_CREATE_WAR_CAMPAIGN_A = 273382,
+//
+//        CONVERSATION_MAGNI_DYING_WORLD = 9316,
+//    };
+//
+//    void OnLogin(Player* player, bool /*firstLogin*/) override
+//    {
+//        if (player->getLevel() >= 110)
+//            HandleBFAStart(player);
+//    }
+//
+//    void OnLevelChanged(Player * player, uint8 oldLevel) override
+//    {
+//        if (oldLevel < 110 && player->getLevel() >= 110)
+//            HandleBFAStart(player);
+//    }
+//
+//    void HandleBFAStart(Player * player)
+//    {
+//        if (player->GetQuestStatus(QUEST_DYING_WORLD_A) == QUEST_STATUS_NONE)
+//        {
+//            player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_WAR_CAMPAIGN_A : SPELL_CREATE_WAR_CAMPAIGN_H, true);
+//
+//            Conversation::CreateConversation(CONVERSATION_MAGNI_DYING_WORLD, player, player->GetPosition(), { player->GetGUID() });
+//
+//            if (const Quest * quest = sObjectMgr->GetQuestTemplate(QUEST_DYING_WORLD_A))
+//                player->AddQuest(quest, nullptr);
+//        }
+//    }
+//};
 
 void AddSC_custom_player_script()
 {
-    RegisterPlayerScript(OnBfaArrival);
+    //RegisterPlayerScript(OnBfaArrival);
 }
