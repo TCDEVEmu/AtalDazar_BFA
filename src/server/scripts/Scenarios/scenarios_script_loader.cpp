@@ -21,6 +21,7 @@ void AddSC_scenario_zuldazar();
 void AddSC_instance_scenario_zuldazar();
 void AddSC_uncharted_island_tutorial();
 void AddSC_scenario_uncharted_island_tutorial();
+void AddSC_scenario_snowblossom_village();
 
 void AddScenariosScripts()
 {
@@ -30,4 +31,5 @@ void AddScenariosScripts()
     AddSC_instance_scenario_zuldazar();
     AddSC_uncharted_island_tutorial();
     AddSC_scenario_uncharted_island_tutorial();
+    AddSC_scenario_snowblossom_village();
 }

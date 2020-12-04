@@ -457,6 +457,14 @@ namespace WorldPackets
         class ResetInstances;
     }
 
+    namespace Island
+    {
+        class IslandOpenNpc;
+        class IslandAzeriteXpGain;
+        class IslandCompleted;
+        class IslandQueue;
+    }
+
     namespace Item
     {
         class AutoEquipItem;
@@ -1673,6 +1681,9 @@ class TC_GAME_API WorldSession
         void HandleWhoIsOpcode(WorldPackets::Who::WhoIsRequest& packet);
         void HandleResetInstancesOpcode(WorldPackets::Instance::ResetInstances& packet);
         void HandleInstanceLockResponse(WorldPackets::Instance::InstanceLockResponse& packet);
+
+        //Island HandleIslandQueue
+        void HandleIslandQueue(WorldPackets::Island::IslandQueue& packet);
 
         // Looking for Dungeon/Raid
         void SendLfgPlayerLockInfo();

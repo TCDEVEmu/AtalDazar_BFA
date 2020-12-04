@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -75,6 +75,7 @@
 #include "InstanceSaveMgr.h"
 #include "InstanceScript.h"
 #include "InstanceScenario.h"
+#include "IslandPackets.h"
 #include "ItemPackets.h"
 #include "KillRewarder.h"
 #include "LFGMgr.h"
@@ -15304,6 +15305,11 @@ void Player::OnGossipSelect(WorldObject* source, uint32 optionIndex, uint32 menu
             break;
         case GOSSIP_OPTION_ADVENTURE_MAP:
         {
+            if (source->GetEntry() == 143967)
+            {
+                GetSession()->SendPacket(WorldPackets::Island::IslandOpenNpc(source->GetGUID()).Write());
+                break;
+            }
             uint32 uiMapId = sObjectMgr->GetAdventureMapUIByCreature(source->GetEntry());
             GetSession()->SendPacket(WorldPackets::Garrison::ShowAdventureMap(source->GetGUID(), uiMapId).Write());
             break;

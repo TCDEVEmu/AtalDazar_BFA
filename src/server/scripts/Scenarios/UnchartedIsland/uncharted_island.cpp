@@ -50,6 +50,8 @@ public:
         //horde
         player->KilledMonsterCredit(139309);
 
+        // 1907 spawndiff 38
+
         // 1768 map 1955 spawndiff 12
 
         // 1724 spawndiff 38
