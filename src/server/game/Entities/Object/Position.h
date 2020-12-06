@@ -21,6 +21,7 @@
 #include "Define.h"
 #include <string>
 #include <cmath>
+#include <G3D/Vector3.h>
 
 class ByteBuffer;
 
@@ -101,6 +102,11 @@ public:
     float GetPositionY() const { return m_positionY; }
     float GetPositionZ() const { return m_positionZ; }
     float GetOrientation() const { return m_orientation; }
+
+    G3D::Vector3 GetVector3() const
+    {
+        return G3D::Vector3(m_positionX, m_positionY, m_positionZ);
+    }
 
     void GetPosition(float &x, float &y) const
     {

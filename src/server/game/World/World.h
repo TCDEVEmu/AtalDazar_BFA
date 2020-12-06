@@ -577,6 +577,7 @@ enum WorldStates
     WS_BAN_WAVE_TIME                = 20022,                      // Next banwave time
     WS_CURRENT_ARTIFACT_KNOWLEDGE   = 20023,                      // Current Artifact Knowledge
     WS_INVASION_POINT_RESET_TIME    = 20024,                      // World quest every 2 hours reset time
+    WS_CHALLENGE_AFFIXE4_RESET_TIME = 20025,                      // Challenge Affixe 4
 
     // Cata specific custom worldstates
     WS_GUILD_WEEKLY_RESET_TIME  = 20050,                     // Next guild week reset time

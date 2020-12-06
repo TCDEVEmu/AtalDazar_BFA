@@ -1233,7 +1233,7 @@ private:
     InstanceScript* _instance;
 };
 
-void InstanceScript::StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3)
+void InstanceScript::StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3, uint8 affix4)
 {
     _challengeModeId = modeid;
     MapChallengeModeEntry const* mapChallengeModeEntry = sChallengeModeMgr->GetMapChallengeModeEntryByModeId(GetChallengeModeId());
@@ -1250,6 +1250,7 @@ void InstanceScript::StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1,
     _affixes[0] = affix1;
     _affixes[1] = affix2;
     _affixes[2] = affix3;
+    _affixes[3] = affix4;
     for (auto const& affix : _affixes)
         _affixesTest.set(affix);
 
@@ -1422,7 +1423,7 @@ void InstanceScript::CompleteChallengeMode()
     sChallengeModeMgr->SaveChallengeToDB(challengeData);
 }
 
-std::array<uint32, 3> InstanceScript::GetAffixes() const
+std::array<uint32, 4> InstanceScript::GetAffixes() const
 {
     return _affixes;
 }

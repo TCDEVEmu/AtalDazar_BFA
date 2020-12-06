@@ -423,13 +423,13 @@ class TC_GAME_API InstanceScript : public ZoneScript
         uint32 GetCombatResurrectionChargeInterval() const;
 
         // Challenge Modes
-        void StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3);
+        void StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3, uint8 affix4);
         void CompleteChallengeMode();
 
         bool IsChallengeModeStarted() const { return _challengeModeStarted; }
         uint8 GetChallengeModeId() const { return _challengeModeId; }
         uint8 GetChallengeModeLevel() const { return _challengeModeLevel; }
-        std::array<uint32, 3> GetAffixes() const;
+        std::array<uint32, 4> GetAffixes() const;
         bool HasAffix(Affixes affix);
         uint32 GetChallengeModeCurrentDuration() const;
 
@@ -518,7 +518,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
         uint32 _challengeModeDeathCount;
         Optional<Position> _challengeModeDoorPosition;
         Optional<Position> _checkPointPosition;
-        std::array<uint32, 3> _affixes;
+        std::array<uint32, 4> _affixes;
         std::bitset<size_t(121)> _affixesTest;//Affixes::MaxAffixes
 
     #ifdef TRINITY_API_USE_DYNAMIC_LINKING

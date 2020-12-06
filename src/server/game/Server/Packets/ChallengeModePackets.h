@@ -27,14 +27,45 @@ namespace WorldPackets
     {
         struct ChallengeModeMap
         {
+            struct bMember
+            {
+                ObjectGuid PlayerGuid;
+                ObjectGuid GuildGuid;
+                uint32 VirtualRealmAddress = 0;
+                uint32 NativeRealmAddress = 0;
+                uint32 SpecializationID = 0;
+                uint32 Unk4 = 0;
+                uint32 EquipmentLevel = 0;
+            };
+
             uint32 MapId = 0;
             uint32 BestCompletionMilliseconds = 0;
             uint32 LastCompletionMilliseconds = 0;
             uint32 CompletedChallengeLevel = 0;
             uint32 ChallengeID = 0;
+            time_t LastMedalDate = time(nullptr);
             time_t BestMedalDate = time(nullptr);
             std::vector<uint16> BestSpecID;
-            std::array<uint32, 3> Affixes;
+            std::array<uint32, 4> Affixes;
+            std::vector<bMember> Members;
+        };
+
+        struct ModeAttempt
+        {
+            struct Member
+            {
+                ObjectGuid Guid;
+                uint32 VirtualRealmAddress = 0;
+                uint32 NativeRealmAddress = 0;
+                uint32 SpecializationID = 0;
+            };
+
+            uint32 InstanceRealmAddress = 0;
+            uint32 AttemptID = 0;
+            uint32 CompletionTime = 0;
+            time_t CompletionDate = time(nullptr);
+            uint32 MedalEarned = 0;
+            std::vector<Member> Members;
         };
 
         class StartRequest final : public ClientPacket
@@ -135,6 +166,9 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             std::vector<ChallengeModeMap> ChallengeModeMaps;
+            uint32 Unk5 = 0;
+            uint32 Unk6 = 31;
+            std::vector<ModeAttempt> RealmMembers;
         };
 
         class RequestMapStats final : public ClientPacket
@@ -156,6 +190,7 @@ namespace WorldPackets
             uint32 LastWeekHighestKeyCompleted = -1;
             uint32 LastWeekMapChallengeKeyEntry = -1;
             uint32 CurrentWeekHighestKeyCompleted = -1;
+            uint32 Unk1 = 17;//13 17
         };
 
         class GetChallengeModeRewards final : public ClientPacket
@@ -165,6 +200,53 @@ namespace WorldPackets
 
             void Read() override;
         };
+
+        class RequestLeaders final : public ClientPacket
+        {
+        public:
+            RequestLeaders(WorldPacket&& packet) : ClientPacket(CMSG_CHALLENGE_MODE_REQUEST_LEADERS, std::move(packet)) { }
+
+            void Read() override;
+
+            uint32 MapId = 0;
+            uint32 ChallengeID = 0;
+            time_t LastGuildUpdate = time(nullptr);
+            time_t LastRealmUpdate = time(nullptr);
+        };
+
+        class RequestLeadersResult final : public ServerPacket
+        {
+        public:
+            RequestLeadersResult() : ServerPacket(SMSG_CHALLENGE_MODE_REQUEST_LEADERS_RESULT, 20 + 8) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 MapID = 0;
+            uint32 ChallengeID = 0;
+            time_t LastGuildUpdate = time(nullptr);
+            time_t LastRealmUpdate = time(nullptr);
+            std::vector<ModeAttempt> GuildLeaders;
+            std::vector<ModeAttempt> RealmLeaders;
+        };
+
+        class RequestChallengeModeAffixes final : public ClientPacket
+        {
+        public:
+            RequestChallengeModeAffixes(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CHALLENGE_MODE_AFFIXES, std::move(packet)) { }
+
+            void Read() override;
+        };
+
+        class RequestChallengeModeAffixesResult final : public ServerPacket
+        {
+        public:
+            RequestChallengeModeAffixesResult() : ServerPacket(SMSG_CHALLENGE_MODE_AFFIXES) { }
+
+            WorldPacket const* Write() override;
+
+            std::array<uint32, 4> Affixes;//Length: 36
+        };
+
     }
 }
 

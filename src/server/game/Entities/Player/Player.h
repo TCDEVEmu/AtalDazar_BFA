@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1032,7 +1032,7 @@ private:
 
 struct ChallengeKeyInfo
 {
-    ChallengeKeyInfo() : InstanceID(0), timeReset(0), ID(0), Level(2), Affix(0), Affix1(0), Affix2(0), KeyIsCharded(1), needSave(false), needUpdate(false) { }
+    ChallengeKeyInfo() : InstanceID(0), timeReset(0), ID(0), Level(2), Affix(0), Affix1(0), Affix2(0), Affix3(0), KeyIsCharded(1), needSave(false), needUpdate(false) { }
 
     bool IsActive() { return ID != 0; }
 
@@ -1044,6 +1044,7 @@ struct ChallengeKeyInfo
     uint8 Affix;
     uint8 Affix1;
     uint8 Affix2;
+    uint8 Affix3;
     uint8 KeyIsCharded;
     bool needSave;
     bool needUpdate;
@@ -1125,6 +1126,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         bool ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid = 0);
         void CleanupAfterTaxiFlight();
         void ContinueTaxiFlight() const;
+        void TaxiFlightNearestNode();
                                                             // mount_id can be used in scripting calls
         bool isAcceptWhispers() const { return (m_ExtraFlags & PLAYER_EXTRA_ACCEPT_WHISPERS) != 0; }
         void SetAcceptWhispers(bool on) { if (on) m_ExtraFlags |= PLAYER_EXTRA_ACCEPT_WHISPERS; else m_ExtraFlags &= ~PLAYER_EXTRA_ACCEPT_WHISPERS; }

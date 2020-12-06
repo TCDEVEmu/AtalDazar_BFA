@@ -489,20 +489,20 @@ void ChallengeModeMgr::GenerateOploteLoot(bool manual)
 
 void ChallengeModeMgr::GenerateCurrentWeekAffixes()
 {
-    uint32 affixes[12][3] =
+    uint32 affixes[12][4] =
     {
-        { Raging, Volcanic, Tyrannical},
-        { Teeming, FelExplosives, Fortified},
-        { Bolstering, Grievous, Tyrannical},
-        { Sanguine, Volcanic, Fortified},
-        { Bursting, Skittish, Tyrannical},
-        { Teeming, Quaking, Fortified},
-        { Raging, Necrotic, Tyrannical},
-        { Bolstering, Skittish, Fortified},
-        { Teeming, Necrotic, Tyrannical},
-        { Sanguine, Grievous, Fortified},
-        { Bolstering, FelExplosives, Tyrannical},
-        { Bursting, Quaking, Fortified},
+        { Raging, Volcanic, Tyrannical, Reaping},
+        { Teeming, FelExplosives, Fortified, Reaping},
+        { Bolstering, Grievous, Tyrannical, Reaping},
+        { Sanguine, Volcanic, Fortified, Reaping},
+        { Bursting, Skittish, Tyrannical, Beguiling},
+        { Teeming, Quaking, Fortified, Beguiling},
+        { Raging, Necrotic, Tyrannical, Beguiling},
+        { Bolstering, Skittish, Fortified, Beguiling},
+        { Teeming, Necrotic, Tyrannical, Awakened},
+        { Sanguine, Grievous, Fortified, Awakened},
+        { Bolstering, FelExplosives, Tyrannical, Awakened},
+        { Bursting, Quaking, Fortified, Awakened},
     };
 
     auto weekContainer = affixes[GetActiveAffixe()];
@@ -510,6 +510,7 @@ void ChallengeModeMgr::GenerateCurrentWeekAffixes()
     sWorld->setWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME, weekContainer[0]);
     sWorld->setWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME, weekContainer[1]);
     sWorld->setWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME, weekContainer[2]);
+    sWorld->setWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME, weekContainer[3]);
 }
 
 uint8 ChallengeModeMgr::GetActiveAffixe()

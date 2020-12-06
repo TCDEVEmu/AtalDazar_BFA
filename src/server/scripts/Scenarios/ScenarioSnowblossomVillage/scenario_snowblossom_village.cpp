@@ -38,6 +38,14 @@ enum sv_gos
     GATE_03 = 303199,
 };
 
+enum sv_conversations
+{
+    HORDE_ON_BEGIN = 6514,
+    HORDE_ON_50 = 7498,
+    HORDE_ON_80 = 7487,
+    HORDE_ON_COMPLETE = 7504,
+};
+
 class scenario_snowblossom_village : public InstanceMapScript
 {
 public:
@@ -90,13 +98,7 @@ public:
 
             events.ScheduleEvent(EVENT_START_TIMER, 33 * IN_MILLISECONDS);
 
-            if (!isIntr)
-            {
-                isIntr = true;
-                //143761
 
-               
-            }
 
         }
 
@@ -137,6 +139,7 @@ public:
             isComplete = true;
             DoRemoveAurasDueToSpellOnPlayers(SPELL_AZERITE_RESIDUE);
             DoCastSpellOnPlayers(SPELL_ISLAND_COMPLETE);
+            DoPlayConversation(HORDE_ON_COMPLETE);
 
             WorldPackets::Island::IslandCompleted package;
             package.MapID = instance->GetId();           
@@ -179,7 +182,11 @@ public:
                 //
                 break;
             case EVENT_GAME_START:
-
+                if (!isIntr)
+                {
+                    isIntr = true;
+                    DoPlayConversation(HORDE_ON_BEGIN);
+                }
                 if (gain >= 30 && !isComplete)
                     OnCompletedIsland();
                 events.ScheduleEvent(EVENT_GAME_START, 1 * IN_MILLISECONDS);

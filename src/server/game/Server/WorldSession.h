@@ -255,6 +255,8 @@ namespace WorldPackets
         class RequestMapStats;
         class GetChallengeModeRewards;
         class ChallengeModeRewards;
+        class RequestChallengeModeAffixes;
+        class RequestChallengeModeAffixesResult;
     }
 
     namespace Character
@@ -1891,7 +1893,8 @@ class TC_GAME_API WorldSession
         // Challenge Modes
         void HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRequest& /*start*/);
         void HandleChallengeModeRequestMapStatsOpcode(WorldPackets::ChallengeMode::RequestMapStats& request);
-        void HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards & getRewards);
+        void HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards& getRewards);
+        void HandleRequestChallengeModeAffixes(WorldPackets::ChallengeMode::RequestChallengeModeAffixes& request);
 
         // Azerite
         void HandleAzeriteEssenceUnlockMilestone(WorldPackets::Azerite::AzeriteEssenceUnlockMilestone& azeriteEssenceUnlockMilestone);

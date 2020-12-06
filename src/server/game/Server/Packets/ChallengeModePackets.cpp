@@ -92,20 +92,38 @@ WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
 
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ChallengeModeMap const& challengeModeMap)
 {
-    data << challengeModeMap.MapId;
+    //data.FlushBits();
+    //data << challengeModeMap.MapId;
     data << challengeModeMap.ChallengeID;
-    data << challengeModeMap.BestCompletionMilliseconds;
-    data << challengeModeMap.LastCompletionMilliseconds;
     data << challengeModeMap.CompletedChallengeLevel;
-    data.AppendPackedTime(challengeModeMap.BestMedalDate);
+    data << challengeModeMap.LastCompletionMilliseconds / 1000;
+    data.AppendPackedTime(challengeModeMap.LastMedalDate - challengeModeMap.LastCompletionMilliseconds);
+    data.AppendPackedTime(challengeModeMap.LastMedalDate);
 
-    data << static_cast<uint32>(challengeModeMap.BestSpecID.size());
+    //data << challengeModeMap.BestCompletionMilliseconds;
+    // data.AppendPackedTime(challengeModeMap.BestMedalDate);
 
     for (auto const& v : challengeModeMap.Affixes)
         data << v;
 
-    for (auto const& map : challengeModeMap.BestSpecID)
-        data << map;
+    data << static_cast<uint32>(challengeModeMap.Members.size());
+
+    for (auto const& map : challengeModeMap.Members)
+    {
+        //data.FlushBits();
+        data << map.PlayerGuid;
+        data << map.GuildGuid;
+        data << map.VirtualRealmAddress;
+        data << map.NativeRealmAddress;       
+        data << map.SpecializationID;
+        data << map.Unk4;
+        data << map.EquipmentLevel;
+    }
+
+    //data << static_cast<uint32>(challengeModeMap.BestSpecID.size());
+    //for (auto const& map : challengeModeMap.BestSpecID)
+    //    data << map;
+
 
     return data;
 }
@@ -122,8 +140,40 @@ WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 WorldPacket const * WorldPackets::ChallengeMode::AllMapStats::Write()
 {
     _worldPacket << static_cast<uint32>(ChallengeModeMaps.size());
+    _worldPacket << static_cast<uint32>(ChallengeModeMaps.size());
+    _worldPacket << static_cast<uint32>(ChallengeModeMaps.size());
+
+    _worldPacket << (uint32)Unk5;
+    _worldPacket << (uint32)Unk6;
+
     for (auto const& map : ChallengeModeMaps)
         _worldPacket << map;
+
+    //_worldPacket.FlushBits();
+    _worldPacket << (bool)true;
+    //
+    _worldPacket << (uint32)Unk5;
+    _worldPacket << (uint32)Unk6;
+
+    for (auto const& map : ChallengeModeMaps)
+        _worldPacket << map;
+
+    //_worldPacket.FlushBits();
+    _worldPacket << (bool)true;
+
+    //todo
+    for (auto const& map : ChallengeModeMaps)
+    {
+        //_worldPacket.FlushBits();
+
+        _worldPacket << map.ChallengeID;
+        _worldPacket << map.CompletedChallengeLevel;
+        _worldPacket.AppendPackedTime(map.LastMedalDate - map.LastCompletionMilliseconds);
+        _worldPacket.AppendPackedTime(map.LastMedalDate);
+        _worldPacket.AppendPackedTime(time(nullptr));     
+    }
+    //_worldPacket.FlushBits();
+    _worldPacket << (bool)true;
 
     return &_worldPacket;
 }
@@ -136,8 +186,69 @@ WorldPacket const * WorldPackets::ChallengeMode::ChallengeModeRewards::Write()
     _worldPacket << (uint32)LastWeekHighestKeyCompleted;
     _worldPacket << (uint32)LastWeekMapChallengeKeyEntry;
     _worldPacket << (uint32)CurrentWeekHighestKeyCompleted;
-
+    _worldPacket << (uint32)Unk1;
     return &_worldPacket;
 }
 
 void WorldPackets::ChallengeMode::GetChallengeModeRewards::Read() {}
+
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ModeAttempt const& modeAttempt)
+{
+    data << modeAttempt.InstanceRealmAddress;
+    data << modeAttempt.AttemptID;
+    data << modeAttempt.CompletionTime;
+    data.AppendPackedTime(modeAttempt.CompletionDate);
+    data << modeAttempt.MedalEarned;
+    data << static_cast<uint32>(modeAttempt.Members.size());
+    for (auto const& map : modeAttempt.Members)
+    {
+        data << map.VirtualRealmAddress;
+        data << map.NativeRealmAddress;
+        data << map.Guid;
+        data << map.SpecializationID;
+    }
+
+    return data;
+}
+
+void WorldPackets::ChallengeMode::RequestLeaders::Read()
+{
+    _worldPacket >> MapId;
+    LastGuildUpdate = _worldPacket.read<uint32>();
+    LastRealmUpdate = _worldPacket.read<uint32>();
+    _worldPacket >> ChallengeID;
+}
+
+WorldPacket const * WorldPackets::ChallengeMode::RequestLeadersResult::Write()
+{
+    _worldPacket << MapID;
+    _worldPacket << ChallengeID;
+    _worldPacket.AppendPackedTime(LastGuildUpdate);
+    _worldPacket.AppendPackedTime(LastRealmUpdate);
+
+    _worldPacket << static_cast<uint32>(GuildLeaders.size());
+    _worldPacket << static_cast<uint32>(RealmLeaders.size());
+
+    for (auto const& guildLeaders : GuildLeaders)
+        _worldPacket << guildLeaders;
+
+    for (auto const& realmLeaders : RealmLeaders)
+        _worldPacket << realmLeaders;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::ChallengeMode::RequestChallengeModeAffixes::Read(){}
+
+WorldPacket const * WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult::Write()
+{
+    _worldPacket << static_cast<uint32>(Affixes.size());
+
+    for (auto const& v : Affixes)
+    {
+        _worldPacket << (uint32)v;
+        _worldPacket << (uint32)0;
+    }
+
+    return &_worldPacket;
+}

@@ -53,6 +53,7 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     uint32 challengeModeAffix1  = key->GetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_1);
     uint32 challengeModeAffix2  = key->GetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_2);
     uint32 challengeModeAffix3  = key->GetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_3);
+    uint32 challengeModeAffix4  = key->GetModifier(ITEM_MODIFIER_CHALLENGE_KEYSTONE_AFFIX_ID_4);
 
     MapChallengeModeEntry const* entry = sMapChallengeModeStore.LookupEntry(challengeModeId);
     if (!entry || !challengeModeLevel || entry->MapID != _player->GetMapId())
@@ -62,7 +63,7 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     }
 
     if (InstanceScript* instanceScript = _player->GetInstanceScript())
-        instanceScript->StartChallengeMode(challengeModeId, challengeModeLevel, challengeModeAffix1, challengeModeAffix2, challengeModeAffix3);
+        instanceScript->StartChallengeMode(challengeModeId, challengeModeLevel, challengeModeAffix1, challengeModeAffix2, challengeModeAffix3, challengeModeAffix4);
 
     // Blizzard do not delete the key at challenge start, will require mort research
     _player->DestroyItem(start.Bag, start.Slot, true);
@@ -83,6 +84,8 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
              modeMap.CompletedChallengeLevel = v.second->ChallengeLevel;
 
              modeMap.LastCompletionMilliseconds = v.second->RecordTime;
+             modeMap.LastMedalDate = v.second->Date;
+
              if (ChallengeData* _lastData = sChallengeModeMgr->BestForMemberMap(_player->GetGUID(), v.second->ChallengeID))
                  modeMap.BestCompletionMilliseconds = _lastData->RecordTime;
              else
@@ -91,7 +94,16 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
              modeMap.Affixes = v.second->Affixes;
 
              for (auto const& z : v.second->member)
-                 modeMap.BestSpecID.push_back(z.specId);
+             {
+                 WorldPackets::ChallengeMode::ChallengeModeMap::bMember bmember;
+                 bmember.PlayerGuid = z.guid;
+                 bmember.GuildGuid = ObjectGuid::Empty;
+                 bmember.SpecializationID = z.specId;
+                 bmember.VirtualRealmAddress = GetVirtualRealmAddress();
+                 bmember.NativeRealmAddress = GetVirtualRealmAddress();
+                 bmember.EquipmentLevel = 400;
+                 modeMap.Members.push_back(bmember);
+             }
 
              stats.ChallengeModeMaps.push_back(modeMap);
          }
@@ -138,5 +150,17 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
      //printf("result.LastWeekMapChallengeKeyEntry =%d CurrentWeekHighestKeyCompleted = %d LastWeekHighestKeyCompleted=%d\n", result.LastWeekMapChallengeKeyEntry, result.CurrentWeekHighestKeyCompleted, result.LastWeekHighestKeyCompleted);
      if (result.CurrentWeekHighestKeyCompleted > 0)
          result.IsWeeklyRewardAvailable = true;
+     SendPacket(result.Write());
+ }
+
+ void WorldSession::HandleRequestChallengeModeAffixes(WorldPackets::ChallengeMode::RequestChallengeModeAffixes &request)
+ {
+     WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult result;
+
+     result.Affixes[0] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME);
+     result.Affixes[1] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME);
+     result.Affixes[2] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME);
+     result.Affixes[3] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME);
+
      SendPacket(result.Write());
  }
