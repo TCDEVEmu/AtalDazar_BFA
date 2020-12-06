@@ -34,6 +34,10 @@
 #include "BattlegroundWS.h"
 #include "BattlegroundDG.h"
 #include "BattlegroundAF.h"
+#include "BattlegroundBRH.h"
+#include "BattlegroundMB.h"
+#include "BattlegroundNNA.h"
+#include "BattlegroundBEG.h"
 #include "Common.h"
 #include "Containers.h"
 #include "DatabaseEnv.h"
@@ -388,6 +392,18 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
 		case BATTLEGROUND_AF:
             bg = new BattlegroundAF(*(BattlegroundAF*)bg_template);
             break;
+        case BATTLEGROUND_BEG:
+            bg = new BattlegroundBEG(*(BattlegroundBEG*)bg_template);
+            break;
+        case BATTLEGROUND_BRH:
+            bg = new BattlegroundBRH(*(BattlegroundBRH*)bg_template);
+            break;
+        case BATTLEGROUND_MUGAMBALA:
+            bg = new BattlegroundMB(*(BattlegroundMB*)bg_template);
+            break;
+        case BATTLEGROUND_NNA:
+            bg = new BattlegroundNNA(*(BattlegroundNNA*)bg_template);
+            break;
         case BATTLEGROUND_RB:
         case BATTLEGROUND_AA:
         case BATTLEGROUND_RANDOM_EPIC:
@@ -478,6 +494,18 @@ bool BattlegroundMgr::CreateBattleground(BattlegroundTemplate const* bgTemplate)
                 break;
 			case BATTLEGROUND_AF:
                 bg = new BattlegroundAF(bgTemplate);
+                break;
+            case BATTLEGROUND_NNA:
+                bg = new BattlegroundNNA(bgTemplate);
+                break;
+            case BATTLEGROUND_BEG:
+                bg = new BattlegroundBEG(bgTemplate);
+                break;
+            case BATTLEGROUND_BRH:
+                bg = new BattlegroundBRH(bgTemplate);
+                break;
+            case BATTLEGROUND_MUGAMBALA:
+                bg = new BattlegroundMB(bgTemplate);
                 break;
             default:
                 return false;
@@ -627,6 +655,10 @@ bool BattlegroundMgr::IsArenaType(BattlegroundTypeId bgTypeId)
             || bgTypeId == BATTLEGROUND_RL
             || bgTypeId == BATTLEGROUND_TTP
 			|| bgTypeId == BATTLEGROUND_AF
+            || bgTypeId == BATTLEGROUND_BRH
+            || bgTypeId == BATTLEGROUND_BEG
+            || bgTypeId == BATTLEGROUND_NNA
+            || bgTypeId == BATTLEGROUND_MUGAMBALA
             || bgTypeId == BATTLEGROUND_TVA;
 }
 
