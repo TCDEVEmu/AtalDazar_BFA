@@ -56,7 +56,7 @@ public:
             {   "queue", rbac::RBAC_PERM_COMMAND_LFG_QUEUE,   true,  &HandleLfgQueueInfoCommand,  "" },
             {   "clean", rbac::RBAC_PERM_COMMAND_LFG_CLEAN,   true,  &HandleLfgCleanCommand,      "" },
             { "options", rbac::RBAC_PERM_COMMAND_LFG_OPTIONS, true,  &HandleLfgOptionsCommand,    "" },
-            {   "debug", rbac::RBAC_PERM_COMMAND_LFG_DEBUG,   true,  &HandleLfgDebugCommand,      "" },
+            {   "debug", rbac::RBAC_PERM_COMMAND_LFG,   true,  &HandleLfgDebugCommand,      "" },
             {    "join", rbac::RBAC_PERM_COMMAND_LFG,         false, &HandleLfgJoinCommand,       "" },
         };
 

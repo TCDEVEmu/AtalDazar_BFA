@@ -16,6 +16,7 @@
  */
 
 #include "LFGMgr.h"
+#include "Containers.h"
 #include "DatabaseEnv.h"
 #include "DB2Stores.h"
 #include "DisableMgr.h"
@@ -537,9 +538,54 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
         // it could be changed
         if (joinData.result == LFG_JOIN_OK)
         {
+            std::vector<uint32> randomList;
+            randomList.clear();
             // Expand random dungeons and check restrictions
             if (rDungeonId)
-                dungeons = GetDungeonsByRandom(rDungeonId);
+            {
+                switch (rDungeonId)
+                {
+                case 1726: // DifficultID 38
+                    dungeons.clear();
+                    randomList = { 1687, 1723, 1724, 1725, 1734, 1735, 1750, 1928, 1932, 1983, 1987 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 1736: // DifficultID 39
+                    dungeons.clear();
+                    randomList = { 1738,1740,1741,1742,1743,1744,1751,1929,1933,1985,1988 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 1737: // DifficultID 40
+                    dungeons.clear();
+                    randomList = { 1739,1745,1746,1747,1748,1749,1752 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 1891: // DifficultID 40 Mythic
+                    dungeons.clear();
+                    randomList = { 1930,1934,1986,1989 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 1762: // DifficultID 45
+                    dungeons.clear();
+                    randomList = { 1761,1763,1764,1765,1766,1767,1908,1931,1935,1984,1990 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 2024: // DifficultID 153 PVP
+                    dungeons.clear();
+                    randomList = { 2025,2041 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                case 2054: // DifficultID 153
+                    dungeons.clear();
+                    randomList = { 2055,2056,2057,2058 };
+                    dungeons.insert(Trinity::Containers::SelectRandomContainerElement(randomList));
+                    break;
+                default:
+                    dungeons = GetDungeonsByRandom(rDungeonId);
+                    break;
+                }
+                //printf("GetDungeonsByRandom %u", (uint32)*dungeons.begin());
+            }
 
             // if we have lockmap then there are no compatible dungeons
             GetCompatibleDungeons(&dungeons, players, &joinData.lockmap, &joinData.playersMissingRequirement, isContinue);

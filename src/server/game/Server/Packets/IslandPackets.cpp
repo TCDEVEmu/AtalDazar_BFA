@@ -81,7 +81,7 @@ WorldPacket const * WorldPackets::Island::IslandCompleted::Write()
     return &_worldPacket;
 }
 
-void WorldPackets::Island::IslandQueue::Read()
+void WorldPackets::Island::IslandOnQueue::Read()
 {
     _worldPacket >> QueueNPCGuid;
     _worldPacket >> ActivityID;

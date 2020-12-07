@@ -3,16 +3,17 @@
 
 #include "Packet.h"
 #include "ObjectGuid.h"
+#include "SharedDefines.h"
 #include "InspectPackets.h"
 
 namespace WorldPackets
 {
     namespace Island
     {
-        class IslandQueue final : public ClientPacket
+        class IslandOnQueue final : public ClientPacket
         {
         public:
-            IslandQueue(WorldPacket&& packet) : ClientPacket(CMSG_ISLAND_QUEUE, std::move(packet)) { }
+            IslandOnQueue(WorldPacket&& packet) : ClientPacket(CMSG_ISLAND_QUEUE, std::move(packet)) { }
 
             void Read() override;
 

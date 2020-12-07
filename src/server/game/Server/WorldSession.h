@@ -467,7 +467,7 @@ namespace WorldPackets
         class IslandOpenNpc;
         class IslandAzeriteXpGain;
         class IslandCompleted;
-        class IslandQueue;
+        class IslandOnQueue;
     }
 
     namespace Item
@@ -1688,7 +1688,7 @@ class TC_GAME_API WorldSession
         void HandleInstanceLockResponse(WorldPackets::Instance::InstanceLockResponse& packet);
 
         //Island HandleIslandQueue
-        void HandleIslandQueue(WorldPackets::Island::IslandQueue& packet);
+        void HandleIslandQueue(WorldPackets::Island::IslandOnQueue& islandQueue);
 
         // Looking for Dungeon/Raid
         void SendLfgPlayerLockInfo();

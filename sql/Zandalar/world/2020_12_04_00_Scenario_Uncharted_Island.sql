@@ -34,21 +34,21 @@ INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx
 (7491, 0, 0, 31478),
 (9748, 0, 0, 31478),
 (11262, 0, 0, 31478),
-(7498, 0, 0, 31478),
-(7504, 0, 0, 31478),
+(7498, 0, 0, 31478),-- half
+(7504, 0, 0, 31478),-- on complete
 (9742, 0, 0, 31478),
 (9744, 0, 0, 31478),
-(7271, 0, 0, 31478),
-(7502, 0, 0, 31478),
-(7265, 0, 0, 31478),
-(11148, 0, 0, 31478),
-(7277, 0, 0, 31478),
-(10725, 0, 0, 31478),
-(7487, 0, 0, 31478),
+(7271, 0, 0, 31478),-- alliance
+(7502, 0, 0, 31478),-- let's go
+(7265, 0, 0, 31478),-- alliance found horde
+(11148, 0, 0, 31478),-- alliance
+(7277, 0, 0, 31478),-- alliance
+(10725, 0, 0, 31478),-- horde found alliance
+(7487, 0, 0, 31478),-- 80%
 (10728, 0, 0, 31478),
-(7486, 0, 0, 31478),
-(8508, 0, 0, 31478),
-(6514, 0, 0, 31478);
+(7486, 0, 0, 31478),-- go
+(8508, 0, 0, 31478),-- found dugun
+(6514, 0, 0, 31478);-- on begin
 
 DELETE FROM `conversation_actors` WHERE (`ConversationId`=7491 AND `Idx`=0) OR (`ConversationId`=9748 AND `Idx`=0) OR (`ConversationId`=11262 AND `Idx`=0) OR (`ConversationId`=7498 AND `Idx`=0) OR (`ConversationId`=7504 AND `Idx`=0) OR (`ConversationId`=9742 AND `Idx`=0) OR (`ConversationId`=9744 AND `Idx`=0) OR (`ConversationId`=7271 AND `Idx`=0) OR (`ConversationId`=7502 AND `Idx`=0) OR (`ConversationId`=7265 AND `Idx`=0) OR (`ConversationId`=11148 AND `Idx`=0) OR (`ConversationId`=7277 AND `Idx`=0) OR (`ConversationId`=10725 AND `Idx`=0) OR (`ConversationId`=7487 AND `Idx`=0) OR (`ConversationId`=10728 AND `Idx`=0) OR (`ConversationId`=7486 AND `Idx`=0) OR (`ConversationId`=8508 AND `Idx`=0) OR (`ConversationId`=6514 AND `Idx`=0);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES

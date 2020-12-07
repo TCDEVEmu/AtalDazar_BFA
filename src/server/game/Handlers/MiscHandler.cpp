@@ -1011,13 +1011,7 @@ void WorldSession::HandleInstanceLockResponse(WorldPackets::Instance::InstanceLo
 
     _player->SetPendingBind(0, 0);
 }
-/*
-void WorldSession::HandleIslandQueue(WorldPackets::Island::IslandQueue& packet)
-{
-    //todo
-    printf("HandleIslandQueue ActivityID=%u\n",packet.ActivityID);
-}
-*/
+
 void WorldSession::HandleViolenceLevel(WorldPackets::Misc::ViolenceLevel& /*violenceLevel*/)
 {
     // do something?

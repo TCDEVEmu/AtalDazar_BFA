@@ -20,7 +20,7 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 
 
 UPDATE `creature_template` SET `minlevel`=98, `maxlevel`=120, `unit_flags`=33554432, `ScriptName`='npc_volcanic_plume_105877' WHERE `entry`=105877;
-UPDATE `creature_template_scaling` SET `LevelScalingMin`=98, `LevelScalingMax`=110 WHERE `entry`=105877;
+UPDATE `creature_template_scaling` SET `LevelScalingMin`=98, `LevelScalingMax`=120 WHERE `entry`=105877;
 
 UPDATE `creature_template` SET `ScriptName`='npc_challenger_fel_explosives' WHERE `entry`=120651;
 

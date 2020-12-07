@@ -51,6 +51,7 @@
 #include "HotfixPackets.h"
 #include "InspectPackets.h"
 #include "InstancePackets.h"
+#include "IslandPackets.h"
 #include "ItemPackets.h"
 #include "LFGPackets.h"
 #include "LootPackets.h"
