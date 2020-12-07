@@ -35,7 +35,7 @@
 #include "BattlegroundDG.h"
 #include "BattlegroundAF.h"
 #include "BattlegroundBRH.h"
-#include "BattlegroundMB.h"
+//#include "BattlegroundMB.h"
 #include "BattlegroundNNA.h"
 #include "BattlegroundBEG.h"
 #include "Common.h"
@@ -398,9 +398,9 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
         case BATTLEGROUND_BRH:
             bg = new BattlegroundBRH(*(BattlegroundBRH*)bg_template);
             break;
-        case BATTLEGROUND_MUGAMBALA:
+        /*case BATTLEGROUND_MUGAMBALA:
             bg = new BattlegroundMB(*(BattlegroundMB*)bg_template);
-            break;
+            break;*/
         case BATTLEGROUND_NNA:
             bg = new BattlegroundNNA(*(BattlegroundNNA*)bg_template);
             break;
@@ -504,9 +504,9 @@ bool BattlegroundMgr::CreateBattleground(BattlegroundTemplate const* bgTemplate)
             case BATTLEGROUND_BRH:
                 bg = new BattlegroundBRH(bgTemplate);
                 break;
-            case BATTLEGROUND_MUGAMBALA:
+            /*case BATTLEGROUND_MUGAMBALA:
                 bg = new BattlegroundMB(bgTemplate);
-                break;
+                break;*/
             default:
                 return false;
         }
@@ -658,7 +658,7 @@ bool BattlegroundMgr::IsArenaType(BattlegroundTypeId bgTypeId)
             || bgTypeId == BATTLEGROUND_BRH
             || bgTypeId == BATTLEGROUND_BEG
             || bgTypeId == BATTLEGROUND_NNA
-            || bgTypeId == BATTLEGROUND_MUGAMBALA
+            //|| bgTypeId == BATTLEGROUND_MUGAMBALA
             || bgTypeId == BATTLEGROUND_TVA;
 }
 
