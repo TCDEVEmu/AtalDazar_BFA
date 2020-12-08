@@ -19,6 +19,8 @@
 #include "Creature.h"
 #include "Player.h"
 #include "ScriptedCreature.h"
+#include "ObjectMgr.h"
+#include "ScriptedGossip.h"
 
 enum StormwindQuests
 {
@@ -156,10 +158,61 @@ class aura_stormwind_to_harbor_teleport : public AuraScript
     }
 };
 
+//1519 Zone Stormwind
+class zone_stormwind_start_bfa : public ZoneScript
+{
+public:
+    zone_stormwind_start_bfa() : ZoneScript("zone_stormwind_start_bfa") { }
+
+    void OnPlayerEnter(Player* player) override
+    {
+        if (player->GetQuestStatus(53370) == QUEST_STATUS_NONE)
+        {
+            Conversation::CreateConversation(8421, player, player->GetPosition(), { player->GetGUID() });
+            if (const Quest * quest = sObjectMgr->GetQuestTemplate(53370))
+                player->AddQuest(quest, nullptr);
+        }
+    }
+};
+
+//130129
+class npc_master_mathias_shaw : public ScriptedAI
+{
+public:
+    npc_master_mathias_shaw(Creature* creature) : ScriptedAI(creature) { }
+
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    {
+        player->KilledMonsterCredit(139178);
+        player->KilledMonsterCredit(139094);
+      
+        CloseGossipMenuFor(player);
+
+        return false;
+    }
+};
+
+//142930
+struct npc_halford_wyrmbane_stormwind : public ScriptedAI
+{
+    npc_halford_wyrmbane_stormwind(Creature* creature) : ScriptedAI(creature) { }
+
+    void QuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == 52946)
+        {
+            Conversation::CreateConversation(9316, player, player->GetPosition(), { player->GetGUID() });
+        }
+        
+    }
+};
 void AddSC_stormwind_city()
 {
     RegisterCreatureAI(npc_anduin_tides_of_war);
     RegisterConversationScript(conversation_tides_of_war);
     RegisterCreatureAI(npc_jaina_tides_of_war);
     RegisterAuraScript(aura_stormwind_to_harbor_teleport);
+    RegisterCreatureAI(npc_master_mathias_shaw);
+    RegisterCreatureAI(npc_halford_wyrmbane_stormwind);
+    new zone_stormwind_start_bfa();
 }
