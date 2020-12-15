@@ -22,6 +22,11 @@ void AddSC_instance_scenario_zuldazar();
 void AddSC_uncharted_island_tutorial();
 void AddSC_scenario_uncharted_island_tutorial();
 void AddSC_scenario_snowblossom_village();
+void AddSC_scenario_draenor_shadowmoon_valley();
+void AddSC_scenario_frostfire_finale();
+void AddSC_scenario_talador_iron_horde_finale();
+void AddSC_scenario_grommashar();
+void AddSC_scenario_gorgrond_finale_1();
 
 void AddScenariosScripts()
 {
@@ -32,4 +37,9 @@ void AddScenariosScripts()
     AddSC_uncharted_island_tutorial();
     AddSC_scenario_uncharted_island_tutorial();
     AddSC_scenario_snowblossom_village();
+    AddSC_scenario_draenor_shadowmoon_valley();
+    AddSC_scenario_frostfire_finale();
+    AddSC_scenario_talador_iron_horde_finale();
+    AddSC_scenario_grommashar();
+    AddSC_scenario_gorgrond_finale_1();
 }
