@@ -5,15 +5,15 @@ INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES
 
 
 DELETE FROM `instance_template` WHERE `map` IN (1203,1402,1407,1266,1268,1329,1455,1200);
-INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`, `bonusChance`) VALUES 
-(1200, 1116, 'scenario_bonetown', 1, 0),
-(1203, 1116, 'scenario_frostfire_finale', 1, 0),
-(1266, 1116, 'scenario_circle_of_blood', 1, 0),
-(1268, 1116, 'scenario_terongors_confrontation', 1, 0),
-(1329, 1116, 'scenario_grommashar', 1, 0),
-(1402, 1116, 'scenario_gorgrond_finale_1', 1, 0),
-(1407, 1116, 'scenario_gorgrond_finale_2', 1, 0),
-(1455, 1116, 'scenario_edge_of_reality', 1, 0);
+INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES 
+(1200, 1116, 'scenario_bonetown', 1),
+(1203, 1116, 'scenario_frostfire_finale', 1),
+(1266, 1116, 'scenario_circle_of_blood', 1),
+(1268, 1116, 'scenario_terongors_confrontation', 1),
+(1329, 1116, 'scenario_grommashar', 1),
+(1402, 1116, 'scenario_gorgrond_finale_1', 1),
+(1407, 1116, 'scenario_gorgrond_finale_2', 1),
+(1455, 1116, 'scenario_edge_of_reality', 1);
 
 --  1207  沙塔斯之战 TaladorIronHordeFinale
 DELETE FROM `instance_template` WHERE `map` IN (1207);
