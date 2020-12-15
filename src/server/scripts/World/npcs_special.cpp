@@ -2326,6 +2326,24 @@ public:
     uint32 _raceId;
 };
 
+class ps_island_get_xp : public PlayerScript
+{
+public:
+    ps_island_get_xp() : PlayerScript("ps_island_get_xp") {}
+
+    void OnCreatureKill(Player* killer, Creature* killed) override
+    {
+        if (killer->GetMap()->GetDifficultyID() >= DIFFICULTY_NORMAL_ISLAND && killer->GetMap()->GetDifficultyID() <= DIFFICULTY_PVP_ISLAND)
+        {
+            if (InstanceScript* instance = killer->GetInstanceScript())
+            {
+                int32 baseXP = 3;
+                instance->GiveIslandAzeriteXpGain(killer, killed->GetGUID(), baseXP);
+            }
+        }
+    }
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -2352,4 +2370,5 @@ void AddSC_npcs_special()
     new npc_allied_race_infos("npc_allied_race_infos_tauren", 28);
     new npc_allied_race_infos("npc_allied_race_infos_voidelf", 29);
     new npc_allied_race_infos("npc_allied_race_infos_draenei", 30);
+    new ps_island_get_xp();
 }

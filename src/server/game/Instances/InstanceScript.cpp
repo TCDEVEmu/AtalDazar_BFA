@@ -58,13 +58,15 @@ _entranceId(0), _temporaryEntranceId(0), _combatResurrectionTimer(0), _combatRes
 _challengeModeStarted(false), _challengeModeLevel(0), _challengeModeStartTime(0), _challengeModeDeathCount(0)
 {
     _scriptType = ZONE_SCRIPT_TYPE_INSTANCE;
+    _islandCount[0] = 0;
+    _islandCount[1] = 0;
 
 #ifdef TRINITY_API_USE_DYNAMIC_LINKING
     uint32 scriptId = sObjectMgr->GetInstanceTemplate(map->GetId())->ScriptId;
     auto const scriptname = sObjectMgr->GetScriptName(scriptId);
     ASSERT(!scriptname.empty());
-   // Acquire a strong reference from the script module
-   // to keep it loaded until this object is destroyed.
+    // Acquire a strong reference from the script module
+    // to keep it loaded until this object is destroyed.
     module_reference = sScriptMgr->AcquireModuleReferenceOfScriptName(scriptname);
 #endif // #ifndef TRINITY_API_USE_DYNAMIC_LINKING
 }
@@ -193,6 +195,51 @@ void InstanceScript::OnPlayerDeath(Player* /*player*/)
     }
 }
 
+void InstanceScript::GiveIslandAzeriteXpGain(Player * player, ObjectGuid guid, int32 xp)
+{
+    WorldPackets::Island::IslandAzeriteXpGain xpgain;
+    xpgain.SourceGuid = guid;
+    xpgain.SourceID = guid.GetEntry();
+    xpgain.PlayerGuid = player->GetGUID();
+    xpgain.XpGain = xp;
+    player->GetSession()->SendPacket(xpgain.Write());
+
+    if (player->IsInAlliance())
+        _islandCount[0] = _islandCount[0] + xp;
+    else
+        _islandCount[1] = _islandCount[1] + xp;
+
+    for (uint8 i = 0; i < xp; ++i)
+        player->CastSpell(player, SPELL_AZERITE_RESIDUE, true);
+
+    DoUpdateWorldState(WORLDSTATE_ALLIANCE_GAIN, _islandCount[0]);
+    DoUpdateWorldState(WORLDSTATE_HORDE_GAIN, _islandCount[1]);
+}
+
+void InstanceScript::IslandComplete(bool winnerIsAlliance)
+{
+    DoRemoveAurasDueToSpellOnPlayers(SPELL_AZERITE_RESIDUE);
+    DoCastSpellOnPlayers(SPELL_ISLAND_COMPLETE);
+
+    WorldPackets::Island::IslandCompleted package;
+    package.MapID = instance->GetId();
+    package.Winner = winnerIsAlliance ? 0 : 1;
+    DoOnPlayers([&](Player* player)
+    {
+        WorldPackets::Inspect::PlayerModelDisplayInfo playerModelDisplayInfo;
+        playerModelDisplayInfo.Initialize(player);
+
+        if ((winnerIsAlliance && player->IsInAlliance()) || (!winnerIsAlliance && player->IsInHorde()))
+            package.DisplayInfos.push_back(playerModelDisplayInfo);
+
+        if (!winnerIsAlliance)
+            player->PlayConversation(7504);
+    });
+    instance->SendToPlayers(package.Write());
+    //item 163612
+    // 1553 255
+}
+
 void InstanceScript::SetHeaders(std::string const& dataHeaders)
 {
     for (char header : dataHeaders)
@@ -256,20 +303,20 @@ void InstanceScript::UpdateMinionState(Creature* minion, EncounterState state)
 {
     switch (state)
     {
-        case NOT_STARTED:
-            if (!minion->IsAlive())
-                minion->Respawn();
-            else if (minion->IsInCombat())
-                minion->AI()->EnterEvadeMode();
-            break;
-        case IN_PROGRESS:
-            if (!minion->IsAlive())
-                minion->Respawn();
-            else if (!minion->GetVictim())
-                minion->AI()->DoZoneInCombat();
-            break;
-        default:
-            break;
+    case NOT_STARTED:
+        if (!minion->IsAlive())
+            minion->Respawn();
+        else if (minion->IsInCombat())
+            minion->AI()->EnterEvadeMode();
+        break;
+    case IN_PROGRESS:
+        if (!minion->IsAlive())
+            minion->Respawn();
+        else if (!minion->GetVictim())
+            minion->AI()->DoZoneInCombat();
+        break;
+    default:
+        break;
     }
 }
 
@@ -285,17 +332,17 @@ void InstanceScript::UpdateDoorState(GameObject* door)
         DoorInfo const& info = range.first->second;
         switch (info.type)
         {
-            case DOOR_TYPE_ROOM:
-                open = (info.bossInfo->state != IN_PROGRESS);
-                break;
-            case DOOR_TYPE_PASSAGE:
-                open = (info.bossInfo->state == DONE);
-                break;
-            case DOOR_TYPE_SPAWN_HOLE:
-                open = (info.bossInfo->state == IN_PROGRESS);
-                break;
-            default:
-                break;
+        case DOOR_TYPE_ROOM:
+            open = (info.bossInfo->state != IN_PROGRESS);
+            break;
+        case DOOR_TYPE_PASSAGE:
+            open = (info.bossInfo->state == DONE);
+            break;
+        case DOOR_TYPE_SPAWN_HOLE:
+            open = (info.bossInfo->state == IN_PROGRESS);
+            break;
+        default:
+            break;
         }
     }
 
@@ -396,36 +443,36 @@ bool InstanceScript::SetBossState(uint32 id, EncounterState state)
 
             switch (state)
             {
-                case NOT_STARTED:
+            case NOT_STARTED:
+            {
+                if (bossInfo->state == IN_PROGRESS)
                 {
-                    if (bossInfo->state == IN_PROGRESS)
-                    {
-                        ResetCombatResurrections();
-                        SendEncounterEnd();
-                    }
-                    break;
-                }
-                case IN_PROGRESS:
-                {
-                    uint32 resInterval = GetCombatResurrectionChargeInterval();
-                    InitializeCombatResurrections(1, resInterval);
-                    SendEncounterStart(1, 9, resInterval, resInterval);
-
-                    DoOnPlayers([](Player* player)
-                    {
-                        if (player->IsAlive())
-                            player->ProcSkillsAndAuras(nullptr, PROC_FLAG_ENCOUNTER_START, PROC_FLAG_NONE, PROC_SPELL_TYPE_MASK_ALL, PROC_SPELL_PHASE_NONE, PROC_HIT_NONE, nullptr, nullptr, nullptr);
-                    });
-
-                    break;
-                }
-                case FAIL:
-                case DONE:
                     ResetCombatResurrections();
                     SendEncounterEnd();
-                    break;
-                default:
-                    break;
+                }
+                break;
+            }
+            case IN_PROGRESS:
+            {
+                uint32 resInterval = GetCombatResurrectionChargeInterval();
+                InitializeCombatResurrections(1, resInterval);
+                SendEncounterStart(1, 9, resInterval, resInterval);
+
+                DoOnPlayers([](Player* player)
+                {
+                    if (player->IsAlive())
+                        player->ProcSkillsAndAuras(nullptr, PROC_FLAG_ENCOUNTER_START, PROC_FLAG_NONE, PROC_SPELL_TYPE_MASK_ALL, PROC_SPELL_PHASE_NONE, PROC_HIT_NONE, nullptr, nullptr, nullptr);
+                });
+
+                break;
+            }
+            case FAIL:
+            case DONE:
+                ResetCombatResurrections();
+                SendEncounterEnd();
+                break;
+            default:
+                break;
             }
 
             bossInfo->state = state;
@@ -623,15 +670,15 @@ void InstanceScript::DoRespawnGameObject(ObjectGuid guid, uint32 timeToDespawn /
     {
         switch (go->GetGoType())
         {
-            case GAMEOBJECT_TYPE_DOOR:
-            case GAMEOBJECT_TYPE_BUTTON:
-            case GAMEOBJECT_TYPE_TRAP:
-            case GAMEOBJECT_TYPE_FISHINGNODE:
-                // not expect any of these should ever be handled
-                TC_LOG_ERROR("scripts", "InstanceScript: DoRespawnGameObject can't respawn gameobject entry %u, because type is %u.", go->GetEntry(), go->GetGoType());
-                return;
-            default:
-                break;
+        case GAMEOBJECT_TYPE_DOOR:
+        case GAMEOBJECT_TYPE_BUTTON:
+        case GAMEOBJECT_TYPE_TRAP:
+        case GAMEOBJECT_TYPE_FISHINGNODE:
+            // not expect any of these should ever be handled
+            TC_LOG_ERROR("scripts", "InstanceScript: DoRespawnGameObject can't respawn gameobject entry %u, because type is %u.", go->GetEntry(), go->GetGoType());
+            return;
+        default:
+            break;
         }
 
         if (go->isSpawned())
@@ -947,40 +994,40 @@ void InstanceScript::SendEncounterUnit(uint32 type, Unit* unit /*= nullptr*/, ui
 {
     switch (type)
     {
-        case ENCOUNTER_FRAME_ENGAGE:                    // SMSG_INSTANCE_ENCOUNTER_ENGAGE_UNIT
-        {
-            if (!unit)
-                return;
+    case ENCOUNTER_FRAME_ENGAGE:                    // SMSG_INSTANCE_ENCOUNTER_ENGAGE_UNIT
+    {
+        if (!unit)
+            return;
 
-            WorldPackets::Instance::InstanceEncounterEngageUnit encounterEngageMessage;
-            encounterEngageMessage.Unit = unit->GetGUID();
-            encounterEngageMessage.TargetFramePriority = priority;
-            instance->SendToPlayers(encounterEngageMessage.Write());
-            break;
-        }
-        case ENCOUNTER_FRAME_DISENGAGE:                 // SMSG_INSTANCE_ENCOUNTER_DISENGAGE_UNIT
-        {
-            if (!unit)
-                return;
+        WorldPackets::Instance::InstanceEncounterEngageUnit encounterEngageMessage;
+        encounterEngageMessage.Unit = unit->GetGUID();
+        encounterEngageMessage.TargetFramePriority = priority;
+        instance->SendToPlayers(encounterEngageMessage.Write());
+        break;
+    }
+    case ENCOUNTER_FRAME_DISENGAGE:                 // SMSG_INSTANCE_ENCOUNTER_DISENGAGE_UNIT
+    {
+        if (!unit)
+            return;
 
-            WorldPackets::Instance::InstanceEncounterDisengageUnit encounterDisengageMessage;
-            encounterDisengageMessage.Unit = unit->GetGUID();
-            instance->SendToPlayers(encounterDisengageMessage.Write());
-            break;
-        }
-        case ENCOUNTER_FRAME_UPDATE_PRIORITY:           // SMSG_INSTANCE_ENCOUNTER_CHANGE_PRIORITY
-        {
-            if (!unit)
-                return;
+        WorldPackets::Instance::InstanceEncounterDisengageUnit encounterDisengageMessage;
+        encounterDisengageMessage.Unit = unit->GetGUID();
+        instance->SendToPlayers(encounterDisengageMessage.Write());
+        break;
+    }
+    case ENCOUNTER_FRAME_UPDATE_PRIORITY:           // SMSG_INSTANCE_ENCOUNTER_CHANGE_PRIORITY
+    {
+        if (!unit)
+            return;
 
-            WorldPackets::Instance::InstanceEncounterChangePriority encounterChangePriorityMessage;
-            encounterChangePriorityMessage.Unit = unit->GetGUID();
-            encounterChangePriorityMessage.TargetFramePriority = priority;
-            instance->SendToPlayers(encounterChangePriorityMessage.Write());
-            break;
-        }
-        default:
-            break;
+        WorldPackets::Instance::InstanceEncounterChangePriority encounterChangePriorityMessage;
+        encounterChangePriorityMessage.Unit = unit->GetGUID();
+        encounterChangePriorityMessage.TargetFramePriority = priority;
+        instance->SendToPlayers(encounterChangePriorityMessage.Write());
+        break;
+    }
+    default:
+        break;
     }
 }
 
@@ -1102,20 +1149,20 @@ std::string InstanceScript::GetBossStateName(uint8 state)
     // See enum EncounterState in InstanceScript.h
     switch (state)
     {
-        case NOT_STARTED:
-            return "NOT_STARTED";
-        case IN_PROGRESS:
-            return "IN_PROGRESS";
-        case FAIL:
-            return "FAIL";
-        case DONE:
-            return "DONE";
-        case SPECIAL:
-            return "SPECIAL";
-        case TO_BE_DECIDED:
-            return "TO_BE_DECIDED";
-        default:
-            return "INVALID";
+    case NOT_STARTED:
+        return "NOT_STARTED";
+    case IN_PROGRESS:
+        return "IN_PROGRESS";
+    case FAIL:
+        return "FAIL";
+    case DONE:
+        return "DONE";
+    case SPECIAL:
+        return "SPECIAL";
+    case TO_BE_DECIDED:
+        return "TO_BE_DECIDED";
+    default:
+        return "INVALID";
     }
 }
 
@@ -1326,14 +1373,14 @@ void InstanceScript::CompleteChallengeMode()
     {
         player->AddChallengeKey(sChallengeModeMgr->GetRandomChallengeId(), std::max(_challengeModeLevel + mythicIncrement, 1));
     });
-  
+
     WorldPackets::ChallengeMode::Complete complete;
     complete.Duration = totalDuration;
     complete.MapId = instance->GetId();
     complete.ChallengeId = mapChallengeModeEntry->ID;
     complete.ChallengeLevel = _challengeModeLevel + mythicIncrement;
     instance->SendToPlayers(complete.Write());
-   
+
     // Achievements only if timer respected
     if (mythicIncrement)
     {

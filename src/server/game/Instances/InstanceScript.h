@@ -27,7 +27,9 @@
 #include <memory>
 #include <set>
 #include <sstream>
-#include <bitset>  
+#include <bitset>
+#include "MiscPackets.h"
+#include "IslandPackets.h"
 
 #define OUT_SAVE_INST_DATA             TC_LOG_DEBUG("scripts", "Saving Instance Data for Instance %s (Map %d, Instance Id %d)", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 #define OUT_SAVE_INST_DATA_COMPLETE    TC_LOG_DEBUG("scripts", "Saving Instance Data for Instance %s (Map %d, Instance Id %d) completed.", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
@@ -129,6 +131,19 @@ enum ChallengeSpells : uint32
     SPELL_FEL_EXPLOSIVES_VISUAL = 240445,
     SPELL_FEL_EXPLOSIVES_DMG = 240446,
 };
+
+enum IslandWorldStates
+{
+    WORLDSTATE_HORDE_GAIN = 13627,
+    WORLDSTATE_ALLIANCE_GAIN = 12930,
+};
+
+enum IslandSpells
+{
+    SPELL_AZERITE_RESIDUE = 260738,
+    SPELL_ISLAND_COMPLETE = 245618, // island - complete
+};
+
 
 enum ChallengeNpcs : uint32
 {
@@ -459,6 +474,11 @@ class TC_GAME_API InstanceScript : public ZoneScript
         void SetCheckPointPos(Position pos) { _checkPointPosition = pos; }
         Optional<Position> GetCheckPoint() { return _checkPointPosition; }
 
+        std::array<uint32, 2> GetIslandCount() const { return _islandCount; }
+
+        void GiveIslandAzeriteXpGain(Player* player, ObjectGuid guid, int32 xp);
+        void IslandComplete(bool winnerIsAlliance);
+
     protected:
         void SetHeaders(std::string const& dataHeaders);
         void SetBossNumber(uint32 number) { bosses.resize(number); }
@@ -520,6 +540,8 @@ class TC_GAME_API InstanceScript : public ZoneScript
         Optional<Position> _checkPointPosition;
         std::array<uint32, 4> _affixes;
         std::bitset<size_t(121)> _affixesTest;//Affixes::MaxAffixes
+
+        std::array<uint32, 2> _islandCount;
 
     #ifdef TRINITY_API_USE_DYNAMIC_LINKING
         // Strong reference to the associated script module

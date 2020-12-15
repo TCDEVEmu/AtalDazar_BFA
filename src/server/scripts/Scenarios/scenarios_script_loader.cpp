@@ -27,6 +27,8 @@ void AddSC_scenario_frostfire_finale();
 void AddSC_scenario_talador_iron_horde_finale();
 void AddSC_scenario_grommashar();
 void AddSC_scenario_gorgrond_finale_1();
+void AddSC_scenario_verdant_wilds();
+void AddSC_scenario_ungol_ruins();
 
 void AddScenariosScripts()
 {
@@ -42,4 +44,6 @@ void AddScenariosScripts()
     AddSC_scenario_talador_iron_horde_finale();
     AddSC_scenario_grommashar();
     AddSC_scenario_gorgrond_finale_1();
+    AddSC_scenario_verdant_wilds();
+    AddSC_scenario_ungol_ruins();
 }

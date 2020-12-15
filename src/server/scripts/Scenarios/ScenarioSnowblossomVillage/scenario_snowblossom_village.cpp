@@ -14,21 +14,10 @@ lyosky
 #include "IslandPackets.h"
 #include "WorldSession.h"
 
-enum worldstates
-{
-    WORLDSTATE_GAIN = 13627,
-};
-
 enum sv_events
 {
     EVENT_START_TIMER = 1,
     EVENT_GAME_START,
-};
-
-enum sv_spells
-{
-    SPELL_AZERITE_RESIDUE = 260738,
-    SPELL_ISLAND_COMPLETE = 245618, // island - complete
 };
 
 enum sv_gos
@@ -57,13 +46,13 @@ public:
         {
         }
 
-        int32 gain = 0;
         bool isIntr = false;
         bool isComplete = false;
 
         void InitWorldState(bool Enable = true)
         {
-            DoUpdateWorldState(WORLDSTATE_GAIN, 0);
+            DoUpdateWorldState(WORLDSTATE_ALLIANCE_GAIN, 0);
+            DoUpdateWorldState(WORLDSTATE_HORDE_GAIN, 0);
             DoUpdateWorldState(16018, 1);
             DoUpdateWorldState(14253, 1);
             DoUpdateWorldState(13004, 1);
@@ -83,9 +72,6 @@ public:
 
         void OnPlayerEnter(Player* player) override
         {
-            //if (!TeamInInstance)
-            //    TeamInInstance = player->GetTeam();
-            player->SendUpdateWorldState(WORLDSTATE_GAIN, 0);
             InitWorldState();
             SetCheckPointPos({ 2234.674f, -129.7475f, 6.3429f, 2.344061f });
             player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
@@ -97,14 +83,12 @@ public:
             instance->SendToPlayers(startTimer.Write());
 
             events.ScheduleEvent(EVENT_START_TIMER, 33 * IN_MILLISECONDS);
-
-
-
         }
 
         void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet) override
         {
-            packet.Worldstates.emplace_back(uint32(WORLDSTATE_GAIN), int32(gain));
+            packet.Worldstates.emplace_back(uint32(WORLDSTATE_ALLIANCE_GAIN), int32(GetIslandCount()[0]));
+            packet.Worldstates.emplace_back(uint32(WORLDSTATE_HORDE_GAIN), int32(GetIslandCount()[1]));
         }
 
         void OnCreatureCreate(Creature* creature) override
@@ -118,11 +102,6 @@ public:
             }
         }
 
-        void OnUnitDeath(Unit* who)
-        {
-            GiveIslandAzeriteXpGain(who->GetGUID(), 3);
-        }
-
         void OnPlayerExit(Player* player) override
         {
             player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
@@ -132,42 +111,6 @@ public:
         void OnPlayerDeath(Player* player) override
         {
             player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
-        }
-
-        void OnCompletedIsland()
-        {
-            isComplete = true;
-            DoRemoveAurasDueToSpellOnPlayers(SPELL_AZERITE_RESIDUE);
-            DoCastSpellOnPlayers(SPELL_ISLAND_COMPLETE);
-            DoPlayConversation(HORDE_ON_COMPLETE);
-
-            WorldPackets::Island::IslandCompleted package;
-            package.MapID = instance->GetId();           
-            package.Winner = 0;
-            DoOnPlayers([&](Player* player)
-            {
-                WorldPackets::Inspect::PlayerModelDisplayInfo playerModelDisplayInfo;
-                playerModelDisplayInfo.Initialize(player);
-                package.DisplayInfos.push_back(playerModelDisplayInfo);
-            });
-            instance->SendToPlayers(package.Write());           
-        }
-
-        void GiveIslandAzeriteXpGain(ObjectGuid guid, int32 xp)
-        {
-            gain = gain + xp;
-            for (uint8 i = 0; i < xp; ++i)
-                DoCastSpellOnPlayers(SPELL_AZERITE_RESIDUE);
-            DoOnPlayers([=](Player* player)
-            {
-                WorldPackets::Island::IslandAzeriteXpGain xpgain;
-                xpgain.SourceGuid = guid;
-                xpgain.SourceID = guid.GetEntry();
-                xpgain.PlayerGuid = player->GetGUID();
-                xpgain.XpGain = xp;
-                player->GetSession()->SendPacket(xpgain.Write());
-            });
-            DoUpdateWorldState(WORLDSTATE_GAIN, gain);
         }
 
         void Update(uint32 diff) override
@@ -187,8 +130,19 @@ public:
                     isIntr = true;
                     DoPlayConversation(HORDE_ON_BEGIN);
                 }
-                if (gain >= 30 && !isComplete)
-                    OnCompletedIsland();
+                if (!isComplete)
+                {
+                    if (GetIslandCount()[0] >= 9000)
+                    {
+                        isComplete = true;
+                        IslandComplete(true);
+                    }
+                    else if (GetIslandCount()[1] >= 9000)
+                    {
+                        isComplete = true;
+                        IslandComplete(false);
+                    }
+                }
                 events.ScheduleEvent(EVENT_GAME_START, 1 * IN_MILLISECONDS);
                 break;
             }
