@@ -35,6 +35,8 @@ class WarCampaign;
 class WodGarrison;
 struct GarrSiteLevelEntry;
 
+typedef std::list<WorldPackets::Garrison::Shipment> ShipmentSet;
+
 class TC_GAME_API Garrison
 {
 public:
@@ -120,9 +122,15 @@ public:
     void CompleteMission(uint32 garrMissionId);
     void CalculateMissonBonusRoll(uint32 garrMissionId);
     void RewardMission(Mission* mission, bool withOvermaxReward);
+    void SendMissionListUpdate(bool openMissionNpc) const;
 
     std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> GetAvailableMissions() const;
     void GenerateMissions();
+
+    // Shipment
+    void SendGarrisonShipmentLandingPage();
+    void SendShipmentInfo(ObjectGuid const& guid);
+    void SendShipYadShipmentInfo(ObjectGuid const& guid);
 
     bool IsWodGarrison() const { return GetType() == GARRISON_TYPE_GARRISON; }
     WodGarrison* ToWodGarrison() { if (IsWodGarrison()) return reinterpret_cast<WodGarrison*>(this); else return nullptr; }
@@ -152,6 +160,8 @@ protected:
 
     std::unordered_map<uint64 /*dbId*/, Garrison::Mission> _missions;
     std::unordered_set<uint32> _missionIds;
+
+    std::map<uint32/*shipmentID*/, ShipmentSet> _shipments;
 };
 
 #endif // Garrison_h__

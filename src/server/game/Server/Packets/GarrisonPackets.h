@@ -568,6 +568,63 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
         };
+  
+        class GarrisonMissionUpdate final : public ServerPacket
+        {
+        public:
+            GarrisonMissionUpdate() : ServerPacket(SMSG_GARRISON_MISSION_UPDATE_CAN_START, 8) { }
+
+            WorldPacket const* Write() override;
+
+            std::vector<int32> ArchivedMissions;
+            std::vector<bool> CanStartMission;
+        };
+
+        class GarrisonRequestLandingPageShipmentInfo final : public ClientPacket
+        {
+        public:
+            GarrisonRequestLandingPageShipmentInfo(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_REQUEST_LANDING_PAGE_SHIPMENT_INFO, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
+        struct Shipment
+        {
+            Shipment() = default;
+            uint64 FollowerDBID = 0;
+            uint64 ShipmentID = 0;
+            uint32 ShipmentRecID = 0;
+            uint32 BuildingTypeID = 0;
+            time_t CreationTime = time(nullptr);
+            int32 ShipmentDuration = 0;
+
+            bool finished = false;
+            //ObjectDBState DbState = DB_STATE_NEW;
+            uint32 end = 0;
+        };
+
+        class GarrisonLandingPage final : public ServerPacket
+        {
+        public:
+            GarrisonLandingPage() : ServerPacket(SMSG_GARRISON_LANDING_PAGE_SHIPMENT_INFO, 4) { }
+
+            WorldPacket const* Write() override;
+
+            std::vector<Shipment> MsgData;
+            uint32 Result = 0;
+        };
+
+        class GarrisonRequestShipmentInfo final : public ClientPacket
+        {
+        public:
+            GarrisonRequestShipmentInfo(WorldPacket&& packet) : ClientPacket(CMSG_GARRISON_REQUEST_SHIPMENT_INFO, std::move(packet)) { }
+
+            void Read() override;
+
+            ObjectGuid NpcGUID;
+        };
+
+
     }
 }
 

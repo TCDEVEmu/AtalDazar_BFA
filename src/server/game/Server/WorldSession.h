@@ -380,6 +380,9 @@ namespace WorldPackets
         class GarrisonCompleteMissionResult;
         class GarrisonMissionBonusRoll;
         class GarrisonMissionBonusRollResult;
+        class GarrisonRequestLandingPageShipmentInfo;
+        class GarrisonLandingPage;
+        class GarrisonRequestShipmentInfo;
     }
 
     namespace Guild
@@ -1850,6 +1853,8 @@ class TC_GAME_API WorldSession
         void HandleGarrisonStartMission(WorldPackets::Garrison::GarrisonStartMission& startMission);
         void HandleGarrisonCompleteMission(WorldPackets::Garrison::GarrisonCompleteMission& completeMission);
         void HandleGarrisonMissionBonusRoll(WorldPackets::Garrison::GarrisonMissionBonusRoll& missionBonusRoll);
+        void HandleGarrisonRequestLandingPageShipmentInfo(WorldPackets::Garrison::GarrisonRequestLandingPageShipmentInfo& /*packet*/);
+        void HandleGarrisonRequestShipmentInfo(WorldPackets::Garrison::GarrisonRequestShipmentInfo& packet);
 
         // Battle Pets
         void HandleBattlePetRequestJournal(WorldPackets::BattlePet::BattlePetRequestJournal& battlePetRequestJournal);

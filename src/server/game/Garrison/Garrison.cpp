@@ -603,12 +603,14 @@ std::pair<std::vector<GarrMissionEntry const*>, std::vector<double>> Garrison::G
 }
 
 void Garrison::GenerateMissions()
-{
+{   
     uint32 maxMissionCount = ceil(GetActiveFollowersCount() * GARRISON_MISSION_DISTRIB_FOLLOWER_COEFF);
+
     if (GetMissions().size() >= maxMissionCount)
         return;
 
     uint32 missionToAddCount = urand(0, maxMissionCount - GetMissions().size());
+
     if (!missionToAddCount)
         return;
 
@@ -634,6 +636,73 @@ void Garrison::GenerateMissions()
     CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
     SaveToDB(trans);
     CharacterDatabase.CommitTransaction(trans);
+}
+
+void Garrison::SendGarrisonShipmentLandingPage()
+{
+    WorldPackets::Garrison::GarrisonLandingPage packet;
+
+    for (auto const& x : _shipments)
+        for (auto const& shipment : x.second)
+            packet.MsgData.push_back(shipment);
+    _owner->SendDirectMessage(packet.Write());
+}
+
+void Garrison::SendShipmentInfo(ObjectGuid const & guid)
+{
+    /*
+    if (guid.GetEntry() == 94429 || guid.GetEntry() == 95002)
+    {
+        SendShipYadShipmentInfo(guid);
+        return;
+    }
+
+    GarrShipment const* shipment = sGarrisonMgr.GetGarrShipment(guid.GetEntry(), SHIPMENT_GET_BY_NPC, _owner->getClass());
+    const Plot* plot = GetPlotWithBuildingType(shipment->cEntry->GarrBuildingType);
+
+    auto site = _siteLevel[shipment->cEntry->GarrTypeID];
+
+    uint32 questID = getQuestIdReqForShipment(site->GarrSiteID, shipment->cEntry->GarrBuildingType);
+    uint32 shipmentID = sGarrisonMgr.GetShipmentID(shipment);
+
+    if (!shipmentID)
+        shipmentID = shipment->selectShipment(_owner);
+
+    //SMSG_GET_SHIPMENT_INFO_RESPONSE
+    WorldPackets::Garrison::GetShipmentInfoResponse shipmentResponse;
+    shipmentResponse.Success = shipment && (plot || shipment->cEntry->GarrTypeID == GARRISON_TYPE_CLASS_ORDER) && (!questID || questID && _owner->GetQuestStatus(questID) != QUEST_STATUS_NONE);
+
+    //! placeholder for check is allowed shipment.
+    uint32 sh = shipment->ShipmentID;
+    sh = sGarrisonMgr.GetShipmentID(shipment);
+    if (!sh)
+        sh = shipment->selectShipment(_owner);
+
+    auto shipmentEntry = sCharShipmentStore.LookupEntry(sh);
+    if (shipmentEntry)
+        shipmentResponse.Success = _owner->CheckShipment(shipmentEntry);
+
+    if (shipmentResponse.Success)
+    {
+        // check if has finish quest for activate. if rewardet - use usual state. if in progress - send 
+        shipmentResponse.ShipmentID = (!questID || _owner->GetQuestStatus(questID) == QUEST_STATUS_REWARDED) ? shipmentID : getProgressShipment(questID);
+        shipmentResponse.Shipments.assign(_shipments[idxShipment(shipment->cEntry)].begin(), _shipments[idxShipment(shipment->cEntry)].end());
+
+        if (shipment->cEntry->GarrTypeID == GARRISON_TYPE_CLASS_ORDER && shipmentEntry)
+            shipmentResponse.MaxShipments = shipmentEntry->MaxShipments;
+        else
+        {
+            shipmentResponse.MaxShipments = sGarrBuildingStore.AssertEntry(plot->BuildingInfo.PacketInfo->GarrBuildingID)->ShipmentCapacity + GetShipmentMaxMod();
+            shipmentResponse.PlotInstanceID = plot->BuildingInfo.PacketInfo->GarrPlotInstanceID;
+        }
+    }
+
+    _owner->SendDirectMessage(shipmentResponse.Write());
+    */
+}
+
+void Garrison::SendShipYadShipmentInfo(ObjectGuid const & guid)
+{
 }
 
 void Garrison::StartMission(uint32 garrMissionId, std::vector<uint64 /*DbID*/> Followers)
@@ -776,6 +845,30 @@ void Garrison::RewardMission(Mission* mission, bool withOvermaxReward)
                 // TODO
         }
     }
+}
+
+void Garrison::SendMissionListUpdate(bool openMissionNpc) const
+{
+    uint8 type = _owner->GetCurrentGarrison();
+
+    if (!_siteLevel)
+        return;
+
+    WorldPackets::Garrison::GarrisonMissionUpdate res;
+
+    if (!_missions.empty())
+    {
+        res.CanStartMission.reserve(_missions.size());
+        res.ArchivedMissions.reserve(_missions.size());
+    }
+
+    for (auto const& i : _missions)
+    {
+        res.CanStartMission.push_back(true);
+        res.ArchivedMissions.push_back(i.second.PacketInfo.MissionRecID);
+    }
+
+    _owner->SendDirectMessage(res.Write());
 }
 
 Map* Garrison::FindMap() const

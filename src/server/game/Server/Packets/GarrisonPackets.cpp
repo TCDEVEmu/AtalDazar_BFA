@@ -528,3 +528,46 @@ WorldPacket const* WorldPackets::Garrison::GarrisonFollowerChangeXP::Write()
 
     return &_worldPacket;
 }
+
+WorldPacket const * WorldPackets::Garrison::GarrisonMissionUpdate::Write()
+{
+    _worldPacket << uint32(ArchivedMissions.size());
+    _worldPacket << uint32(CanStartMission.size());
+
+    if (!ArchivedMissions.empty())
+        _worldPacket.append(ArchivedMissions.data(), ArchivedMissions.size());
+
+    for (bool canStartMission : CanStartMission)
+        _worldPacket.WriteBit(canStartMission);
+
+    _worldPacket.FlushBits();
+
+    return &_worldPacket;
+}
+
+ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Garrison::Shipment const& shipment)
+{
+    data << shipment.ShipmentRecID;
+    data << shipment.ShipmentID;
+    data << shipment.FollowerDBID;
+    data << uint32(shipment.CreationTime);
+    data << shipment.ShipmentDuration;
+    data << shipment.BuildingTypeID;
+
+    return data;
+}
+
+WorldPacket const * WorldPackets::Garrison::GarrisonLandingPage::Write()
+{
+    _worldPacket << Result;
+    _worldPacket << static_cast<uint32>(MsgData.size());
+    for (auto const& map : MsgData)
+        _worldPacket << map;
+
+    return &_worldPacket;
+}
+
+void WorldPackets::Garrison::GarrisonRequestShipmentInfo::Read()
+{
+    _worldPacket >> NpcGUID;
+}

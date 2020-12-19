@@ -19194,6 +19194,10 @@ bool Player::LoadFromDB(ObjectGuid guid, CharacterDatabaseQueryHolder* holder)
     if (classHall->LoadFromDB())
         _garrisons[GARRISON_TYPE_CLASS_HALL] = std::move(classHall);
 
+    std::unique_ptr<WarCampaign> warCampaign = std::make_unique<WarCampaign>(this);
+    if (warCampaign->LoadFromDB())
+        _garrisons[GARRISON_TYPE_WAR_CAMPAIGN] = std::move(warCampaign);
+
     _InitHonorLevelOnLoadFromDB(fields[73].GetUInt32(), fields[74].GetUInt32());
 
     _restMgr->LoadRestBonus(REST_TYPE_HONOR, PlayerRestState(fields[75].GetUInt8()), fields[76].GetFloat());
@@ -29158,6 +29162,7 @@ void Player::SendGarrisonInfo() const
     for (auto const& garrison : _garrisons)
     {
         WorldPackets::Garrison::GarrisonInfo garrisonInfo;
+
         garrisonInfo.GarrTypeID = garrison.second->GetType();
         garrisonInfo.GarrSiteID = garrison.second->GetSiteLevel()->GarrSiteID;
         garrisonInfo.GarrSiteLevelID = garrison.second->GetSiteLevel()->ID;

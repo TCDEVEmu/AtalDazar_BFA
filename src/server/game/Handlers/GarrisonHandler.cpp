@@ -87,9 +87,21 @@ void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::Garrison
         return;
 
     uint32 uiMapId = sObjectMgr->GetAdventureMapUIByCreature(adventureMap->GetEntry());
+    GarrisonType garType = _player->GetCurrentGarrison();
+
+    switch (_player->GetMap()->GetEntry()->ExpansionID)
+    {
+    case EXPANSION_WARLORDS_OF_DRAENOR:     garType = GARRISON_TYPE_GARRISON;       break;
+    case EXPANSION_LEGION:                  garType = GARRISON_TYPE_CLASS_HALL;     break;
+    case EXPANSION_BATTLE_FOR_AZEROTH:      garType = GARRISON_TYPE_WAR_CAMPAIGN;   break;
+    default:                                garType = GARRISON_TYPE_WAR_CAMPAIGN;    break;
+    }
+    _player->SetCurrentGarrison(garType);
 
     if (uiMapId)
     {
+        if (Garrison const* garrison = _player->GetGarrison(_player->GetCurrentGarrison()))
+            garrison->SendMissionListUpdate(true);
         SendPacket(WorldPackets::Garrison::ShowAdventureMap(garrisonOpenMissionNpcClient.NpcGUID, uiMapId).Write());
     }
     else
@@ -102,6 +114,8 @@ void WorldSession::HandleGarrisonOpenMissionNpc(WorldPackets::Garrison::Garrison
                 garrisonOpenMissionNpc.Missions.push_back(p.first);
             }
             SendPacket(garrisonOpenMissionNpc.Write());
+
+            garrison->SendMissionListUpdate(true);
         }
     }
 }
@@ -199,3 +213,31 @@ void WorldSession::HandleGarrisonMissionBonusRoll(WorldPackets::Garrison::Garris
 
     garrison->CalculateMissonBonusRoll(missionBonusRoll.MissionID);
 }
+
+void WorldSession::HandleGarrisonRequestLandingPageShipmentInfo(WorldPackets::Garrison::GarrisonRequestLandingPageShipmentInfo &)
+{
+    GarrisonType garType = _player->GetCurrentGarrison();
+
+    switch (_player->GetMap()->GetEntry()->ExpansionID)
+    {
+    case EXPANSION_WARLORDS_OF_DRAENOR:     garType = GARRISON_TYPE_GARRISON;       break;
+    case EXPANSION_LEGION:                  garType = GARRISON_TYPE_CLASS_HALL;     break;
+    case EXPANSION_BATTLE_FOR_AZEROTH:      garType = GARRISON_TYPE_WAR_CAMPAIGN;   break;
+    default:                                garType = GARRISON_TYPE_WAR_CAMPAIGN;    break;
+    }
+    _player->SetCurrentGarrison(garType);
+
+    if (Garrison* garrison = _player->GetGarrison(garType))
+        garrison->SendGarrisonShipmentLandingPage();
+}
+
+void WorldSession::HandleGarrisonRequestShipmentInfo(WorldPackets::Garrison::GarrisonRequestShipmentInfo & packet)
+{
+    if (!_player->GetNPCIfCanInteractWith(packet.NpcGUID, UNIT_NPC_FLAG_NONE, UNIT_NPC_FLAG_2_SHIPMENT_CRAFTER))
+        return;
+
+    if (Garrison* garrison = _player->GetGarrison(_player->GetCurrentGarrison()))
+        garrison->SendShipmentInfo(packet.NpcGUID);
+}
+
+
