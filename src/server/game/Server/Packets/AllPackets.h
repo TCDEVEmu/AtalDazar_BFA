@@ -54,6 +54,7 @@
 #include "IslandPackets.h"
 #include "ItemPackets.h"
 #include "LFGPackets.h"
+#include "LFGListPackets.h"
 #include "LootPackets.h"
 #include "MailPackets.h"
 #include "MiscPackets.h"

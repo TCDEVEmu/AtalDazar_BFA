@@ -1587,6 +1587,40 @@ struct GlyphBindableSpellEntry
     uint32 GlyphPropertiesID;
 };
 
+struct GroupFinderActivityEntry
+{
+    uint32       ID;
+    LocalizedString* FullName;
+    LocalizedString* ShortName;
+    uint8       GroupFinderCategoryID;
+    int8       OrderIndex;
+    uint16        GroupFinderActivityGrpID;
+    uint8       MinLevel;
+    uint8       MaxLevelSuggestion;
+    uint32        Flags;
+    uint16      MinGearLevelSuggestion;
+    uint16      MapID;
+    uint8       DifficultyID;
+    uint16      AreaID;
+    uint8       MaxPlayers;
+    uint8       DisplayType;
+};
+
+struct GroupFinderActivityGrpEntry
+{
+    uint32       ID;
+    LocalizedString* Name;
+    uint8       OrderIndex;
+};
+
+struct GroupFinderCategoryEntry
+{
+    uint32       ID;
+    LocalizedString* Name;
+    uint8       OrderIndex;
+    uint8       Flags;
+};
+
 struct GlyphPropertiesEntry
 {
     uint32 ID;

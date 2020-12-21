@@ -1073,6 +1073,8 @@ class TC_GAME_API ObjectMgr
 
         InstanceTemplate const* GetInstanceTemplate(uint32 mapId) const;
 
+        Player* GetPlayerByLowGUID(ObjectGuid::LowType const& lowguid) const;
+
         PetLevelInfo const* GetPetLevelInfo(uint32 creature_id, uint8 level) const;
 
         void GetPlayerClassLevelInfo(uint32 class_, uint8 level, uint32& baseMana) const;

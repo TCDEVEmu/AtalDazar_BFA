@@ -63,14 +63,15 @@ enum class StableResult : uint8;
 
 namespace lfg
 {
-struct LfgJoinResultData;
-struct LfgPlayerBoot;
-struct LfgProposal;
-struct LfgQueueStatusData;
-struct LfgPlayerRewardData;
-struct LfgRoleCheck;
-struct LfgUpdateData;
-enum LfgTeleportResult : uint8;
+    struct LfgJoinResultData;
+    struct LfgPlayerBoot;
+    struct LfgProposal;
+    struct LfgQueueStatusData;
+    struct LfgPlayerRewardData;
+    struct LfgRoleCheck;
+    struct LfgUpdateData;
+    enum LfgTeleportResult : uint8;
+
 }
 
 namespace rbac
@@ -510,6 +511,22 @@ namespace WorldPackets
         class DFTeleport;
         class DFGetSystemInfo;
         class DFGetJoinStatus;
+    }
+
+    namespace LfgList
+    {
+        class LfgListApplyToGroup;
+        class LfgListCancelApplication;
+        class LfgListDeclineApplicant;
+        class LfgListInviteApplicant;
+        class LfgListUpdateRequest;
+        class LfgListGetStatus;
+        class LfgListInviteResponse;
+        class LfgListJoin;
+        class LfgListLeave;
+        class LfgListSearch;
+        class RequestLfgListBlacklist;
+        struct ListRequest;
     }
 
     namespace Loot
@@ -1692,6 +1709,21 @@ class TC_GAME_API WorldSession
 
         //Island HandleIslandQueue
         void HandleIslandQueue(WorldPackets::Island::IslandOnQueue& islandQueue);
+
+        // LFG List
+
+        void HandleRequestLfgListBlackList(WorldPackets::LfgList::RequestLfgListBlacklist& packet);
+        void HandleLfgListSearch(WorldPackets::LfgList::LfgListSearch& packet);
+        void HandleLfgListJoin(WorldPackets::LfgList::LfgListJoin& packet);
+        void HandleLfgListLeave(WorldPackets::LfgList::LfgListLeave& packet);
+        void HandleLfgListInviteResponse(WorldPackets::LfgList::LfgListInviteResponse& packet);
+        void HandleLfgListGetStatus(WorldPackets::LfgList::LfgListGetStatus& packet);
+        void HandleLfgListApplyToGroup(WorldPackets::LfgList::LfgListApplyToGroup& packet);
+        void HandleLfgListCancelApplication(WorldPackets::LfgList::LfgListCancelApplication& packet);
+        void HandleLfgListDeclineApplicant(WorldPackets::LfgList::LfgListDeclineApplicant& packet);
+        void HandleLfgListInviteApplicant(WorldPackets::LfgList::LfgListInviteApplicant& packet);
+        void HandleLfgListUpdateRequest(WorldPackets::LfgList::LfgListUpdateRequest& packet);
+
 
         // Looking for Dungeon/Raid
         void SendLfgPlayerLockInfo();

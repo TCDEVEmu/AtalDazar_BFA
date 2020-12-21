@@ -1756,6 +1756,19 @@ class TC_GAME_API Unit : public WorldObject
         float m_modAttackSpeedPct[MAX_ATTACK];
         uint32 m_attackTimer[MAX_ATTACK];
 
+        /// Add timed delayed operation
+        /// @p_Timeout  : Delay time
+        /// @p_Function : Callback function
+        void AddDelayedEvent(uint32 timeout, std::function<void()>&& function)
+        {
+            emptyWarned = false;
+            timedDelayedOperations.push_back(std::pair<uint32, std::function<void()>>(timeout, function));
+        }
+
+        std::vector<std::pair<int32, std::function<void()>>>    timedDelayedOperations;   ///< Delayed operations
+        bool                                                    emptyWarned;              ///< Warning when there are no more delayed operations
+        //AddDelayedEvent
+
         // Event handler
         EventProcessor m_Events;
 

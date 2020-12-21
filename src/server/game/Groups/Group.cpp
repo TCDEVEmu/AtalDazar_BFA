@@ -1994,6 +1994,11 @@ char const* Group::GetLeaderName() const
     return m_leaderName.c_str();
 }
 
+ObjectGuid::LowType Group::GetLowGUID() const
+{
+    return m_guid.GetCounter();
+}
+
 LootMethod Group::GetLootMethod() const
 {
     return m_lootMethod;

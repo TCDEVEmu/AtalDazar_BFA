@@ -499,8 +499,9 @@ enum PlayerAvgItemLevelOffsets
 {
     PLAYER_AVG_ITEM_LEVEL_EQUIPPED_AND_BAG  = 0,
     PLAYER_AVG_ITEM_LEVEL_EQUIPPED          = 1,
-    PLAYER_AVG_ITEM_LEVEL_UNK3              = 2,
-    PLAYER_AVG_ITEM_LEVEL_UNK4              = 3
+    PLAYER_AVG_ITEM_LEVEL_NON_PVP           = 2,
+    PLAYER_AVG_ITEM_LEVEL_PVP               = 3
+
 };
 
 // 2^n values

@@ -655,6 +655,26 @@ void HotfixDatabaseConnection::DoPrepareStatements()
         " WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_GLYPH_REQUIRED_SPEC, "SELECT MAX(ID) + 1 FROM glyph_required_spec", CONNECTION_SYNCH);
 
+    // GroupFinderActivity.db2
+    PrepareStatement(HOTFIX_SEL_GROUP_FINDER_ACTIVITY, "SELECT ID, FullName, ShortName, GroupFinderCategoryID, OrderIndex, GroupFinderActivityGrpID, "
+        "MinLevel, MaxLevelSuggestion, Flags, MinGearLevelSuggestion, MapID, DifficultyID, AreaID, MaxPlayers, DisplayType FROM group_finder_activity"
+        " WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+    PREPARE_MAX_ID_STMT(HOTFIX_SEL_GROUP_FINDER_ACTIVITY, "SELECT MAX(ID) + 1 FROM group_finder_activity", CONNECTION_SYNCH);
+    PREPARE_LOCALE_STMT(HOTFIX_SEL_GROUP_FINDER_ACTIVITY, "SELECT ID, FullName_lang, ShortName_lang FROM group_finder_activity_locale"
+        " WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
+
+    // GroupFinderActivityGrp.db2
+    PrepareStatement(HOTFIX_SEL_GROUP_FINDER_ACTIVITY_GRP, "SELECT ID, Name, OrderIndex FROM group_finder_activity_grp WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+    PREPARE_MAX_ID_STMT(HOTFIX_SEL_GROUP_FINDER_ACTIVITY_GRP, "SELECT MAX(ID) + 1 FROM group_finder_activity_grp", CONNECTION_SYNCH);
+    PREPARE_LOCALE_STMT(HOTFIX_SEL_GROUP_FINDER_ACTIVITY_GRP, "SELECT ID, Name_lang FROM group_finder_activity_grp_locale"
+        " WHERE (`VerifiedBuild` > 0) = ? AND locale = ?", CONNECTION_SYNCH);
+
+    // GroupFinderCategory.db2
+    PrepareStatement(HOTFIX_SEL_GROUP_FINDER_CATEGORY, "SELECT ID, Name, OrderIndex, Flags FROM group_finder_category WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
+    PREPARE_MAX_ID_STMT(HOTFIX_SEL_GROUP_FINDER_CATEGORY, "SELECT MAX(ID) + 1 FROM group_finder_category", CONNECTION_SYNCH);
+    PREPARE_LOCALE_STMT(HOTFIX_SEL_GROUP_FINDER_CATEGORY, "SELECT ID, Name_lang FROM group_finder_category_locale WHERE (`VerifiedBuild` > 0) = ?"
+        " AND locale = ?", CONNECTION_SYNCH);
+
     // GuildColorBackground.db2
     PrepareStatement(HOTFIX_SEL_GUILD_COLOR_BACKGROUND, "SELECT ID, Red, Blue, Green FROM guild_color_background WHERE (`VerifiedBuild` > 0) = ?", CONNECTION_SYNCH);
     PREPARE_MAX_ID_STMT(HOTFIX_SEL_GUILD_COLOR_BACKGROUND, "SELECT MAX(ID) + 1 FROM guild_color_background", CONNECTION_SYNCH);
