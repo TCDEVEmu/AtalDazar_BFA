@@ -15731,8 +15731,11 @@ void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
         CompleteQuest(quest->GetQuestId());
 
     if (!questGiver)
+    {
+        sScriptMgr->OnQuestAccept(this, quest);
         return;
-
+    }
+       
     switch (questGiver->GetTypeId())
     {
         case TYPEID_UNIT:
