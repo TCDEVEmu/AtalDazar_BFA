@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
+#include "Conversation.h"
 #include "the_underrot.h"
 
 BossBoundaryData const boundaries =
@@ -41,9 +42,31 @@ struct instance_the_underrot : public InstanceScript
         instance->SummonCreatureGroup(SUMMON_GROUP_BLOODSWORN_DEFILER);
     }
 
+    void OnPlayerEnter(Player* player) override
+    {
+        Conversation::CreateConversation(9670, player, player->GetPosition(), { player->GetGUID() });
+    };
+
     void OnCreatureCreate(Creature* creature) override
     {
         InstanceScript::OnCreatureCreate(creature);
+
+        if (instance->GetDifficultyID() == 1)
+        {
+            creature->SetLevel(110);
+        }
+        if (instance->GetDifficultyID() == 2)
+        {
+            creature->SetLevel(121);
+        }
+        if (instance->GetDifficultyID() == 23)
+        {
+            creature->SetLevel(122);
+        }
+        if (instance->GetDifficultyID() == 8)
+        {
+            creature->SetLevel(122);
+        }
 
         switch (creature->GetEntry())
         {
