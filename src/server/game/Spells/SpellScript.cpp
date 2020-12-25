@@ -1359,3 +1359,14 @@ Difficulty AuraScript::GetCastDifficulty() const
 {
     return GetAura()->GetCastDifficulty();
 }
+
+void AuraScript::EffectHealAbsorbHandler::Call(AuraScript* auraScript, AuraEffect* aurEff, HealInfo& healInfo, uint32& absorbAmount)
+{
+    (auraScript->*pEffectHandlerScript)(aurEff, healInfo, absorbAmount);
+}
+
+AuraScript::EffectHealAbsorbHandler::EffectHealAbsorbHandler(AuraEffectHealAbsorbFnType _pEffectHandlerScript, uint8 _effIndex)
+    : AuraScript::EffectBase(_effIndex, SPELL_AURA_SCHOOL_HEAL_ABSORB)
+{
+    pEffectHandlerScript = _pEffectHandlerScript;
+}
