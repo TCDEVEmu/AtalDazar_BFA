@@ -25,8 +25,44 @@
 #include "ScriptMgr.h"
 #include "World.h"
 #include "WorldSession.h"
+#include "SpellAuras.h"
+// SPELL_AZERITE_RESIDUE = 260738
+class ps_spell_azerite_residue : public PlayerScript
+{
+public:
+    ps_spell_azerite_residue() : PlayerScript("ps_spell_azerite_residue") { }
 
+    // Called when a player kills another player
+    void OnPVPKill(Player* killer, Player* killed) override
+    {
+        if (killed->HasAura(SPELL_AZERITE_RESIDUE))
+        {
+            if (Aura* aura = killed->GetAura(SPELL_AZERITE_RESIDUE))
+            {
+                uint8 count = aura->GetStackAmount();
+                aura->SetStackAmount(1);
+                if (InstanceScript* instance = killer->GetInstanceScript())
+                    instance->GiveIslandAzeriteXpGain(killer, killed->GetGUID(), count);
+            }
+        }
+    }
+
+    // Called when a player kills a creature
+    void OnCreatureKill(Player* killer, Creature* killed) override
+    {
+        if (killed->HasAura(SPELL_AZERITE_RESIDUE))
+        {
+            if (Aura* aura = killed->GetAura(SPELL_AZERITE_RESIDUE))
+            {
+                uint8 count = aura->GetStackAmount();
+                aura->SetStackAmount(1);
+                if (InstanceScript* instance = killer->GetInstanceScript())
+                    instance->GiveIslandAzeriteXpGain(killer, killed->GetGUID(), count);
+            }
+        }
+    }
+};
 void AddSC_custom_player_script()
 {
-   
+    new ps_spell_azerite_residue();
 }

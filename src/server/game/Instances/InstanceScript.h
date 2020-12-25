@@ -141,6 +141,7 @@ enum IslandWorldStates
 enum IslandSpells
 {
     SPELL_AZERITE_RESIDUE = 260738,
+    SPELL_AZERITE_ENERGY = 265703,
     SPELL_ISLAND_COMPLETE = 245618, // island - complete
 };
 
@@ -476,6 +477,7 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         std::array<uint32, 2> GetIslandCount() const { return _islandCount; }
 
+        void CastIslandAzeriteAura();
         void GiveIslandAzeriteXpGain(Player* player, ObjectGuid guid, int32 xp);
         void IslandComplete(bool winnerIsAlliance);
 

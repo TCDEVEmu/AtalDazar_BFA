@@ -195,6 +195,12 @@ void InstanceScript::OnPlayerDeath(Player* /*player*/)
     }
 }
 
+void InstanceScript::CastIslandAzeriteAura()
+{
+    DoCastSpellOnPlayers(SPELL_AZERITE_RESIDUE);
+    //TO DO cast on pve NPC
+}
+
 void InstanceScript::GiveIslandAzeriteXpGain(Player * player, ObjectGuid guid, int32 xp)
 {
     WorldPackets::Island::IslandAzeriteXpGain xpgain;
@@ -209,8 +215,7 @@ void InstanceScript::GiveIslandAzeriteXpGain(Player * player, ObjectGuid guid, i
     else
         _islandCount[1] = _islandCount[1] + xp;
 
-    for (uint8 i = 0; i < xp; ++i)
-        player->CastSpell(player, SPELL_AZERITE_RESIDUE, true);
+    //player->CastSpell(player, SPELL_AZERITE_ENERGY, true);
 
     DoUpdateWorldState(WORLDSTATE_ALLIANCE_GAIN, _islandCount[0]);
     DoUpdateWorldState(WORLDSTATE_HORDE_GAIN, _islandCount[1]);

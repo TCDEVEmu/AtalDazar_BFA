@@ -108,11 +108,6 @@ public:
             player->RemoveAurasDueToSpell(SPELL_ISLAND_COMPLETE);
         }
 
-        void OnPlayerDeath(Player* player) override
-        {
-            player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
-        }
-
         void Update(uint32 diff) override
         {
             events.Update(diff);
@@ -121,6 +116,7 @@ public:
             case EVENT_START_TIMER:
             
                 isComplete = false;
+                CastIslandAzeriteAura();
                 events.ScheduleEvent(EVENT_GAME_START, 1 * IN_MILLISECONDS);
                 //
                 break;

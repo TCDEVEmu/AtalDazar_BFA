@@ -64,7 +64,6 @@ struct scenario_verdant_wilds : public InstanceScript
         DoUpdateWorldState(15893, 17);
     }
 
-
     void OnPlayerEnter(Player* player) override
     {
         InitWorldState();
@@ -87,7 +86,6 @@ struct scenario_verdant_wilds : public InstanceScript
 
         events.ScheduleEvent(EVENT_START_TIMER, 45 * IN_MILLISECONDS);
     }
-
 
     void FillInitialWorldStates(WorldPackets::WorldState::InitWorldStates& packet) override
     {
@@ -112,11 +110,6 @@ struct scenario_verdant_wilds : public InstanceScript
         player->RemoveAurasDueToSpell(SPELL_ISLAND_COMPLETE);
     }
 
-    void OnPlayerDeath(Player* player) override
-    {
-        player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
-    }
-
     void Update(uint32 diff) override
     {
         events.Update(diff);
@@ -125,6 +118,7 @@ struct scenario_verdant_wilds : public InstanceScript
         case EVENT_START_TIMER:
 
             isComplete = false;
+            CastIslandAzeriteAura();
             events.ScheduleEvent(EVENT_GAME_START, 1 * IN_MILLISECONDS);
             //
             break;

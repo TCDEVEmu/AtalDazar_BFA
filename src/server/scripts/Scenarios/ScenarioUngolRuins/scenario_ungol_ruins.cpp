@@ -14,6 +14,7 @@ LYOSKY
 #include "MiscPackets.h"
 #include "IslandPackets.h"
 #include "WorldSession.h"
+#include "SpellAuras.h"
 
 enum sv_events
 {
@@ -113,11 +114,6 @@ struct scenario_ungol_ruins : public InstanceScript
         player->RemoveAurasDueToSpell(SPELL_ISLAND_COMPLETE);
     }
 
-    void OnPlayerDeath(Player* player) override
-    {
-        player->RemoveAurasDueToSpell(SPELL_AZERITE_RESIDUE);
-    }
-
     void Update(uint32 diff) override
     {
         events.Update(diff);
@@ -126,6 +122,7 @@ struct scenario_ungol_ruins : public InstanceScript
         case EVENT_START_TIMER:
 
             isComplete = false;
+            CastIslandAzeriteAura();
             events.ScheduleEvent(EVENT_GAME_START, 1 * IN_MILLISECONDS);
             //
             break;
@@ -156,11 +153,30 @@ struct scenario_ungol_ruins : public InstanceScript
 protected:
     EventMap events;
 };
+// SPELL_AZERITE_RESIDUE = 260738,
+class spell_azerite_residue_260738 : public AuraScript
+{
+public:
+    PrepareAuraScript(spell_azerite_residue_260738);
 
+    void HandlePeriodic(AuraEffect const* /**/)
+    {
+        if (!GetCaster())
+            return;
 
+        if (Aura* aura = GetCaster()->GetAura(SPELL_AZERITE_RESIDUE))
+            aura->SetStackAmount(std::min((aura->GetStackAmount() + 1), 250));
+    }
+
+    void Register()
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_azerite_residue_260738::HandlePeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
 
 void AddSC_scenario_ungol_ruins()
 {
     RegisterInstanceScript(scenario_ungol_ruins, 1813);
+    RegisterAuraScript(spell_azerite_residue_260738);
 }
 
