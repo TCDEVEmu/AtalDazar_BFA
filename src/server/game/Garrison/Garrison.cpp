@@ -909,6 +909,7 @@ const uint32 FollowerMaxLevel[GARRISON_TYPE_MAX] =
     0,
     100,    // GARRISON_TYPE_GARRISON
     110,    // GARRISON_TYPE_CLASS_HALL
+    120,   // GARRISON_TYPE_WAR_CAMPAIGN
 };
 
 uint32 Garrison::Follower::_EarnXP(uint32 xp)

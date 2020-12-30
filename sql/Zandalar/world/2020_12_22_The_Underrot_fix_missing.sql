@@ -1,4 +1,4 @@
-DELETE FROM `conversation_actors` WHERE (`ConversationId`=9670 AND `ConversationActorId`=0 AND `Idx`=1) OR (`ConversationId`=9672 AND `ConversationActorId`=0 AND `Idx`=1) OR (`ConversationId`=9671 AND `ConversationActorId`=0 AND `Idx`=1) OR (`ConversationId`=9674 AND `ConversationActorId`=0 AND `Idx`=1);
+DELETE FROM `conversation_actors` WHERE `ConversationId` IN (9670, 9671, 9672, 9674);
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `Idx`, `VerifiedBuild`) VALUES
 (9670, 120649, 1, 31478),
 (9672, 120649, 1, 31478),
