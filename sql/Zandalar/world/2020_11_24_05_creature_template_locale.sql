@@ -1,4 +1,4 @@
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (153632, 'zhCN', '饰品商人', NULL, NULL, NULL, 35662),
 (153330, 'zhCN', 'Void Crash Stalker [DNT]', NULL, NULL, NULL, 35662),
 (153292, 'zhCN', '训练假人', NULL, '伤害', NULL, 35662),
@@ -3026,7 +3026,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (147252, 'zhCN', '不满的祖达萨市民', '不满的祖达萨市民', NULL, NULL, 35662),
 (147251, 'zhCN', '法弗雷大使', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (147250, 'zhCN', '破浪者项钰', NULL, NULL, NULL, 35662),
 (147249, 'zhCN', '锈水偷猎者', '锈水偷猎者', NULL, NULL, 35662),
 (147248, 'zhCN', '珊蒂斯·羽月', NULL, '哨兵部队的将军', NULL, 35662),
@@ -6434,7 +6434,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (143271, 'zhCN', '安德尔斯', NULL, NULL, NULL, 35662),
 (143270, 'zhCN', '麦格·莫里斯', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (143269, 'zhCN', 'Elementals Proxy', NULL, NULL, NULL, 35662),
 (143268, 'zhCN', '查理·钱伯斯', NULL, NULL, NULL, 35662),
 (143267, 'zhCN', '乔·米拉尔德', NULL, NULL, NULL, 35662),
@@ -12464,7 +12464,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (136836, 'zhCN', '破影者乌尔祖拉', NULL, NULL, NULL, 35662),
 (136835, 'zhCN', '金托加·比斯贝恩', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (136834, 'zhCN', '剥皮师巴祖鲁', NULL, NULL, NULL, 35662),
 (136833, 'zhCN', '枯枝剧毒祭司', '枯枝剧毒祭司', NULL, NULL, 35662),
 (136832, 'zhCN', '枯枝狂战士', '枯枝狂战士', NULL, NULL, 35662),
@@ -16690,7 +16690,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (131518, 'zhCN', '被诅咒的猎鹰', NULL, '妖仆驯鹰者的伙伴', NULL, 35662),
 (131517, 'zhCN', '受伤的雄鹿', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (131516, 'zhCN', '斯托颂死忠者', NULL, NULL, NULL, 35662),
 (131515, 'zhCN', '长母阿提娜', NULL, '鲜血主母', NULL, 35662),
 (131513, 'zhCN', '高地重殴者', NULL, NULL, NULL, 35662),
@@ -20836,7 +20836,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (124066, 'zhCN', '阿塔祖尔狂热者', '阿塔祖尔狂热者', NULL, NULL, 35662),
 (124063, 'zhCN', '上年纪的乔尔', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (124062, 'zhCN', '拉斯塔哈大王', NULL, NULL, NULL, 35662),
 (124055, 'zhCN', '纳兹曼尼恐天飞龙', NULL, NULL, NULL, 35662),
 (124044, 'zhCN', '书卷贤者戈拉', NULL, '<MOVE ME BACK TO HORDE HUB>', NULL, 35662),
@@ -23548,7 +23548,7 @@ INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `T
 (158958, 'zhCN', '张大师', NULL, NULL, NULL, 35662),
 (158953, 'zhCN', '无面操纵者', NULL, NULL, NULL, 35662);
 
-INSERT INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
+REPLACE INTO `creature_template_locale` (`entry`, `locale`, `Name`, `NameAlt`, `Title`, `TitleAlt`, `VerifiedBuild`) VALUES 
 (158951, 'zhCN', '小拍', NULL, NULL, NULL, 35662),
 (158950, 'zhCN', '奥丁', NULL, NULL, NULL, 35662),
 (158947, 'zhCN', '比斯顿·阀箱', NULL, NULL, NULL, 35662),
