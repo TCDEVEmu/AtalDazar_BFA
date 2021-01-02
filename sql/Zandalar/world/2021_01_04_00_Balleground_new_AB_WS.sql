@@ -1,0 +1,3 @@
+DELETE FROM `battleground_template` WHERE `ID` IN (1014 /*1014*/, 1018 /*1018*/);
+INSERT INTO `battleground_template` (`ID`, `MinPlayersPerTeam`, `MaxPlayersPerTeam`, `MinLvl`, `MaxLvl`, `AllianceStartLoc`, `HordeStartLoc`, `StartMaxDist`, `Weight`, `ScriptName`, `Comment`) VALUES ('1018', '8', '15', '10', '120', '7056', '7055', '0', '1', '', 'AB New Battleground');
+INSERT INTO `battleground_template` (`ID`, `MinPlayersPerTeam`, `MaxPlayersPerTeam`, `MinLvl`, `MaxLvl`, `AllianceStartLoc`, `HordeStartLoc`, `StartMaxDist`, `Weight`, `ScriptName`, `Comment`) VALUES ('1014', '5', '10', '10', '120', '7051', '7050', '0', '1', '', 'WSG New Battleground');
