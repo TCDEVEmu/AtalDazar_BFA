@@ -31,6 +31,18 @@ void AddSC_boss_king_rastakhan();
 void AddSC_boss_stormwall_blockade();
 void AddSC_boss_lady_jaina_proudmoore();
 
+//Uldir 8.0.1
+void AddSC_uldir();
+void AddSC_instance_uldir();
+void AddSC_boss_fetid_devourer();
+void AddSC_boss_ghuun();
+void AddSC_boss_mother();
+void AddSC_boss_mythrax();
+void AddSC_boss_taloc();
+void AddSC_boss_vectis();
+void AddSC_boss_zekvoz();
+void AddSC_boss_zul();
+
 void AddRaid_BFAScripts()
 {
 
@@ -63,4 +75,16 @@ void AddRaid_BFAScripts()
 	AddSC_boss_king_rastakhan();
 	AddSC_boss_stormwall_blockade();
 	AddSC_boss_lady_jaina_proudmoore();
+	
+	//Uldir
+    AddSC_uldir();
+    AddSC_instance_uldir();
+    AddSC_boss_fetid_devourer();
+    AddSC_boss_ghuun();
+    AddSC_boss_mother();
+    AddSC_boss_mythrax();
+    AddSC_boss_taloc();
+    AddSC_boss_vectis();
+    AddSC_boss_zekvoz();
+    AddSC_boss_zul();
 }
