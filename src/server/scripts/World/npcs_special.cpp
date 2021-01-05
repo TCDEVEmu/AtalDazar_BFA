@@ -2344,6 +2344,50 @@ public:
     }
 };
 
+class ps_player_choice_quest : public PlayerScript
+{
+public:
+    ps_player_choice_quest() : PlayerScript("ps_player_choice_quest") {}
+
+    void OnPlayerChoiceResponse(Player* player, uint32 /*choiceId*/, uint32 responseId) override
+    {
+        switch (responseId)
+        {
+        case 847: GetQuestForPlayer(player, 28496); break; // Azshara 9
+        case 848: GetQuestForPlayer(player, 28494); break; // Northern Barrens 9
+        case 864: GetQuestForPlayer(player, 28568); break; // Silverpine Forest 9
+        case 851: GetQuestForPlayer(player, 28493); break; // Ashenvale 19
+        case 868: GetQuestForPlayer(player, 28571); break; // Hillsbrad Foothills 19
+        case 872: GetQuestForPlayer(player, 28688); break; // Northern Stranglethorn 24
+        case 852: GetQuestForPlayer(player, 28532); break; // Stonetalon Mountains 24
+        case 854: GetQuestForPlayer(player, 28548); break; // Desolace 29
+        case 853: GetQuestForPlayer(player, 28549); break; // Southern Barrens 29
+        case 856: GetQuestForPlayer(player, 28510); break; // Feralas 34
+        case 855: GetQuestForPlayer(player, 28504); break; // Thousand Needles 39
+        case 858: GetQuestForPlayer(player, 28509); break; // Tanaris 44
+        case 861: GetQuestForPlayer(player, 28526); break; // Un'Goro Crater 49
+        case 860: GetQuestForPlayer(player, 28545); break; // Winterspring 49
+        case 862: GetQuestForPlayer(player, 28527); break; // Silithus 54        
+        case 887: GetQuestForPlayer(player, 28711); break; // Borean Tundra 68
+        case 888: GetQuestForPlayer(player, 49533); break; // Howling Fjord
+        }
+    }
+
+    void OnSuccessfulSpellCast(Player* player, Spell* spell)
+    {
+        //Horde GameObject 281340
+        if (spell->GetSpellInfo()->Id == 261655)
+            player->SendPlayerChoice(player->GetGUID(), 342);
+    }
+
+    void GetQuestForPlayer(Player* player, uint32 questId)
+    {
+        if (player->GetQuestStatus(questId) == QUEST_STATUS_NONE)
+            if (const Quest* quest = sObjectMgr->GetQuestTemplate(questId))
+                player->AddQuest(quest, nullptr);
+    }
+};
+
 void AddSC_npcs_special()
 {
     new npc_air_force_bots();
@@ -2371,4 +2415,5 @@ void AddSC_npcs_special()
     new npc_allied_race_infos("npc_allied_race_infos_voidelf", 29);
     new npc_allied_race_infos("npc_allied_race_infos_draenei", 30);
     new ps_island_get_xp();
+    new ps_player_choice_quest();
 }

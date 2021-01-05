@@ -29310,15 +29310,42 @@ void Player::SendPlayerChoice(ObjectGuid sender, int32 choiceId)
     if (playerChoiceLocale)
         ObjectMgr::GetLocaleString(playerChoiceLocale->Question, locale, displayPlayerChoice.Question);
 
-    displayPlayerChoice.Responses.resize(playerChoice->Responses.size());
+    displayPlayerChoice.Responses.resize((playerChoice->Responses.size() > 4) ? 4 : playerChoice->Responses.size());
     displayPlayerChoice.CloseChoiceFrame = false;
     displayPlayerChoice.HideWarboardHeader = playerChoice->HideWarboardHeader;
     displayPlayerChoice.KeepOpenAfterChoice = playerChoice->KeepOpenAfterChoice;
-
+    int32 count = 0;
     for (std::size_t i = 0; i < playerChoice->Responses.size(); ++i)
     {
         PlayerChoiceResponse const& playerChoiceResponseTemplate = playerChoice->Responses[i];
-        WorldPackets::Quest::PlayerChoiceResponse& playerChoiceResponse = displayPlayerChoice.Responses[i];
+
+        switch (playerChoiceResponseTemplate.ResponseId)
+        {
+        case 847: if (GetQuestStatus(28496) != QUEST_STATUS_NONE) continue; break; // Azshara 9
+        case 848: if (GetQuestStatus(28494) != QUEST_STATUS_NONE) continue; break; // Northern Barrens 9
+        case 864: if (GetQuestStatus(28568) != QUEST_STATUS_NONE) continue; break; // Silverpine Forest 9
+        case 851: if (GetQuestStatus(28493) != QUEST_STATUS_NONE) continue; break; // Ashenvale 19
+        case 868: if (GetQuestStatus(28571) != QUEST_STATUS_NONE) continue; break; // Hillsbrad Foothills 19
+        case 872: if (GetQuestStatus(28688) != QUEST_STATUS_NONE) continue; break; // Northern Stranglethorn 24
+        case 852: if (GetQuestStatus(28532) != QUEST_STATUS_NONE) continue; break; // Stonetalon Mountains 24
+        case 854: if (GetQuestStatus(28548) != QUEST_STATUS_NONE) continue; break; // Desolace 29
+        case 853: if (GetQuestStatus(28549) != QUEST_STATUS_NONE) continue; break; // Southern Barrens 29
+        case 856: if (GetQuestStatus(28510) != QUEST_STATUS_NONE) continue; break; // Feralas 34
+        case 855: if (GetQuestStatus(28504) != QUEST_STATUS_NONE) continue; break; // Thousand Needles 39
+        case 858: if (GetQuestStatus(28509) != QUEST_STATUS_NONE) continue; break; // Tanaris 44
+        case 861: if (GetQuestStatus(28526) != QUEST_STATUS_NONE) continue; break; // Un'Goro Crater 49
+        case 860: if (GetQuestStatus(28545) != QUEST_STATUS_NONE) continue; break; // Winterspring 49
+        case 862: if (GetQuestStatus(28527) != QUEST_STATUS_NONE) continue; break; // Silithus 54        
+        case 887: if (GetQuestStatus(28711) != QUEST_STATUS_NONE) continue; break; // Borean Tundra 68
+        case 888: if (GetQuestStatus(49533) != QUEST_STATUS_NONE) continue; break; // Howling Fjord
+        default:
+            break;
+        }
+
+        count++;
+        if (count > 4)
+            continue;
+        WorldPackets::Quest::PlayerChoiceResponse& playerChoiceResponse = displayPlayerChoice.Responses[count - 1];
         playerChoiceResponse.ResponseID = playerChoiceResponseTemplate.ResponseId;
         playerChoiceResponse.ChoiceArtFileID = playerChoiceResponseTemplate.ChoiceArtFileId;
         playerChoiceResponse.Flags = playerChoiceResponseTemplate.Flags;
