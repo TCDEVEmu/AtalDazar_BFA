@@ -7614,7 +7614,7 @@ void Player::UpdateZone(Area* oldArea)
     }
 
     sScriptMgr->OnPlayerUpdateZone(this, GetArea(), oldArea);
-    AreaTableEntry const* zoneEntry = newZone ? newZone->GetEntry(): nullptr;
+    AreaTableEntry const* zoneEntry = newZone ? newZone->GetEntry() : nullptr;
 
     uint32 newZoneId = GetZoneId();
     if (sWorld->getBoolConfig(CONFIG_WEATHER))

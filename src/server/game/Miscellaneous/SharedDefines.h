@@ -5142,13 +5142,12 @@ enum BattlegroundTeamId : uint8
 
 #define BG_TEAMS_COUNT  2
 
-// indexes of BattlemasterList.dbc (7.1.5.23360)
 enum BattlegroundTypeId : uint32
 {
     BATTLEGROUND_TYPE_NONE      = 0,   // None
     BATTLEGROUND_AV             = 1,   // Alterac Valley
-    BATTLEGROUND_WS             = 2,   // Warsong Gulch
-    BATTLEGROUND_AB             = 3,   // Arathi Basin
+    BATTLEGROUND_WS             = 1014, // Warsong Gulch
+    BATTLEGROUND_AB             = 1018, // Arathi Basin
     BATTLEGROUND_NA             = 4,   // Nagrand Arena
     BATTLEGROUND_BE             = 5,   // Blade's Edge Arena
     BATTLEGROUND_AA             = 6,   // All Arenas

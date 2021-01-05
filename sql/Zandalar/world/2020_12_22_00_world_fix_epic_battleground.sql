@@ -1,0 +1,2 @@
+DELETE FROM battleground_template WHERE ID = '901';
+INSERT INTO battleground_template (ID, MinPlayersPerTeam, MaxPlayersPerTeam, MinLvl, MaxLvl, AllianceStartLoc, HordeStartLoc, StartMaxDist, Weight, ScriptName, COMMENT) VALUES ('901', '0', '0', '90', '120', '0', '0', '0', '1', '', 'Epic Battleground');
