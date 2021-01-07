@@ -51,17 +51,30 @@ struct scenario_stormwind_extraction : public InstanceScript
         SummonCreatureGroup(SUMMON_GROUP_TALANJI_ZUL_PRISON);
 
         // Temp introduction fix
-        player->GetScheduler().Schedule(2s, [player, talanjizulLionRest](TaskContext /*context*/)
+        player->GetScheduler().Schedule(2s, [player, talanjizulLionRest, this](TaskContext /*context*/)
         {
             talanjizulLionRest->MoveGroupTo(Position(-8671.096680f, 915.972229f, 89.469795f));
-            player->GetScenario()->SendScenarioEvent(player, SCENARIO_EVENT_STORMWIND_INFILTRATION);
+            DoSendEventScenario(SCENARIO_EVENT_STORMWIND_INFILTRATION);
+            player->CompletedCriteriaTreeId(CRITERIA_TREE_INFILTRATE_STORMWIND_CITY);
+            //player->GetScenario()->SendScenarioEvent(player, SCENARIO_EVENT_STORMWIND_INFILTRATION);
         });
     }
 
     void OnCompletedCriteriaTree(CriteriaTree const* tree) override
     {
-        if (tree->ID == CRITERIA_TREE_OPEN_SEWERS)
+        switch (tree->ID)
+        {
+        case CRITERIA_TREE_OPEN_SEWERS:
             HandleGameObject(GetObjectGuid(GOB_SEWER_ACCESS_GATE), true);
+            break;
+        case CRITERIA_TREE_ENTER_THE_STOCKADES:
+            DoCastSpellOnPlayers(SPELL_TELEPORT_STOCKADE);
+            SetData(SCENARIO_EVENT_ENTER_STOCKADE, 1);
+            break;
+        case CRITERIA_TREE_RELEASE_SAURFANG:
+            SetData(SCENARIO_EVENT_FREE_SAURFANG, 1);
+            break;
+        }
     }
 
     void SetData(uint32 type, uint32 /*value*/) override
@@ -78,6 +91,10 @@ struct scenario_stormwind_extraction : public InstanceScript
         {
             DoSendScenarioEvent(SCENARIO_EVENT_FIND_ROKHAN);
 
+            if (!instance->GetPlayers().isEmpty())
+                if (Player* player = instance->GetPlayers().begin()->GetSource())
+                    player->CompletedCriteriaTreeId(CRITERIA_TREE_INFILTRATE_THE_STOCKADES);
+            
             if (Creature* rokhan = GetRokhan())
             {
                 rokhan->RemoveAurasDueToSpell(SPELL_ROKHAN_SOLO_STEALTH);
@@ -158,7 +175,10 @@ struct scenario_stormwind_extraction : public InstanceScript
             }).Schedule(39s, [this](TaskContext /*context*/)
             {
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
+                {
+                    creGroup->NearTeleportGroupTo(Position(-8724.619141f, 877.957153f, 53.732788f));
                     creGroup->MoveGroupTo(Position(-8697.854492f, 899.180908f, 53.731392f));
+                }
 
             }).Schedule(42s, [this](TaskContext /*context*/)
             {
@@ -178,7 +198,17 @@ struct scenario_stormwind_extraction : public InstanceScript
                     thalyssra->AI()->DoAction(3);
 
                 if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
+                {
+                    creGroup->NearTeleportGroupTo(Position(-8697.854492f, 899.180908f, 53.731392f));
                     creGroup->MoveGroupTo(Position(-8645.526367f, 773.394714f, 45.399426f), true);
+                }
+            }).Schedule(78s, [this](TaskContext /*context*/)
+            {
+                if (Creature* thalyssra = GetThalyssra())
+                    thalyssra->NearTeleportTo(Position(-8645.526367f, 773.394714f, 45.399426f));
+
+                if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
+                    creGroup->NearTeleportGroupTo(Position(-8645.526367f, 773.394714f, 45.399426f));
             });
         }
         else if (type == EVENT_END_OF_PRISON_REACHED)
@@ -188,6 +218,14 @@ struct scenario_stormwind_extraction : public InstanceScript
             Creature* thalyssra = GetThalyssra();
             if (!thalyssra)
                 return;
+
+            thalyssra->NearTeleportTo(Position(-8645.526367f, 773.394714f, 45.399426f));
+
+            if (CreatureGroup* creGroup = GetCreatureGroup(SUMMON_GROUP_ALL_AFTER_FREED))
+            {
+                creGroup->NearTeleportGroupTo(Position(-8645.526367f, 773.394714f, 45.399426f));
+                creGroup->MoveGroupTo(Position(-8645.526367f, 773.394714f, 45.399426f), true);
+            }
 
             thalyssra->GetScheduler().Schedule(15s, [this](TaskContext /*context*/)
             {
@@ -255,23 +293,23 @@ struct scenario_stormwind_extraction : public InstanceScript
                     thalyssra->SetWalk(false);
                     thalyssra->SetSpeed(MOVE_RUN, 6.f);
                     thalyssra->GetMotionMaster()->MovePoint(1, -8743.606445f, 998.370361f, 44.149288f);
+                });
+
+                thalyssra->GetScheduler().Schedule(15s, [this, thalyssra](TaskContext /*context*/)
+                {
+                    thalyssra->AI()->DoAction(1);
 
                     if (CreatureGroup* group = GetCreatureGroup(SUMMON_GROUP_GUARD_FIRST_ROOM))
                         group->MoveGroupTo(Position(-8747.977539f, 997.306824f, 44.148872f));
                 });
             }
         }
+    }
 
-        if (creatureGroupId == SUMMON_GROUP_GUARD_FIRST_ROOM)
-        {
-            if (Creature* thalyssra = GetThalyssra())
-            {
-                thalyssra->GetScheduler().Schedule(2s, [thalyssra](TaskContext /*context*/)
-                {
-                    thalyssra->AI()->DoAction(1);
-                });
-            }
-        }
+    void OnUnitDeath(Unit* unit) override
+    {
+        if(unit->GetEntry() == NPC_MAGE_COMMANDER_LYRA)
+            SetData(EVENT_END_OF_PRISON_REACHED, 1);
     }
 
 private:

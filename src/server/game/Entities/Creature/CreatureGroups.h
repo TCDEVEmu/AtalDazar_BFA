@@ -92,6 +92,7 @@ class TC_GAME_API CreatureGroup
         void FormationReset(bool dismiss);
 
         void MoveGroupTo(Position destination, bool fightMove = false);
+        void NearTeleportGroupTo(Position destination);
 
         void LeaderMoveTo(Position destination, uint32 id = 0, uint32 moveType = 0, bool orientation = false);
         void MemberEngagingTarget(Creature* member, Unit* target);

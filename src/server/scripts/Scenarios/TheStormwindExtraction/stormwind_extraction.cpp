@@ -23,11 +23,11 @@
 #include "ScriptMgr.h"
 #include "stormwind_extraction.h"
 
-// 281484 - Sewer access portal
+// 281475 - Sewer access portal
 struct go_se_sewer_access_portal : public GameObjectAI
 {
     go_se_sewer_access_portal(GameObject* go) : GameObjectAI(go) { }
-
+    /*
     void Reset() override
     {
         me->GetScheduler().CancelAll();
@@ -48,6 +48,21 @@ struct go_se_sewer_access_portal : public GameObjectAI
             context.Repeat();
         });
     }
+    */
+    bool GossipHello(Player* player) override
+    {
+        if (Scenario* scenario = player->GetScenario())
+        {
+            if (scenario->CheckCompletedCriteriaTree(CRITERIA_TREE_OPEN_SEWERS, player))
+            {             
+                scenario->SendScenarioEvent(player, SCENARIO_EVENT_ENTER_STOCKADE);
+                player->CompletedCriteriaTreeId(CRITERIA_TREE_ENTER_THE_STOCKADES);
+
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 // 134037
@@ -63,6 +78,11 @@ struct npc_se_thalyssra : public CombatAI
             MoveCombat(Position(-8690.216797f, 902.533203f, 53.732910f));
         else if (actionId == 2)
             MoveCombat(Position(-8741.128906f, 885.286560f, 52.815895f));
+        else if (actionId == 3)
+        {
+            me->NearTeleportTo(Position(-8697.854492f, 899.180908f, 53.731392f));
+            MoveCombat(Position(-8645.526367f, 773.394714f, 45.399426f));
+        }
     }
 
     void MovementInform(uint32 type, uint32 id) override
@@ -102,8 +122,7 @@ struct npc_se_saurfang : public ScriptedAI
 
         }).Schedule(47s, [](TaskContext context)
         {
-            if (InstanceScript* instanceScript = GetContextPlayer()->GetInstanceScript())
-                instanceScript->SetData(SCENARIO_EVENT_FREE_SAURFANG, 1);
+            GetContextPlayer()->CompletedCriteriaTreeId(CRITERIA_TREE_RELEASE_SAURFANG);
         });
 
         return false;
@@ -117,11 +136,12 @@ struct go_se_talanji_zul_cell_door : public GameObjectAI
 
     void OnStateChanged(uint32 state) override
     {
-        if (state == GO_ACTIVATED)
+        //if (state == GO_ACTIVATED)
         {
+        
             if (InstanceScript* instanceScript = me->GetInstanceScript())
             {
-                instanceScript->DoSendScenarioEvent(SCENARIO_EVENT_FREE_PRISONNERS);
+                instanceScript->DoSendEventScenario(SCENARIO_EVENT_FREE_PRISONNERS);
                 instanceScript->SetData(SCENARIO_EVENT_FREE_PRISONNERS, 1);
             }
         }

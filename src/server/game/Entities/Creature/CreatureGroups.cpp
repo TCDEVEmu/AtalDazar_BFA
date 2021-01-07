@@ -257,6 +257,31 @@ void CreatureGroup::MoveGroupTo(Position destination, bool fightMove /*= false*/
     }
 }
 
+void CreatureGroup::NearTeleportGroupTo(Position destination)
+{
+    if (!m_leader)
+        return;
+
+    float centerX = 0.f, centerY = 0.f;
+    for (auto itr : m_members)
+    {
+        centerX += itr.first->GetPositionX();
+        centerY += itr.first->GetPositionY();
+    }
+
+    centerX /= m_members.size();
+    centerY /= m_members.size();
+
+    for (auto itr : m_members)
+    {
+        float destX = itr.first->GetPositionX() + (destination.GetPositionX() - centerX);
+        float destY = itr.first->GetPositionY() + (destination.GetPositionY() - centerY);
+        float destZ = m_leader->GetMap()->GetHeight(m_leader->GetPhaseShift(), destX, destY, destination.GetPositionZ() + 1.f, true);
+
+        itr.first->NearTeleportTo(destX, destY, destZ, itr.first->GetOrientation());
+    }
+}
+
 void CreatureGroup::LeaderMoveTo(Position destination, uint32 id /*= 0*/, uint32 moveType /*= 0*/, bool orientation /*= false*/)
 {
     //! To do: This should probably get its own movement generator or use WaypointMovementGenerator.
