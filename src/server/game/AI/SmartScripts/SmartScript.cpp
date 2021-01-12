@@ -42,6 +42,7 @@
 #include "SpellMgr.h"
 #include "TemporarySummon.h"
 #include "Vehicle.h"
+#include "LFGMgr.h"
 
 SmartScript::SmartScript()
 {
@@ -2496,6 +2497,21 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 }
             }
 
+            break;
+        }
+        case SMART_ACTION_ENTER_LFG_QUEUE:
+        {
+            Player* player = unit->ToPlayer();
+
+            if (player == nullptr)
+                return;
+
+            std::set<uint32> newDungeons;
+            uint8 roles= e.action.enterLfgQueue.RoleMask;
+
+            newDungeons.insert(e.action.enterLfgQueue.DungeonID);
+
+            sLFGMgr->JoinLfg(player, roles, newDungeons);
             break;
         }
         case SMART_ACTION_CAST_SPELL_OFFSET:

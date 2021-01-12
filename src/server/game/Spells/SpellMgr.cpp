@@ -4153,6 +4153,36 @@ void SpellMgr::LoadSpellInfoCorrections()
         }
     });
 
+    //Free Hold Correction
+
+    // Dive Bomb boss skycap_kragg
+    ApplySpellFix({ 272046 }, [](SpellInfo* spellInfo)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = SPELL_EFFECT_DUMMY; // SPELL_EFFECT_254 IS UNHANDLE
+        });
+
+    // Cannon Barrage boss Harlan Sweete
+    ApplySpellFix({ 257310 }, [](SpellInfo* spellInfo)
+        {
+            spellInfo->AttributesEx3 |= SPELL_ATTR3_ONLY_TARGET_PLAYERS;
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_2))->Effect = 0;
+        });
+
+    // Black Powder Bomb boss Harlan Sweete
+    ApplySpellFix({ 257314 }, [](SpellInfo* spellInfo)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->ApplyAuraName = SPELL_AURA_DUMMY;
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->Effect = 0;
+        });
+
+    // Swiftwind Saber boss Harlan Sweete
+    ApplySpellFix({ 257268 }, [](SpellInfo* spellInfo)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->Effect = 0; //Handle  the summon in cpp of the boss
+        });
+
+    //End Free Hold Correction
+
 
     ApplySpellFix({
         70661, // See quest invis 1
