@@ -22,22 +22,20 @@
 void Trinity::Banner::Show(char const* applicationName, void(*log)(char const* text), void(*logExtraInfo)())
 {
     log(" ");
-	log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
+    log(Trinity::StringFormat("%s (%s)", GitRevision::GetFullVersion(), applicationName).c_str());
     log("<Ctrl-C> to stop.\n");
-    log("               _                                      ");
-    log("     /\\       | |                                     ");
-    log("    /  \\   ___| |__   __ _ _ __ ___   __ _ _ __   ___ ");
-    log("   / /\\ \\ / __| '_ \\ / _` | '_ ` _ \\ / _` | '_ \\ / _ \\");
-    log("  / ____ \\\\__ \\ | | | (_| | | | | | | (_| | | | |  __/");
-    log(" /_/    \\_\\___/_| |_|\\__,_|_| |_| |_|\\__,_|_| |_|\\___|\n");
-    log("          The Ashamane Project - Ashamane Core");
+    log("88888888                         88            88                  ");
+    log("//////88                         /88           /88                 ");
+    log("     88    888888   8888888      /88  888888   /88  888888   888888");
+    log("    88    //////88 //88///88  888888 //////88  /88 //////88 //88//8");
+    log("   88      8888888  /88  /88 88///88  8888888  /88  8888888  /88 / ");
+    log("  88      88////88  /88  /88/88  /88 88////88  /88 88////88  /88   ");
+    log(" 88888888//88888888 888  /88//888888//88888888 888//88888888/888   ");
+    log("////////  //////// ///   //  //////  //////// ///  //////// ///    ");
+    log("                  The Zandalar Project-2020     ");
+    log("  Based on Ashamane, with credit to their team and contributions.  ");
+    log("        *Discord>>>> https://discord.gg/4cPgKP6Z <<<< Join         ");
     log(" ");
-    log(" ");
-    log("Based on TrinityCore, with credit to their team and contributions.");
-    log("http://TrinityCore.org");
-    log(" ");
-    log(" ");
-
     if (logExtraInfo)
         logExtraInfo();
 }
