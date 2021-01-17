@@ -166,10 +166,10 @@ public:
 };
 
 //139093
-class npc_orgrimmar_isabella : public CreatureScript
+class npc_orgrimmar_isabella : public ScriptedAI
 {
 public:
-    npc_orgrimmar_isabella() : CreatureScript("npc_orgrimmar_isabella") { }
+    npc_orgrimmar_isabella(Creature* creature) : ScriptedAI(creature) { }
 
     enum Credits
     {
@@ -178,7 +178,7 @@ public:
     };
 
     // prueba 
-    bool OnGossipHello(Player* player, Creature* creature) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->KilledMonsterCredit(Credits::Speak_with_Isabella);
         player->KilledMonsterCredit(Credits::The_Battle_for_Lordaeron);
@@ -206,6 +206,19 @@ struct npc_nathanos_orgrimmar : public ScriptedAI
     }
 };
 
+struct khadgars_upgraded_servant : public ScriptedAI
+{
+    khadgars_upgraded_servant(Creature* creature) : ScriptedAI(creature) { }
+
+    void QuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == 44663)
+        {
+            me->DestroyForPlayer(player);
+        }        
+    }
+};
+
 void AddSC_orgrimmar()
 {
     RegisterCreatureAI(npc_orgri_mission_orders_speak_sylvanas);
@@ -214,7 +227,8 @@ void AddSC_orgrimmar()
     RegisterCreatureAI(npc_nathanos_team_meeting);  
     RegisterQuestScript(quest_stormwind_extraction);
     RegisterCreatureAI(npc_skyhorn_eagle);
-    new npc_orgrimmar_isabella();
+    RegisterCreatureAI(npc_orgrimmar_isabella);
     new zone_orgrimmar_start_bfa();
     RegisterCreatureAI(npc_nathanos_orgrimmar);
+    RegisterCreatureAI(khadgars_upgraded_servant);
 }
