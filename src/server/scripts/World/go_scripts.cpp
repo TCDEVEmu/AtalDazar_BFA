@@ -1549,8 +1549,15 @@ void AddSC_go_scripts()
     new go_midsummer_music();
     new go_darkmoon_faire_music();
     new go_pirate_day_music();
-    new go_allied_race_infos("go_allied_race_infos_nightborne", 27);
-    new go_allied_race_infos("go_allied_race_infos_tauren",     28);
-    new go_allied_race_infos("go_allied_race_infos_voidelf",    29);
-    new go_allied_race_infos("go_allied_race_infos_draenei",    30);
+    new go_allied_race_infos("go_allied_race_infos_nightborne",         27);
+    new go_allied_race_infos("go_allied_race_infos_highmountaintauren", 28);
+    new go_allied_race_infos("go_allied_race_infos_voidelf",            29);
+    new go_allied_race_infos("go_allied_race_infos_lightforgeddraenei", 30);
+    new go_allied_race_infos("go_allied_race_infos_zandalaritroll",     31);
+    new go_allied_race_infos("go_allied_race_infos_kultiran",           32);
+    new go_allied_race_infos("go_allied_race_infos_human",              33); // NYU
+    new go_allied_race_infos("go_allied_race_infos_darkirondwarf",      34);
+    new go_allied_race_infos("go_allied_race_infos_vulpera",            35);
+    new go_allied_race_infos("go_allied_race_infos_magharorc",          36);
+    new go_allied_race_infos("go_allied_race_infos_mechagnome",         37);
 }

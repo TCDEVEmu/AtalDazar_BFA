@@ -45,96 +45,6 @@ enum
     QUEST_BLINK_OF_AN_EYE   = 44663,
 };
 
-// TODO : All this script is temp fix,
-// remove it when legion start quests are properly fixed
-class OnLegionArrival : public PlayerScript
-{
-public:
-    OnLegionArrival() : PlayerScript("OnLegionArrival") { }
-
-    enum
-    {
-        SPELL_MAGE_LEARN_GUARDIAN_HALL_TP   = 204287,
-        SPELL_WAR_LEARN_JUMP_TO_SKYHOLD     = 192084,
-        SPELL_DRUID_CLASS_HALL_TP           = 204874,
-        SPELL_CREATE_CLASS_HALL_ALLIANCE    = 185506,
-        SPELL_CREATE_CLASS_HALL_HORDE       = 192191,
-    };
-
-    void OnLogin(Player* player, bool firstLogin) override
-    {
-        // Can happen in recovery cases
-        if (player->getLevel() >= 100 && firstLogin)
-            HandleLegionArrival(player);
-    }
-
-    void OnLevelChanged(Player* player, uint8 oldLevel) override
-    {
-        if (oldLevel < 100 && player->getLevel() >= 100)
-            HandleLegionArrival(player);
-    }
-
-    void HandleLegionArrival(Player* player)
-    {
-        switch (player->getClass())
-        {
-            case CLASS_MAGE:
-                player->CastSpell(player, SPELL_MAGE_LEARN_GUARDIAN_HALL_TP, true);
-                break;
-            case CLASS_WARRIOR:
-                player->CastSpell(player, SPELL_WAR_LEARN_JUMP_TO_SKYHOLD, true);
-                break;
-            case CLASS_DRUID:
-                player->CastSpell(player, SPELL_DRUID_CLASS_HALL_TP, true);
-                break;
-            case CLASS_HUNTER:
-                player->m_taxi.SetTaximaskNode(1848); // Hunter Class Hall
-                break;
-            default:
-                break;
-        }
-
-        player->CastSpell(player, player->IsInAlliance() ? SPELL_CREATE_CLASS_HALL_ALLIANCE : SPELL_CREATE_CLASS_HALL_HORDE, true);
-
-        if (player->GetQuestStatus(QUEST_BLINK_OF_AN_EYE) == QUEST_STATUS_NONE)
-        {
-
-            if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_BLINK_OF_AN_EYE))
-                player->AddQuest(quest, nullptr);
-        }
-    }
-};
-
-class On110Arrival : public PlayerScript
-{
-public:
-    On110Arrival() : PlayerScript("On110Arrival") { }
-
-    enum
-    {
-        QUEST_UNITING_THE_ISLES     = 43341,
-    };
-
-    void OnLogin(Player* player, bool firstLogin) override
-    {
-        // Can happen in recovery cases
-        if (player->getLevel() >= 110 && firstLogin)
-            Handle110Arrival(player);
-    }
-
-    void OnLevelChanged(Player* player, uint8 oldLevel) override
-    {
-        if (oldLevel < 110 && player->getLevel() >= 110)
-            Handle110Arrival(player);
-    }
-
-    void Handle110Arrival(Player* player)
-    {
-        if (player->GetQuestStatus(QUEST_UNITING_THE_ISLES) == QUEST_STATUS_NONE)
-            if (const Quest* quest = sObjectMgr->GetQuestTemplate(QUEST_UNITING_THE_ISLES))
-                player->AddQuest(quest, nullptr);
-    }
-};
 
 // 228329 & 228330 - T?l?portation
 class spell_dalaran_teleportation : public SpellScript
@@ -171,17 +81,17 @@ class spell_dalaran_teleportation : public SpellScript
 };
 
 // 113986 - Khadgar
-class npc_dalaran_karazhan_khadgar : public CreatureScript
+class npc_dalaran_karazhan_khadgar : public ScriptedAI
 {
 public:
-    npc_dalaran_karazhan_khadgar() : CreatureScript("npc_dalaran_karazhan_khadgar") { }
+    npc_dalaran_karazhan_khadgar(Creature* creature) : ScriptedAI(creature) { }
 
     enum
     {
         SPELL_PLAY_DALARAN_TELEPORTATION_SCENE = 227861
     };
 
-    bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 /*uiAction*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->CastSpell(player, SPELL_PLAY_DALARAN_TELEPORTATION_SCENE, true);
         return true;
@@ -2208,11 +2118,8 @@ class spell_redoubt_teleport_to_dh_ch : public SpellScript
 
 void AddSC_dalaran_legion()
 {
-    new OnLegionArrival();
-    new On110Arrival();
-
     RegisterSpellScript(spell_dalaran_teleportation);
-    new npc_dalaran_karazhan_khadgar();
+    RegisterCreatureAI(npc_dalaran_karazhan_khadgar);
     new scene_dalaran_kharazan_teleportion();
     new zone_legion_dalaran_underbelly();
     new npc_hunter_talua();
