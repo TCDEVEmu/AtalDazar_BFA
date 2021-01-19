@@ -99,9 +99,9 @@ DELETE FROM `creature` WHERE `guid`='210119245';
 DELETE FROM `creature` WHERE `guid`='210119243';
 DELETE FROM `creature` WHERE `guid`='210119246';
 
-UPDATE `gameobject_template` SET `entry`='298865', `ScriptName`='go_allied_race_infos_darkirondwarf', WHERE (`entry`='298865');
-UPDATE `gameobject_template` SET `entry`='316736', `ScriptName`='go_allied_race_infos_kultiran', WHERE (`entry`='316736');
-UPDATE `gameobject_template` SET `entry`='273855', `ScriptName`='go_allied_race_infos_lightforgeddraenei', WHERE (`entry`='273855');
-UPDATE `gameobject_template` SET `entry`='273853', `ScriptName`='go_allied_race_infos_voidelf', WHERE (`entry`='273853');
-UPDATE `gameobject_template` SET `entry`='273286', `ScriptName`='go_allied_race_infos_highmountaintauren', WHERE (`entry`='273286');
+UPDATE `gameobject_template` SET `entry`='298865', `ScriptName`='go_allied_race_infos_darkirondwarf' WHERE (`entry`='298865');
+UPDATE `gameobject_template` SET `entry`='316736', `ScriptName`='go_allied_race_infos_kultiran' WHERE (`entry`='316736');
+UPDATE `gameobject_template` SET `entry`='273855', `ScriptName`='go_allied_race_infos_lightforgeddraenei' WHERE (`entry`='273855');
+UPDATE `gameobject_template` SET `entry`='273853', `ScriptName`='go_allied_race_infos_voidelf' WHERE (`entry`='273853');
+UPDATE `gameobject_template` SET `entry`='273286', `ScriptName`='go_allied_race_infos_highmountaintauren' WHERE (`entry`='273286');
 
