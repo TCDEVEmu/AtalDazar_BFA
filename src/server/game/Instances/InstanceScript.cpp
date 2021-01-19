@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -775,6 +775,14 @@ void InstanceScript::DoCastSpellOnPlayers(uint32 spell, Unit* caster /*= nullptr
     {
         Unit* spellCaster = caster ? caster : player;
         spellCaster->CastSpell(player, spell, triggered);
+    });
+}
+
+void InstanceScript::DoPlaySceneOnPlayers(uint32 sceneId)
+{
+    DoOnPlayers([sceneId](Player * player)
+    {
+        player->GetSceneMgr().PlayScene(sceneId);
     });
 }
 
@@ -1573,13 +1581,13 @@ void InstanceScript::CastChallengeCreatureSpell(Creature* creature)
 
     if (isDungeonBoss)
     {
-        // 9 Tyrannical 残暴
+        // 9 Tyrannical ??
         if (HasAffix(Affixes::Tyrannical))
         {
             modHealth *= 1.4f;
             modDamage *= 1.15f;
         }
-    }//10 Fortified 强韧
+    }//10 Fortified ??
     else if (HasAffix(Affixes::Fortified))
     {
         modHealth *= 1.2f;
@@ -1592,30 +1600,30 @@ void InstanceScript::CastChallengeCreatureSpell(Creature* creature)
     values.AddSpellMod(SPELLVALUE_BASE_POINT1, modDamage);
 
     // Affixes
-    values.AddSpellMod(SPELLVALUE_BASE_POINT2, (HasAffix(Affixes::Raging) && !isDungeonBoss) ? 1 : 0); // 6 Raging 暴怒
-    values.AddSpellMod(SPELLVALUE_BASE_POINT3, HasAffix(Affixes::Bolstering) ? 1 : 0); // 7 Bolstering 激励
-    values.AddSpellMod(SPELLVALUE_BASE_POINT4, (HasAffix(Affixes::Tyrannical) && isDungeonBoss) ? 1 : 0); // 9 Tyrannical 残暴
+    values.AddSpellMod(SPELLVALUE_BASE_POINT2, (HasAffix(Affixes::Raging) && !isDungeonBoss) ? 1 : 0); // 6 Raging ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT3, HasAffix(Affixes::Bolstering) ? 1 : 0); // 7 Bolstering ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT4, (HasAffix(Affixes::Tyrannical) && isDungeonBoss) ? 1 : 0); // 9 Tyrannical ??
     values.AddSpellMod(SPELLVALUE_BASE_POINT5, 1); //
     values.AddSpellMod(SPELLVALUE_BASE_POINT6, 1); //
-    values.AddSpellMod(SPELLVALUE_BASE_POINT7, HasAffix(Affixes::Volcanic) ? 1 : 0); // 3 Volcanic 火山
-    values.AddSpellMod(SPELLVALUE_BASE_POINT8, HasAffix(Affixes::Necrotic) ? 1 : 0); // 4 Necrotic 死疽
-    values.AddSpellMod(SPELLVALUE_BASE_POINT9, (HasAffix(Affixes::Fortified) && !isDungeonBoss) ? 1 : 0); // 10 Fortified 强韧
-    values.AddSpellMod(SPELLVALUE_BASE_POINT10, HasAffix(Affixes::Sanguine) ? 1 : 0); // 8 Sanguine 血池
-    values.AddSpellMod(SPELLVALUE_BASE_POINT11, HasAffix(Affixes::Quaking) ? 1 : 0); // 14 Quaking 震荡
-    values.AddSpellMod(SPELLVALUE_BASE_POINT12, HasAffix(Affixes::FelExplosives) ? 1 : 0); // 13 Explosive 易爆
-    values.AddSpellMod(SPELLVALUE_BASE_POINT13, HasAffix(Affixes::Bursting) ? 1 : 0); // 11 Bursting 崩裂
-    //5 15 冷酷
+    values.AddSpellMod(SPELLVALUE_BASE_POINT7, HasAffix(Affixes::Volcanic) ? 1 : 0); // 3 Volcanic ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT8, HasAffix(Affixes::Necrotic) ? 1 : 0); // 4 Necrotic ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT9, (HasAffix(Affixes::Fortified) && !isDungeonBoss) ? 1 : 0); // 10 Fortified ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT10, HasAffix(Affixes::Sanguine) ? 1 : 0); // 8 Sanguine ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT11, HasAffix(Affixes::Quaking) ? 1 : 0); // 14 Quaking ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT12, HasAffix(Affixes::FelExplosives) ? 1 : 0); // 13 Explosive ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT13, HasAffix(Affixes::Bursting) ? 1 : 0); // 11 Bursting ??
+    //5 15 ??
     //values.AddSpellMod(SPELLVALUE_BASE_POINT14, 0); //
     //values.AddSpellMod(SPELLVALUE_BASE_POINT15, 0); //
     creature->CastCustomSpell(SPELL_CHALLENGER_MIGHT, values, creature, TRIGGERED_FULL_MASK);
-    //5 Teeming 繁盛
+    //5 Teeming ??
     if (HasAffix(Affixes::Teeming) && !creature->IsDungeonBoss() && !creature->IsSummon() && !creature->IsAffixDisabled() && roll_chance_f(30.0f) && creature->GetSpawnId()) // Only for real creature summon copy
     {
         Position pos;
         pos = creature->GetNearPosition(6.0f, creature->GetOrientation());
         creature->SummonCreature(creature->GetEntry(), pos, TEMPSUMMON_DEAD_DESPAWN, 60000);
     }
-    if (!creature->IsDungeonBoss() && HasAffix(Affixes::Relentless))//Relentless 冷酷
+    if (!creature->IsDungeonBoss() && HasAffix(Affixes::Relentless))//Relentless ??
     {
         creature->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
         creature->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK_DEST, true);
@@ -1639,9 +1647,9 @@ void InstanceScript::CastChallengePlayerSpell(Player* player)
     CustomSpellValues values;
 
     // Affixes
-    values.AddSpellMod(SPELLVALUE_BASE_POINT1, HasAffix(Affixes::Overflowing) ? 1 : 0);// 1 Overflowing 溢出
-    values.AddSpellMod(SPELLVALUE_BASE_POINT2, (HasAffix(Affixes::Skittish) && player->isInTankSpec()) ? 1 : 0); // 2 Skittish 无常
-    values.AddSpellMod(SPELLVALUE_BASE_POINT3, HasAffix(Affixes::Grievous) ? 1 : 0);  // 12 Grievous 重伤
+    values.AddSpellMod(SPELLVALUE_BASE_POINT1, HasAffix(Affixes::Overflowing) ? 1 : 0);// 1 Overflowing ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT2, (HasAffix(Affixes::Skittish) && player->isInTankSpec()) ? 1 : 0); // 2 Skittish ??
+    values.AddSpellMod(SPELLVALUE_BASE_POINT3, HasAffix(Affixes::Grievous) ? 1 : 0);  // 12 Grievous ??
 
     player->CastCustomSpell(SPELL_CHALLENGER_BURDEN, values, player, TRIGGERED_FULL_MASK);
 }
