@@ -79,12 +79,6 @@ namespace rbac
 class RBACData;
 }
 
-namespace BattlePay
-{
-    struct Product;
-    struct Purchase;
-    enum Error : uint8;
-}
 
 enum AuthFlags
 {
@@ -188,23 +182,6 @@ namespace WorldPackets
     {
         class Request;
         class RequestRealmListTicket;
-    }
-
-    namespace BattlePayPackets
-    {
-        class GetProductList;
-        class GetPurchaseList;
-        class StartPurchase;
-        class ConfirmPurchaseResponse;
-        class AckFailedResponse;
-        class GetProductListResponse;
-        class GetPurchaseListResponse;
-        class GetDistributionListResponse;
-        class StartPurchaseResponse;
-        class ConfirmPurchase;
-        class PurchaseUpdate;
-        class DeliveryEnded;
-        class AckFailed;
     }
 
     namespace BattlePet
@@ -1938,26 +1915,10 @@ class TC_GAME_API WorldSession
         void HandleAzeriteEssenceActivateEssence(WorldPackets::Azerite::AzeriteEssenceActivateEssence& azeriteEssenceActivateEssence);
         void HandleAzeriteEmpoweredItemViewed(WorldPackets::Azerite::AzeriteEmpoweredItemViewed& azeriteEmpoweredItemViewed);
         void HandleAzeriteEmpoweredItemSelectPower(WorldPackets::Azerite::AzeriteEmpoweredItemSelectPower& azeriteEmpoweredItemSelectPower);
-
-        // Battle Pay
-        void HandleGetProductList(WorldPackets::BattlePayPackets::GetProductList& /*getProductList*/);
-        void HandleGetPurchaseList(WorldPackets::BattlePayPackets::GetPurchaseList& /*getPurchaseList*/);
-        void HandleStartPurchase(WorldPackets::BattlePayPackets::StartPurchase& packet);
-        void HandleConfirmPurchaseResponse(WorldPackets::BattlePayPackets::ConfirmPurchaseResponse& packet);
-        void HandleAckFailedResponse(WorldPackets::BattlePayPackets::AckFailedResponse& packet);
-        void SendGetProductListResponse();
-        void SendGetPurchaseListResponse();
-        void SendGetDistributionListResponse();
-        void SendStartPurchaseResponse(uint32 ClientToken, uint64 PurchaseID, uint32 PurchaseResult);
-        void SendConfirmPurchase(uint32 ServerToken, uint64 PurchaseID, uint64 CurrentFixedPrice);
-        void SendPurchaseUpdate(BattlePay::Purchase* purchase);
-        void SendDeliveryEnded(uint32 itemId);
-        void SendAckFailed(BattlePay::Purchase* purchase, BattlePay::Error error);
+     
         AuthFlags GetAF() const { return atAuthFlag; }
         bool HasAuthFlag(AuthFlags f) const { return atAuthFlag & f; }
-        void AddAuthFlag(AuthFlags f);
-        void RemoveAuthFlag(AuthFlags f);
-        void SaveAuthFlag();
+       
 
 
         union ConnectToKey

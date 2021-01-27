@@ -187,31 +187,6 @@ DELETE FROM `conversation_actor_template` WHERE `Id` IN
 136392
 );
 
-DELETE FROM `conversation_actor_template` WHERE `Id` IN 
-(
-137109,
-144380,
-124651,
-105317,
-140129,
-130367,
-126076,
-125496,
-133243,
-124787,
-126309,
-140039,
-139491,
-133240,
-134282,
-131736,
-131737,
-140126,
-125138,
-126794,
-136392
-);
-
 INSERT INTO `conversation_actor_template` (`Id`, `CreatureId`, `CreatureModelId`, `VerifiedBuild`) VALUES
 (137109, 137109, 17122, 32722),
 (144380, 144380, 88541, 32722),
