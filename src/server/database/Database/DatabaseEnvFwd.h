@@ -33,7 +33,7 @@ class CharacterDatabaseConnection;
 class HotfixDatabaseConnection;
 class LoginDatabaseConnection;
 class WorldDatabaseConnection;
-class ShopDatabaseConnection;
+
 
 class PreparedStatementBase;
 
@@ -44,7 +44,6 @@ using CharacterDatabasePreparedStatement = PreparedStatement<CharacterDatabaseCo
 using HotfixDatabasePreparedStatement = PreparedStatement<HotfixDatabaseConnection>;
 using LoginDatabasePreparedStatement = PreparedStatement<LoginDatabaseConnection>;
 using WorldDatabasePreparedStatement = PreparedStatement<WorldDatabaseConnection>;
-using ShopDatabasePreparedStatement = PreparedStatement<ShopDatabaseConnection>;
 
 
 class PreparedResultSet;
@@ -76,7 +75,6 @@ using CharacterDatabaseTransaction = SQLTransaction<CharacterDatabaseConnection>
 using HotfixDatabaseTransaction = SQLTransaction<HotfixDatabaseConnection>;
 using LoginDatabaseTransaction = SQLTransaction<LoginDatabaseConnection>;
 using WorldDatabaseTransaction = SQLTransaction<WorldDatabaseConnection>;
-using ShopDatabaseTransaction = SQLTransaction<ShopDatabaseConnection>;
 
 class SQLQueryHolderBase;
 using QueryResultHolderFuture = std::future<SQLQueryHolderBase*>;
@@ -89,7 +87,6 @@ using CharacterDatabaseQueryHolder = SQLQueryHolder<CharacterDatabaseConnection>
 using HotfixDatabaseQueryHolder = SQLQueryHolder<HotfixDatabaseConnection>;
 using LoginDatabaseQueryHolder = SQLQueryHolder<LoginDatabaseConnection>;
 using WorldDatabaseQueryHolder = SQLQueryHolder<WorldDatabaseConnection>;
-using ShopDatabaseQueryHolder = SQLQueryHolder<ShopDatabaseConnection>;
 
 // mysql
 struct MySQLHandle;

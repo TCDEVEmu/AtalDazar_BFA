@@ -26,7 +26,7 @@
 #include "Realm.h"
 #include "SystemPackets.h"
 #include "World.h"
-#include "BattlePay.h"
+
 
 void WorldSession::SendAuthResponse(uint32 code, bool queued, uint32 queuePos)
 {
@@ -96,8 +96,7 @@ void WorldSession::SendSetTimeZoneInformation()
 void WorldSession::SendFeatureSystemStatusGlueScreen()
 {
     WorldPackets::System::FeatureSystemStatusGlueScreen features;
-    features.BpayStoreEnabled = sBattlePayMgr->IsStoreEnabled();
-    features.BpayStoreAvailable = sBattlePayMgr->IsStoreAvailable();
+ 
     features.BpayStoreDisabledByParentalControls = false;
     features.CharUndeleteEnabled = sWorld->getBoolConfig(CONFIG_FEATURE_SYSTEM_CHARACTER_UNDELETE_ENABLED);
     
