@@ -1082,7 +1082,7 @@ void WorldSession::InitializeSessionCallback(LoginDatabaseQueryHolder* realmHold
 
     SendSetTimeZoneInformation();
     SendFeatureSystemStatusGlueScreen();
-    SendGetDistributionListResponse();
+
     SendClientCacheVersion(sWorld->getIntConfig(CONFIG_CLIENTCACHE_VERSION));
     SendAvailableHotfixes();
     SendTutorialsData();

@@ -182,7 +182,6 @@ public:
     {
         player->KilledMonsterCredit(Credits::Speak_with_Isabella);
         player->KilledMonsterCredit(Credits::The_Battle_for_Lordaeron);
-        player->TeleportTo(1, 1425.619995f, -4356.950195f, 74.003601f, 3.804530f);
         return false;
     }
 
