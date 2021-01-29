@@ -1005,5 +1005,16 @@ struct at_bloody_mess : AreaTriggerAI
 
 void AddSC_boss_ring_of_booty()
 {
-
+    ///Creature
+    RegisterCreatureAI(npc_gukguk);
+    RegisterCreatureAI(npc_gurgthock);
+    RegisterCreatureAI(npc_davey);
+    RegisterCreatureAI(npc_lightning);
+    RegisterCreatureAI(npc_ludwig_von_tortollan);
+    RegisterCreatureAI(boss_trothak);
+    RegisterCreatureAI(npc_shark_trothak);
+    ///Areatrigger
+    RegisterAreaTriggerAI(at_shell_bounce);
+    RegisterAreaTriggerAI(at_rearm_trothak);
+    RegisterAreaTriggerAI(at_bloody_mess);
 }
