@@ -24,6 +24,7 @@ void AddSC_scripts_poker();
 void AddSC_playerquest_fixes_lf();
 void AddSC_scripts_reji();
 void AddSC_quest_conversation();
+void AddSC_XpWeekend();
 
 // ADM declaration begin
 // ADM declaration end
@@ -40,6 +41,7 @@ void AddCustomScripts()
     AddSC_scripts_poker();
     AddSC_scripts_reji();
 	AddSC_quest_conversation();
+    AddSC_XpWeekend();
 
 
     // ADM call begin

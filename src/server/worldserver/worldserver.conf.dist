@@ -4171,3 +4171,13 @@ Challenge.Enabled = 1
 #
 Azerite.Knowledge.Level = 1 
 ####################################################################################################
+#        Dynamic.XP.Rate
+#        Description: XP rate changed for Fridays, Saturdays ad Sundays for different level ranges.
+#        DynamicXP.Enable: 1 (Enable)
+#                          0 (Disable) Default
+#
+
+DynamicXP.Enable = 1
+
+#
+###################################################################################################
