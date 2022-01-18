@@ -1,0 +1,17 @@
+#include "kings_rest.h"
+
+enum Spells
+{
+    SPELL_SPIRIT_OF_GOLD_PERIODIC = 265773,
+    SPELL_MOLTEN_GOLD_MISSILE = 255583,
+    SPELL_MOLTEN_GOLD_AT_DAMAGE = 265914,
+    SPELL_LUCRES_CALL = 265923,
+    SPELL_LUSTER = 265991,
+    SPELL_TAIL_THRASH = 265910,
+    SPELL_SERPENTINE_GUST = 265781,
+};
+
+void AddSC_boss_the_golden_serpent()
+{
+
+}

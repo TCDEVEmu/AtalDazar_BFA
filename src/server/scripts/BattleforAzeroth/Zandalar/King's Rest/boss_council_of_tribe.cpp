@@ -1,0 +1,22 @@
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "kings_rest.h"
+
+enum Spells
+{
+    SPELL_SEVERING_AXE = 266231,
+    SPEL_WHIRLING_AXES = 266206,
+    SPELL_DEBILATING_BACKHAND = 266237,
+    SPELL_BARREL_THROUGH = 266951,
+    SPELL_BARREL_THROUGH_CHARGE = 266941,
+    SPELL_BARREL_THROUGH_AOE = 266940,
+    SPELL_LIGHTNING_BOLT = 267308,
+    SPELL_POISON_NOVA = 267273,
+    SPELL_CALL_OF_THE_ELEMENTS = 267060,
+};
+
+
+void AddSC_boss_council_of_tribes()
+{
+
+}

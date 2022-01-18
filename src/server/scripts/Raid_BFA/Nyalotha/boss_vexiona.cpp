@@ -1,6 +1,0 @@
-
-
-void AddSC_vexiona()
-{
-	
-}
