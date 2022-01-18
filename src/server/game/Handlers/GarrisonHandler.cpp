@@ -132,28 +132,80 @@ void WorldSession::HandleGarrisonRequestScoutingMap(WorldPackets::Garrison::Garr
 
     switch (scoutingMap.ID)
     {
-        case 40: // Zuldazar
+    case 40: // Zuldazar
+        if (_player->GetTeam() == HORDE)
+        {
             active = true;
-            break;
-        case 41:
-        case 42:
-        case 148:
-        case 149:
-        case 150:
-            active = false;// _player->GetTeam() == HORDE;
-            break;
-        case 43: // Tiragarde Sound
+        }
+        break;
+    case 41:
+        if (_player->GetTeam() == HORDE)
+        {
             active = true;
-            break;
-        case 44:
-        case 45:
-        case 151:
-        case 152:
-        case 153:
-            active = false;// _player->GetTeam() == ALLIANCE;
-            break;
-        default:
-            break;
+        }
+        break;
+    case 42:
+        if (_player->GetTeam() == HORDE)
+        {
+            active = true;
+        }
+        break;
+    case 148:
+        if (_player->GetTeam() == HORDE)
+        {
+            active = true;
+        }
+        break;
+    case 149:
+        if (_player->GetTeam() == HORDE)
+        {
+            active = true;
+        }
+        break;
+    case 150:
+        if (_player->GetTeam() == HORDE)
+        {
+            active = true;
+        }
+        break;
+    case 43: // Tiragarde Sound
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    case 44:
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    case 45:
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    case 151:
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    case 152:
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    case 153:
+        if (_player->GetTeam() == ALLIANCE)
+        {
+            active = true;
+        }
+        break;
+    default:
+        break;
     }
 
     if (poiEntry->QuestID)
