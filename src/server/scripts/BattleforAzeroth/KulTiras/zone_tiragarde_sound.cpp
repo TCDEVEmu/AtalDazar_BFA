@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+* Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -86,9 +86,9 @@ struct npc_jaina_boralus_intro : public ScriptedAI
 {
     npc_jaina_boralus_intro(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_DAUGHTER_OF_THE_SEA)
+        if (quest->GetQuestId() == QUEST_DAUGHTER_OF_THE_SEA)
             player->CastSpell(player, SPELL_PROUDMOORE_KEEP_ESCORT, true);
     }
 };
@@ -181,9 +181,9 @@ struct npc_flynn_fairwind : public ScriptedAI
         TALK_NO = 3,
     };
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_OUT_LIKE_FLYNN)
+        if (quest->GetQuestId() == QUEST_OUT_LIKE_FLYNN)
         {
             if (Creature* flynn = player->SummonCreature(me->GetEntry(), me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN, 0, 0, true))
             {
@@ -196,7 +196,7 @@ struct npc_flynn_fairwind : public ScriptedAI
     void SetGUID(ObjectGuid guid, int32 /*action*/) override
     {
         m_playerGUID = guid;
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
         me->SetAIAnimKitId(0);
 
         if (Creature* ashvaneJailer = me->SummonCreature(NPC_ASHVANE_JAILER_EVENT, 144.839996f, -2702.790039f, 28.961100f, 0.799371f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 2000, true))
@@ -218,7 +218,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             .Schedule(5s, [this](TaskContext /*context*/)
         {
             Talk(TALK_HIT_ME, GetPlayer());
-            me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         });
     }
 
@@ -227,7 +227,7 @@ struct npc_flynn_fairwind : public ScriptedAI
         if (spell->Id != SPELL_PUNCH_FLYNN)
             return;
 
-        me->RemoveFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
         me->HandleEmoteCommand(EMOTE_ONESHOT_BEG);
         Talk(TALK_YOU_BRUTE);
 
@@ -238,7 +238,7 @@ struct npc_flynn_fairwind : public ScriptedAI
             me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
             {
                 Talk(TALK_GUARD);
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_DEAD);
+                me->SetStandState(UNIT_STAND_STATE_DEAD);
             });
 
             ashvaneJailer->GetScheduler().Schedule(3s, [](TaskContext context)
@@ -272,7 +272,7 @@ struct npc_flynn_fairwind : public ScriptedAI
 
             me->GetScheduler().Schedule(9s, [this, ashvaneJailer](TaskContext /*context*/)
             {
-                me->SetByteValue(UNIT_FIELD_BYTES_1, UNIT_BYTES_1_OFFSET_STAND_STATE, UNIT_STAND_STATE_STAND);
+                me->SetStandState(UNIT_STAND_STATE_STAND);
                 ashvaneJailer->AI()->Talk(TALK_WHAT);
             })
                 .Schedule(10s, [this, ashvaneJailer](TaskContext /*context*/)
@@ -305,7 +305,7 @@ struct go_toldagor_cell_block_lever : public GameObjectAI
 {
     go_toldagor_cell_block_lever(GameObject* go) : GameObjectAI(go) { }
 
-    bool GossipHello(Player* player, bool /*isUse*/) override
+    bool GossipHello(Player* player) override
     {
         player->CastSpell(player, SPELL_SCENE_FLYNN_JAILBREAK, true);
         player->UnsummonCreatureByEntry(NPC_FLYNN_BEGIN);
@@ -468,12 +468,12 @@ struct conversation_tol_dagor_escape : public ConversationScript
         if (Vehicle* boat = creator->GetVehicle())
         {
             if (Unit* taelia = boat->GetPassenger(0))
-                conversation->AddActor(taelia->GetGUID(), 0, 59469);
+                conversation->AddActor(taelia->GetGUID(), 0);
 
             // Flynn only speak during the first conversation
             if (conversation->GetEntry() == 5336)
                 if (Unit* flynn = boat->GetPassenger(2))
-                    conversation->AddActor(flynn->GetGUID(), 1, 59472);
+                    conversation->AddActor(flynn->GetGUID(), 1);
         }
     }
 };
@@ -574,7 +574,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
 
     void IsSummonedBy(Unit* unit) override
     {
-        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
         if (Player* player = unit->ToPlayer())
         {
@@ -602,7 +602,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
                     if (justCompletedObjective && player->GetQuestStatus(QUEST_GET_YOUR_BEARINGS) == QUEST_STATUS_COMPLETE)
                     {
                         player->PlayConversation(9556);
-                        me->SetFlag64(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+                        me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
                     }
                 }
 
@@ -640,11 +640,13 @@ class npc_cyrus_crestfall : public ScriptedAI
 public:
     npc_cyrus_crestfall(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->KilledMonsterCredit(137009);
         player->PlayConversation(7653);
         CloseGossipMenuFor(player);
+
+        return false;
     }
 };
 
@@ -667,9 +669,10 @@ class npc_boralus_portal_maga : public ScriptedAI
 public:
     npc_boralus_portal_maga(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         KillCreditMe(player);
+        return false;
     }
 };
 
@@ -679,15 +682,16 @@ class npc_taelia_harbormaster : public ScriptedAI
 public:
     npc_taelia_harbormaster(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_NATION_DIVIDED)
+        if (quest->GetQuestId() == QUEST_NATION_DIVIDED)
             player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
     }
 
-    void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
+    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         player->CastSpell(player, SPELL_SCENE_NATION_DIVIDED, true);
+        return false;
     }
 };
 
@@ -697,9 +701,10 @@ class npc_boralus_adventure_map : public ScriptedAI
 public:
     npc_boralus_adventure_map(Creature* creature) : ScriptedAI(creature) { }
 
-    void sGossipHello(Player* player) override
+    bool GossipHello(Player* player) override
     {
         KillCreditMe(player);
+        return false;
     }
 };
 
@@ -723,9 +728,9 @@ public:
                 KillCreditMe(player);
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_LOVESICK_ID)
+        if (quest->GetQuestId() == QUEST_LOVESICK_ID)
         {
             me->DestroyForPlayer(player);
             player->CastSpell(nullptr, SPELL_SUMMON_FLYNN_ESCORT_ID, true);
@@ -865,9 +870,9 @@ public:
 
     npc_hilde_firebreaker_queststarter(Creature* creature) : ScriptedAI(creature) { }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID != QUEST_BACKUP_WILL_I_PACK)
+        if (quest->GetQuestId() != QUEST_BACKUP_WILL_I_PACK)
             return;
 
         players.push_back(player);
@@ -878,7 +883,7 @@ public:
         players.clear();
         players.push_back(player);
 
-        me->SetFlag64(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
+        me->SetUnitFlags(UNIT_FLAG_IMMUNE_TO_NPC);
         me->SummonCreature(129841, me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN);
 
         _ongoing = true;
@@ -887,22 +892,20 @@ public:
     void SummonedCreatureDespawn(Creature* /*creature*/) override
     {
         // killcredit
-        for (auto player : players)
-        {
+        for (Player* player : players)
             if (player && player->IsInWorld() && player->IsInRange2d(me->GetPositionX(), me->GetPositionY(), 0, 50))
                 player->KilledMonsterCredit(NPC_DEFEND_FIREBREAKER_KILLCREDIT);
-        }
+
         _ongoing = false;
     }
 
     void SummonedCreatureDies(Creature* /*creature*/, Unit* /*unit*/) override
     {
         // Fail the quest
-        for (auto player : players)
-        {
+        for (Player* player : players)
             if (player && player->IsInWorld())
                 player->FailQuest(QUEST_BACKUP_WILL_I_PACK);
-        }
+
         _ongoing = false;
     }
 
@@ -1010,15 +1013,15 @@ public:
             float y = me->GetPositionY();
             float z = me->GetPositionZ();
 
-            if (abs(x - 534.932007) < .1 && abs(y - 870.984009) < .1 && abs(z - 7.821800) < .1) // ensuring we don't take the quest form ending npc
+            if (fabs(x - 534.932007f) < .1 && fabs(y - 870.984009f) < .1 && fabs(z - 7.821800f) < .1f) // ensuring we don't take the quest form ending npc
                 if (player->GetQuestStatus(QUEST_A_VERY_PRECIOUS_CARGO) == QUEST_STATUS_INCOMPLETE)
                     player->KilledMonsterCredit(NPC_PENNY_KILLCREDIT);
         }
     }
 
-    void sQuestAccept(Player* player, Quest const* quest) override
+    void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->ID == QUEST_HOLD_MY_HAND)
+        if (quest->GetQuestId() == QUEST_HOLD_MY_HAND)
         {
             player->CastSpell(player, SPELL_CANCEL_ESCORT_PENNY);
             player->CastSpell(player, SPELL_ESCORTING_PENNY_HARDWICK);
@@ -1054,7 +1057,7 @@ public:
         }
     }
 
-    void JustDied(Unit* /*killer*/)
+    void JustDied(Unit* /*killer*/) override
     {
         if (Player* player = GetPlayerForEscort())
         {
@@ -1126,29 +1129,6 @@ public:
     }
 };
 
-// 142721 - Ralston Karn 
-class npc_ralston_karn  : public ScriptedAI
-{
-public:
-    enum
-    {
-        QUEST_TO_THE_FRONT            = 53194,
-        NPC_YVERA_DAWNWING_KILLCREDIT = 143380,
-        SPELL_TELEPORT_TO_STROMGARDE  = 279518
-    };
-
-    npc_ralston_karn(Creature* creature) : ScriptedAI(creature) { }
-
-    void sQuestAccept(Player* player, Quest const* quest) override
-    {
-        if (quest->ID == QUEST_TO_THE_FRONT)
-		{
-            player->KilledMonsterCredit(NPC_YVERA_DAWNWING_KILLCREDIT);
-            player->CastSpell(player, SPELL_TELEPORT_TO_STROMGARDE);
-        }
-    }
-};
-
 void AddSC_zone_tiragarde_sound()
 {
     RegisterCreatureAI(npc_jaina_boralus_intro);
@@ -1180,5 +1160,4 @@ void AddSC_zone_tiragarde_sound()
     RegisterCreatureAI(npc_penny_hardwick);
     RegisterCreatureAI(npc_penny_hardwick_escort);
     RegisterCreatureAI(npc_riding_macaw_patrol);
-    RegisterCreatureAI(npc_ralston_karn);
 }

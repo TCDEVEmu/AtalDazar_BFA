@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -57,11 +57,6 @@ enum GameObjectIds
 {
     GOB_PYRAMID_WEB             = 296384,
     GOB_PYRAMID_DOOR            = 296385,
-};
-
-enum conversationtheunderroth
-{
-    SPELL_CONVERSATION_INTRO = 280680,
 };
 
 #endif // THE_UNDERROT_H

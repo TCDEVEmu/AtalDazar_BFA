@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -33,7 +33,7 @@ BossBoundaryData const boundaries =
 
 struct instance_the_underrot : public InstanceScript
 {
-    instance_the_underrot(InstanceMap* map) : InstanceScript(map), _introDone(false)
+    instance_the_underrot(InstanceMap* map) : InstanceScript(map)
     {
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
@@ -42,9 +42,31 @@ struct instance_the_underrot : public InstanceScript
         instance->SummonCreatureGroup(SUMMON_GROUP_BLOODSWORN_DEFILER);
     }
 
+    void OnPlayerEnter(Player* player) override
+    {
+        Conversation::CreateConversation(9670, player, player->GetPosition(), { player->GetGUID() });
+    };
+
     void OnCreatureCreate(Creature* creature) override
     {
         InstanceScript::OnCreatureCreate(creature);
+
+        if (instance->GetDifficultyID() == 1)
+        {
+            creature->SetLevel(110);
+        }
+        if (instance->GetDifficultyID() == 2)
+        {
+            creature->SetLevel(121);
+        }
+        if (instance->GetDifficultyID() == 23)
+        {
+            creature->SetLevel(122);
+        }
+        if (instance->GetDifficultyID() == 8)
+        {
+            creature->SetLevel(122);
+        }
 
         switch (creature->GetEntry())
         {
@@ -64,19 +86,13 @@ struct instance_the_underrot : public InstanceScript
 
     void OnUnitDeath(Unit* unit) override
     {
-        if (unit->IsCreature() && !_introDone)
-        {
-            DoCastSpellOnPlayers(conversationtheunderroth::SPELL_CONVERSATION_INTRO);
-            _introDone = true;
-        }
-		
         switch (unit->GetEntry())
         {
             case NPC_BLOODSWORN_DEFILER:
             {
                 if (IsCreatureGroupWiped(SUMMON_GROUP_BLOODSWORN_DEFILER))
                     if (Creature* zancha = GetCreature(NPC_SPORECALLER_ZANCHA))
-                        zancha->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        zancha->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 
                 break;
             }
@@ -119,8 +135,6 @@ struct instance_the_underrot : public InstanceScript
 
         InstanceScript::SetData(type, data);
     }
-
-    bool _introDone;
 };
 
 void AddSC_instance_underrot()

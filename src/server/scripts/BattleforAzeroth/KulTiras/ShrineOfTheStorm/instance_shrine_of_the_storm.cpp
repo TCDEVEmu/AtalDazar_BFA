@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -27,7 +27,6 @@ struct instance_shrine_of_the_storm : public InstanceScript
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
-
     void OnPlayerEnter(Player* player) override
     {
         if (!TeamInInstance)
@@ -40,9 +39,9 @@ struct instance_shrine_of_the_storm : public InstanceScript
 
         if (!TeamInInstance)
         {
-            Map::PlayerList const &players = instance->GetPlayers();
+            Map::PlayerList const& players = instance->GetPlayers();
             if (!players.isEmpty())
-                if (Player* player = players.begin()->GetSource())
+                if (Player * player = players.begin()->GetSource())
                     TeamInInstance = player->GetTeam();
         }
 

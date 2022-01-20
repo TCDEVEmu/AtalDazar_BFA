@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -20,21 +20,35 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "atal_dazar.h"
+#include "SpellScript.h"
+#include "SpellAuras.h"
+#include "SpellAuraEffects.h"
+#include "GameObject.h"
+#include "InstanceScript.h"
+#include "Map.h"
+#include "MotionMaster.h"
+#include "ObjectAccessor.h"
+#include "Player.h"
+#include "SpellInfo.h"
+#include "TemporarySummon.h"
+#include "Conversation.h"
 
-enum Spells {
-    SPELL_TAIL                        = 255372, //Cast if player is behind
-    SPELL_SERRATHED_TEETH             = 255434,
-    SPELL_DEVOUR                      = 255421,
-    SPELL_TERRIFYING_VISAGE           = 255371,
-    SPELL_PURSUIT                     = 257407,
-    SPELL_RIDE_VEHICLE                = 46598,
-    SPELL_PILE_OF_BONES_AREATRIGGER   = 256608, //AT 11959
-    SPELL_PILE_OF_BONES_SPAWN_NORMAL  = 256634,
-    SPELL_PILE_OF_BONES_SPAWN_HEROIC  = 256720,
-    SPELL_PILE_OF_BONES_SLOW          = 257483,
+enum Spells
+{
+    SPELL_TAIL = 255372, //Cast if player is behind
+    SPELL_SERRATHED_TEETH = 255434,
+    SPELL_DEVOUR = 255421,
+    SPELL_TERRIFYING_VISAGE = 255371,
+    SPELL_PURSUIT = 257407,
+    SPELL_RIDE_VEHICLE = 46598,
+    SPELL_PILE_OF_BONES_AREATRIGGER = 256608, //AT 11959
+    SPELL_PILE_OF_BONES_SPAWN_NORMAL = 256634,
+    SPELL_PILE_OF_BONES_SPAWN_HEROIC = 256720,
+    SPELL_PILE_OF_BONES_SLOW = 257483,
 };
 
-Position AreatriggerPositions[]{
+Position AreatriggerPositions[]
+{
     { -814.344f, 2241.63f, 641.538f },
     { -868.391f, 2245.54f, 642.03f  },
     { -887.726f, 2242.22f, 642.04f  },
@@ -79,21 +93,25 @@ Position AreatriggerPositions[]{
     { -869.793f, 2352.61f,  642.515f},
 };
 
-enum Actions {
+enum Actions
+{
     ACTION_AREATRIGGER_ACTIVATED = 1,
 };
 
-enum Talks {
+enum Talks
+{
     TALK_BONE_PILE = 0,
     TALK_DEVOUR,
     TALK_PURSUIT,
 };
-enum Npcs {
+
+enum Npcs
+{
     NPC_REANIMATED_RAPTOR = 129517,
-
-
 };
-enum Events {
+
+enum Events
+{
     EVENT_TAIL = 1,
     EVENT_SERRATHED_TEETH,
     EVENT_DEVOUR,
@@ -104,13 +122,24 @@ enum Events {
     EVENT_DISMOUNT,
 };
 
+enum conversationrezan
+{
+    CONVERSATION_REZAN_DEATH = 6322,
+};
+
+///122963
 struct boss_ataldazar_rezan : public BossAI
 {
-    boss_ataldazar_rezan(Creature* creature) : BossAI(creature, DATA_REZAN) { }
+    boss_ataldazar_rezan(Creature* creature) : BossAI(creature, DATA_REZAN) {
+
+        for (Position point : AreatriggerPositions)
+            me->CastSpell(point, SPELL_PILE_OF_BONES_AREATRIGGER);
+    }
 
     void InitializeAI() override
     {
         BossAI::InitializeAI();
+
     }
 
     void SpellHitTarget(Unit* target, SpellInfo const* spell) override
@@ -140,13 +169,13 @@ struct boss_ataldazar_rezan : public BossAI
     {
         switch (action)
         {
-            case ACTION_AREATRIGGER_ACTIVATED:
-            {
-                Talk(TALK_BONE_PILE);
-                break;
-            }
-            default:
-                break;
+        case ACTION_AREATRIGGER_ACTIVATED:
+        {
+            Talk(TALK_BONE_PILE);
+            break;
+        }
+        default:
+            break;
         }
     }
 
@@ -185,6 +214,7 @@ struct boss_ataldazar_rezan : public BossAI
             }
             case EVENT_PURSUIT:
             {
+                events.DelayEvents(18000);
                 Talk(TALK_PURSUIT);
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
                 {
@@ -198,7 +228,7 @@ struct boss_ataldazar_rezan : public BossAI
             }
             case EVENT_PURSUIT_TARGET:
             {
-                if(storedtarget)
+                if (storedtarget)
                 {
                     if (me->GetDistance(storedtarget->GetPosition()) > 7)
                     {
@@ -240,34 +270,54 @@ struct boss_ataldazar_rezan : public BossAI
 
     void JustDied(Unit* killer) override
     {
+        _JustDied();
+        instance->SetBossState(DATA_REZAN, DONE);
+        std::list<Player*> playerList;
+        me->GetPlayerListInGrid(playerList, 100.0f);
+
+        for (auto player : playerList)
+        {
+            AddTimedDelayedOperation(20000, [this, player]() -> void
+            {
+              Conversation::CreateConversation(CONVERSATION_REZAN_DEATH, player, player->GetPosition(), { player->GetGUID() });
+            });
+
+            if (player->HasAura(SPELL_UNSTABLE_HEX))
+            {
+                int cont = instance->GetData(DATA_ACHIEVEMENT_COUNT);
+                instance->SetData(DATA_ACHIEVEMENT_COUNT, cont++);
+
+                break;
+            }
+        }
     }
 
 private:
     Unit* storedtarget;
 };
 
+//AT 11959
 struct areatrigger_ancient_bones : AreaTriggerAI
 {
     areatrigger_ancient_bones(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
 
     void OnUnitEnter(Unit* unit)
     {
-        if (unit->IsPlayer())
+        if (unit)
         {
             if (Creature* rezan = unit->FindNearestCreature(NPC_REZAN, 100, true))
-                if(rezan->IsInCombat() == true)
+                if (rezan->IsInCombat() == true)
                 {
-                    unit->AddAura(SPELL_PILE_OF_BONES_SLOW);
+                    if (!rezan->GetMap()->IsHeroic() && !rezan->GetMap()->IsMythic())
+                        if (unit == rezan)
+                            return;
+                    if (unit != rezan && unit->IsPlayer())
+                        unit->AddAura(SPELL_PILE_OF_BONES_SLOW);
                     rezan->GetAI()->DoAction(ACTION_AREATRIGGER_ACTIVATED);
-                   // at->SummonCreature(NPC_REANIMATED_RAPTOR, unit->GetPosition(), TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
-                  //  if (!rezan->GetMap()->IsHeroic() && !rezan->GetMap()->IsMythic())
-                  //  {
-                    rezan->CastSpell(at->GetPosition(), SPELL_PILE_OF_BONES_SPAWN_NORMAL, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
-                   // }
-                    /*else
-                    {
+                    if (rezan->GetMap()->IsMythic())
                         rezan->CastSpell(at->GetPosition(), SPELL_PILE_OF_BONES_SPAWN_HEROIC, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
-                    }*/
+                    else
+                        rezan->CastSpell(at->GetPosition(), SPELL_PILE_OF_BONES_SPAWN_NORMAL, TRIGGERED_CAN_CAST_WHILE_CASTING_MASK);
                     at->Remove();
                 }
         }

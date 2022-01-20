@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -34,12 +34,12 @@ enum Texts
 
 enum Spells
 {
-    SPELL_BURST                 = 243237,
-    SPELL_REQUIEM_OF_THE_ABYSS  = 274364,
-    SPELL_SPLASHING_WATER       = 241680,
-    SPELL_EMERGE_VISUAL         = 274948,
-    SPELL_WATER_RITUAL          = 274341,
-    SPELL_SLICING_HURRICANE     = 276286,
+    SPELL_BURST = 243237,
+    SPELL_REQUIEM_OF_THE_ABYSS = 274364,
+    SPELL_SPLASHING_WATER = 241680,
+    SPELL_EMERGE_VISUAL = 274948,
+    SPELL_WATER_RITUAL = 274341,
+    SPELL_SLICING_HURRICANE = 276286,
 };
 
 // 139971
@@ -49,7 +49,7 @@ struct npc_rexxar : public ScriptedAI
 
     void MoveInLineOfSight(Unit* unit) override
     {
-        if (Player* player = unit->ToPlayer())
+        if (Player * player = unit->ToPlayer())
         {
             if (player->GetDistance(me) < 8.0f && instance && !instance->GetData(DATA_INSTANCE_ENTER))
             {
@@ -74,7 +74,7 @@ struct npc_brother_pike : public ScriptedAI
 
     void MoveInLineOfSight(Unit* unit) override
     {
-        if (Player* player = unit->ToPlayer())
+        if (Player * player = unit->ToPlayer())
         {
             if (player->GetDistance(me) < 8.0f && instance && !instance->GetData(DATA_INSTANCE_ENTER))
             {
@@ -136,7 +136,7 @@ struct npc_lord_stormsong : public ScriptedAI
 
     void MoveInLineOfSight(Unit* unit) override
     {
-        if (Player* player = unit->ToPlayer())
+        if (Player * player = unit->ToPlayer())
         {
             if (!introDone && player->GetDistance(me) < 40.0f && instance)
             {
@@ -152,7 +152,7 @@ struct npc_lord_stormsong : public ScriptedAI
                 });
                 me->GetScheduler().Schedule(18s, [this](TaskContext context)
                 {
-                    if (Creature* aqusirr = GetContextCreature()->FindNearestCreature(NPC_AQUSIRR, 100.0f))
+                    if (Creature * aqusirr = GetContextCreature()->FindNearestCreature(NPC_AQUSIRR, 100.0f))
                     {
                         aqusirr->SetReactState(REACT_AGGRESSIVE);
                         aqusirr->SetVisible(true);
@@ -188,14 +188,14 @@ struct at_slicing_hurricane : AreaTriggerAI
 
     void OnPeriodicProc() override
     {
-        if (Unit* caster = at->GetCaster())
+        if (Unit * caster = at->GetCaster())
             for (ObjectGuid guid : at->GetInsideUnits())
-                if (Unit* unit = ObjectAccessor::GetUnit(*at, guid))
+                if (Unit * unit = ObjectAccessor::GetUnit(*at, guid))
                     if (caster->IsValidAttackTarget(unit))
                         unit->CastSpell(unit, SPELL_SLICING_HURRICANE, true);
     }
 
-    void OnUnitExit(Unit* unit) override
+    void OnUnitExit(Unit * unit) override
     {
         unit->RemoveAurasDueToSpell(SPELL_SLICING_HURRICANE);
     }

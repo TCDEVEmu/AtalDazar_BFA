@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -49,7 +49,7 @@ struct boss_sporecaller_zancha : public BossAI
     boss_sporecaller_zancha(Creature* creature) : BossAI(creature, DATA_SPORECALLER_ZANCHA)
     {
         if (!instance->IsCreatureGroupWiped(SUMMON_GROUP_BLOODSWORN_DEFILER))
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+            me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
     }
 
     Position volatilePodsPositions[6] =
@@ -114,7 +114,7 @@ struct boss_sporecaller_zancha : public BossAI
                 break;
             }
             case SPELL_SHOCKWAVE:
-                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
                     me->CastSpell(target, SPELL_SHOCKWAVE, false);
 
                 events.Repeat(15s);
@@ -123,7 +123,7 @@ struct boss_sporecaller_zancha : public BossAI
             {
                 for (uint8 i = 0; i < 2; ++i)
                 {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, -SPELL_UPHEAVAL_TARGET))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 1, 0.f, true, false, -SPELL_UPHEAVAL_TARGET))
                     {
                         me->CastSpell(target, SPELL_UPHEAVAL_TARGET, true);
                         Talk(4, target);
@@ -137,7 +137,7 @@ struct boss_sporecaller_zancha : public BossAI
             case SPELL_UPHEAVAL:
             {
                 for (uint8 i = 0; i < 2; ++i)
-                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, SPELL_UPHEAVAL_TARGET))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true, true, SPELL_UPHEAVAL_TARGET))
                         me->CastSpell(target, SPELL_UPHEAVAL, true);
 
                 break;
@@ -163,7 +163,7 @@ struct npc_underrot_spore_pod : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->CastSpell(me, SPELL_BOUNDLESS_ROT_AT, true);
     }
 
@@ -202,7 +202,7 @@ struct npc_underrot_volatile_pod : public ScriptedAI
     void Reset() override
     {
         me->SetReactState(REACT_PASSIVE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
 
         me->GetScheduler().Schedule(5s, [this](TaskContext /*context*/)
         {

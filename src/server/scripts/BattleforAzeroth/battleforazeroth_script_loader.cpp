@@ -53,13 +53,6 @@ void AddSC_waycrest_manor();
 void AddSC_instance_waycrest_manor();
 
 
-void AddSC_boss_chopper_redhook();
-void AddSC_boss_dread_captain_lockwood();
-void AddSC_boss_hadal_darkfathom();
-void AddSC_boss_viqgoth();
-void AddSC_siege_of_boralus();
-void AddSC_instance_siege_of_boralus();
-
 //------Zuldazar----------
 void AddSC_zone_nazmir();
 void AddSC_zone_voldun();
@@ -89,32 +82,6 @@ void AddSC_instance_atal_dazar();
 void AddSC_boss_dunegorger_kraulok();
 void AddSC_boss_jiarak();
 void AddSC_boss_tzane();
-
-void AddSC_boss_Coin_operated_crowd_pummeler();
-void AddSC_boss_azerokk();
-void AddSC_boss_rixxafluxflame();
-void AddSC_boss_mogulrazdunk();
-void AddSC_the_motherlode();
-void AddSC_instance_the_motherlode();
-
-//King's Rest
-void AddSC_instance_kings_rest();
-void AddSC_boss_the_golden_serpent();
-void AddSC_boss_mchimba_the_embalmber();
-void AddSC_boss_council_of_tribes();
-void AddSC_boss_dazar_the_first_king();
-
-//Uldir
-void AddSC_uldir();
-void AddSC_instance_uldir();
-void AddSC_boss_fetid_devourer();
-void AddSC_boss_ghuun();
-void AddSC_boss_mother();
-void AddSC_boss_mythrax();
-void AddSC_boss_taloc();
-void AddSC_boss_vectis();
-void AddSC_boss_zekvoz();
-void AddSC_boss_zul();
 
 
 // Scenarios 
@@ -172,14 +139,6 @@ void AddBattleforAzerothScripts()
     AddSC_waycrest_manor();
     AddSC_instance_waycrest_manor();
 	
-	AddSC_boss_chopper_redhook();
-    AddSC_boss_dread_captain_lockwood();
-    AddSC_boss_hadal_darkfathom();
-    AddSC_boss_viqgoth();
-    AddSC_siege_of_boralus();
-    AddSC_instance_siege_of_boralus();
-	
-	
 	//----Zudlazar-----
 	AddSC_zone_nazmir();
     AddSC_zone_voldun();
@@ -206,37 +165,7 @@ void AddBattleforAzerothScripts()
     AddSC_atal_dazar();
     AddSC_instance_atal_dazar();
     
-    AddSC_boss_dunegorger_kraulok();
-    AddSC_boss_jiarak();
-    AddSC_boss_tzane();
-		
-	//Motherlode
-	AddSC_boss_Coin_operated_crowd_pummeler();
-	AddSC_boss_azerokk();
-	AddSC_boss_rixxafluxflame();
-	AddSC_boss_mogulrazdunk();
-	AddSC_the_motherlode();
-	AddSC_instance_the_motherlode();
-	
-	//King's Rest
-    AddSC_instance_kings_rest();
-    AddSC_boss_the_golden_serpent();
-    AddSC_boss_mchimba_the_embalmber();
-    AddSC_boss_council_of_tribes();
-    AddSC_boss_dazar_the_first_king();
-    
-    //Uldir
-    AddSC_uldir();
-    AddSC_instance_uldir();
-    AddSC_boss_fetid_devourer();
-    AddSC_boss_ghuun();
-    AddSC_boss_mother();
-    AddSC_boss_mythrax();
-    AddSC_boss_taloc();
-    AddSC_boss_vectis();
-    AddSC_boss_zekvoz();
-    AddSC_boss_zul();
-	
+   
 	//Scenarios
 	AddSC_stormwind_extraction();
     AddSC_scenario_stormwind_extraction();

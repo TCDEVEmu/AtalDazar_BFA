@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
+ * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -18,18 +18,18 @@
 #include "Creature.h"
 #include "Player.h"
 #include "ScriptedGossip.h"
-#include "ScriptMgr.h"
 #include "World.h"
+#include "ScriptMgr.h"
 #include "freehold.h"
 
 enum FreeHoldTrashSpells
 {
     ///Irontide Enforcer
     BrutalBackhand = 257246,
-    ShateringToss = 274860,
+    ShateringToss  = 274860,
     ///Irontide Mastiff
     CripplingBite = 257478,
-    BestialWrath = 257476,
+    BestialWrath  = 257476,
     ///Irontide Corsair
     PoisoningStrike = 257436,
     ///Irontide Crackshot
@@ -71,7 +71,6 @@ enum FreeHoldTrashSpells
     ///Irontide Buccaneers
     BladeBarrage = 257870,
 };
-
 void AddSC_freehold()
 {
 

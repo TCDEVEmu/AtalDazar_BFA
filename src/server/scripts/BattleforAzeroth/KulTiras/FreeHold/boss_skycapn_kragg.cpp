@@ -1,20 +1,9 @@
 /*
- * Copyright (C) 2017-2018 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
+ZandalarCore
+ MistiX
  */
 
+#include "freehold.h"
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
 #include "GameObject.h"
@@ -29,72 +18,66 @@
 #include "SpellScript.h"
 #include "TemporarySummon.h"
 #include "Vehicle.h"
-#include "freehold.h"
 
-enum Spells
+enum KraggSpells
 {
     ///Rider SkyCap Kragg (Before Fight with Boss)
-    VILE_BOMBADMENT          = 256005,
-    VILE_COATING             = 256016,
-
+    VileBombadment = 256005,
+    VileCoating    = 256016,
     ///Boss SkyCap Kragg
-    CHARRRRRGE               = 255952, /// With Mount 
-    PISTOL_SHOT              = 255966, /// With Mount 
-    AZERITE_POWDER_SHOT      = 256106, /// Without Mount 
-    REVITALIZING_BREW_SKYCAP = 256060, /// Without Mount
-    REVITALIZING_BREW_PLAYER = 263297, /// Without Mount
-    SUMMON_SHARKBAIT         = 256056, /// Without Mount
-
+    Charrrrrge     = 255952, /// With Mount 
+    PistolShot     = 255966, /// With Mount 
+    AzeritePowderShot = 256106, /// Without Mount 
+    RevitalizingBrewSkyCap = 256060, /// Without Mount
+    RevitalizingBrewPlayer = 263297,
     ///Heroic
-    DiveBomb                 = 272046,  ///Sharkbait will then charge across the arena in a straight line, dealing damage and knocking back all players in the path
-
-    END_CONVERSATION         = 258353
+    DiveBomb = 272046  ///Sharkbait will then charge across the arena in a straight line, dealing damage and knocking back all players in the path
 };
 
-enum Events
+enum KraggEvents
 {
-    Event_Pistol_Shot,
-    Event_Charrrrrge,
-    Event_Azerite_Shot,
-    Event_Revitalizing_Brew,
-
-    Event_Vile_Bombadment
+    EventVileBombadment = 1,
+    EventChaaarrge,
+    EventPistolShot,
+    EventAzeritePowderShot,
+    EventRevitalizingBrew,
+    ///Heroic Event
+    EventDiveBombs,
 };
 
-enum Phases
+enum KraggDatas
 {
-    Mount,
-    Unmount
+    DataCharge,
+    DataMountInCombat
 };
 
-enum MovementPoint
+enum KraggPhases
+{
+    PhaseMount,
+    PhaseUnmount
+};
+
+enum KraggMovementPoint
 {
     MovementPointMiddle,
-    MovementPointEndPos1,
-    MovementPointEndPos2,
+    MovementPointDiveBomb,
+    MovementPointDiveBombCasted
 };
 
-enum TalkKragg
+enum KraggTalk
 {
-    Aggro = 0,
-    Charge = 1,
-    Hp75 = 2,
-    Interruptgrog1 = 3,
-    Azeriteshot1 = 4,
-    Azeriteshot2 = 5,
-    Interruptgrog2 = 6,
-    Dead = 7,
-    /*
-    ? = 8, Well, looks like someone still ain\'t got their sea legs!
-    ? = 9, Ah! Ye made me bilge on me own anchor!
-    */
+    TalkAggro1 = 0,
+    TalkUnmount = 1,
+    TalkAzeritePowderShot1 = 2,
+    TalkDead = 5,
+    TalkAggro2 = 6,
+    TalkAzeritePowderShot2 = 7,
+    TalkDiveBomb = 8
 };
 
-enum action
-{
-    sharkbaitfly = 0,
-    sharkbaitendcombat = 1,
-};
+Position const MiddlePos = { -1768.29f, -1009.25f, 110.0f, 0.418879f };
+
+///Todo Add damage on mechanic Dive Bombs, is necesary make  SPELL_EFFECT_254 is something related about charge effect and target front the trajectory 
 
 Position GetRandomPositionAround(Unit* unit, float distMin, float distMax)
 {
@@ -106,121 +89,177 @@ Position GetRandomPositionAround(Unit* unit, float distMin, float distMax)
     return { x, y, z };
 }
 
-Position const MiddlePos = { -1755.8407f, -1021.54175f,  120.07338f, 0.0f};
-Position const EndPos1   = { -1763.66f,   -1011.15f,  89.43428f, 0.0f};
-Position const EndPos2   = { -1865.8f,  -829.222f,  133.511f, 0.0f};
-
-Position const CombatPos[16] =
-{
-    {-1732.0999f, -1039.8822f,  120.07338f, 0.0f},
-    {-1740.9257f, -1047.5714f,  120.07338f, 0.0f},
-    {-1752.0221f, -1051.2977f,  120.07338f, 0.0f},
-    {-1763.6998f, -1050.494f,   120.07338f, 0.0f},
-    {-1774.1812f, -1045.2826f,  120.07338f, 0.0f},
-    {-1781.8704f, -1036.4568f,  120.07338f, 0.0f},
-    {-1785.5967f, -1025.3604f,  120.07338f, 0.0f},
-    {-1784.793f,  -1013.68256f, 120.07338f, 0.0f},
-    {-1779.5815f, -1003.2013f,  120.07338f, 0.0f},
-    {-1770.7557f, -995.51215f,  120.07338f, 0.0f},
-    {-1759.6593f, -991.78577f,  120.07338f, 0.0f},
-    {-1747.9816f, -992.5895f,   120.07338f, 0.0f},
-    {-1737.5002f, -997.8009f,   120.07338f, 0.0f},
-    {-1729.811f,  -1006.62665f, 120.07338f, 0.0f},
-    {-1726.0847f, -1017.72314f, 120.07338f, 0.0f},
-    {-1726.8884f, -1029.4009f,  120.07338f, 0.0f},
-};
-
-// 126832
+///126832 - Skycap Kragg 
 struct boss_skycap_kragg : public BossAI
 {
-    boss_skycap_kragg(Creature* creature) : BossAI(creature, DATA_BOSS_SKYCAPN_KRAGG)
-    {
-        instance = me->GetInstanceScript();
-        me->ApplySpellImmune(0, IMMUNITY_MECHANIC, MECHANIC_INTERRUPT, false);
-    }
-    
+    boss_skycap_kragg(Creature* creature) : BossAI(creature, DataSkycapKragg)
+    {}
+
     void Reset() override
     {
-        phase = Mount;
-        me->Mount(80438);
+        mountGUID.Clear();
+        checkTimer = 1000;
+        fightStarted = false;
+        charge = false;
+        resetFight = true;
+        phase = PhaseMount;
+        me->ResetLootMode();
         events.Reset();
-        me->RemoveAllAreaTriggers();
         summons.DespawnAll();
-        instance->SetBossState(DATA_BOSS_SKYCAPN_KRAGG, FAIL);
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+        me->RemoveAllAreaTriggers();
+        me->SetReactState(REACT_AGGRESSIVE);
+
+        if (instance)
+        {
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+            instance->SetBossState(DataSkycapKragg, NOT_STARTED);
+        }
+
+        if (!me->IsOnVehicle())
+        {
+            if (Creature * mount = me->SummonCreature(NpcSharkBaitBoss, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN))
+            {
+                mountGUID = mount->GetGUID();
+                me->EnterVehicle(mount);
+                mount->AI()->SetData(DataMountInCombat, false);
+                mount->GetThreatManager().ClearAllThreat();
+            }
+        }
     }
 
-    void EnterCombat(Unit* who) override
+    void EnterEvadeMode(EvadeReason /*why*/) override
     {
-        Talk(Aggro);
-        BossAI::EnterCombat(who);
-        phase = Mount;
-        events.ScheduleEvent(Event_Pistol_Shot, 1, 1);
-        events.ScheduleEvent(Event_Charrrrrge, 5000, 5000);
+        if (fightStarted)
+        {
+            fightStarted = false;
+            me->InterruptNonMeleeSpells(true);
+            me->SetReactState(REACT_PASSIVE);
+            me->GetThreatManager().ClearAllThreat();
+            me->CombatStop();
+            me->CastStop();
+            me->GetMotionMaster()->Clear();
+            me->GetMotionMaster()->MoveTargetedHome();
+        }
+    }
+
+    void JustReachedHome() override
+    {
+        _JustReachedHome();
+        instance->SetBossState(DataSkycapKragg, FAIL);
+        Reset();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        if (instance)
+        {
+            // bosses do not respawn, check only on enter combat
+            if (!instance->CheckRequiredBosses(me->GetEntry()))
+            {
+                EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);
+                return;
+            }
+            instance->SetBossState(DataSkycapKragg, IN_PROGRESS);
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
+        }
+
+        if (urand(0, 1) == 1)
+            Talk(TalkAggro1);
+        else
+            Talk(TalkAggro2);
+
+        me->SetReactState(REACT_AGGRESSIVE);
+        phase = PhaseMount;
+        me->setActive(true);
+        DoZoneInCombat();
+        fightStarted = true;
+        if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+            mount->AI()->SetData(DataMountInCombat, true);
+
+        events.ScheduleEvent(EventPistolShot, urand(3000, 5000));
+        events.ScheduleEvent(EventChaaarrge, 8000);
     }
 
     void OnSpellCastInterrupt(SpellInfo const* spell)
     {
-        if (spell->Id == REVITALIZING_BREW_SKYCAP)
+        if (spell->Id == RevitalizingBrewSkyCap)
         {
-            if (urand(0, 1) == 1)
-                Talk(Interruptgrog1);
-            else
-                Talk(Interruptgrog2);
-            me->RemoveAura(REVITALIZING_BREW_SKYCAP);
+            me->RemoveAura(RevitalizingBrewSkyCap);
             me->SummonCreature(NpcRevitalizingBrew, GetRandomPositionAround(me, 3.0f, 5.0f), TEMPSUMMON_TIMED_DESPAWN, 15000);
         }
     }
 
-    void JustDied(Unit* killer) override
+    void JustDied(Unit* /*killer*/) override
     {
-        Talk(Dead);
-        events.Reset();
-        me->RemoveAllAreaTriggers();
-        me->GetScheduler().CancelAll();
-        instance->SetBossState(DATA_BOSS_SKYCAPN_KRAGG, DONE);
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-        
-        if (Creature * sharkbait = me->FindNearestCreature(126841, 1000.0f))
-        {
-            sharkbait->AI()->DoAction(sharkbaitendcombat);
-        }
-    }
-
-    void JustSummoned(Creature* summon) override
-    {
-        summons.Summon(summon);
-
-        if (summon->GetEntry() == 126841)
-        {
-            summon->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
-            summon->SetReactState(REACT_PASSIVE);
-            summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
-        }
-
+        _JustDied();
+        Talk(TalkDead);
+        if (instance)
+            instance->SetBossState(DataSkycapKragg, DONE);
     }
 
     void DamageTaken(Unit* /*attacker*/, uint32 & damage) override
     {
-        if (me->HealthWillBeBelowPctDamaged(75, damage) && phase == Mount)
+        if (me->HealthWillBeBelowPctDamaged(75, damage) && phase == PhaseMount)
         {
-            Talk(Hp75);
-            phase = Unmount;
-            events.Reset();
-            me->Dismount();
-            me->CastSpell(me, SUMMON_SHARKBAIT, false);
+            phase = PhaseUnmount;
+            Talk(TalkUnmount);
+            me->ExitVehicle();
 
-            events.ScheduleEvent(Event_Azerite_Shot, 2000);
-            events.ScheduleEvent(Event_Revitalizing_Brew, 15000);
+            if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+            {
+                mount->SetReactState(REACT_PASSIVE);
+                mount->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
+            }
+
+            events.Reset();
+
+            events.ScheduleEvent(EventAzeritePowderShot, 2000);
+            events.ScheduleEvent(EventRevitalizingBrew, 15000);
         }
-        
     }
+
+    void SetData(uint32 id, uint32 value)
+    {
+        if (id == DataCharge)
+            charge = value;
+    }
+
     void UpdateAI(uint32 diff) override
     {
-        events.Update(diff);
+        if (fightStarted)
+        {
+            if (checkTimer <= diff)
+            {
+                // Retrieving targets
+                Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
+                if (!PlayerList.isEmpty())
+                {
+                    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+                    {
+                        Player* player = i->GetSource();
+                        if (player->IsAlive())
+                        {
+                            resetFight = false;
+                            break;
+                        }
+                        else
+                            resetFight = true;
+                    }
+                }
 
-        if (!UpdateVictim())
+                if (resetFight)
+                    EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
+
+                checkTimer = 1000;
+            }
+            else
+                checkTimer -= diff;
+        }
+
+        if (!UpdateVictim() && fightStarted)
             return;
+
+        events.Update(diff);
 
         if (me->HasUnitState(UNIT_STATE_CASTING))
             return;
@@ -229,59 +268,91 @@ struct boss_skycap_kragg : public BossAI
         {
             switch (eventId)
             {
-                case Event_Pistol_Shot:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0, true))
+            case EventChaaarrge:
+            {
+                if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+                {
+                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
                     {
-                        me->CastSpell(target, PISTOL_SHOT, false);
+                        charge = true;
+                        mount->StopMoving();
+                        mount->SetReactState(REACT_PASSIVE);
+                        mount->CastSpell(target, Charrrrrge, false);
                     }
-                    events.Repeat(2000);
-                    break;
-                case Event_Charrrrrge:
-                    Talk(Charge);
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0, true))
-                    {
-                        me->SetReactState(REACT_PASSIVE);
-                        me->AddUnitState(UNIT_STATE_CASTING);
-                        me->CastSpell(target, CHARRRRRGE, false);
-                    }
-                    events.Repeat(8000);
-                    break;
-                case Event_Azerite_Shot:
-                    if (urand(0, 1) == 1)
-                        Talk(Azeriteshot1);
-                    else
-                        Talk(Azeriteshot2);
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0, true))
-                    {
-                        me->CastSpell(target, AZERITE_POWDER_SHOT, false);
-                    }
-                    events.Repeat(11000);
-                    break;
-                case Event_Revitalizing_Brew:
-                    me->SetReactState(REACT_PASSIVE);
-                    me->StopMoving();
-                    me->CastSpell(me, REVITALIZING_BREW_SKYCAP, false);
-                    events.Repeat(20000);
-                    break;
-            default:
-                    break;
+                }
+
+                events.Repeat(8000);
+                break;
+            }
+            case EventPistolShot:
+            {
+                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                    me->CastSpell(target, PistolShot, false);
+
+                events.Repeat(8000);
+                break;
+            }
+            case EventAzeritePowderShot:
+            {
+                if (urand(0, 1) == 1)
+                    Talk(TalkAzeritePowderShot1);
+                else
+                    Talk(TalkAzeritePowderShot1);
+
+                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                    me->CastSpell(target, AzeritePowderShot, false);
+
+                events.Repeat(8000);
+                break;
+            }
+            case EventRevitalizingBrew:
+            {
+                me->CastSpell(me, RevitalizingBrewSkyCap, false);
+
+                events.Repeat(15000);
+                break;
+            }
             }
         }
+
         DoMeleeAttackIfReady();
+
     }
 
 private:
-    Phases phase;
-    EventMap events;
-    InstanceScript* instance;
+    ObjectGuid mountGUID;
+    KraggPhases phase;
+    bool fightStarted;
+    bool resetFight;
+    bool charge;
+    uint32 checkTimer;
 };
 
-// 126841
+/// 129743, 126841 - Shark Bait
 struct npc_sharkbait : public ScriptedAI
 {
     npc_sharkbait(Creature* creature) : ScriptedAI(creature)
     {
+        DiveBomb = false;
+        InCombat = false;
         m_Instance = creature->GetInstanceScript();
+    }
+
+    void JustReachedHome() override
+    {
+        if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
+        {
+            kragg->ExitVehicle();
+            kragg->AI()->EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
+        }
+
+        me->DespawnOrUnsummon();
+    }
+
+    void SetData(uint32 id, uint32 value)
+    {
+        if (id == DataMountInCombat)
+            InCombat = value;
     }
 
     void MovementInform(uint32 type, uint32 pointId) override
@@ -291,50 +362,40 @@ struct npc_sharkbait : public ScriptedAI
 
         switch (pointId)
         {
-            case MovementPointMiddle:
-            {
-                if (!me->IsInCombat())
-                    me->SetInCombatWithZone();
-            
-                events.Reset();
-                events.ScheduleEvent(Event_Vile_Bombadment, 5000);
-                //me->AI()->DoAction(sharkbaitfly);
-                break;
-            }
-            case MovementPointEndPos1:
-            {
-                events.Reset();
-                me->CastSpell(me, END_CONVERSATION, false);
-                
-                AddTimedDelayedOperation(8000, [this]() -> void
-                    {
-                        me->GetMotionMaster()->MovePoint(MovementPointEndPos2, EndPos2);
-                        
-                    });
-                break;
-            }
-            case MovementPointEndPos2:
-            { me->DespawnOrUnsummon(20000); }
-        }
-    }
-    
-    void DoAction(int32 action) override
-    {
-        if (sharkbaitfly)
+        case MovementPointMiddle:
         {
-            // TO DO: loop para que se quede volando mientras dure el encuentro ya estan enumerados los puntos por sniff
+            if (!me->IsInCombat())
+                me->SetInCombatWithZone();
 
+            events.Reset();
+            events.ScheduleEvent(EventVileBombadment, 5000);
+            if (IsHeroic())
+                events.ScheduleEvent(EventDiveBombs, 17000);
+            break;
         }
-        if (sharkbaitendcombat)
+        case MovementPointDiveBomb:
         {
-            me->GetMotionMaster()->MovePoint(MovementPointEndPos1, EndPos1);
+            DiveBomb = true;
+            me->CastSpell(me, DiveBomb, false);
+            break;
         }
-
+        case MovementPointDiveBombCasted:
+        {
+            events.Reset();
+            DiveBomb = false;
+            me->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
+            break;
+        }
+        case EVENT_JUMP:
+            me->SetReactState(REACT_AGGRESSIVE);
+            if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
+                kragg->AI()->SetData(DataCharge, false);
+        }
     }
 
     void UpdateAI(uint32 diff) override
     {
-        if (!UpdateVictim())
+        if ((!UpdateVictim() && InCombat) || DiveBomb)
             return;
 
         events.Update(diff);
@@ -346,19 +407,30 @@ struct npc_sharkbait : public ScriptedAI
         {
             switch (eventId)
             {
-                case Event_Vile_Bombadment:
-                {
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0, true))
-                        me->CastSpell(target, VILE_BOMBADMENT, false);
-                
-                    events.Repeat(5000);
-                    break;
-                }    
+            case EventVileBombadment:
+            {
+                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                    me->CastSpell(target, VileBombadment, false);
+
+                events.Repeat(5000);
+                break;
+            }
+            case KraggEvents::EventDiveBombs:
+            {
+                if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
+                    kragg->AI()->Talk(TalkDiveBomb);
+
+                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                    me->GetMotionMaster()->MovePoint(MovementPointDiveBomb, GetRandomPositionAround(target, 10.0f, 15.0f));
+                break;
+            }
             }
         }
     }
 
 private:
+    bool DiveBomb;
+    bool InCombat;
     InstanceScript* m_Instance;
 };
 
@@ -369,7 +441,7 @@ struct npc_revitalizing_brew : public ScriptedAI
 
     void OnSpellClick(Unit* p_Clicker, bool& /*result*/) override
     {
-        p_Clicker->CastSpell(p_Clicker, REVITALIZING_BREW_PLAYER, true);
+        p_Clicker->CastSpell(p_Clicker, RevitalizingBrewPlayer, true);
         me->DespawnOrUnsummon();
     }
 };
@@ -382,21 +454,51 @@ struct at_vile_bombardment : AreaTriggerAI
     void OnUnitEnter(Unit* unit)
     {
         if (Player * player = unit->ToPlayer())
-            if (!player->HasAura(VILE_COATING))
-                player->CastSpell(player, VILE_COATING, true);
+            if (!player->HasAura(VileCoating))
+                player->CastSpell(player, VileCoating, true);
     }
 
     void OnUnitExit(Unit * unit)
     {
-        unit->RemoveAurasDueToSpell(VILE_COATING);
+        unit->RemoveAurasDueToSpell(VileCoating);
+    }
+};
+
+///272046 Dive Bomb
+class spell_dive_bomb : public SpellScript
+{
+    PrepareSpellScript(spell_dive_bomb);
+
+    void HandleOnCast()
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (caster->IsCreature())
+            {
+                if (Unit * target = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                {
+                    Position ChargePosition;
+                    GetPositionWithDistInOrientation(target, 10.0f, caster->GetAngle(target), ChargePosition);
+                    caster->GetMotionMaster()->MoveCharge(ChargePosition.GetPositionX(), ChargePosition.GetPositionY(), ChargePosition.GetPositionZ(), 20.0f, KraggMovementPoint::MovementPointDiveBombCasted);
+                }
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_dive_bomb::HandleOnCast);
     }
 };
 
 void AddSC_boss_skycapn_kragg()
 {
+    ///Craeture
     RegisterCreatureAI(boss_skycap_kragg);
     RegisterCreatureAI(npc_sharkbait);
     RegisterCreatureAI(npc_revitalizing_brew);
     ///Areatrigger
     RegisterAreaTriggerAI(at_vile_bombardment);
+    ///Spell
+    RegisterSpellScript(spell_dive_bomb);
 }
