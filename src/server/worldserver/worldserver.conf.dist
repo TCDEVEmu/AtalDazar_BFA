@@ -4161,11 +4161,16 @@ Character.Template = 1
 #
 OutLog = 1
 ###################################################################################################
-# Challenge Mythic
-#
+# CHALLENGE_MYTHIC_TAB
+
+#    Mythic.Tab
+#        Description: This setting activates the Mythic window
+#        Default:     1 activate
+
+Mythic_Pluss = 1
 Challenge.Key.Reset = 7
 Challenge.Enabled = 1
-####################################################################################################
+###################################################################################################
 #Azerite Knowledge Level
 #
 #
