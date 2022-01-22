@@ -1,4 +1,4 @@
-![bfalogo](https://www.mamytwink.com/upload/news/2018/aout/13/battle-for-azeroth-logo-hd.jpg)
+![bfalogo](https://wow.4fansites.de/bilder/dungeons/ataldazar/ataldazar-ladebild.jpg)
 
 
 
