@@ -1,0 +1,90 @@
+/*
+ * Copyright (C) 2021 BfaCore Reforged
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "ScriptMgr.h"
+#include "Creature.h"
+#include "CreatureAI.h"
+#include "InstanceScript.h"
+#include "SpellAuras.h"
+#include "SpellScript.h"
+#include "SpellAuraEffects.h"
+#include "SpellInfo.h"
+#include "Spell.h"
+#include "AreaTrigger.h"
+#include "AreaTriggerAI.h"
+#include "nyalotha.h"
+
+enum Spells
+{
+	SPELL_SANITY_BAR = 308997,
+	SPELL_SHROUD_OF_RESOLVE = 312158,
+	SPELL_SHROUD_OF_RESOLVE_EXTRA_BUTTON = 312157,
+	SPELL_GRACE_OF_THE_BLACK_PRINCE = 313330,
+	SPELL_GIFT_OF_NZOTH = 313334,
+	SPELL_SERVANT_OF_NZOTH = 307832,
+	SPELL_MANDIBLE_SLAM = 315947,
+	SPELL_BLACK_SCAR = 315954,
+	SPELL_MENTAL_DECAY_CAST = 313362,
+	SPELL_MENTAL_DECAY = 313364,
+	SPELL_MADNESS_BOMB_CAST = 306971,
+	SPELL_MADNESS_BOMB_MOD_SIZE = 306973,
+	SPELL_MADNESS_BOMB_DAMAGE = 306978,
+	SPELL_ADAPTIVE_MEMBRANE_CAST = 306988,
+	SPELL_ADAPTIVE_MEMBRANE_ABSORB = 316847,
+	SPELL_FRAGMENT_OF_SANITY_GIVE_POWER = 313322,
+	SPELL_FRAGMENT_OF_SANITY_MISSILE = 317893,
+	SPELL_SANITY_FRAGMENT_CREATE_AT = 304551,
+	SPELL_GROWTH_COVERED_TENTACLE = 307131,
+	SPELL_HORRIFIC_HEMORRHAGE_DAMAGE = 307306,
+	SPELL_NIGHTMARE_ANTIBODY = 307044,
+	SPELL_ADAPTIVE_ANTIGEN = 307042,
+	//Phase 2
+	SPELL_SYNTHESIS = 307071,
+	SPELL_SYNTHESIS_IMMUNITY = 307079,
+	SPELL_SYNTHESIS_HEAL = 307080,
+	SPELL_MYCELIAL_GROWTH = 307061,
+	SPELL_REGENERATIVE_MASS = 307058,
+	SPELL_ETERNAL_DARKNESS = 307809,
+	SPELL_OCCIPITAL_BLAST = 307092,
+	SPELL_OCCIPITAL_BLAST_DAMAGE = 315878,
+	SPELL_INSANITY_BOMB_MOD_SIZE = 306984,
+	SPELL_INSANITY_BOMB_MISSILE = 306985,
+	SPELL_THRASHING_TENTACLE_SHADOW = 315820,
+	SPELL_THRASHINF_TENTACLE_DAMAGE = 315862,
+	//Heroic
+	SPELL_BREED_MADNESS = 307008,
+	SPELL_BREED_MADNESS_SINGLE_DAMAGE = 307012,
+	SPELL_MADDENING_ERUPTION = 316307,
+	SPELL_DEEPENING_MADNESS = 312333,
+	SPELL_INFINITE_DARKNESS_CAST = 313039,
+	SPELL_INFINITE_DARKNESS_DAMAGE = 313040,
+	//Mythic
+	SPELL_REACTIVE_MASS = 317164,
+	SPELL_REGENERATIVE_EXPULSION = 317165,
+	//Misc
+	SPELL_BERSERK = 64238,
+	SPELL_CYST_GENESIS = 313118,
+	SPELL_INFINITE_VOID_PERIODIC_DAMAGE = 317627,
+	SPELL_MYCELIAL_INFUSION_MOD_DAMAGE = 316701,
+};
+
+const Position gaze_of_madness_exit_pos = { -11536.851f, 9343.937f, 126.788f, 4.0266f };
+
+void AddSC_carapace()
+{
+
+};

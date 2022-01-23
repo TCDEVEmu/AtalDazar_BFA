@@ -608,12 +608,6 @@ enum SMART_ACTION
     SMART_ACTION_SET_MOVEMENT_SPEED                 = 136,    // movementType, speedInteger, speedFraction
     SMART_ACTION_PLAY_SPELL_VISUAL_KIT              = 137,    // spellVisualKitId, kitType (unknown values, copypaste from packet dumps), duration
 
-    //Nordrassil Specific ACCION
-    SMART_ACTION_GET_SCENARIO                       = 162,    // scenario Id
-    SMART_ACTION_COMPLETE_SCENARIO_STEP             = 163,
-    SMART_ACTION_COMPLETE_SCENARIO                  = 164,
-    SMART_ACTION_SCENARIO_SEND_EVENT                = 166,    // EventId,
-
     // Ashamane' specific actions
     SMART_ACTION_PLAY_SPELL_VISUAL                  = 201,    // id, travelSpeed, target type variation.
     SMART_ACTION_PLAY_ORPHAN_SPELL_VISUAL           = 202,    // id, travelSpeed, target type variation.
@@ -630,8 +624,10 @@ enum SMART_ACTION
     SMART_ACTION_ADD_FLYING_MOVEMENT_FLAG           = 213,    // Variation
     SMART_ACTION_REMOVE_FLYING_MOVEMENT_FLAG        = 214,    // Variation
     SMART_ACTION_CAST_SPELL_OFFSET                  = 215,    // SpellId, triggered if value = 1.
-
-    ///  custom for zandalarserver
+    SMART_ACTION_GET_SCENARIO                       = 216,    // scenario Id
+    SMART_ACTION_COMPLETE_SCENARIO_STEP             = 217,    // none
+    SMART_ACTION_COMPLETE_SCENARIO                  = 218,    // none
+    SMART_ACTION_SCENARIO_SEND_EVENT                = 219,    // EventId,
     SMART_ACTION_ENTER_LFG_QUEUE                    = 220,
 
     SMART_ACTION_END 

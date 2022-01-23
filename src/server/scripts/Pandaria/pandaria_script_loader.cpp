@@ -119,6 +119,31 @@ void AddSC_siege_of_orgrimmar_part_2();
 void AddSC_siege_of_orgrimmar_part_3();
 void AddSC_siege_of_orgrimmar_part_4();
 
+//Terrace of Endless Spring
+void AddSC_boss_lei_shi();
+void AddSC_boss_protectors_of_the_endless();
+void AddSC_boss_sha_of_fear();
+void AddSC_boss_tsulong();
+void AddSC_instance_terrace_of_endless_spring();
+void AddSC_terrace_of_endless_spring();
+
+//Throne of Thunder
+void AddSC_boss_council_of_elders();
+void AddSC_boss_dark_animus();
+void AddSC_boss_durumu();
+void AddSC_boss_horridon();
+void AddSC_boss_iron_qon();
+void AddSC_boss_ji_kun();
+void AddSC_boss_jinrokh_the_breaker();
+void AddSC_boss_lei_shen();
+void AddSC_boss_megaera();
+void AddSC_boss_primordius();
+void AddSC_boss_ra_den();
+void AddSC_boss_tortos();
+void AddSC_boss_twin_consorts();
+void AddSC_instance_throne_of_thunder();
+void AddSC_throne_of_thunder();
+
 void AddPandariaScripts()
 {
     // Gate Setting Sun
@@ -223,4 +248,29 @@ void AddPandariaScripts()
     AddSC_siege_of_orgrimmar_part_2();
     AddSC_siege_of_orgrimmar_part_3();
     AddSC_siege_of_orgrimmar_part_4();
+	
+	//Terrace of Endless Spring
+    AddSC_boss_lei_shi();
+    AddSC_boss_protectors_of_the_endless();
+    AddSC_boss_sha_of_fear();
+    AddSC_boss_tsulong();
+    AddSC_instance_terrace_of_endless_spring();
+    AddSC_terrace_of_endless_spring();
+
+    //Throne of Thunder
+    AddSC_boss_council_of_elders();
+    AddSC_boss_dark_animus();
+    AddSC_boss_durumu();
+    AddSC_boss_horridon();
+    AddSC_boss_iron_qon();
+    AddSC_boss_ji_kun();
+    AddSC_boss_jinrokh_the_breaker();
+    AddSC_boss_lei_shen();
+    AddSC_boss_megaera();
+    AddSC_boss_primordius();
+    AddSC_boss_ra_den();
+    AddSC_boss_tortos();
+    AddSC_boss_twin_consorts();
+    AddSC_instance_throne_of_thunder();
+    AddSC_throne_of_thunder();
 }

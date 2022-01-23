@@ -1,0 +1,59 @@
+#include "ScriptMgr.h"
+#include "Creature.h"
+#include "CreatureAI.h"
+#include "Unit.h"
+#include "UnitAI.h"
+#include "GameObject.h"
+#include "GameObjectAI.h"
+#include "AreaTrigger.h"
+#include "AreaTriggerAI.h"
+#include "battle_of_dazaralor.h"
+
+const Position adds_pos = { -2023.0f, 833.0f, 6.0f, 4.73f };
+
+enum Spells
+{
+    PERIODIC_ENERGY_GAIN = 295065, // 2 every 800ms
+    SUMMON_DARKFORGE_RAM = 270562,
+    SACRED_BLADE = 283572,
+    WAVE_OF_LIGHT_CREATE_AT = 283598,
+    WAVE_OF_LIGHT_PERIODIC = 283617,
+    WAVE_OF_LIGHT_HEAL = 283619,
+    SEAL_OF_RETRIBUTION = 284469,
+    RETRIBUTION_AOE_DAMAGE = 284488,
+    ZEALOTRY = 284459,
+    JUDGMENT_RIGHTEOUSNESS = 283933,
+    SEAL_OF_RECKONING = 284436,
+    JUDGMENT_RECKONING = 284474,
+    AVENGING_WRATH = 282113,
+    CALL_TO_ARMS = 283662,
+    PRAYER_OF_THE_FALLEN = 287469,
+    DIVINE_PROTECTION = 288292,
+    DIVINE_PROCTECTION_REDUCTION = 288294,
+};
+
+enum Disciple
+{
+    ANGELIC_RENEWAL = 287419,
+    DIVINE_BURST = 283626,
+    HEAL_SP = 283628,
+    PENANCE_HEAL = 284593,
+    PENANCE_DAMAGE = 284595,
+};
+
+enum Crusader
+{
+    AURA_OF_RETRIBUTION = 284468,
+    BLINDING_FAITH_DUMMY = 283650,
+    BLINDING_FAITH_DISORIENT = 283651,
+    CONSECRATION_AT = 283579,
+    CRUSADER_STRIKE = 283637,
+    DIVINE_MALLET = 287439,
+    DIVINE_MALLET_AT = 282074,
+    WAVE_OF_LIGHT_HEALING = 283619,
+};
+
+void AddSC_boss_rawani_kanae()
+{
+
+}
