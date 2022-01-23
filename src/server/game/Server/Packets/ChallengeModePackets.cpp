@@ -49,18 +49,18 @@ WorldPacket const* WorldPackets::ChallengeMode::ChangePlayerDifficultyResult::Wr
 
 WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
 {
-    _worldPacket << (uint32)MapId;
-    _worldPacket << (int32)ChallengeId;
-    _worldPacket << (uint32)ChallengeLevel;
+    _worldPacket << MapId;
+    _worldPacket << ChallengeId;
+    _worldPacket << ChallengeLevel;
 	
 	 for (uint32 v : Affixes)
         _worldPacket << v;
 
-    _worldPacket << (uint32)unk1;
-    _worldPacket << (uint32)unk2;
-    _worldPacket << (uint32)unk3;
-    _worldPacket << (uint32)unk4;
-    _worldPacket << (uint32)unk5;
+    _worldPacket << unk1;
+    _worldPacket << unk2;
+    _worldPacket << unk3;
+    _worldPacket << unk4;
+    _worldPacket << unk5;
 
    _worldPacket.WriteBit(Energized);
    _worldPacket.FlushBits();

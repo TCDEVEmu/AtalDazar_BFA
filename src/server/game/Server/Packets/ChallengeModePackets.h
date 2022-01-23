@@ -101,9 +101,9 @@ namespace WorldPackets
 
             std::array<uint32, 4> Affixes;
  
-            uint32 MapId;
-            int32 ChallengeId;
-            uint32 ChallengeLevel;
+            uint32 MapId = 0;
+            int32 ChallengeId = 0;
+            uint32 ChallengeLevel = 2;
 
             uint32 unk1 = 0;
             uint32 unk2 = 0;
