@@ -99,6 +99,8 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
+            std::array<uint32, 4> Affixes;
+ 
             uint32 MapId;
             uint32 ChallengeId;
             uint32 ChallengeLevel;
@@ -109,7 +111,7 @@ namespace WorldPackets
             uint32 unk4 = 0;
             uint32 unk5 = 0;
 
-            uint8 unk = 128;
+            bool Energized = true;
         };
 
         class Reset final : public ServerPacket
@@ -139,11 +141,11 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 Duration;
-            uint32 MapId;
-            uint32 ChallengeId;
-            uint32 ChallengeLevel;
-            uint8 unk = 128;
+            int32 Duration = 0;
+            uint32 MapId= 0;
+            uint32 ChallengeId = 0;
+            int32 ChallengeLevel = 0;
+            bool IsCompletedInTimer = false;
         };
 
         class NewPlayerRecord final : public ServerPacket

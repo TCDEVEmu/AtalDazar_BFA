@@ -52,6 +52,9 @@ WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
     _worldPacket << (uint32)MapId;
     _worldPacket << (uint32)ChallengeId;
     _worldPacket << (uint32)ChallengeLevel;
+	
+	 for (uint32 v : Affixes)
+        _worldPacket << v;
 
     _worldPacket << (uint32)unk1;
     _worldPacket << (uint32)unk2;
@@ -59,7 +62,8 @@ WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
     _worldPacket << (uint32)unk4;
     _worldPacket << (uint32)unk5;
 
-    _worldPacket << (int8)unk;
+   _worldPacket.WriteBit(Energized);
+   _worldPacket.FlushBits();
 
     return &_worldPacket;
 }
@@ -80,12 +84,12 @@ WorldPacket const* WorldPackets::ChallengeMode::UpdateDeathCount::Write()
 
 WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
 {
-    _worldPacket << (uint32)Duration;
-    _worldPacket << (uint32)MapId;
-    _worldPacket << (uint32)ChallengeId;
-    _worldPacket << (uint32)ChallengeLevel;
+    _worldPacket << (int32)Duration;
+    _worldPacket << (int32)MapId;
+    _worldPacket << (int32)ChallengeId;
+    _worldPacket << (int32)ChallengeLevel;
 
-    _worldPacket << (uint8)unk;
+      _worldPacket.WriteBit(IsCompletedInTimer);
 
     return &_worldPacket;
 }
