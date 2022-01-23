@@ -27,6 +27,7 @@
 #include "WorldSession.h"
 #include "SpellAuras.h"
 #include "PhasingHandler.h"
+#include "GameEventMgr.h"
 
 // SPELL_AZERITE_RESIDUE = 260738
 class ps_spell_azerite_residue : public PlayerScript
@@ -84,8 +85,88 @@ public:
     }
 };
 
+class PlayerScript_Weekly_Quests : public PlayerScript
+{
+public:
+    PlayerScript_Weekly_Quests() : PlayerScript("PlayerScript_Weekly_Quests") {}
+
+    void OnLogin(Player* player, bool /*firstLogin*/) override
+    {
+        if (!player)
+            return;
+
+        if (!sGameEventMgr->IsActiveEvent(110))
+        {
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44175), false);
+            player->RemoveAura(225788);
+        }
+        else
+            player->CastSpell(player, 225788, false);
+
+        if (!sGameEventMgr->IsActiveEvent(111))
+        {
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44173), false);
+            player->RemoveAura(186403);
+        }
+        else
+            player->CastSpell(player, 186403, false);
+
+        if (!sGameEventMgr->IsActiveEvent(112))
+        {
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44174), false);
+            player->RemoveAura(186406);
+        }
+        else
+            player->CastSpell(player, 186406, false);
+
+        if (!sGameEventMgr->IsActiveEvent(113))
+        {
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44172), false);
+            player->RemoveAura(186401);
+        }
+        else
+            player->CastSpell(player, 186401, false);
+
+        if (!sGameEventMgr->IsActiveEvent(114))
+        {
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44171), false);
+            player->RemoveAura(225787);
+        }
+        else
+            player->CastSpell(player, 225787, false);
+
+        if (!sGameEventMgr->IsActiveEvent(102)) // TW Cataclism
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44167), false);
+        if (!sGameEventMgr->IsActiveEvent(100)) // TW BC
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44164), false);
+        if (!sGameEventMgr->IsActiveEvent(103)) // TW MoP
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(45799), false);
+        if (!sGameEventMgr->IsActiveEvent(101)) // TW WotlK
+            player->RemoveActiveQuest(sObjectMgr->GetQuestTemplate(44166), false);
+    }
+
+    void OnMapChanged(Player* player) override
+    {
+        if (!player)
+            return;
+
+        if (!sGameEventMgr->IsActiveEvent(110))
+            player->RemoveAura(225788);
+        if (!sGameEventMgr->IsActiveEvent(111))
+            player->RemoveAura(186403);
+        if (!sGameEventMgr->IsActiveEvent(112))
+            player->RemoveAura(186406);
+        if (!sGameEventMgr->IsActiveEvent(113))
+            player->RemoveAura(186401);
+        if (!sGameEventMgr->IsActiveEvent(114))
+            player->RemoveAura(225787);
+
+    }
+};
+
 void AddSC_custom_player_script()
 {
     new ps_spell_azerite_residue();
     new PlayerScript_Hack_Phase_Update();
+    new PlayerScript_Weekly_Quests();
 }
