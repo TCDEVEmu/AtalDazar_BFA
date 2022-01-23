@@ -33,7 +33,7 @@ void AddSC_warrior_spell_scripts();
 void AddSC_quest_spell_scripts();
 void AddSC_item_spell_scripts();
 void AddSC_toy_spell_scripts();
-void AddSC_artifact_spell_scripts();
+void AddSC_azerite_spell_scripts();
 void AddSC_mastery_spell_scripts();
 
 // The name of this function should match:
@@ -57,6 +57,6 @@ void AddSpellsScripts()
     AddSC_quest_spell_scripts();
     AddSC_item_spell_scripts();
     AddSC_toy_spell_scripts();
-    AddSC_artifact_spell_scripts();
+    AddSC_azerite_spell_scripts();
     AddSC_mastery_spell_scripts();
 }
