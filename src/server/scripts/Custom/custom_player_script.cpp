@@ -26,6 +26,8 @@
 #include "World.h"
 #include "WorldSession.h"
 #include "SpellAuras.h"
+#include "PhasingHandler.h"
+
 // SPELL_AZERITE_RESIDUE = 260738
 class ps_spell_azerite_residue : public PlayerScript
 {
@@ -62,7 +64,28 @@ public:
         }
     }
 };
+
+class PlayerScript_Hack_Phase_Update : public PlayerScript
+{
+public:
+    PlayerScript_Hack_Phase_Update() : PlayerScript("PlayerScript_Hack_Phase_Update") {}
+
+    uint32 checkTimer = 50;
+
+    void OnUpdate(Player* player, uint32 diff) override
+    {
+        if (checkTimer <= diff)
+        {
+            PhasingHandler::OnAreaChange(player);
+
+            checkTimer = 50;
+        }
+        else checkTimer -= diff;
+    }
+};
+
 void AddSC_custom_player_script()
 {
     new ps_spell_azerite_residue();
+    new PlayerScript_Hack_Phase_Update();
 }
