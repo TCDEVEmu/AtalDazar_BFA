@@ -2120,7 +2120,7 @@ class spell_redoubt_teleport_to_dh_ch : public SpellScript
 
 // Dalaran Underbelly
 
-enum Spells
+enum spells
 {
     NO_GUARDS = 223202,
     SEWER_GUARDS = 223203,
