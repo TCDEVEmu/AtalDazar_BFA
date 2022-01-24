@@ -101,16 +101,10 @@ namespace WorldPackets
 
             std::array<uint32, 4> Affixes;
  
-            uint32 MapId = 0;
-            int32 ChallengeId = 0;
+            uint32 MapID = 0;
+            int32 ChallengeID = 0;
             uint32 ChallengeLevel = 2;
-
-            uint32 unk1 = 0;
-            uint32 unk2 = 0;
-            uint32 unk3 = 0;
-            uint32 unk4 = 0;
-            uint32 unk5 = 0;
-
+            uint32 DeathCount = 0;
             bool Energized = true;
         };
 
@@ -137,14 +131,14 @@ namespace WorldPackets
         class Complete final : public ServerPacket
         {
         public:
-            Complete() : ServerPacket(SMSG_CHALLENGE_MODE_COMPLETE, 4) { }
+            Complete() : ServerPacket(SMSG_CHALLENGE_MODE_COMPLETE, 17) { }
 
             WorldPacket const* Write() override;
 
-            int32 Duration = 0;
-            uint32 MapId= 0;
-            uint32 ChallengeId = 0;
+            uint32 MapID = 0;
+            int32 CompletionMilliseconds = 0;
             int32 ChallengeLevel = 0;
+            uint32 ChallengeID = 0;
             bool IsCompletedInTimer = false;
         };
 
@@ -155,9 +149,9 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 MapId;
-            uint32 Duration;
-            uint32 ChallengeLevel;
+            uint32 MapID = 0;
+            int32 CompletionMilliseconds = 0;
+            int32 StartedChallengeLevel = 0;
         };
 
         class AllMapStats final : public ServerPacket
