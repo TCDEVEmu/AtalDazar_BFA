@@ -151,7 +151,7 @@ namespace WorldPackets
 
             uint32 MapID = 0;
             int32 CompletionMilliseconds = 0;
-            int32 StartedChallengeLevel = 0;
+            int32 ChallengeLevel = 0;
         };
 
         class AllMapStats final : public ServerPacket

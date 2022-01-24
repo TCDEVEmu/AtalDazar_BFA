@@ -134,7 +134,7 @@ WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 {
     _worldPacket << CompletionMilliseconds;
     _worldPacket << MapID;
-    _worldPacket << StartedChallengeLevel;
+    _worldPacket << ChallengeLevel;
 
     return &_worldPacket;
 }
