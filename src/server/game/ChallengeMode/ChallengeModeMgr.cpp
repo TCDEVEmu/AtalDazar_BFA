@@ -106,7 +106,7 @@ std::vector<int32> ChallengeModeMgr::GetBonusListIdsForRewards(uint32 baseItemIl
         { 3535, 55 },   // Mythic 15
     };
 
-    const uint32 baseMythicIlevel = 885;
+    const uint32 baseMythicIlevel = 430;
     std::pair<int32, uint32> bonusAndDeltaPair = bonusDescriptionByChallengeLevel[challengeLevel < 15 ? (challengeLevel - 2): 13];
     return { bonusAndDeltaPair.first, (int32)sDB2Manager.GetItemBonusListForItemLevelDelta(baseMythicIlevel - baseItemIlevel + bonusAndDeltaPair.second) };
 }
@@ -267,7 +267,7 @@ void ChallengeModeMgr::LoadFromDB()
         } while (result->NextRow());
     }
 
-    if (sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0 || sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0 || sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0)
+    if (sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0 || sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0 || sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0 || sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME) == 0)
         GenerateCurrentWeekAffixes();
 }
 
@@ -635,7 +635,7 @@ uint32 ChallengeModeMgr::GetCAForLoot(uint32 challengeLevel, uint32 mapID, bool 
 
     switch (mapID)
     {
-    case 1492: // Maw of Souls
+    case 1763: // AtalDazarr
     {
         // Lesser Dungeons
         switch (challengeLevel)
@@ -665,16 +665,15 @@ uint32 ChallengeModeMgr::GetCAForLoot(uint32 challengeLevel, uint32 mapID, bool 
             return 147719;
         }
     }
-    case 1493: // Vault of the Wardens
-    case 1466: // Darkheart Thicket
-    case 1501: // Black Rook Hold
-    case 1544: // Assault on Violet Hold
-    case 1456: // Eye of Azshara
-    case 1571: // Court of Stars
-    case 1458: // Neltharion's Lair
-    case 1651: // Karazhan
-    case 1677: // Cathedral of Eternal Night
-    case 1753: // Seat of the Triumvirate
+    case 1877: // temple of sethraliss
+    case 1754: // FreeHold
+    case 1762: // Kings Rest
+    case 1864: // ShrineOfTheStorm
+    case 1822: // SiegeOfBoralus
+    case 1594: // The Motherlode
+    case 1841: // The Underroth
+    case 1771: // tol Dagor
+    case 1862: // Wycrest Manor
     {
         // Regular Dungeons
         switch (challengeLevel)
@@ -704,8 +703,8 @@ uint32 ChallengeModeMgr::GetCAForLoot(uint32 challengeLevel, uint32 mapID, bool 
             return 147718;
         }
     }
-    case 1516: // The Arcway
-    case 1477: // Halls of Valor
+    /*case 0: // UNUSED
+    case 0: // UNUSED
     {
         // Greater Dungeons
         switch (challengeLevel)
@@ -734,7 +733,7 @@ uint32 ChallengeModeMgr::GetCAForLoot(uint32 challengeLevel, uint32 mapID, bool 
         default:
             return 147720;
         }
-    }
+    }*/
     default:
         break;
     }
@@ -754,31 +753,30 @@ uint32 ChallengeModeMgr::GetBigCAForLoot(uint32 challengeLevel, uint32 mapID, bo
 
     switch (mapID)
     {
-    case 1492: // Maw of Souls
+    case 1763: // AtalDazarr
     {
         // Lesser Dungeons
         return 147808; // Lesser Adept's Spoils
     }
-    case 1493: // Vault of the Wardens
-    case 1466: // Darkheart Thicket
-    case 1501: // Black Rook Hold
-    case 1544: // Assault on Violet Hold
-    case 1456: // Eye of Azshara
-    case 1571: // Court of Stars
-    case 1458: // Neltharion's Lair
-    case 1651: // Karazhan
-    case 1677: // Cathedral of Eternal Night
-    case 1753: // Seat of the Triumvirate
+    case 1877: // temple of sethraliss
+    case 1754: // FreeHold
+    case 1762: // Kings Rest
+    case 1864: // ShrineOfTheStorm
+    case 1822: // SiegeOfBoralus
+    case 1594: // The Motherlode
+    case 1841: // The Underroth
+    case 1771: // tol Dagor
+    case 1862: // Wycrest Manor
     {
         // Regular Dungeons
         return 147809; // Adept's Spoils
     }
-    case 1516: // The Arcway
-    case 1477: // Halls of Valor
+    /*case 0: // UNUSED
+    case 0: // UNUSED
     {
         // Greater Dungeons
         return 147810; // Greater Adept's Spoils
-    }
+    }*/
     default:
         break;
     }
@@ -862,19 +860,16 @@ bool ChallengeModeMgr::IsChest(uint32 goEntry)
 {
     switch (goEntry)
     {
-    case 252674: // Vault of the Wardens 100-110
-    case 252677: // Black Rook Hold Dungeon 100-110
-    case 252686: // Court of Stars 110
-    case 252668: // Dark Heart Thicket 100-110
-    case 252665: // Eye of Azshara 100-110
-    case 252056: // Halls of Valor 100-110
-    case 252680: // Maw of Souls 100-110
-    case 252671: // Neltharions Lair 100-110
-    case 252683: // The Arcway 100-110
-    case 269852: // Lower Return to Karazhan 110
-    case 269871: // Upper Return to Karazhan 110
-    case 269843: // Cathedral of Eternal Night
-    case 272689: // Seat of the Triumvirate
+    case 282736: // Tol Dagor
+    case 282737: // Atal'Dazar
+    case 288642: // King's Rest
+    case 288644: // Siege of Boralus
+    case 290544: // The MOTHERLODE!!
+    case 290621: // Waycrest Manor
+    case 290758: // Temple of Sertraliss
+    case 290759: // The Underrot
+    case 290761: // Shrine of the Storm
+    case 282735: // Freehold
         return true;
     default:
         break;
@@ -920,46 +915,46 @@ uint32 ChallengeModeMgr::GetChest(uint32 challangeId)
     switch (challangeId)
     {
     case 197:
-        return 252665; // Eye of Azshara 100-110
+        return 282736; // Tol Dagor
         break;
     case 198:
-        return 252668; // Dark Heart Thicket 100-110
+        return 282737; // Atal'Dazar
         break;
     case 199:
-        return 252677; // Black Rook Hold Dungeon 100-110
+        return 288642; // King's Rest
         break;
     case 200:
-        return 252056; // Halls of Valor 100-110
+        return 288644; // Siege of Boralus
         break;
     case 206:
-        return 252671; // Neltharions Lair 100-110
+        return 290544; // The MOTHERLODE!!
         break;
     case 207:
-        return 252674; // Vault of the Wardens 100-110
+        return 290621; // Waycrest Manor
         break;
     case 208:
-        return 252680; // Maw of Souls 100-110
+        return 290758; // Temple of Sertraliss
         break;
     case 209:
-        return 252683; // The Arcway 100-110
+        return 290759; // The Underrot
         break;
     case 210:
-        return 252686; // Court of Stars 110
+        return 290761; // Shrine of the Storm
         break;
     case 227:
-        return 269852; // Lower Return to Karazhan 110
+        return 282735; // Freehold
         break;
-    case 233:
-        return 269843; // Cathedral of Eternal Night
-        break;
-    case 234:
-        return 269871; // Upper Return to Karazhan 110
-        break;
-    case 239:
-        return 269843; // Cathedral of Eternal Night
-        break;
-    default:
-        return 252668;
+    /*case 233:
+        return 0; // UNUSED
+        break; 
+    case 234:  
+        return 0; // UNUSED
+        break; 
+    case 239:  
+        return 0; // UNUSED
+        break;*/
+    default:   
+        return 0;
         break;
     }
     return 0;

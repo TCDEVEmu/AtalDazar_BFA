@@ -49,15 +49,15 @@ WorldPacket const* WorldPackets::ChallengeMode::ChangePlayerDifficultyResult::Wr
 
 WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
 {
-    _worldPacket << MapID;
-    _worldPacket << ChallengeID;
-    _worldPacket << ChallengeLevel;
+    _worldPacket << (uint32)MapID;
+    _worldPacket << (int32)ChallengeID;
+    _worldPacket << (uint32)ChallengeLevel;
 
     for (uint32 v : Affixes)
         _worldPacket << v;
 
-    _worldPacket << DeathCount;
-    _worldPacket << uint32(0); // ClientEncounterStartPlayerInfo
+    _worldPacket << (uint32)DeathCount;
+    _worldPacket << (uint32)(0); // ClientEncounterStartPlayerInfo
 
     _worldPacket.WriteBit(Energized);
     _worldPacket.FlushBits();
@@ -81,10 +81,10 @@ WorldPacket const* WorldPackets::ChallengeMode::UpdateDeathCount::Write()
 
 WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
 {
-    _worldPacket << CompletionMilliseconds;
-    _worldPacket << MapID;
-    _worldPacket << ChallengeID;
-    _worldPacket << ChallengeLevel;
+    _worldPacket << (int32)CompletionMilliseconds;
+    _worldPacket << (uint32)MapID;
+    _worldPacket << (uint32)ChallengeID;
+    _worldPacket << (int32)ChallengeLevel;
 
     _worldPacket.WriteBit(IsCompletedInTimer);
     _worldPacket.FlushBits();
@@ -132,9 +132,9 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ChallengeM
 
 WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 {
-    _worldPacket << CompletionMilliseconds;
-    _worldPacket << MapID;
-    _worldPacket << ChallengeLevel;
+    _worldPacket << (int32)CompletionMilliseconds;
+    _worldPacket << (uint32)MapID;
+    _worldPacket << (int32)ChallengeLevel;
 
     return &_worldPacket;
 }
