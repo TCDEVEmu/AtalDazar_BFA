@@ -173,7 +173,7 @@ class boss_doomrel : public CreatureScript
                 me->SetFaction(FACTION_FRIEND);
 
                 // was set before event start, so set again
-                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetImmuneToPC(true);
 
                 if (_instance->GetData(DATA_GHOSTKILL) >= 7)
                     me->AddNpcFlag(UNIT_NPC_FLAG_NONE);

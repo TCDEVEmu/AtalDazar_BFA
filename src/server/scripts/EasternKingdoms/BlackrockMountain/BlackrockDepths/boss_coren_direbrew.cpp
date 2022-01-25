@@ -145,7 +145,7 @@ public:
         void Reset() override
         {
             _Reset();
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(true);
             me->SetFaction(COREN_DIREBREW_FACTION_FRIEND);
             events.SetPhase(PHASE_ALL);
 
@@ -168,7 +168,7 @@ public:
             if (action == ACTION_START_FIGHT)
             {
                 events.SetPhase(PHASE_ONE);
-                me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetImmuneToPC(false);
                 me->SetFaction(COREN_DIREBREW_FACTION_HOSTILE);
                 me->SetInCombatWithZone();
 
@@ -401,7 +401,7 @@ public:
                     Talk(SAY_ANTAGONIST_2);
                     break;
                 case ACTION_ANTAGONIST_HOSTILE:
-                    me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                    me->SetImmuneToPC(false);
                     me->SetFaction(COREN_DIREBREW_FACTION_HOSTILE);
                     me->SetInCombatWithZone();
                     break;

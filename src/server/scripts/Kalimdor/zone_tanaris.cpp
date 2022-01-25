@@ -321,7 +321,7 @@ public:
             creature->SetFaction(113);
             creature->SetFullHealth();
             creature->SetStandState(UNIT_STAND_STATE_STAND);
-            creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            creature->SetImmuneToPC(false);
             creature->AI()->Talk(SAY_OOX_START);
 
             if (npc_escortAI* pEscortAI = CAST_AI(npc_OOX17::npc_OOX17AI, creature->AI()))

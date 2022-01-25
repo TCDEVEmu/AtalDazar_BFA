@@ -310,7 +310,8 @@ struct npc_frozen_core : public ScriptedAI
     {
         if (action == ACTION_AHUNE_RETREAT)
         {
-            me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
+            me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->SetImmuneToPC(false);
             me->RemoveAurasDueToSpell(SPELL_ICE_SPEAR_AURA);
             _events.ScheduleEvent(EVENT_SYNCH_HEALTH, Seconds(3), 0, PHASE_TWO);
         }
@@ -318,7 +319,8 @@ struct npc_frozen_core : public ScriptedAI
         {
             _events.Reset();
             DoCast(me, SPELL_ICE_SPEAR_AURA);
-            me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_PC));
+            me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+            me->SetImmuneToPC(true);
         }
     }
 

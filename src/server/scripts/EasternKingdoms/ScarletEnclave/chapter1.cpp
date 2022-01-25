@@ -129,7 +129,7 @@ public:
             Initialize();
             events.Reset();
             me->SetFaction(7);
-            me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            me->SetImmuneToPC(true);
             me->SetStandState(UNIT_STAND_STATE_KNEEL);
             me->LoadEquipment(0, true);
         }
@@ -235,7 +235,7 @@ public:
                     else
                     {
                         me->SetFaction(14);
-                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+                        me->SetImmuneToPC(false);
                         phase = PHASE_ATTACKING;
 
                         if (Player* target = ObjectAccessor::GetPlayer(*me, playerGUID))
@@ -499,7 +499,7 @@ public:
                     return true;
             }
 
-            creature->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
+            creature->SetImmuneToPC(false);
             creature->RemoveUnitFlag(UNIT_FLAG_UNK_15);
 
             player->CastSpell(creature, SPELL_DUEL, false);
