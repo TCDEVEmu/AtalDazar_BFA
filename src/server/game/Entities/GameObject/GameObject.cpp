@@ -262,6 +262,8 @@ bool GameObject::Create(uint32 entry, Map* map, Position const& pos, QuaternionD
         return false;
     }
 
+    UpdatePositionData();
+
     m_area = sAreaMgr->GetArea(GetAreaIdFromPosition());
     SetZoneScript();
     if (m_zoneScript)
