@@ -459,9 +459,16 @@ class TC_GAME_API InstanceScript : public ZoneScript
 
         void CastChallengeCreatureSpell(Creature* creature);
         void CastChallengePlayerSpell(Player* player);
+		void CastChallengeCreatureSpellOnDeath(Creature* creature);
 
         void SetChallengeDoorPos(Position pos) { _challengeModeDoorPosition = pos; }
+		void SetChallengeStartPos(Position pos) { _challengeModeStartPosition = pos; _checkPointPosition = pos; }
         virtual void SpawnChallengeModeRewardChest() { }
+
+        virtual void ShowChallengeDoor() { }
+        virtual void HideChallengeDoor() { }
+
+        void AfterChallengeModeStarted();
 
         void AddChallengeModeChests(ObjectGuid chestGuid, uint8 chestLevel);
         ObjectGuid GetChellngeModeChests(uint8 chestLevel);
