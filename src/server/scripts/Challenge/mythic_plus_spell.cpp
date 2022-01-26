@@ -386,7 +386,7 @@ public:
             player->TaxiFlightNearestNode();
     }
 
-    void OnStartChallengeMode(Player* player, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3)
+    void OnStartChallengeMode(Player* player, uint8 level, uint8 affix1, uint8 affix2, uint8 affix3, uint8 affix4)
     {
         isstarted = true;
         _affix1 = affix1;

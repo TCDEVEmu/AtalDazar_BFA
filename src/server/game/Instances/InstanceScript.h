@@ -548,7 +548,9 @@ class TC_GAME_API InstanceScript : public ZoneScript
         uint8 _challengeModeLevel;
         uint32 _challengeModeStartTime;
         uint32 _challengeModeDeathCount;
+        Optional<uint32> _challengeModeScenario;
         Optional<Position> _challengeModeDoorPosition;
+        Optional<Position> _challengeModeStartPosition;
         Optional<Position> _checkPointPosition;
         std::array<uint32, 4> _affixes;
         std::bitset<size_t(121)> _affixesTest;//Affixes::MaxAffixes
