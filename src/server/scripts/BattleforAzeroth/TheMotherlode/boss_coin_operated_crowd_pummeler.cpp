@@ -183,35 +183,10 @@ struct boss_Coin_operated_crowd_pummeler : public BossAI
             SelectSoundAndText(me, 1);
             me->RemoveAura(SPELL_INSUFFICIENT_FUNDS);
             instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
-
-            AddTimedDelayedOperation(14.3 * TimeConstants::IN_MILLISECONDS, [this]() -> void
-                {
-                    me->AddUnitState(UNIT_STATE_CASTING);
-                    if (Unit * target = me->GetVictim())
-                    {
-                        SelectSoundAndText(me, 5);
-                        me->CastSpell(me->GetVictim(), SPELL_SHOCKING_CLAWS);
-                        events.ScheduleEvent(EVENT_SHOCKING_CLAW, urand(14300, 41300));
-                    }
-                });
-            AddTimedDelayedOperation(5.7 * TimeConstants::IN_MILLISECONDS, [this]() -> void
-                {
-                    me->AddUnitState(UNIT_STATE_CASTING);
-                    SelectSoundAndText(me, 3);
-                    me->CastSpell(me->GetVictim(), SPELL_STATIC_PULSE);
-                    events.ScheduleEvent(EVENT_STATIC_PULSE, 10 * IN_MILLISECONDS);
-                });
-            AddTimedDelayedOperation(9.4 * TimeConstants::IN_MILLISECONDS, [this]() -> void
-                {
-                    std::ostringstream str;
-                    str << "Coin-Operated Crowd Pummeler casts |cFFF00000|h[Footbomb Launcher]|h|r !";
-                    me->TextEmote(str.str().c_str(), 0, true);
-                    me->AddUnitState(UNIT_STATE_CASTING);
-                    me->CastSpell(me->GetVictim(), SPELL_CAST_FOOTBOMB_LAUNCHER);
-                    events.ScheduleEvent(EVENT_FOOTBOMB_LAUNCHER, 17 * IN_MILLISECONDS);
-                }); 
-          //  events.ScheduleEvent(EVENT_SHOCKING_CLAW, 14.3 * IN_MILLISECONDS);
-            
+                                      
+            events.ScheduleEvent(EVENT_SHOCKING_CLAW, urand(14300, 41300));                    
+            events.ScheduleEvent(EVENT_STATIC_PULSE, 10 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_FOOTBOMB_LAUNCHER, 17 * IN_MILLISECONDS);
 
             if (me->GetMap()->IsMythic() || me->GetMap()->IsHeroic())
             {
