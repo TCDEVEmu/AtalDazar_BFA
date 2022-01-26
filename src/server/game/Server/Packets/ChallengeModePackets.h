@@ -240,9 +240,7 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 Count = 4;
             std::array<uint32, 4> Affixes;//Length: 36
-            //std::array<uint32, 4> RequiredSeason;
         };
 
     }
