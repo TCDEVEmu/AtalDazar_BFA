@@ -244,12 +244,12 @@ void WorldPackets::ChallengeMode::RequestChallengeModeAffixes::Read(){}
 
 WorldPacket const * WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult::Write()
 {
-    _worldPacket << static_cast<uint32>(Affixes.size());
+    _worldPacket << uint32(Count);
 
-    for (auto const& v : Affixes)
+    for (auto affix : Affixes)
     {
-        _worldPacket << (uint32)v;
-        _worldPacket << (uint32)0;
+        _worldPacket << uint32(affix);
+        _worldPacket << uint32(0);
     }
 
     return &_worldPacket;

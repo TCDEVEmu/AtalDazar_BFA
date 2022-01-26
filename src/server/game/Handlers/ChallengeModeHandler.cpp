@@ -157,10 +157,24 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
  {
      WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult result;
 
-     result.Affixes[0] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME);
-     result.Affixes[1] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME);
-     result.Affixes[2] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME);
-     result.Affixes[3] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME);
+     result.Count = 4;
 
+    result.Affixes[0] = 9;
+    result.Affixes[1] = 8;
+    result.Affixes[2] = 124;
+    result.Affixes[3] = 121;
+	
+	/*result.RequiredSeason[0] = 0;
+    result.RequiredSeason[1] = 0;
+    result.RequiredSeason[2] = 0;
+    result.RequiredSeason[3] = 5;
+
+    
+    result.Affixes[0] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME);
+    result.Affixes[1] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME);
+    result.Affixes[2] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME);
+    result.Affixes[3] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME);
+    */
+   
      SendPacket(result.Write());
  }
