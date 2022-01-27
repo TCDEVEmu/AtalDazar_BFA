@@ -217,10 +217,17 @@ void WorldSession::HandleRequestLeaders(WorldPackets::ChallengeMode::RequestLead
  {
      WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult result;
 
+     result.Count = 4;
+
      result.Affixes[0] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME);
      result.Affixes[1] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME);
      result.Affixes[2] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME);
      result.Affixes[3] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME);
-
+	 
+	 result.RequiredSeason[0] = 0;
+     result.RequiredSeason[1] = 0;
+     result.RequiredSeason[2] = 0;
+     result.RequiredSeason[3] = 0;
+	 
      SendPacket(result.Write());
  }

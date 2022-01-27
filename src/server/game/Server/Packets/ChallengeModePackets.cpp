@@ -49,7 +49,7 @@ WorldPacket const* WorldPackets::ChallengeMode::ChangePlayerDifficultyResult::Wr
 
 WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
 {
-    _worldPacket << (uint32)MapID;
+    /*_worldPacket << (uint32)MapID;
     _worldPacket << (uint32)ChallengeID;
     _worldPacket << (uint32)ChallengeLevel;
 
@@ -59,8 +59,25 @@ WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
     _worldPacket << (uint32)DeathCount;
     _worldPacket << (uint32)(0); // ClientEncounterStartPlayerInfo
 
-    _worldPacket.WriteBit(Energized);
+    _worldPacket << (uint8)Energized;
     _worldPacket.FlushBits();
+
+    return &_worldPacket;*/
+	
+	_worldPacket << (uint32)MapId;
+    _worldPacket << (uint32)ChallengeId;
+    _worldPacket << (uint32)ChallengeLevel;
+	
+    _worldPacket << (uint32)Affixes1;
+    _worldPacket << (uint32)Affixes2;
+    _worldPacket << (uint32)Affixes3;
+    _worldPacket << (uint32)Affixes4;
+	
+	_worldPacket << (uint32)DeathCount;
+    _worldPacket << (uint32)ClientEncounterStartPlayerInfo;
+
+    _worldPacket << (uint8)Energized;
+	_worldPacket.FlushBits();
 
     return &_worldPacket;
 }
@@ -81,12 +98,12 @@ WorldPacket const* WorldPackets::ChallengeMode::UpdateDeathCount::Write()
 
 WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
 {
-    _worldPacket << (int32)CompletionMilliseconds;
+    _worldPacket << (uint32)CompletionMilliseconds;
     _worldPacket << (uint32)MapID;
     _worldPacket << (uint32)ChallengeID;
-    _worldPacket << (int32)ChallengeLevel;
+    _worldPacket << (uint32)ChallengeLevel;
 
-    _worldPacket.WriteBit(IsCompletedInTimer);
+    _worldPacket << (uint8)IsCompletedInTimer;
     _worldPacket.FlushBits();
 
     return &_worldPacket;
@@ -132,7 +149,9 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ChallengeM
 
 WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 {
-    _worldPacket << (uint32)MapID;
+    _worldPacket << (int32)MapID;
+	_worldPacket << (int32)CompletionMilliseconds;
+	_worldPacket << (uint32)ChallengeLevel;
   
     return &_worldPacket;
 }
@@ -249,13 +268,13 @@ void WorldPackets::ChallengeMode::RequestChallengeModeAffixes::Read(){}
 
 WorldPacket const * WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult::Write()
 {
-    _worldPacket << static_cast<uint32>(Affixes.size());
+     _worldPacket << uint32(Count);
 
-    for (auto const& v : Affixes)
+    for (uint32 i = 0; i < 4; ++i)
     {
-        _worldPacket << (uint32)v;
-        _worldPacket << (uint32)0;
+        _worldPacket << uint32(Affixes[i]);
+        _worldPacket << uint32(RequiredSeason[i]);
     }
-
-    return &_worldPacket;
+	
+	return &_worldPacket;
 }

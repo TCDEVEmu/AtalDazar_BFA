@@ -99,13 +99,21 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            std::array<uint32, 4> Affixes;
- 
             uint32 MapID = 0;
             uint32 ChallengeID = 0;
-            uint32 ChallengeLevel = 2;
+            uint32 ChallengeLevel = 0;
             uint32 DeathCount = 0;
-            bool Energized = true;
+           
+            uint32 Affixes1 = 0;
+            uint32 Affixes2 = 0;
+            uint32 Affixes3 = 0;
+            uint32 Affixes4 = 0;
+			
+            uint32 ClientEncounterStartPlayerInfo = 0;
+			
+			uint8 Energized = 128;
+ 
+            
         };
 
         class Reset final : public ServerPacket
@@ -135,11 +143,11 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 MapID = 0;
-            int32 CompletionMilliseconds = 0;
-            int32 ChallengeLevel = 0;
-            uint32 ChallengeID = 0;
-            bool IsCompletedInTimer = false;
+			uint32 Duration = 0;
+            uint32 MapId = 0;
+            uint32 ChallengeId = 0;
+            uint32 ChallengeLevel = 0;
+            uint8 IsCompletedInTimer = 128;
         };
 
         class NewPlayerRecord final : public ServerPacket
@@ -149,7 +157,9 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 MapID = 0;
+            int32 MapID = 0;
+			int32 CompletionMilliseconds = 0;
+			uint32 ChallengeLevel = 0;
 
         };
 		
@@ -243,15 +253,18 @@ namespace WorldPackets
             void Read() override;
         };
 
-        class RequestChallengeModeAffixesResult final : public ServerPacket
+		class RequestChallengeModeAffixesResult final : public ServerPacket
         {
         public:
             RequestChallengeModeAffixesResult() : ServerPacket(SMSG_MYTHIC_PLUS_CURRENT_AFFIXES) { }
 
             WorldPacket const* Write() override;
 
+            uint32 Count = 4;
             std::array<uint32, 4> Affixes;//Length: 36
-        };
+            std::array<uint32, 4> RequiredSeason;
+        }; 
+
 
     }
 }
