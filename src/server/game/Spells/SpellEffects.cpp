@@ -352,7 +352,7 @@ NonDefaultConstructible<pEffect> SpellEffects[TOTAL_SPELL_EFFECTS] =
     &Spell::EffectNULL,                                     //264 SPELL_EFFECT_REMOVE_GEM
     &Spell::EffectLearnAzeriteEssencePower,                 //265 SPELL_EFFECT_LEARN_AZERITE_ESSENCE_POWER
     &Spell::EffectNULL,                                     //266 SPELL_EFFECT_266
-    &Spell::EffectNULL,                                     //267 SPELL_EFFECT_267
+    &Spell::EffectCreatePrivateConversation,                //267 SPELL_EFFECT_CREATE_PRIVATE_CONVERSATION
     &Spell::EffectNULL,                                     //268 SPELL_EFFECT_APPLY_MOUNT_EQUIPMENT
     &Spell::EffectNULL,                                     //269 SPELL_EFFECT_UPGRADE_ITEM
     &Spell::EffectNULL,                                     //270 SPELL_EFFECT_270
@@ -5826,6 +5826,17 @@ void Spell::EffectCreateConversation(SpellEffIndex /*effIndex*/)
         return;
 
     Conversation::CreateConversation(effectInfo->MiscValue, GetCaster(), destTarget->GetPosition(), { GetCaster()->GetGUID() }, GetSpellInfo());
+}
+
+void Spell::EffectCreatePrivateConversation(SpellEffIndex /*effIndex*/)
+{
+    if (effectHandleMode != SPELL_EFFECT_HANDLE_HIT)
+        return;
+
+    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+        return;
+
+    Conversation::CreateConversation(effectInfo->MiscValue, GetCaster(), unitTarget->GetPosition(), { unitTarget->GetGUID() }, GetSpellInfo());
 }
 
 void Spell::EffectAddGarrisonFollower(SpellEffIndex /*effIndex*/)
