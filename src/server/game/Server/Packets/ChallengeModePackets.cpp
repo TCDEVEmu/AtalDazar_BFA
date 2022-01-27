@@ -132,10 +132,15 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::ChallengeMode::ChallengeM
 
 WorldPacket const* WorldPackets::ChallengeMode::NewPlayerRecord::Write()
 {
-    _worldPacket << (int32)CompletionMilliseconds;
     _worldPacket << (uint32)MapID;
-    _worldPacket << (int32)ChallengeLevel;
+  
+    return &_worldPacket;
+}
 
+WorldPacket const* WorldPackets::ChallengeMode::NewPlayerSeasonRecord::Write()
+{
+    _worldPacket << (uint32)MapID;
+  
     return &_worldPacket;
 }
 

@@ -150,8 +150,18 @@ namespace WorldPackets
             WorldPacket const* Write() override;
 
             uint32 MapID = 0;
-            int32 CompletionMilliseconds = 0;
-            int32 ChallengeLevel = 0;
+
+        };
+		
+		class NewPlayerSeasonRecord final : public ServerPacket
+        {
+        public:
+            NewPlayerSeasonRecord() : ServerPacket(SMSG_MYTHIC_PLUS_NEW_PLAYER_SEASON_RECORD, 4) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 MapID = 0;
+           
         };
 
         class AllMapStats final : public ServerPacket
