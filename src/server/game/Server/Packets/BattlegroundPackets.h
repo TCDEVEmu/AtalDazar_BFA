@@ -504,8 +504,8 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 BrawlType = 0;
-            uint32 TimeToEnd = 0;
+            int32 BrawlType = 0;
+            int32 TimeToEnd = 0;
             bool IsActive = false;
 
         };
