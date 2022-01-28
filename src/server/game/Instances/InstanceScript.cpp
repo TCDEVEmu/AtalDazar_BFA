@@ -1393,9 +1393,9 @@ void InstanceScript::CompleteChallengeMode()
     });
 
     WorldPackets::ChallengeMode::Complete complete;
-    complete.CompletionMilliseconds = totalDuration;
-    complete.MapID = instance->GetId();
-    complete.ChallengeID = mapChallengeModeEntry->ID;
+    complete.Duration = totalDuration;
+    complete.MapId = instance->GetId();
+    complete.ChallengeId = mapChallengeModeEntry->ID;
     complete.ChallengeLevel = _challengeModeLevel + mythicIncrement;
     instance->SendToPlayers(complete.Write());
 

@@ -64,8 +64,8 @@ WorldPacket const* WorldPackets::ChallengeMode::Start::Write()
 
     return &_worldPacket;*/
 	
-	_worldPacket << (uint32)MapId;
-    _worldPacket << (uint32)ChallengeId;
+	_worldPacket << (uint32)MapID;
+    _worldPacket << (uint32)ChallengeID;
     _worldPacket << (uint32)ChallengeLevel;
 	
     _worldPacket << (uint32)Affixes1;
@@ -98,9 +98,9 @@ WorldPacket const* WorldPackets::ChallengeMode::UpdateDeathCount::Write()
 
 WorldPacket const* WorldPackets::ChallengeMode::Complete::Write()
 {
-    _worldPacket << (uint32)CompletionMilliseconds;
-    _worldPacket << (uint32)MapID;
-    _worldPacket << (uint32)ChallengeID;
+    _worldPacket << (uint32)Duration;
+    _worldPacket << (uint32)MapId;
+    _worldPacket << (uint32)ChallengeId;
     _worldPacket << (uint32)ChallengeLevel;
 
     _worldPacket << (uint8)IsCompletedInTimer;

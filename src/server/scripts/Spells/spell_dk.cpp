@@ -167,6 +167,7 @@ enum DeathKnightSpells
     SPELL_DK_CASTIGATOR                         = 207305,
     SPELL_DK_UNHOLY_VIGOR                       = 196263,
 	SPELL_DK_CLAWING_SHADOWS                    = 207311,
+    SPELL_DK_INFECTED_CLAWS                     = 207272,
 };
 
 // 70656 - Advantage (T10 4P Melee Bonus)

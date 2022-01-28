@@ -368,8 +368,8 @@ WorldPacket const* WorldPackets::Battleground::PVPMatchEnd::Write()
 
 WorldPacket const * WorldPackets::Battleground::SendPvpBrawlInfo::Write()
 {
-    _worldPacket << BrawlType;
-    _worldPacket << TimeToEnd;
+ //   _worldPacket << BrawlType;
+//    _worldPacket << TimeToEnd;
     _worldPacket.FlushBits();
     _worldPacket.WriteBit(IsActive);
 

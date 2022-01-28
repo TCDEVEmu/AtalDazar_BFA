@@ -409,7 +409,7 @@ bool Quest::IsWorldQuest() const
             break;
     }
 
-    return HasFlagEx(QUEST_FLAGS_EX_IS_WORLD_QUEST);
+    return false;
 }
 
 bool Quest::IsAllowedInRaid(Difficulty difficulty) const
