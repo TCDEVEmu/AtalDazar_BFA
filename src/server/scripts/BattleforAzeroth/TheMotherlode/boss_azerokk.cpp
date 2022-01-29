@@ -1,31 +1,7 @@
-/*
- * Copyright (C) 2019-2020 LatincoreBfa
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
+#include "ScriptMgr.h"
+#include "the_motherlode.h"
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
-#include "GridNotifiers.h"
-#include "GridNotifiersImpl.h"
-#include "ScriptMgr.h"
-#include "SpellScript.h"
-#include "SpellAuras.h"
-#include "SpellAuraEffects.h"
-#include "the_motherlode.h"
-#include "ScriptedCreature.h"
-#include "SpellHistory.h"
 
 enum Spells
 {
@@ -102,174 +78,298 @@ const Position frackingPos[2] =
     { 1185.00f, -3301.67f, 56.67f },
 };
 
-#define AZERITE_INFUSION "No estas preparado!!!!"
-#define CALL_EARTHRAGER "Quemadura ..."
-#define RESONANT_PULSE "Pelea conmigo."
+#define AZERITE_INFUSION "You are not prepared!!!!"
+#define CALL_EARTHRAGER "Burn..."
+#define RESONANT_PULSE "Figth with me."
 #define TECTONIC_SMASH "Arg"
-#define KILL_TEXT "voy a matarte "
+#define KILL_TEXT "I will kill you"
 #define DEATH_TEXT "Oh nooo..."
-#define AGGRO_TEXT "Ven aquí ..."
+#define AGGRO_TEXT "Come here..."
 
-struct boss_azerokk : public BossAI
+class bfa_boss_azerokk : public CreatureScript
 {
 public:
-    boss_azerokk(Creature* creature) : BossAI(creature, DATA_AZEROKK), summons(me)
+    bfa_boss_azerokk() : CreatureScript("bfa_boss_azerokk")
     {
-        instance = me->GetInstanceScript();
     }
-    
-        
+    struct bfa_boss_azerokk_AI : public BossAI
+    {
+        bfa_boss_azerokk_AI(Creature* creature) : BossAI(creature, DATA_AZEROKK), summons(me)
+        {
+            instance = me->GetInstanceScript();
+        }
+
         EventMap events;
         InstanceScript* instance;
         SummonList summons;
 
-    void Reset() override
-    {
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-        BossAI::Reset();
-        events.Reset();
-        me->GetMotionMaster()->MoveTargetedHome();
-        summons.DespawnAll();        
-        instance->SetBossState(DATA_AZEROKK, FAIL);
-    }
-
-    void EnterEvadeMode(EvadeReason why) override
-    {
-        me->GetMotionMaster()->MoveTargetedHome();
-        summons.DespawnAll();
-        _DespawnAtEvade(15);
-    }
-
-    void EnterCombat(Unit* who) override
-    {
-        SelectSoundAndText(me, 1);
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
-        for (uint8 i = 0; i < 4; ++i)
-            me->SummonCreature(NPC_EARTHRAGERS, earthragerPos[i], TEMPSUMMON_DEAD_DESPAWN);
-        for (uint8 i = 0; i < 2; ++i)
-            me->SummonCreature(NPC_FRACKING_TOTEM_PRE, frackingPos[i], TEMPSUMMON_MANUAL_DESPAWN);       
-
-           events.ScheduleEvent(EVENT_CALL_EARTHRAGER, TIMER_CALL_EARTHRAGER);
-           events.ScheduleEvent(EVENT_AZERITE_INFUSION, TIMER_AZERITE_INFUSION);
-           events.ScheduleEvent(EVENT_RESONANT_PULSE, TIMER_RESONANT_PULSE);
-
-
-        if (me->GetMap()->IsMythic() || me->GetMap()->IsHeroic())
+        void JustSummoned(Creature* summon) override
         {
-            events.ScheduleEvent(EVENT_TECTONIC_SMASH, TIMER_TECTONIC_SMASH);
+            summons.Summon(summon);
+
+            switch (summon->GetEntry())
+            {
+            case NPC_EARTHRAGERS:
+                summon->SetInCombatWithZone();
+                break;
+            }
+
         }
 
-    }
+        void Reset() override
+        {
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+            summons.DespawnAll();
+            events.Reset();
+        }
 
-    void JustDied(Unit* killer) override
-    {
-        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-        summons.DespawnAll();
-        BossAI::JustDied(killer);
-        SelectSoundAndText(me, 2);
-        instance->SetBossState(DATA_AZEROKK, DONE);
-    }
-
-    void KilledUnit(Unit* victim) override
-    {
-        if (victim->GetTypeId() == TYPEID_PLAYER)
+        void KilledUnit(Unit* a) override
+        {
             SelectSoundAndText(me, 3);
-    }
-
-    void JustSummoned(Creature* summon) override
-    {
-        summons.Summon(summon);
-
-        switch (summon->GetEntry())
-        {
-        case NPC_EARTHRAGERS:
-            summon->SetInCombatWithZone();
-            break;
         }
 
-    }
-    void SelectSoundAndText(Creature* me, uint32  selectedTextSound = 0)
-    {
-        if (!me)
-            return;
-
-        if (me)
+        void SelectSoundAndText(Creature* me, uint32  selectedTextSound = 0)
         {
-            switch (selectedTextSound)
+            if (!me)
+                return;
+
+            if (me)
             {
-            case 1:
-                me->PlayDirectSound(SOUND_AGGRO);
-                me->Yell(AGGRO_TEXT, LANG_UNIVERSAL, NULL);
-                break;
-            case 2:
-                me->PlayDirectSound(SOUND_DEATH);
-                me->Yell(DEATH_TEXT, LANG_UNIVERSAL, NULL);
-                break;
-            case 3:
-                me->PlayDirectSound(SOUND_KILL);
-                me->Yell(KILL_TEXT, LANG_UNIVERSAL, NULL);
-                break;
-            case 4:
-                me->PlayDirectSound(SOUND_AZERITE_INFUSION);
-                me->Yell(AZERITE_INFUSION, LANG_UNIVERSAL, NULL);
-                break;
-            case 5:
-                me->PlayDirectSound(SOUND_CALL_EARTHRAGER);
-                me->Yell(CALL_EARTHRAGER, LANG_UNIVERSAL, NULL);
-                break;
-            case 6:
-                me->PlayDirectSound(SOUND_TECTONIC_SMASH);
-                me->Yell(TECTONIC_SMASH, LANG_UNIVERSAL, NULL);
-                break;
-            case 7:
-                me->PlayDirectSound(SOUND_RESONANT_PULSE);
-                me->Yell(RESONANT_PULSE, LANG_UNIVERSAL, NULL);
-                break;
+                switch (selectedTextSound)
+                {
+                case 1:
+                    me->PlayDirectSound(SOUND_AGGRO);
+                    me->Yell(AGGRO_TEXT, LANG_UNIVERSAL, NULL);
+                    break;
+                case 2:
+                    me->PlayDirectSound(SOUND_DEATH);
+                    me->Yell(DEATH_TEXT, LANG_UNIVERSAL, NULL);
+                    break;
+                case 3:
+                    me->PlayDirectSound(SOUND_KILL);
+                    me->Yell(KILL_TEXT, LANG_UNIVERSAL, NULL);
+                    break;
+                case 4:
+                    me->PlayDirectSound(SOUND_AZERITE_INFUSION);
+                    me->Yell(AZERITE_INFUSION, LANG_UNIVERSAL, NULL);
+                    break;
+                case 5:
+                    me->PlayDirectSound(SOUND_CALL_EARTHRAGER);
+                    me->Yell(CALL_EARTHRAGER, LANG_UNIVERSAL, NULL);
+                    break;
+                case 6:
+                    me->PlayDirectSound(SOUND_TECTONIC_SMASH);
+                    me->Yell(TECTONIC_SMASH, LANG_UNIVERSAL, NULL);
+                    break;
+                case 7:
+                    me->PlayDirectSound(SOUND_RESONANT_PULSE);
+                    me->Yell(RESONANT_PULSE, LANG_UNIVERSAL, NULL);
+                    break;
+                }
             }
         }
-    }
 
-    void OnSpellFinished(SpellInfo const* spellInfo) //override
-    {
-        switch (spellInfo->Id)
+        void JustDied(Unit*) override
         {
-        case SPELL_RESONANT_PULSE:
-        {
-            std::list<Creature*> ragers;
-            me->GetCreatureListWithEntryInGrid(ragers, NPC_EARTHRAGERS, 100.0f);
-            if (!ragers.empty())
-            {
-                for (auto rager : ragers)
-                    rager->CastSpell(rager->GetVictim(), SPELL_RESONANT_QUAKE);
-            }
-            break;
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+            summons.DespawnAll();
+            SelectSoundAndText(me, 2);
         }
-        }
-    }
 
-
-    void UpdateAI(uint32 diff) override
-    {
-        events.Update(diff);
-
-        if (!UpdateVictim())
-            return;
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+        void EnterEvadeMode(EvadeReason why) override
         {
-            switch (eventId)
+            summons.DespawnAll();
+            _DespawnAtEvade(15);
+        }
+
+        void EnterCombat(Unit*) //override
+        {
+            SelectSoundAndText(me, 1);
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
+            for (uint8 i = 0; i < 4; ++i)
+                me->SummonCreature(NPC_EARTHRAGERS, earthragerPos[i], TEMPSUMMON_DEAD_DESPAWN);
+            for (uint8 i = 0; i < 2; ++i)
+                me->SummonCreature(NPC_FRACKING_TOTEM_PRE, frackingPos[i], TEMPSUMMON_MANUAL_DESPAWN);
+
+            if (me->GetMap()->IsMythic() || me->GetMap()->IsHeroic())
+                events.ScheduleEvent(EVENT_TECTONIC_SMASH, TIMER_TECTONIC_SMASH);
+
+            events.ScheduleEvent(EVENT_CALL_EARTHRAGER, TIMER_CALL_EARTHRAGER);
+            events.ScheduleEvent(EVENT_AZERITE_INFUSION, TIMER_AZERITE_INFUSION);
+            events.ScheduleEvent(EVENT_RESONANT_PULSE, TIMER_RESONANT_PULSE);
+        }
+
+        void OnSpellFinished(SpellInfo const* spellInfo) //override
+        {
+            switch (spellInfo->Id)
             {
-            case EVENT_RESONANT_PULSE:
-                SelectSoundAndText(me, 7);
-                me->CastSpell(me, SPELL_RESONANT_PULSE);
-                events.ScheduleEvent(EVENT_RESONANT_PULSE, TIMER_RESONANT_PULSE);
+            case SPELL_RESONANT_PULSE:
+            {
+                std::list<Creature*> ragers;
+                me->GetCreatureListWithEntryInGrid(ragers, NPC_EARTHRAGERS, 100.0f);
+                if (!ragers.empty())
+                {
+                    for (auto rager : ragers)
+                        rager->CastSpell(rager->GetVictim(), SPELL_RESONANT_QUAKE);
+                }
                 break;
-            case EVENT_AZERITE_INFUSION:
+            }
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            if (!UpdateVictim())
+                return;
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            while (uint32 eventId = events.ExecuteEvent())
             {
-                SelectSoundAndText(me, 4);
+                switch (eventId)
+                {
+                case EVENT_RESONANT_PULSE:
+                    SelectSoundAndText(me, 7);
+                    me->CastSpell(me, SPELL_RESONANT_PULSE);
+                    events.ScheduleEvent(EVENT_RESONANT_PULSE, TIMER_RESONANT_PULSE);
+                    break;
+                case EVENT_AZERITE_INFUSION:
+                {
+                    SelectSoundAndText(me, 4);
+                    std::list<Creature*> clist;
+                    me->GetCreatureListWithEntryInGrid(clist, NPC_EARTHRAGERS, 100.0f);
+                    if (!clist.empty())
+                    {
+                        if (clist.size() >= 1)
+                            clist.resize(1);
+
+                        for (auto earthrager : clist)
+                            me->CastSpell(earthrager, SPELL_AZERITE_INFUSION_MISSILE);
+                    }
+
+                    events.ScheduleEvent(EVENT_AZERITE_INFUSION, TIMER_AZERITE_INFUSION);
+                    break;
+                }
+                case EVENT_TECTONIC_SMASH:
+                    SelectSoundAndText(me, 6);
+                    me->CastSpell(me->GetVictim(), SPELL_TECTONIC_SMASH);
+                    events.ScheduleEvent(EVENT_TECTONIC_SMASH, TIMER_TECTONIC_SMASH);
+                    break;
+                case EVENT_CALL_EARTHRAGER:
+                    SelectSoundAndText(me, 5);
+                    me->CastSpell(me, SPELL_CALL_EARTHRAGER);
+                    events.ScheduleEvent(EVENT_CALL_EARTHRAGER, TIMER_CALL_EARTHRAGER);
+                    break;
+                }
+            }
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature * creature) const override
+    {
+        return new bfa_boss_azerokk_AI(creature);
+    }
+};
+
+class bfa_npc_earthrager : public CreatureScript
+{
+public:
+    bfa_npc_earthrager() : CreatureScript("bfa_npc_earthrager")
+    {
+    }
+    struct bfa_npc_earthrager_AI : public ScriptedAI
+    {
+        bfa_npc_earthrager_AI(Creature* creature) : ScriptedAI(creature)
+        {
+        }
+
+        EventMap events;
+
+        void Reset() override
+        {
+            events.Reset();
+        }
+
+        void EnterCombat(Unit*) //override
+        {
+            events.ScheduleEvent(EVENT_FIXATE, 2000);
+            events.ScheduleEvent(EVENT_JAGGED_CUT, 3000);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            events.Update(diff);
+
+            if (!UpdateVictim())
+                return;
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            while (uint32 eventId = events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                case EVENT_FIXATE:
+                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                    {
+                        me->CastSpell(target, SPELL_RAGING_GAZE_BEAM, true);
+                        me->Attack(target, true);
+                        //  me->AddThreat(target, 999999.9f);
+                    }
+                    break;
+                case EVENT_JAGGED_CUT:
+                {
+                    if (Unit * target = me->GetVictim())
+                    {
+                        if (me->IsWithinMeleeRange(target))
+                            me->CastSpell(target, SPELL_JAGGED_CUT, true);
+                    }
+                    events.ScheduleEvent(EVENT_JAGGED_CUT, 3000);
+                    break;
+                }
+                }
+            }
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new bfa_npc_earthrager_AI(creature);
+    }
+};
+
+class bfa_npc_fracking_totem : public CreatureScript
+{
+public:
+    bfa_npc_fracking_totem() : CreatureScript("bfa_npc_fracking_totem")
+    {
+    }
+    struct bfa_npc_fracking_totem_AI : public ScriptedAI
+    {
+        bfa_npc_fracking_totem_AI(Creature* creature) : ScriptedAI(creature)
+        {
+        }
+
+        bool canStun;
+
+        void Reset() override
+        {
+            canStun = false;
+        }
+
+        void StunRager()
+        {
+            if (!canStun)
+            {
+                canStun = true;
+                me->DespawnOrUnsummon(60 * IN_MILLISECONDS);
+
                 std::list<Creature*> clist;
                 me->GetCreatureListWithEntryInGrid(clist, NPC_EARTHRAGERS, 100.0f);
                 if (!clist.empty())
@@ -278,122 +378,20 @@ public:
                         clist.resize(1);
 
                     for (auto earthrager : clist)
-                        me->CastSpell(earthrager, SPELL_AZERITE_INFUSION_MISSILE);
+                        me->CastSpell(earthrager, SPELL_FRACKING_TOTEM_STUN);
                 }
-
-                events.ScheduleEvent(EVENT_AZERITE_INFUSION, TIMER_AZERITE_INFUSION);
-                break;
-            }
-            case EVENT_TECTONIC_SMASH:
-                SelectSoundAndText(me, 6);
-                me->CastSpell(me->GetVictim(), SPELL_TECTONIC_SMASH);
-                events.ScheduleEvent(EVENT_TECTONIC_SMASH, TIMER_TECTONIC_SMASH);
-                break;
-            case EVENT_CALL_EARTHRAGER:
-                SelectSoundAndText(me, 5);
-                me->CastSpell(me, SPELL_CALL_EARTHRAGER);
-                events.ScheduleEvent(EVENT_CALL_EARTHRAGER, TIMER_CALL_EARTHRAGER);
-                break;
             }
         }
-        DoMeleeAttackIfReady();
-    }
+
+        void UpdateAI(uint32 diff) override
+        {
+            StunRager();
+        }
     };
 
-
-
-struct bfa_npc_earthrager_AI : public ScriptedAI
-{
-    bfa_npc_earthrager_AI(Creature* creature) : ScriptedAI(creature)
+    CreatureAI* GetAI(Creature * creature) const override
     {
-    }
-
-    EventMap events;
-
-    void Reset() override
-    {
-        events.Reset();
-    }
-
-    void EnterCombat(Unit*) //override
-    {
-        events.ScheduleEvent(EVENT_FIXATE, 2000);
-        events.ScheduleEvent(EVENT_JAGGED_CUT, 3000);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        events.Update(diff);
-
-        if (!UpdateVictim())
-            return;
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-            case EVENT_FIXATE:
-                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                {
-                    me->CastSpell(target, SPELL_RAGING_GAZE_BEAM, true);
-                    me->Attack(target, true);
-                }
-                break;
-            case EVENT_JAGGED_CUT:
-            {
-                if (Unit * target = me->GetVictim())
-                {
-                    if (me->IsWithinMeleeRange(target))
-                        me->CastSpell(target, SPELL_JAGGED_CUT, true);
-                }
-                events.ScheduleEvent(EVENT_JAGGED_CUT, 3000);
-                break;
-            }
-            }
-        }
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct bfa_npc_fracking_totem_AI : public ScriptedAI
-{
-    bfa_npc_fracking_totem_AI(Creature* creature) : ScriptedAI(creature)
-    {
-    }
-
-    bool canStun;
-
-    void Reset() override
-    {
-        canStun = false;
-    }
-
-    void StunRager()
-    {
-        if (!canStun)
-        {
-            canStun = true;
-            me->DespawnOrUnsummon(60 * IN_MILLISECONDS);
-
-            std::list<Creature*> clist;
-            me->GetCreatureListWithEntryInGrid(clist, NPC_EARTHRAGERS, 100.0f);
-            if (!clist.empty())
-            {
-                if (clist.size() >= 1)
-                    clist.resize(1);
-
-                for (auto earthrager : clist)
-                    me->CastSpell(earthrager, SPELL_FRACKING_TOTEM_STUN);
-            }
-        }
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        StunRager();
+        return new bfa_npc_fracking_totem_AI(creature);
     }
 };
 
@@ -402,7 +400,7 @@ class bfa_npc_fracking_totem_selector : public CreatureScript
 public:
     bfa_npc_fracking_totem_selector() : CreatureScript("bfa_npc_fracking_totem_selector") { }
 
-    bool OnGossipHello(Player * player, Creature * creature)
+    bool OnGossipHello(Player* player, Creature* creature)
     {
         player->CastSpell(player, SPELL_FRACKING_TOTEM_BUTTON);
         creature->DespawnOrUnsummon(500);
@@ -440,12 +438,13 @@ public:
     }
 };
 
-
 void AddSC_boss_azerokk()
 {
-    RegisterCreatureAI(boss_azerokk);
-    RegisterCreatureAI(bfa_npc_earthrager_AI);
-    new bfa_npc_fracking_totem_selector();
-    new bfa_spell_fracking_totem_summon();
+    new bfa_boss_azerokk();
 
+    new bfa_npc_earthrager();
+    new bfa_npc_fracking_totem();
+    new bfa_npc_fracking_totem_selector();
+
+    new bfa_spell_fracking_totem_summon();
 }
