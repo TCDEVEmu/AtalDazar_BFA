@@ -175,6 +175,7 @@ namespace WorldPackets
         class ReportPvPPlayerAFK;
         class RequestPVPRewards;
         class RequestRatedBattlefieldInfo;
+        class RequestConquestFormulaConstants;
         class RequestPvpBrawlInfo;
     }
 
@@ -1661,6 +1662,7 @@ class TC_GAME_API WorldSession
         void HandleAreaSpiritHealerQueueOpcode(WorldPackets::Battleground::AreaSpiritHealerQueue& areaSpiritHealerQueue);
         void HandleHearthAndResurrect(WorldPackets::Battleground::HearthAndResurrect& hearthAndResurrect);
         void HandleRequestBattlefieldStatusOpcode(WorldPackets::Battleground::RequestBattlefieldStatus& requestBattlefieldStatus);
+        void HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& requestConquestFormulaConstants);
         void HandleRequestPvpBrawlInfo(WorldPackets::Battleground::RequestPvpBrawlInfo& pvpBrawlInfo);
 
         // Battlefield

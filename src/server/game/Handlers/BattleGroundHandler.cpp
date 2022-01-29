@@ -831,6 +831,17 @@ void WorldSession::HandleHearthAndResurrect(WorldPackets::Battleground::HearthAn
     _player->TeleportTo(_player->m_homebindMapId, _player->m_homebindX, _player->m_homebindY, _player->m_homebindZ, _player->GetOrientation());
 }
 
+void WorldSession::HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& /*requestConquestFormulaConstants*/)
+{
+    WorldPackets::Battleground::ConquestFormulaContants packet;
+    packet.PvpMinCPPerWeek = uint32(ArenaHelper::g_PvpMinCPPerWeek);
+    packet.PvpMaxCPPerWeek = uint32(ArenaHelper::g_PvpMaxCPPerWeek);
+    packet.PvpCPBaseCoefficient = float(ArenaHelper::g_PvpCPNumerator);
+    packet.PvpCPExpCoefficient = float(ArenaHelper::g_PvpCPBaseCoefficient);
+    packet.PvpCPNumerato = float(ArenaHelper::g_PvpCPExpCoefficient);
+    SendPacket(packet.Write());
+}
+
 void WorldSession::HandleRequestPvpBrawlInfo(WorldPackets::Battleground::RequestPvpBrawlInfo& /*pvpBrawlInfo*/)
 {
     WorldPackets::Battleground::SendPvpBrawlInfo packet;

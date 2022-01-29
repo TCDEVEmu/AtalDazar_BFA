@@ -22,7 +22,10 @@ WorldPacket const* WorldPackets::Battleground::PVPSeason::Write()
     _worldPacket << int32(MythicPlusSeasonID);
     _worldPacket << int32(CurrentSeason);
     _worldPacket << int32(PreviousSeason);
+    _worldPacket << int32(ConquestWeeklyProgressCurrencyID);
     _worldPacket << int32(PvpSeasonID);
+    _worldPacket.WriteBit(WeeklyRewardChestsEnabled);
+    _worldPacket.FlushBits();
 
     return &_worldPacket;
 }
@@ -323,8 +326,13 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::Battleground::RatedBattle
     data << int32(bracketInfo.WeeklyPlayed);
     data << int32(bracketInfo.WeeklyWon);
     data << int32(bracketInfo.BestWeeklyRating);
-    data << int32(bracketInfo.ProjectedConquestCap);
+    data << int32(bracketInfo.LastWeeksBestRating);
     data << int32(bracketInfo.BestSeasonRating);
+    data << int32(bracketInfo.ProjectedConquestCap);
+    data << int32(bracketInfo.PvpTierID);
+    data << int32(bracketInfo.BestSeasonRating);
+    data << int32(bracketInfo.Unused3);
+    data.WriteBit(bracketInfo.Unused4);
     data.FlushBits();
 
     return data;
@@ -366,10 +374,21 @@ WorldPacket const* WorldPackets::Battleground::PVPMatchEnd::Write()
     return &_worldPacket;
 }
 
+WorldPacket const* WorldPackets::Battleground::ConquestFormulaContants::Write()
+{
+    _worldPacket << uint32(PvpMinCPPerWeek);
+    _worldPacket << uint32(PvpMaxCPPerWeek);
+    _worldPacket << float(PvpCPBaseCoefficient);
+    _worldPacket << float(PvpCPExpCoefficient);
+    _worldPacket << float(PvpCPNumerato);
+
+    return &_worldPacket;
+}
+
 WorldPacket const * WorldPackets::Battleground::SendPvpBrawlInfo::Write()
 {
-    _worldPacket << (int32)BrawlType;
-    _worldPacket << (int32)TimeToEnd;
+    _worldPacket << int32(BrawlType);
+    _worldPacket << int32(TimeToEnd);
     _worldPacket.FlushBits();
     _worldPacket.WriteBit(IsActive);
 
