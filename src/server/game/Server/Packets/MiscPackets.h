@@ -1059,6 +1059,16 @@ namespace WorldPackets
 
             bool Enabled;
         };
+
+        class QueryCountdownTimer final : public ClientPacket
+        {
+        public:
+            QueryCountdownTimer(WorldPacket&& packet) : ClientPacket(CMSG_QUERY_COUNTDOWN_TIMER, std::move(packet)) { }
+
+            void Read() override;
+
+            //   TimerType = WORLD_TIMER_TYPE_PVP;
+        };
     }
 }
 

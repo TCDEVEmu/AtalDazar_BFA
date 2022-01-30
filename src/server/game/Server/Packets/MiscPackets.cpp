@@ -781,3 +781,8 @@ void WorldPackets::Misc::SetWarMode::Read()
 {
     Enabled = _worldPacket.ReadBit();
 }
+
+void WorldPackets::Misc::QueryCountdownTimer::Read()
+{
+    uint32(Type) = _worldPacket.read<uint32>();
+}

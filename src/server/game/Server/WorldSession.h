@@ -573,6 +573,7 @@ namespace WorldPackets
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
         class SetWarMode;
+        class QueryCountdownTimer;
     }
 
     namespace Movement
@@ -1827,6 +1828,8 @@ class TC_GAME_API WorldSession
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
         void HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& packet);
+        void HandleQueryCountdownTimer(WorldPackets::Misc::QueryCountdownTimer& packet);
+
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);
