@@ -175,6 +175,7 @@ namespace WorldPackets
         class ReportPvPPlayerAFK;
         class RequestPVPRewards;
         class RequestRatedBattlefieldInfo;
+        class RequestConquestFormulaConstants;
         class RequestPvpBrawlInfo;
     }
 
@@ -235,6 +236,7 @@ namespace WorldPackets
         class ChallengeModeRewards;
         class RequestChallengeModeAffixes;
         class RequestChallengeModeAffixesResult;
+        class RequestLeaders;
     }
 
     namespace Character
@@ -571,6 +573,7 @@ namespace WorldPackets
         class StartElapsedTimer;
         class OpenAlliedRaceDetailsGiver;
         class SetWarMode;
+        class QueryCountdownTimer;
     }
 
     namespace Movement
@@ -1660,6 +1663,7 @@ class TC_GAME_API WorldSession
         void HandleAreaSpiritHealerQueueOpcode(WorldPackets::Battleground::AreaSpiritHealerQueue& areaSpiritHealerQueue);
         void HandleHearthAndResurrect(WorldPackets::Battleground::HearthAndResurrect& hearthAndResurrect);
         void HandleRequestBattlefieldStatusOpcode(WorldPackets::Battleground::RequestBattlefieldStatus& requestBattlefieldStatus);
+        void HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& requestConquestFormulaConstants);
         void HandleRequestPvpBrawlInfo(WorldPackets::Battleground::RequestPvpBrawlInfo& pvpBrawlInfo);
 
         // Battlefield
@@ -1824,6 +1828,8 @@ class TC_GAME_API WorldSession
         void HandleSelectFactionOpcode(WorldPackets::Misc::FactionSelect& selectFaction);
         void HandleAdventureJournalStartQuest(WorldPackets::Misc::AdventureJournalStartQuest& packet);
         void HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& packet);
+        void HandleQueryCountdownTimer(WorldPackets::Misc::QueryCountdownTimer& packet);
+
 
         // Toys
         void HandleAddToy(WorldPackets::Toy::AddToy& packet);
@@ -1909,6 +1915,7 @@ class TC_GAME_API WorldSession
         void HandleChallengeModeRequestMapStatsOpcode(WorldPackets::ChallengeMode::RequestMapStats& request);
         void HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards& getRewards);
         void HandleRequestChallengeModeAffixes(WorldPackets::ChallengeMode::RequestChallengeModeAffixes& request);
+        void HandleRequestLeaders(WorldPackets::ChallengeMode::RequestLeaders& packet);
 
         // Azerite
         void HandleAzeriteEssenceUnlockMilestone(WorldPackets::Azerite::AzeriteEssenceUnlockMilestone& azeriteEssenceUnlockMilestone);

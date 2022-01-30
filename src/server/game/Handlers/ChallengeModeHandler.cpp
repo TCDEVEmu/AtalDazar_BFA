@@ -69,6 +69,64 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
     _player->DestroyItem(start.Bag, start.Slot, true);
 }
 
+void WorldSession::HandleRequestLeaders(WorldPackets::ChallengeMode::RequestLeaders& packet)
+{
+    WorldPackets::ChallengeMode::RequestLeadersResult result;
+    result.MapID = packet.MapId;
+    result.ChallengeID = packet.ChallengeID;
+
+    result.LastGuildUpdate = time(nullptr);
+    result.LastRealmUpdate = time(nullptr);
+
+    if (auto bestGuild = sChallengeModeMgr->BestGuildChallenge(_player->GetGuildId(), packet.ChallengeID))
+    {
+        for (auto itr = bestGuild->member.begin(); itr != bestGuild->member.end(); ++itr)
+        {
+            WorldPackets::ChallengeMode::ModeAttempt guildLeaders;
+            guildLeaders.InstanceRealmAddress = GetVirtualRealmAddress();
+            guildLeaders.AttemptID = bestGuild->ID;
+            guildLeaders.CompletionTime = bestGuild->RecordTime;
+            guildLeaders.CompletionDate = bestGuild->Date;
+            guildLeaders.MedalEarned = bestGuild->ChallengeLevel;
+
+            for (auto const& v : bestGuild->member)
+            {
+                WorldPackets::ChallengeMode::ModeAttempt::Member memberData;
+                memberData.VirtualRealmAddress = GetVirtualRealmAddress();
+                memberData.NativeRealmAddress = GetVirtualRealmAddress();
+                memberData.Guid = v.guid;
+                memberData.SpecializationID = v.specId;
+                guildLeaders.Members.emplace_back(memberData);
+            }
+
+            result.GuildLeaders.emplace_back(guildLeaders);
+        }
+    }
+
+    if (ChallengeData * bestServer = sChallengeModeMgr->BestServerChallenge(packet.ChallengeID))
+    {
+        WorldPackets::ChallengeMode::ModeAttempt realmLeaders;
+        realmLeaders.InstanceRealmAddress = GetVirtualRealmAddress();
+        realmLeaders.AttemptID = bestServer->ID;
+        realmLeaders.CompletionTime = bestServer->RecordTime;
+        realmLeaders.CompletionDate = bestServer->Date;
+        realmLeaders.MedalEarned = bestServer->ChallengeLevel;
+
+        for (auto const& v : bestServer->member)
+        {
+            WorldPackets::ChallengeMode::ModeAttempt::Member memberData;
+            memberData.VirtualRealmAddress = GetVirtualRealmAddress();
+            memberData.NativeRealmAddress = GetVirtualRealmAddress();
+            memberData.Guid = v.guid;
+            memberData.SpecializationID = v.specId;
+            realmLeaders.Members.emplace_back(memberData);
+        }
+        result.RealmLeaders.push_back(realmLeaders);
+    }
+
+    SendPacket(result.Write());
+}
+
  void WorldSession::HandleChallengeModeRequestMapStatsOpcode(WorldPackets::ChallengeMode::RequestMapStats & request)
  {
      WorldPackets::ChallengeMode::AllMapStats stats;
@@ -111,6 +169,8 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
 
      SendPacket(stats.Write());
  }
+
+
 
  void WorldSession::HandleChallengeModeRewards(WorldPackets::ChallengeMode::GetChallengeModeRewards & getRewards)
  {
@@ -157,10 +217,17 @@ void WorldSession::HandleChallengeModeStart(WorldPackets::ChallengeMode::StartRe
  {
      WorldPackets::ChallengeMode::RequestChallengeModeAffixesResult result;
 
+     result.Count = 4;
+
      result.Affixes[0] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE1_RESET_TIME);
      result.Affixes[1] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE2_RESET_TIME);
      result.Affixes[2] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE3_RESET_TIME);
      result.Affixes[3] = sWorld->getWorldState(WS_CHALLENGE_AFFIXE4_RESET_TIME);
-
+	 
+	 result.RequiredSeason[0] = 0;
+     result.RequiredSeason[1] = 0;
+     result.RequiredSeason[2] = 0;
+     result.RequiredSeason[3] = 0;
+	 
      SendPacket(result.Write());
  }

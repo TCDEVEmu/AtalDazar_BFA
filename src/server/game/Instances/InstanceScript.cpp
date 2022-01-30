@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
@@ -1335,6 +1335,9 @@ void InstanceScript::StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1,
     if (_challengeModeDoorPosition.is_initialized())
         instance->SummonGameObject(GOB_CHALLENGER_DOOR, *_challengeModeDoorPosition, QuaternionData(), WEEK);
 
+    ShowChallengeDoor();
+    AfterChallengeModeStarted();
+
     WorldPackets::ChallengeMode::ChangePlayerDifficultyResult changePlayerDifficultyResult(11);
     changePlayerDifficultyResult.InstanceDifficultyID = instance->GetId();
     changePlayerDifficultyResult.DifficultyRecID = DIFFICULTY_MYTHIC_KEYSTONE;
@@ -1363,6 +1366,8 @@ void InstanceScript::StartChallengeMode(uint8 modeid, uint8 level, uint8 affix1,
 
         if (GameObject* door = GetGameObject(GOB_CHALLENGER_DOOR))
             DoUseDoorOrButton(door->GetGUID(), WEEK);
+		
+		 HideChallengeDoor();
     });
 }
 
@@ -1459,8 +1464,8 @@ void InstanceScript::CompleteChallengeMode()
         if (sChallengeModeMgr->CheckBestMemberMapId(member.guid, challengeData))
         {
             WorldPackets::ChallengeMode::NewPlayerRecord newplayerrecord;
-            newplayerrecord.Duration = totalDurations;
-            newplayerrecord.MapId = instance->GetId();
+            newplayerrecord.CompletionMilliseconds = totalDurations;
+            newplayerrecord.MapID = instance->GetId();
             newplayerrecord.ChallengeLevel = _challengeModeLevel;
             player->GetSession()->SendPacket(newplayerrecord.Write());
         }
@@ -1505,8 +1510,8 @@ void InstanceScript::SendChallengeModeStart(Player* player/* = nullptr*/) const
         return;
 
     WorldPackets::ChallengeMode::Start start;
-    start.MapId = instance->GetId();
-    start.ChallengeId = mapChallengeModeEntry->ID;
+    start.MapID = instance->GetId();
+    start.ChallengeID = mapChallengeModeEntry->ID;
     start.ChallengeLevel = _challengeModeLevel;
     instance->SendToPlayers(start.Write());
 
@@ -1555,8 +1560,8 @@ void InstanceScript::SendChallengeModeMapStatsUpdate(Player * player, uint32 cha
 
     WorldPackets::ChallengeMode::NewPlayerRecord update;
 
-    update.MapId = instance->GetId();
-    update.Duration = best->RecordTime;
+    update.MapID = instance->GetId();
+    update.CompletionMilliseconds = best->RecordTime;
     update.ChallengeLevel = challengeId;
 
     if (player)
@@ -1654,6 +1659,29 @@ void InstanceScript::CastChallengePlayerSpell(Player* player)
     player->CastCustomSpell(SPELL_CHALLENGER_BURDEN, values, player, TRIGGERED_FULL_MASK);
 }
 
+void InstanceScript::CastChallengeCreatureSpellOnDeath(Creature * creature)
+{
+    if (!creature || creature->IsAffixDisabled() || creature->IsTrigger() || creature->IsControlledByPlayer() || !creature->IsHostileToPlayers() || creature->GetCreatureType() == CREATURE_TYPE_CRITTER)
+        return;
+
+    if (creature->IsOnVehicle())
+        return;
+
+    Unit* owner = creature->GetCharmerOrOwnerPlayerOrPlayerItself();
+    if (owner && owner->IsPlayer())
+        return;
+
+    // 7 Bolstering 激励
+    if (!creature->IsDungeonBoss() && HasAffix(Affixes::Bolstering))
+        creature->CastSpell(creature, ChallengerBolstering, true);
+    // 8 Sanguine 血池
+    if (!creature->IsDungeonBoss() && HasAffix(Affixes::Sanguine))
+        creature->CastSpell(creature, ChallengerSanguine, true);
+    // 11 Bursting 243237  崩裂
+    if (!creature->IsDungeonBoss() && HasAffix(Affixes::Bursting))
+        creature->CastSpell(creature, ChallengerBursting, true);
+}
+
 void InstanceScript::AddChallengeModeChests(ObjectGuid chestGuid, uint8 chestLevel)
 {
     _challengeChestGuids[chestLevel] = chestGuid;
@@ -1672,6 +1700,18 @@ void InstanceScript::AddChallengeModeDoor(ObjectGuid doorGuid)
 void InstanceScript::AddChallengeModeOrb(ObjectGuid orbGuid)
 {
     _challengeOrbGuid = orbGuid;
+}
+
+void InstanceScript::AfterChallengeModeStarted()
+{
+    if (_challengeModeScenario.is_initialized())
+    {
+        uint32 scenarioId = *_challengeModeScenario;
+        DoOnPlayers([this, scenarioId](Player* player)
+        {
+            GetScenarioByID(player, scenarioId);
+        });
+    }
 }
 
 bool InstanceHasScript(WorldObject const* obj, char const* scriptName)

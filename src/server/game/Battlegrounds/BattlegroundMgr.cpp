@@ -35,6 +35,7 @@
 #include "BattlegroundDG.h"
 #include "BattlegroundAF.h"
 #include "BattlegroundBRH.h"
+#include "BattlegroundKotmoguTemplate.h"
 //#include "BattlegroundMB.h"
 #include "BattlegroundNNA.h"
 #include "BattlegroundBEG.h"
@@ -404,6 +405,9 @@ Battleground* BattlegroundMgr::CreateNewBattleground(BattlegroundQueueTypeId que
         case BATTLEGROUND_NNA:
             bg = new BattlegroundNNA(*(BattlegroundNNA*)bg_template);
             break;
+        case BATTLEGROUND_TK:
+            bg = new BattlegroundTK(*(BattlegroundTK*)bg_template);
+            break;
         case BATTLEGROUND_RB:
         case BATTLEGROUND_AA:
         case BATTLEGROUND_RANDOM_EPIC:
@@ -503,6 +507,9 @@ bool BattlegroundMgr::CreateBattleground(BattlegroundTemplate const* bgTemplate)
                 break;
             case BATTLEGROUND_BRH:
                 bg = new BattlegroundBRH(bgTemplate);
+                break;
+            case BATTLEGROUND_TK:
+                bg = new BattlegroundTK(bgTemplate);
                 break;
             /*case BATTLEGROUND_MUGAMBALA:
                 bg = new BattlegroundMB(bgTemplate);
@@ -831,6 +838,7 @@ HolidayIds BattlegroundMgr::BGTypeToWeekendHolidayId(BattlegroundTypeId bgTypeId
         case BATTLEGROUND_TP: return HOLIDAY_CALL_TO_ARMS_TP;
         case BATTLEGROUND_BFG: return HOLIDAY_CALL_TO_ARMS_BFG;
         case BATTLEGROUND_DG: return HOLIDAY_CALL_TO_ARMS_DG;
+        case BATTLEGROUND_TK: return HOLIDAY_CALL_TO_ARMS_TK;
         default: return HOLIDAY_NONE;
     }
 }
@@ -847,6 +855,7 @@ BattlegroundTypeId BattlegroundMgr::WeekendHolidayIdToBGType(HolidayIds holiday)
         case HOLIDAY_CALL_TO_ARMS_TP: return BATTLEGROUND_TP;
         case HOLIDAY_CALL_TO_ARMS_BFG: return BATTLEGROUND_BFG;
         case HOLIDAY_CALL_TO_ARMS_DG: return BATTLEGROUND_DG;
+        case HOLIDAY_CALL_TO_ARMS_TK: return BATTLEGROUND_TK;
         default: return BATTLEGROUND_TYPE_NONE;
     }
 }

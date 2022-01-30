@@ -2562,7 +2562,9 @@ enum GameObjectDynamicLowFlags
     GO_DYNFLAG_LO_ANIMATE           = 0x08,                 // possibly more distinct animation of GO
     GO_DYNFLAG_LO_NO_INTERACT       = 0x10,                 // appears to disable interaction (not fully verified)
     GO_DYNFLAG_LO_SPARKLE           = 0x20,                 // makes GO sparkle
-    GO_DYNFLAG_LO_STOPPED           = 0x40                  // Transport is stopped
+    GO_DYNFLAG_LO_STOPPED           = 0x40,                 // Transport is stopped
+    GO_DYNFLAG_LO_CHALLENGE_UNLOCK  = 0x400,                // Challenge unlock go
+    GO_DYNFLAG_LO_CHALLENGE_ERROR   = 0x800,                // Challenge open error
 };
 
 // client side GO show states

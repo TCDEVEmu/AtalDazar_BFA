@@ -166,6 +166,8 @@ enum DeathKnightSpells
     SPELL_DK_PESTILENT_PUSTULES                 = 194917,
     SPELL_DK_CASTIGATOR                         = 207305,
     SPELL_DK_UNHOLY_VIGOR                       = 196263,
+	SPELL_DK_CLAWING_SHADOWS                    = 207311,
+    SPELL_DK_INFECTED_CLAWS                     = 207272,
 };
 
 // 70656 - Advantage (T10 4P Melee Bonus)
@@ -2619,6 +2621,33 @@ class spell_dk_blighted_rune_weapon : public SpellScript
     }
 };
 
+//47468
+class spell_dk_ghoul_claw : public SpellScript
+{
+    PrepareSpellScript(spell_dk_ghoul_claw);
+
+    void HandleOnHit()
+    {
+        Unit* caster = GetCaster();
+        Unit* target = GetExplTargetUnit();
+
+        if (!caster || !target)
+            return;
+
+        if (Unit* owner = caster->GetOwner()->ToPlayer())
+        {
+            if (owner->HasAura(SPELL_DK_INFECTED_CLAWS))
+                if (roll_chance_f(30))
+                    caster->CastSpell(target, SPELL_DK_FESTERING_WOUND_DAMAGE, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnHit += SpellHitFn(spell_dk_ghoul_claw::HandleOnHit);
+    }
+};
+
 // Spell 199720
 // At 199720
 struct at_dk_decomposing_aura : AreaTriggerAI
@@ -2695,5 +2724,6 @@ void AddSC_deathknight_spell_scripts()
     RegisterAuraScript(aura_dk_defile);
     RegisterAreaTriggerAI(at_dk_defile);
     RegisterSpellScript(spell_dk_blighted_rune_weapon);
+	RegisterSpellScript(spell_dk_ghoul_claw);
     RegisterAreaTriggerAI(at_dk_decomposing_aura);
 }

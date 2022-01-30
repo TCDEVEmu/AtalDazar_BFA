@@ -515,6 +515,7 @@ class TC_GAME_API Spell
         void EffectScrapItem(SpellEffIndex effIndex);
         void EffectRespecAzeriteEmpoweredItem(SpellEffIndex effIndex);
         void EffectLearnAzeriteEssencePower(SpellEffIndex effIndex);
+	    void EffectCreatePrivateConversation(SpellEffIndex effIndex);
 
         typedef std::unordered_set<Aura*> UsedSpellMods;
 

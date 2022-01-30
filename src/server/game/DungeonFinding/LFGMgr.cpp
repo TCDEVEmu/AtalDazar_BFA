@@ -408,6 +408,13 @@ void LFGMgr::JoinLfg(Player* player, uint8 roles, LfgDungeonSet& dungeons)
     if (!player || !player->GetSession() || dungeons.empty())
         return;
 
+    // At least 1 role must be selected
+    if (!(roles & (PLAYER_ROLE_TANK | PLAYER_ROLE_HEALER | PLAYER_ROLE_DAMAGE)))
+        return;
+
+    // Sanitize input roles
+    roles &= PLAYER_ROLE_ANY;
+
     Group* grp = player->GetGroup();
     ObjectGuid guid = player->GetGUID();
     ObjectGuid gguid = grp ? grp->GetGUID() : guid;
@@ -808,6 +815,10 @@ void LFGMgr::UpdateRoleCheck(ObjectGuid gguid, ObjectGuid guid /* = ObjectGuid::
     if (itRoleCheck == RoleChecksStore.end())
         return;
 
+    // Sanitize input roles
+    roles &= PLAYER_ROLE_ANY;
+
+
     LfgRoleCheck& roleCheck = itRoleCheck->second;
     bool sendRoleChosen = roleCheck.state != LFG_ROLECHECK_DEFAULT && !guid.IsEmpty();
 
@@ -1020,8 +1031,11 @@ bool LFGMgr::CheckGroupRoles(LfgQueueRoleCount roleCount, LfgRolesMap& groles)
 */
 void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
 {
-    GuidList players;
+    GuidList players, tankPlayers, healPlayers, dpsPlayers;
     GuidList playersToTeleport;
+    /*
+    GuidList players;
+    GuidList playersToTeleport;*/
 
     for (LfgProposalPlayerContainer::const_iterator it = proposal.players.begin(); it != proposal.players.end(); ++it)
     {
@@ -1029,11 +1043,29 @@ void LFGMgr::MakeNewGroup(LfgProposal const& proposal)
         if (guid == proposal.leader)
             players.push_front(guid);
         else
-            players.push_back(guid);
+            switch (it->second.role & ~PLAYER_ROLE_LEADER)
+            {
+            case PLAYER_ROLE_TANK:
+                tankPlayers.push_back(guid);
+                break;
+            case PLAYER_ROLE_HEALER:
+                healPlayers.push_back(guid);
+                break;
+            case PLAYER_ROLE_DAMAGE:
+                dpsPlayers.push_back(guid);
+                break;
+            default:
+                ASSERT(false, "Invalid LFG role %u", it->second.role);
+                break;
+            }
 
         if (proposal.isNew || GetGroup(guid) != proposal.group)
             playersToTeleport.push_back(guid);
     }
+
+    players.splice(players.end(), tankPlayers);
+    players.splice(players.end(), healPlayers);
+    players.splice(players.end(), dpsPlayers);
 
     // Set the dungeon difficulty
     LFGDungeonData const* dungeon = GetLFGDungeon(proposal.dungeonId);

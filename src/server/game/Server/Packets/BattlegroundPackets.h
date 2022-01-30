@@ -31,10 +31,11 @@ namespace WorldPackets
 {
     namespace Battleground
     {
+ 
         class PVPSeason final : public ServerPacket
         {
         public:
-            PVPSeason() : ServerPacket(SMSG_PVP_SEASON, 4 + 4 + 4 + 4) { }
+            PVPSeason() : ServerPacket(SMSG_PVP_SEASON, 4 + 4 + 4 + 4 + 4 + 1) { }
 
             WorldPacket const* Write() override;
 
@@ -42,6 +43,8 @@ namespace WorldPackets
             int32 PreviousSeason = 0;
             int32 CurrentSeason = 0;
             int32 PvpSeasonID = 0;
+            int32 ConquestWeeklyProgressCurrencyID = 0;
+            bool WeeklyRewardChestsEnabled = false;
         };
 
         class AreaSpiritHealerQuery final : public ClientPacket
@@ -453,8 +456,10 @@ namespace WorldPackets
                 int32 BestWeeklyRating = 0;
                 int32 LastWeeksBestRating = 0;
                 int32 BestSeasonRating = 0;
+                int32 PvpTierID = 0;
                 int32 ProjectedConquestCap = 0;
-
+                int32 Unused3 = 0;
+                bool Unused4 = false;
                 int32 LastWeekWon = 0;
                 int32 LastWeekPlayed = 0;
                 int32 MatchMakerRating = 0;
@@ -497,6 +502,29 @@ namespace WorldPackets
             Optional<PVPLogData> LogData;
         };
 
+        class RequestConquestFormulaConstants final : public ClientPacket
+        {
+        public:
+            RequestConquestFormulaConstants(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CONQUEST_FORMULA_CONSTANTS, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
+        class ConquestFormulaContants final : public ServerPacket
+        {
+        public:
+            ConquestFormulaContants() : ServerPacket(SMSG_CONQUEST_FORMULA_CONSTANTS, 20) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 PvpMinCPPerWeek;
+            uint32 PvpMaxCPPerWeek;
+            float PvpCPBaseCoefficient;
+            float PvpCPExpCoefficient;
+            float PvpCPNumerato;
+        };
+
+
         class SendPvpBrawlInfo final : public ServerPacket
         {
         public:
@@ -504,8 +532,8 @@ namespace WorldPackets
 
             WorldPacket const* Write() override;
 
-            uint32 BrawlType = 0;
-            uint32 TimeToEnd = 0;
+            int32 BrawlType = 0;
+            int32 TimeToEnd = 0;
             bool IsActive = false;
 
         };

@@ -71,7 +71,7 @@ namespace WorldPackets
         class StartRequest final : public ClientPacket
         {
         public:
-            StartRequest(WorldPacket&& packet) : ClientPacket(CMSG_START_CHALLENGE_MODE, std::move(packet)) { }
+            StartRequest(WorldPacket&& packet) : ClientPacket(CMSG_START_MYTHIC_PLUSS, std::move(packet)) { }
 
             void Read() override;
 
@@ -95,27 +95,31 @@ namespace WorldPackets
         class Start final : public ServerPacket
         {
         public:
-            Start() : ServerPacket(SMSG_CHALLENGE_MODE_START, 33) { }
+            Start() : ServerPacket(SMSG_MYTHIC_PLUS_START, 33) { }
 
             WorldPacket const* Write() override;
 
-            uint32 MapId;
-            uint32 ChallengeId;
-            uint32 ChallengeLevel;
-
-            uint32 unk1 = 0;
-            uint32 unk2 = 0;
-            uint32 unk3 = 0;
-            uint32 unk4 = 0;
-            uint32 unk5 = 0;
-
-            uint8 unk = 128;
+            uint32 MapID = 0;
+            uint32 ChallengeID = 0;
+            uint32 ChallengeLevel = 0;
+            uint32 DeathCount = 0;
+           
+            uint32 Affixes1 = 0;
+            uint32 Affixes2 = 0;
+            uint32 Affixes3 = 0;
+            uint32 Affixes4 = 0;
+			
+            uint32 ClientEncounterStartPlayerInfo = 0;
+			
+			uint8 Energized = 128;
+ 
+            
         };
 
         class Reset final : public ServerPacket
         {
         public:
-            Reset(uint32 mapId = 0) : ServerPacket(SMSG_CHALLENGE_MODE_RESET, 4), MapId(mapId) { }
+            Reset(uint32 mapId = 0) : ServerPacket(SMSG_MYTHIC_PLUS_RESET, 4), MapId(mapId) { }
 
             WorldPacket const* Write() override;
 
@@ -125,7 +129,7 @@ namespace WorldPackets
         class UpdateDeathCount final : public ServerPacket
         {
         public:
-            UpdateDeathCount(uint32 deathCount = 0) : ServerPacket(SMSG_CHALLENGE_MODE_UPDATE_DEATH_COUNT, 4), DeathCount(deathCount) { }
+            UpdateDeathCount(uint32 deathCount = 0) : ServerPacket(SMSG_MYTHIC_PLUS_UPDATE_DEATH_COUNT, 4), DeathCount(deathCount) { }
 
             WorldPacket const* Write() override;
 
@@ -135,33 +139,45 @@ namespace WorldPackets
         class Complete final : public ServerPacket
         {
         public:
-            Complete() : ServerPacket(SMSG_CHALLENGE_MODE_COMPLETE, 4) { }
+            Complete() : ServerPacket(SMSG_MYTHIC_PLUS_MODE_COMPLETE, 17) { }
 
             WorldPacket const* Write() override;
 
-            uint32 Duration;
-            uint32 MapId;
-            uint32 ChallengeId;
-            uint32 ChallengeLevel;
-            uint8 unk = 128;
+			uint32 Duration = 0;
+            uint32 MapId = 0;
+            uint32 ChallengeId = 0;
+            uint32 ChallengeLevel = 0;
+            uint8 IsCompletedInTimer = 128;
         };
 
         class NewPlayerRecord final : public ServerPacket
         {
         public:
-            NewPlayerRecord() : ServerPacket(SMSG_CHALLENGE_MODE_NEW_PLAYER_RECORD, 4) { }
+            NewPlayerRecord() : ServerPacket(SMSG_MYTHIC_PLUS_NEW_PLAYER_RECORD, 4) { }
 
             WorldPacket const* Write() override;
 
-            uint32 MapId;
-            uint32 Duration;
-            uint32 ChallengeLevel;
+            int32 MapID = 0;
+			int32 CompletionMilliseconds = 0;
+			uint32 ChallengeLevel = 0;
+
+        };
+		
+		class NewPlayerSeasonRecord final : public ServerPacket
+        {
+        public:
+            NewPlayerSeasonRecord() : ServerPacket(SMSG_MYTHIC_PLUS_NEW_PLAYER_SEASON_RECORD, 4) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 MapID = 0;
+           
         };
 
         class AllMapStats final : public ServerPacket
         {
         public:
-            AllMapStats() : ServerPacket(SMSG_CHALLENGE_MODE_ALL_MAP_STATS, 4) { }
+            AllMapStats() : ServerPacket(SMSG_MYTHIC_PLUS_ALL_MAP_STATS, 4) { }
 
             WorldPacket const* Write() override;
 
@@ -174,7 +190,7 @@ namespace WorldPackets
         class RequestMapStats final : public ClientPacket
         {
         public:
-            RequestMapStats(WorldPacket&& packet) : ClientPacket(CMSG_CHALLENGE_MODE_REQUEST_MAP_STATS, std::move(packet)) { }
+            RequestMapStats(WorldPacket&& packet) : ClientPacket(CMSG_MYTHIC_PLUS_REQUEST_MAP_STATS, std::move(packet)) { }
 
             void Read() override;
         };
@@ -182,7 +198,7 @@ namespace WorldPackets
         class ChallengeModeRewards final : public ServerPacket
         {
         public:
-            ChallengeModeRewards() : ServerPacket(SMSG_CHALLENGE_MODE_REWARDS, 4) { }
+            ChallengeModeRewards() : ServerPacket(SMSG_MYTHIC_PLUS_REWARDS, 4) { }
 
             WorldPacket const* Write() override;
 
@@ -204,7 +220,7 @@ namespace WorldPackets
         class RequestLeaders final : public ClientPacket
         {
         public:
-            RequestLeaders(WorldPacket&& packet) : ClientPacket(CMSG_CHALLENGE_MODE_REQUEST_LEADERS, std::move(packet)) { }
+            RequestLeaders(WorldPacket&& packet) : ClientPacket(CMSG_MYTHIC_PLUS_REQUEST_LEADERS, std::move(packet)) { }
 
             void Read() override;
 
@@ -217,7 +233,7 @@ namespace WorldPackets
         class RequestLeadersResult final : public ServerPacket
         {
         public:
-            RequestLeadersResult() : ServerPacket(SMSG_CHALLENGE_MODE_REQUEST_LEADERS_RESULT, 20 + 8) { }
+            RequestLeadersResult() : ServerPacket(SMSG_MYTHIC_PLUS_REQUEST_LEADERS_RESULT, 20 + 8) { }
 
             WorldPacket const* Write() override;
 
@@ -232,20 +248,23 @@ namespace WorldPackets
         class RequestChallengeModeAffixes final : public ClientPacket
         {
         public:
-            RequestChallengeModeAffixes(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_CHALLENGE_MODE_AFFIXES, std::move(packet)) { }
+            RequestChallengeModeAffixes(WorldPacket&& packet) : ClientPacket(CMSG_REQUEST_MYTHIC_PLUS_AFFIXES, std::move(packet)) { }
 
             void Read() override;
         };
 
-        class RequestChallengeModeAffixesResult final : public ServerPacket
+		class RequestChallengeModeAffixesResult final : public ServerPacket
         {
         public:
-            RequestChallengeModeAffixesResult() : ServerPacket(SMSG_CHALLENGE_MODE_AFFIXES) { }
+            RequestChallengeModeAffixesResult() : ServerPacket(SMSG_MYTHIC_PLUS_CURRENT_AFFIXES) { }
 
             WorldPacket const* Write() override;
 
+            uint32 Count = 4;
             std::array<uint32, 4> Affixes;//Length: 36
-        };
+            std::array<uint32, 4> RequiredSeason;
+        }; 
+
 
     }
 }

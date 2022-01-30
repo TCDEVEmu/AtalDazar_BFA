@@ -994,6 +994,10 @@ void World::LoadConfigSettings(bool reload)
 
     m_int_configs[CONFIG_CHALLENGE_KEY_RESET] = sConfigMgr->GetIntDefault("Challenge.Key.Reset", 7);
     m_bool_configs[CONFIG_CHALLENGE_ENABLED] = sConfigMgr->GetBoolDefault("Challenge.Enabled", true);
+    m_int_configs[CONFIG_CHALLENGE_MANUAL_AFFIX1] = sConfigMgr->GetIntDefault("Challenge.Manual.Affix1", 0);
+    m_int_configs[CONFIG_CHALLENGE_MANUAL_AFFIX2] = sConfigMgr->GetIntDefault("Challenge.Manual.Affix2", 0);
+    m_int_configs[CONFIG_CHALLENGE_MANUAL_AFFIX3] = sConfigMgr->GetIntDefault("Challenge.Manual.Affix3", 0);
+    m_int_configs[CONFIG_CHALLENGE_MANUAL_AFFIX4] = sConfigMgr->GetIntDefault("Challenge.Manual.Affix4", 0);
 
     m_int_configs[CONFIG_MAX_PRIMARY_TRADE_SKILL] = sConfigMgr->GetIntDefault("MaxPrimaryTradeSkill", 2);
     m_int_configs[CONFIG_MIN_PETITION_SIGNS] = sConfigMgr->GetIntDefault("MinPetitionSigns", 4);

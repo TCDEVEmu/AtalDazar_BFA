@@ -393,6 +393,8 @@ class TC_GAME_API ItemScript : public ScriptObject
         // Called when the item is destroyed.
         virtual bool OnRemove(Player* /*player*/, Item* /*item*/) { return false; }
 
+        virtual bool OnCreate(Player* /*player*/, Item* /*item*/) { return false; }
+
         // Called before casting a combat spell from this item (chance on hit spells of item template, can be used to prevent cast if returning false)
         virtual bool OnCastItemCombatSpell(Player* /*player*/, Unit* /*victim*/, SpellInfo const* /*spellInfo*/, Item* /*item*/) { return true; }
 };
