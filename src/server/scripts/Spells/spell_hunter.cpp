@@ -2761,7 +2761,7 @@ public:
 };
 
 // Freezing Trap - 187650
-// AreaTriggerID - 4424
+// AreaTriggerID - 9170
 class at_hun_freezing_trap : public AreaTriggerEntityScript
 {
 public:
