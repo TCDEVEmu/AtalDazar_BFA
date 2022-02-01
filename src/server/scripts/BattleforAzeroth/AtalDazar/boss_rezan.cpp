@@ -35,16 +35,16 @@
 
 enum Spells
 {
-    SPELL_TAIL = 255372, //Cast if player is behind
-    SPELL_SERRATHED_TEETH = 255434,
-    SPELL_DEVOUR = 255421,
-    SPELL_TERRIFYING_VISAGE = 255371,
-    SPELL_PURSUIT = 257407,
-    SPELL_RIDE_VEHICLE = 46598,
-    SPELL_PILE_OF_BONES_AREATRIGGER = 256608, //AT 11959
+    SPELL_TAIL                       = 255372, //Cast if player is behind
+    SPELL_SERRATHED_TEETH            = 255434,
+    SPELL_DEVOUR                     = 255421,
+    SPELL_TERRIFYING_VISAGE          = 255371,
+    SPELL_PURSUIT                    = 257407,
+    SPELL_RIDE_VEHICLE               = 46598,
+    SPELL_PILE_OF_BONES_AREATRIGGER  = 256608, //AT 11959
     SPELL_PILE_OF_BONES_SPAWN_NORMAL = 256634,
     SPELL_PILE_OF_BONES_SPAWN_HEROIC = 256720,
-    SPELL_PILE_OF_BONES_SLOW = 257483,
+    SPELL_PILE_OF_BONES_SLOW         = 257483,
 };
 
 Position AreatriggerPositions[]
@@ -124,7 +124,7 @@ enum Events
 
 enum conversationrezan
 {
-    CONVERSATION_REZAN_DEATH = 6322,
+    SPELL_CONVERSATION_REZAN_DEATH = 256906,
 };
 
 ///122963
@@ -279,7 +279,7 @@ struct boss_ataldazar_rezan : public BossAI
         {
             AddTimedDelayedOperation(20000, [this, player]() -> void
             {
-              Conversation::CreateConversation(CONVERSATION_REZAN_DEATH, player, player->GetPosition(), { player->GetGUID() });
+               DoCastSpellOnPlayers(SPELL_CONVERSATION_REZAN_DEATH);
             });
 
             if (player->HasAura(SPELL_UNSTABLE_HEX))
