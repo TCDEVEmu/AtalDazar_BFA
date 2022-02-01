@@ -31,7 +31,7 @@
 
 enum conversationyasma
 {
-    CONVERSATION_YAZMA_INTRO = 6320,
+    CONVERSATION_YAZMA_INTRO = 256904,
 };
 
 struct instance_atal_dazar : public InstanceScript
@@ -46,10 +46,13 @@ struct instance_atal_dazar : public InstanceScript
         cont = 0;
     }
 
-    //Blizz Conversation Intro AtalDazar
+    //Conversation Intro
     void OnPlayerEnter(Player* player) override
     {
-        Conversation::CreateConversation(CONVERSATION_YAZMA_INTRO, player, player->GetPosition(), { player->GetGUID() });
+		AddTimedDelayedOperation(3000, [this]() -> void
+        {
+			 DoCastSpellOnPlayers(SPELL_CONVERSATION_YAZMA_INTRO);
+        });
     };
 
     void OnCreatureCreate(Creature* cre) override
