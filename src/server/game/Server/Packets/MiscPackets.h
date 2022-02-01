@@ -1059,6 +1059,7 @@ namespace WorldPackets
 
             bool Enabled;
         };
+<<<<<<< HEAD
 
         class QueryCountdownTimer final : public ClientPacket
         {
@@ -1082,6 +1083,8 @@ namespace WorldPackets
             uint32 NumFindsCompleted = 0;
             bool SuccessfulFind = false;
         };
+=======
+>>>>>>> parent of 18b1033 (Core/*CMSG_QUERY_COUNTDOWN_TIMER)
     }
 }
 

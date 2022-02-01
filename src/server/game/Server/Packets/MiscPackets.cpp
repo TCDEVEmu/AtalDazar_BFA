@@ -781,6 +781,7 @@ void WorldPackets::Misc::SetWarMode::Read()
 {
     Enabled = _worldPacket.ReadBit();
 }
+<<<<<<< HEAD
 
 void WorldPackets::Misc::QueryCountdownTimer::Read()
 {
@@ -797,3 +798,5 @@ WorldPacket const* WorldPackets::Misc::ArchaeologySurveryCast::Write()
 
     return &_worldPacket;
 }
+=======
+>>>>>>> parent of 18b1033 (Core/*CMSG_QUERY_COUNTDOWN_TIMER)

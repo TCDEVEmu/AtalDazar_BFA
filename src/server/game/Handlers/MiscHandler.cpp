@@ -1202,10 +1202,3 @@ void WorldSession::HandleSetWarModeOpcode(WorldPackets::Misc::SetWarMode& warMod
     else
         _player->RemoveAurasDueToSpell(warModeSpellId);
 }
-
-void WorldSession::HandleQueryCountdownTimer(WorldPackets::Misc::QueryCountdownTimer& packet)
-{
-    /* Player* player = GetPlayer();
-     if (Battleground* bg = player->GetBattleground())
-         bg->SendStartTimer(packet.Type);*/
-}
