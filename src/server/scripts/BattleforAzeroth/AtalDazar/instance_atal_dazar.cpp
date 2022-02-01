@@ -31,7 +31,7 @@
 
 enum conversationyasma
 {
-    CONVERSATION_YAZMA_INTRO = 256904,
+    SPELL_CONVERSATION_YAZMA_INTRO = 256904,
 };
 
 struct instance_atal_dazar : public InstanceScript
