@@ -1050,5 +1050,3 @@ DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=1
 INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161330, 1);
 DELETE FROM `playercreateinfo_item` WHERE `race`=36 AND `class`=0 AND `itemid`=161328;
 INSERT INTO `playercreateinfo_item` (`race`, `class`, `itemid`, `amount`) VALUES (36, 0, 161328, 1);
-
-UPDATE `creature_template` SET `Scriptname`= "npc_Thaurissan_Iron_Dwarf" WHERE `entry`='144152';

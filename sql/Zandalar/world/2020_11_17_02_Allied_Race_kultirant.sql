@@ -729,4 +729,3 @@ INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`,
 (126434, 0, 33719, 1, 1, 31478), -- 126434
 (150941, 0, 76135, 1, 1, 31478); -- 150941
 
-UPDATE `creature_template` SET `Scriptname`= "npc_Katherine_Proudmoore_kultiran_race" WHERE `entry`= '150941';
