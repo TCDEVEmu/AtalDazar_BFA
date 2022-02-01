@@ -1059,18 +1059,7 @@ namespace WorldPackets
 
             bool Enabled;
         };
-<<<<<<< HEAD
 
-        class QueryCountdownTimer final : public ClientPacket
-        {
-        public:
-            QueryCountdownTimer(WorldPacket&& packet) : ClientPacket(CMSG_QUERY_COUNTDOWN_TIMER, std::move(packet)) { }
-
-            void Read() override;
-
-            //   TimerType = WORLD_TIMER_TYPE_PVP;
-        };
-		
 		 class ArchaeologySurveryCast final : public ServerPacket
         {
         public:
@@ -1083,8 +1072,6 @@ namespace WorldPackets
             uint32 NumFindsCompleted = 0;
             bool SuccessfulFind = false;
         };
-=======
->>>>>>> parent of 18b1033 (Core/*CMSG_QUERY_COUNTDOWN_TIMER)
     }
 }
 
