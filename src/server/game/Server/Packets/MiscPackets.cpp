@@ -786,3 +786,14 @@ void WorldPackets::Misc::QueryCountdownTimer::Read()
 {
     uint32(Type) = _worldPacket.read<uint32>();
 }
+
+WorldPacket const* WorldPackets::Misc::ArchaeologySurveryCast::Write()
+{
+    _worldPacket << int32(ResearchBranchID);
+    _worldPacket << uint32(TotalFinds);
+    _worldPacket << uint32(NumFindsCompleted);
+    _worldPacket.WriteBit(SuccessfulFind);
+    _worldPacket.FlushBits();
+
+    return &_worldPacket;
+}
