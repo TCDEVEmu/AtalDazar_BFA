@@ -498,23 +498,12 @@ public:
     }
 };
 
-// 138083
-struct npc_coint_test : public ScriptedAI
-{
-    npc_coint_test(Creature* creature) : ScriptedAI(creature)
-    {
-        me->AddAura(SPELL_PILES_OF_GOLD_VISUAL, me);
-    }
-
-
-};
 
 void AddSC_boss_Coin_operated_crowd_pummeler()
 {
     RegisterCreatureAI(boss_Coin_operated_crowd_pummeler);
 
     RegisterCreatureAI(bfa_npc_azerite_bomb_AI);
-    RegisterCreatureAI(npc_coint_test);
     new bfa_spell_blazing_azerite();
     new bfa_spell_footbomb_launcher();
     new bfa_spell_coin_magnet();
