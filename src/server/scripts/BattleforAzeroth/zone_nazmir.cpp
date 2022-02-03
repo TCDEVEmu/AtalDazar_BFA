@@ -33,6 +33,14 @@ enum SpellQuestsNazmir
 {
 	
 };
+
+
+enum ConversationQuestsNazmir
+{
+	//Conversation Rokhan ID 126549
+	CONVERSATION_ROKHAN_NAZMIR_1 = 5800,
+	CONVERSATION_ROKHAN_NAZMIR_2 = 6446,
+};
 		
 /*
 280857 Spinning Dazar'alor Disk Scene
@@ -82,20 +90,47 @@ public:
         if (player->GetDistance(me) > 10.0f)
             return;
 
-        if (!player->HasQuest(QUEST_TRAVELS_NAZMIR) || player->GetQuestObjectiveData(QUEST_TRAVELS_NAZMIR, 0))
+        if (!player->HasQuest(QuestsNazmir::QUEST_TRAVELS_NAZMIR) || player->GetQuestObjectiveData(QuestsNazmir::QUEST_TRAVELS_NAZMIR, 0))
             return;
 		
-		//player->CastSpell(player, SPELL_CONVERSATION, true);
+		player->PlayConversation(ConversationQuestsNazmir::CONVERSATION_ROKHAN_NAZMIR_1);
 	}
 	
 	void QuestAccept(Player* player, Quest const* quest) override
     {
-        if (quest->GetQuestId() == 48535)
+        if (quest->GetQuestId() == QuestsNazmir::QUEST_NAZMIR_FORBIDDEN_SWAMP)
         {
-            
+            if (Creature* rokhan = player->SummonCreature(me->GetEntry(), me->GetPosition(), TEMPSUMMON_CORPSE_DESPAWN, 0, 0, true))
+            {
+                rokhan->AI()->SetGUID(player->GetGUID());
+				
+                me->DestroyForPlayer(player);
+            }
         }
         
     }
+	
+	void SetGUID(ObjectGuid guid, int32 /*action*/) override
+    {
+        m_playerGUID = guid;
+        //me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
+
+       
+        me->GetScheduler().Schedule(1s, [this](TaskContext /*context*/)
+        {
+			player->PlayConversation(ConversationQuestsNazmir::CONVERSATION_ROKHAN_NAZMIR_2);
+           //me->GetMotionMaster()->MovePoint(1, 0f, 0f, 0f);
+        })
+        .Schedule(2s, [this](TaskContext /*context*/)
+        {
+            
+        });
+    }
+	
+private:
+    Player* GetPlayer() { return ObjectAccessor::GetPlayer(*me, m_playerGUID); }
+
+    ObjectGuid m_playerGUID;
 };
 
 // 122689
