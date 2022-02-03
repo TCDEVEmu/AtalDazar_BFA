@@ -638,6 +638,17 @@ enum SMART_ACTION
     SMART_ACTION_END 
 };
 
+enum class SmartActionSummonCreatureFlags
+{
+    None = 0,
+    PersonalSpawn = 1,
+    PreferUnit = 2,
+
+    All = PersonalSpawn | PreferUnit,
+};
+
+DEFINE_ENUM_FLAG(SmartActionSummonCreatureFlags);
+
 struct SmartAction
 {
     SMART_ACTION type;
@@ -718,7 +729,7 @@ struct SmartAction
             uint32 type;
             uint32 duration;
             uint32 attackInvoker;
-            uint32 isPersonnal;
+            uint32 flags; // SmartActionSummonCreatureFlags
             uint32 data;
         } summonCreature;
 
