@@ -57,7 +57,6 @@ enum PaladinSpells
     SPELL_PALADIN_BEACON_OF_LIGHT_PROC_AURA     = 53651,
     SPELL_PALADIN_BEACON_OF_VIRTUE              = 200025,
     SPELL_PALADIN_BLADE_OF_JUSTICE              = 184575,
-	PELL_PALADIN_ART_OF_WAR_TRIGGERED           = 231843,
     SPELL_PALADIN_BLINDING_LIGHT_CONFUSE        = 105421,
     SPELL_PALADIN_CONSECRATED_GROUND            = 204054,
     SPELL_PALADIN_CONSECRATION                  = 26573,
@@ -2057,18 +2056,14 @@ class spell_pal_art_of_war : public AuraScript
 {
     PrepareAuraScript(spell_pal_art_of_war);
 
-    void HandleProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
+    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& /*eventInfo*/)
     {
-        if (roll_chance_f(aurEff->GetAmount()))
-        {
-            GetTarget()->CastSpell(GetTarget(), SPELL_PALADIN_ART_OF_WAR_TRIGGERED, true);
-            GetTarget()->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_BLADE_OF_JUSTICE, true);
-        }
+        GetTarget()->GetSpellHistory()->ResetCooldown(SPELL_PALADIN_BLADE_OF_JUSTICE, true);
     }
 
     void Register() override
     {
-        OnEffectProc += AuraEffectProcFn(spell_pal_art_of_war::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+        OnEffectProc += AuraEffectProcFn(spell_pal_art_of_war::OnProc, EFFECT_0, SPELL_AURA_DUMMY);
     }
 };
 
