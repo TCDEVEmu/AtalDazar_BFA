@@ -15,9 +15,6 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef LfgListPackets_h__
-#define LfgListPackets_h__
-
 #include "Packet.h"
 #include "LFGPacketsCommon.h"
 
@@ -363,5 +360,3 @@ ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::LfgList::ListSearchResult
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::LfgList::MemberInfo const& memberInfo);
 ByteBuffer& operator<<(ByteBuffer& data, WorldPackets::LfgList::ListRequest const& join);
 ByteBuffer& operator>>(ByteBuffer& data, WorldPackets::LfgList::ListRequest& join);
-
-#endif // LfgListPackets_h__
