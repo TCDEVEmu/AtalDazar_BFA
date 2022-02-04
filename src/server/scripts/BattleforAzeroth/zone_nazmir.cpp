@@ -16,7 +16,7 @@
 enum QuestsNazmir
 {
 	// Start The Threat to Nazrmir
-	//Chapter BATTLE FOR AZEROTH #14 - Â¡La amenaza de NAZMIR! Prince Jaume
+	//Chapter BATTLE FOR AZEROTH #14 - ¡La amenaza de NAZMIR! Prince Jaume
     QUEST_TRAVELS_NAZMIR             = 47103,
 	QUEST_NAZMIR_FORBIDDEN_SWAMP     = 48535,
 	QUEST_IN_THE_DARK                = 47105,
@@ -118,7 +118,7 @@ public:
        
         me->GetScheduler().Schedule(1s, [this](TaskContext /*context*/)
         {
-			player->PlayConversation(ConversationQuestsNazmir::CONVERSATION_ROKHAN_NAZMIR_2);
+			//player->PlayConversation(ConversationQuestsNazmir::CONVERSATION_ROKHAN_NAZMIR_2);
            //me->GetMotionMaster()->MovePoint(1, 0f, 0f, 0f);
         })
         .Schedule(2s, [this](TaskContext /*context*/)

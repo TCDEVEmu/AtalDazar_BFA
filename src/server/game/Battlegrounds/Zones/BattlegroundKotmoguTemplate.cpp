@@ -34,7 +34,7 @@
 #include "Util.h"
 #include "World.h"
 #include "Language.h"
-#include <Spells\SpellMgr.h>
+#include "SpellMgr".h
 #include "WorldSession.h"
 
 
