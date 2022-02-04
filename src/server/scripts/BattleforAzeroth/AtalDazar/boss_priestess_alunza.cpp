@@ -189,7 +189,7 @@ struct boss_priestess_alunza : public BossAI
         {
             AddTimedDelayedOperation(20000, [this, player]() -> void
             {
-               DoCastSpellOnPlayers(SPELL_CONVERSATION_ALUNZA_DEATH);
+               player->CastSpell(conversationalunza::SPELL_CONVERSATION_ALUNZA_DEATH, true);
             });
 
             if (player->HasAura(SPELL_UNSTABLE_HEX))

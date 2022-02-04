@@ -279,7 +279,7 @@ struct boss_ataldazar_rezan : public BossAI
         {
             AddTimedDelayedOperation(20000, [this, player]() -> void
             {
-               DoCastSpellOnPlayers(SPELL_CONVERSATION_REZAN_DEATH);
+               player->CastSpell(conversationrezan::SPELL_CONVERSATION_REZAN_DEATH, true);
             });
 
             if (player->HasAura(SPELL_UNSTABLE_HEX))
