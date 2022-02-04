@@ -42,6 +42,7 @@
 enum WarriorSpells
 {
     SPELL_WARRIOR_ALLOW_RAGING_BLOW                 = 131116,
+    SPELL_WARRIOR_ANGER_MANAGEMENT                  = 152278,
     SPELL_WARRIOR_BERZERKER_RAGE_EFFECT             = 23691,
     SPELL_WARRIOR_BLADESTORM_PERIODIC_WHIRLWIND     = 50622,
     SPELL_WARRIOR_BLOODTHIRST                       = 23885,
@@ -69,10 +70,12 @@ enum WarriorSpells
     SPELL_WARRIOR_DRAGON_ROAR_KNOCK_BACK            = 118895,
     SPELL_WARRIOR_ENRAGE                            = 184361,
     SPELL_WARRIOR_ENRAGE_AURA                       = 184362,
+	SPELL_WARRIOR_EXECUTE_FURY                      = 5308,
     SPELL_WARRIOR_EXECUTE                           = 163201,
     SPELL_WARRIOR_EXECUTE_PVP                       = 217955,
     SPELL_WARRIOR_FOCUSED_RAGE_ARMS                 = 207982,
     SPELL_WARRIOR_FOCUSED_RAGE_PROTECTION           = 204488,
+    SPELL_WARRIOR_FROTHING_BERSERKER                = 215572,
     SPELL_WARRIOR_FURIOUS_SLASH                     = 100130,
     SPELL_WARRIOR_GLYPH_OF_THE_BLAZING_TRAIL        = 123779,
     SPELL_WARRIOR_GLYPH_OF_EXECUTION                = 58367,
@@ -95,9 +98,10 @@ enum WarriorSpells
     SPELL_WARRIOR_JUMP_TO_SKYHOLD_AURA              = 215997,
     SPELL_WARRIOR_JUMP_TO_SKYHOLD_JUMP              = 192085,
     SPELL_WARRIOR_JUMP_TO_SKYHOLD_TELEPORT          = 216016,
+    SPELL_WARRIOR_LAST_STAND                        = 12975,
     SPELL_WARRIOR_LAST_STAND_TRIGGERED              = 12976,
     SPELL_WARRIOR_MASSACRE                          = 206315,
-    SPELL_WARRIOR_MEAT_CLEAVER_PROC                 = 85739,
+    SPELL_WARRIOR_WHIRLWIND_PASSIVE                 = 85739,
     SPELL_WARRIOR_MOCKING_BANNER_TAUNT              = 114198,
     SPELL_WARRIOR_MORTAL_STRIKE                     = 12294,
     SPELL_WARRIOR_MORTAL_STRIKE_AURA                = 12294,
@@ -106,8 +110,8 @@ enum WarriorSpells
     SPELL_WARRIOR_OLD_BLADESTORM                    = 227847,
     SPELL_WARRIOR_OPPORTUNITY_STRIKE_DAMAGE         = 76858,
     SPELL_WARRIOR_OVERPOWER_PROC                    = 60503,
-    SPELL_WARRIOR_RALLYING_CRY                      = 97463,
-    SPELL_WARRIOR_RALLYING_CRY_TRIGGER              = 97463,
+    SPELL_WARRIOR_RALLYING_CRY                      = 97462,
+    SPELL_WARRIOR_RALLYING_CRY_TRIGGER              = 97462,
     SPELL_WARRIOR_RAMPAGE                           = 184367,
     SPELL_WARRIOR_RAVAGER                           = 152277,
     SPELL_WARRIOR_RAVAGER_DAMAGE                    = 156287,
@@ -125,7 +129,7 @@ enum WarriorSpells
     SPELL_WARRIOR_SHIELD_SLAM                       = 23922,
     SPELL_WARRIOR_SHOCKWAVE                         = 46968,
     SPELL_WARRIOR_SHOCKWAVE_STUN                    = 132168,
-    SPELL_WARRIOR_SLAM                              = 50782,
+    SPELL_WARRIOR_SLAM                              = 23922,
     SPELL_WARRIOR_SLAM_ARMS                         = 1464,
     SPELL_WARRIOR_SLUGGISH                          = 129923,
     SPELL_WARRIOR_STORM_BOLT_STUN                   = 132169,
@@ -133,8 +137,8 @@ enum WarriorSpells
     SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK     = 26654,
     SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_1   = 12723,
     SPELL_WARRIOR_SWEEPING_STRIKES_EXTRA_ATTACK_2   = 26654,
-    SPELL_WARRIOR_SWORD_AND_BOARD                   = 50227,
-    SPELL_WARRIOR_TACTICIAN_CD                      = 199854,
+    SPELL_WARRIOR_SWORD_AND_BOARD                   = 199127,
+    SPELL_WARRIOR_TACTICIAN_CD                      = 184783,
     SPELL_WARRIOR_TASTE_FOR_BLOOD                   = 206333,
     SPELL_WARRIOR_TASTE_FOR_BLOOD_DAMAGE_DONE       = 125831,
     SPELL_WARRIOR_TAUNT                             = 355,
@@ -151,7 +155,8 @@ enum WarriorSpells
     SPELL_WARRIOR_VENGEANCE_AURA                    = 202572,
     SPELL_WARRIOR_VENGEANCE_FOCUSED_RAGE            = 202573,
     SPELL_WARRIOR_VENGEANCE_IGNORE_PAIN             = 202574,
-    SPELL_WARRIOR_VICTORIOUS_STATE                  = 32216,
+	SPELL_WARRIOR_VICTORIOUS                        = 32216,
+    SPELL_WARRIOR_VICTORIOUS_STATE                  = 32215,
     SPELL_WARRIOR_VICTORY_RUSH_DAMAGE               = 34428,
     SPELL_WARRIOR_VICTORY_RUSH_HEAL                 = 118779,
     SPELL_WARRIOR_VIGILANCE_PROC                    = 50725,
@@ -167,10 +172,31 @@ enum WarriorSpells
     SPELL_WARRIOR_WHIRLWIND_OFFHAND                 = 44949,
     SPELL_WARRIOR_WRECKING_BALL_EFFECT              = 215570,
     SPELL_WARRIOR_COMMANDING_SHOUT                  = 97463,
-	SPELL_WARRIOR_ANGER_MANAGEMENT                  = 152278,
-    SPELL_WARRIOR_SUDDEN_DEATH                      = 52437,
-
+    SPELL_WARRIOR_GLYPH_OF_MIGHTY_VICTORY           = 58104,
+    SPELL_WARRIOR_INTO_THE_FRAY                     = 202602,
     NPC_WARRIOR_RAVAGER                             = 76168,
+    SPELL_WARRIOR_COLD_STEEL_HOT_BLOOD_MAIN         = 288080,
+    SPELL_WARRIOR_COLD_STEEL_HOT_BLOOD              = 288085,
+    SPELL_WARRIOR_COLD_STEEL_HOT_BLOOD_GIVE_POWER   = 288087,
+    SPELL_WARRIOR_GUSHING_WOUND                     = 288091,
+    // 8.0
+    SPELL_WARRIOR_WAR_MACHINE = 262231,
+    SPELL_WARRRIOR_WAR_MACHINE_BUFF = 262232,
+    SPELL_WARRIOR_FURIOUS_CHARGE = 202224,
+    SPELL_WARRIOR_FURIOUS_CHARGE_BUFF = 202225,
+    SPELL_WARRIOR_FRESH_MEAT = 215568,
+    SPELL_WARRIOR_MEAT_CLEAVER = 280392,
+    SPELL_WARRIOR_THIRST_FOR_BATTLE = 199202,
+    SPELL_WARRIOR_THIRST_FOR_BATTLE_BUFF = 199203,
+    SPELL_WARRIOR_BARBARIAN = 280745,
+    SPELL_WARRIOR_BARBARIAN_ALLOW_HEROIC_LEAP = 280746,
+    SPELL_WARRIOR_BATTLE_TRANCE = 213857,
+    SPELL_WARRIOR_BATTLE_TRANCE_BUFF = 213858,
+    SPELL_WARRIOR_ENDLESS_RAGE = 202296,
+    SPELL_WARRIOR_ENDLESS_RAGE_GIVE_POWER = 280283,
+    SPELL_WARRIOR_SUDDEN_DEATH = 280721,
+    SPELL_WARRIOR_SUDDEN_DEATH_PROC = 280776,
+    SPELL_WARRIOR_WAR_BANNER_BUFF = 236321,
 };
 
 enum WarriorSpellIcons
@@ -268,7 +294,7 @@ public:
             if (!caster)
                 return;
 
-            caster->RemoveAurasDueToSpell(SPELL_WARRIOR_MEAT_CLEAVER_PROC);
+            caster->RemoveAurasDueToSpell(SPELL_WARRIOR_WHIRLWIND_PASSIVE);
             if (Aura* enrage = caster->GetAura(SPELL_WARRIOR_ENRAGE_AURA))
                 enrage->RefreshDuration();
             else
@@ -310,7 +336,7 @@ class spell_warr_whirlwind : public SpellScript
     void HandleProc()
     {
         if (Unit* caster = GetCaster())
-            caster->CastSpell(caster, SPELL_WARRIOR_MEAT_CLEAVER_PROC, true);
+            caster->CastSpell(caster, SPELL_WARRIOR_WHIRLWIND_PASSIVE, true);
     }
 
     void HandleAfterCast()
@@ -464,7 +490,7 @@ public:
                 return;
 
             caster->CastSpell(caster, SPELL_WARRIOR_BLOODTHIRST_HEAL, true);
-            caster->RemoveAurasDueToSpell(SPELL_WARRIOR_MEAT_CLEAVER_PROC);
+            caster->RemoveAurasDueToSpell(SPELL_WARRIOR_WHIRLWIND_PASSIVE);
         }
 
         void HandleDamage(SpellEffIndex /*effIndex*/)
@@ -2952,6 +2978,363 @@ struct npc_warr_ravager : public ScriptedAI
     }
 };
 
+//119052
+struct npc_warr_banner : public ScriptedAI
+{
+    npc_warr_banner(Creature* creature) : ScriptedAI(creature)
+    {
+        Initialize();
+    }
+
+private:
+    uint32 Timer;
+
+    void Initialize()
+    {
+        Timer = 0;
+    }
+
+    void IsSummonedBy(Spell const* summonSpell) override
+    {
+        me->SetReactState(REACT_PASSIVE);
+        me->GetOwnerGUID();
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (Timer <= diff)
+        {
+            if (Unit * owner = me->GetOwner())
+            {
+                me->SetLevel(owner->getLevel());
+                std::list<Unit*> allies;
+                me->GetFriendlyUnitListInRange(allies, 30.0f, true);
+                for (auto& targets : allies)
+                {
+                    if (targets->IsFriendlyTo(owner) && targets->IsPlayer())
+                    {
+                        if (!targets->HasAura(SPELL_WARRIOR_WAR_BANNER_BUFF))
+                            targets->AddAura(SPELL_WARRIOR_WAR_BANNER_BUFF);
+
+                        targets->GetScheduler().Schedule(15s, [this, targets](TaskContext context)
+                            {
+                                if (!targets)
+                                    return;
+
+                                targets->RemoveAura(SPELL_WARRIOR_WAR_BANNER_BUFF);
+                            });
+                        Timer = 1000;
+                    }
+                }
+            }
+            else Timer -= diff;
+        }
+    }
+};
+
+// Avatar - 107574
+class spell_warr_avatar : public SpellScriptLoader
+{
+public:
+    spell_warr_avatar() : SpellScriptLoader("spell_warr_avatar") { }
+
+    class spell_warr_avatar_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_warr_avatar_AuraScript);
+
+        void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+        {
+            if (Player * player = GetCaster()->ToPlayer())
+            {
+                player->RemoveMovementImpairingAuras();
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectApply += AuraEffectApplyFn(spell_warr_avatar_AuraScript::OnApply, EFFECT_0, SPELL_AURA_ADD_PCT_MODIFIER, AURA_EFFECT_HANDLE_REAL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new spell_warr_avatar_AuraScript();
+    }
+};
+
+// Victory Rush (heal) - 118779
+class spell_warr_victory_rush_heal : public SpellScriptLoader
+{
+public:
+    spell_warr_victory_rush_heal() : SpellScriptLoader("spell_warr_victory_rush_heal") { }
+
+    class spell_warr_victory_rush_heal_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warr_victory_rush_heal_SpellScript);
+
+        bool Validate(SpellInfo const* /*SpellEntry*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_WARRIOR_GLYPH_OF_MIGHTY_VICTORY))
+                return false;
+            return true;
+        }
+
+        void HandleHeal()
+        {
+            Unit* caster = GetCaster();
+            int32 heal = GetHitHeal();
+
+            if (AuraEffect * GlyphOfVictoryRush = caster->GetAuraEffect(SPELL_WARRIOR_GLYPH_OF_MIGHTY_VICTORY, EFFECT_0))
+                AddPct(heal, GlyphOfVictoryRush->GetAmount());
+
+            SetHitHeal(heal);
+        }
+
+        void Register() override
+        {
+            OnHit += SpellHitFn(spell_warr_victory_rush_heal_SpellScript::HandleHeal);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_warr_victory_rush_heal_SpellScript;
+    }
+};
+/*
+// 262161 Warbreaker
+class spell_warr_warbreaker : public SpellScript
+{
+    PrepareSpellScript(spell_warr_warbreaker);
+
+    void HandleOnHitTarget(SpellEffIndex /*effIndex)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (Unit * target = GetHitUnit())
+                caster->CastSpell(target, SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, true);
+        }
+    }
+
+    void CountTargets(std::list<WorldObject*> & targets)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (Aura * inForTheKill = caster->GetAura(248621)) // In For The Kill
+            {
+                int32 hpPct = inForTheKill->GetSpellEffectInfo(EFFECT_2)->CalcValue(caster);
+                int32 hastePct = inForTheKill->GetEffect(EFFECT_0)->GetAmount();
+                for (std::list<WorldObject*>::const_iterator itr = targets.begin(); itr != targets.end(); ++itr)
+                {
+                    if (Unit * target = (*itr)->ToUnit())
+                    {
+                        if (target->HealthBelowPct(hpPct))
+                        {
+                            hastePct = inForTheKill->GetSpellEffectInfo(EFFECT_1)->CalcValue(caster);
+                            break;
+                        }
+                    }
+                }
+                caster->CastCustomSpell(caster, 248622, &hastePct, nullptr, nullptr, true); // In For The Kill
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_warr_warbreaker::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_warbreaker::CountTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
+    }
+};
+*/
+// 1680 Whirlwind
+class spell_warr_wirlwind_dmg : public SpellScript
+{
+    PrepareSpellScript(spell_warr_wirlwind_dmg);
+
+    void HandleOnHitTarget(SpellEffIndex /*effIndex*/)
+    {
+        if (Player * caster = GetCaster()->ToPlayer())
+        {
+            if (caster->HasAura(202316)) // Fervor of Battle
+            {
+                if (Unit * target = caster->GetSelectedUnit())
+                {
+                    if (caster->IsValidAttackTarget(target))
+                    {
+                        caster->CastSpell(target, SPELL_WARRIOR_SLAM_ARMS, true);
+                    }
+                }
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_warr_wirlwind_dmg::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_TRIGGER_SPELL);
+    }
+};
+
+// 32215 - Victorious
+/// Last update: 7.3.5 26972
+class aura_warr_victorious : public AuraScript
+{
+    PrepareAuraScript(aura_warr_victorious);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (Player * player = caster->ToPlayer())
+            {
+                if ((player->GetSpecializationId() == TALENT_SPEC_WARRIOR_PROTECTION) || (player->GetSpecializationId() == TALENT_SPEC_WARRIOR_ARMS))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(aura_warr_victorious::CheckProc);
+    }
+};
+
+//280772 - Siegebreaker
+class spell_warr_siegebreaker : public SpellScript
+{
+    PrepareSpellScript(spell_warr_siegebreaker);
+
+    void HandleOnHit()
+    {
+        Unit* caster = GetCaster();
+        caster->CastSpell(nullptr, 280773, true);
+    }
+
+    void Register() override
+    {
+        OnHit += SpellHitFn(spell_warr_siegebreaker::HandleOnHit);
+    }
+};
+
+//262231
+class war_machine : public PlayerScript
+{
+public:
+    war_machine() : PlayerScript("war_machine") { }
+
+    void OnPVPKill(Player* killer, Player* killed)
+    {
+        if (killer->getClass() != CLASS_WARRIOR)
+            return;
+
+        if (!killer->HasAura(SPELL_WARRRIOR_WAR_MACHINE_BUFF && killer->HasAura(SPELL_WARRIOR_WAR_MACHINE)))
+            killer->CastSpell(nullptr, SPELL_WARRRIOR_WAR_MACHINE_BUFF, true);
+    }
+
+    void OnCreatureKill(Player * killer, Creature * killed)
+    {
+        if (killer->getClass() != CLASS_WARRIOR)
+            return;
+
+        if (!killer->HasAura(SPELL_WARRRIOR_WAR_MACHINE_BUFF && killer->HasAura(SPELL_WARRIOR_WAR_MACHINE)))
+            killer->CastSpell(nullptr, SPELL_WARRRIOR_WAR_MACHINE_BUFF, true);
+    }
+};
+
+//197690
+class spell_defensive_state : public AuraScript
+{
+    PrepareAuraScript(spell_defensive_state);
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit * caster = GetCaster())
+            if (AuraEffect * defensiveState = caster->GetAura(197690)->GetEffect(0))
+                defensiveState->GetAmount();
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_defensive_state::OnApply, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+/*
+//152278 Anger Management
+class anger_management : public PlayerScript
+{
+public:
+    anger_management() : PlayerScript("anger_management") { }
+
+    void OnSpellCast(Player* player, Spell* spell, bool) override
+    {
+        if (!player->getClass() == CLASS_WARRIOR)
+            return;
+
+        if (Aura* anger = player->GetAura(SPELL_WARRIOR_ANGER_MANAGEMENT))
+        {
+            TalentSpecialization spec = player->GetSpecializationId();
+
+            if (SpellPowerCost const* powerCost = spell->GetPowerCost(POWER_RAGE))
+            {
+                //int32 mod = powerCost->Amount * 100 / anger->GetEffect(EFFECT_0)->GetAmount();
+                //int32 mod = std::max(powerCost->Amount * 100, anger->GetEffect(EFFECT_0)->GetAmount()) / 2;
+                if (spec == TALENT_SPEC_WARRIOR_ARMS)
+                {
+                    player->GetSpellHistory()->ModifyCooldown(262161, -1000); // Warbreaker
+                    player->GetSpellHistory()->ModifyCooldown(46924, -1000); // Bladestorm
+                    player->GetSpellHistory()->ModifyCooldown(227847, -1000); // Bladestorm
+                    player->GetSpellHistory()->ModifyCooldown(167105, -1000); // Colossus Smash
+                }
+                else if (spec == TALENT_SPEC_WARRIOR_FURY)
+                {
+                    player->GetSpellHistory()->ModifyCooldown(1719, -1000); // Recklessness
+                }
+                else if (spec == TALENT_SPEC_WARRIOR_PROTECTION)
+                {
+                    player->GetSpellHistory()->ModifyCooldown(107574, -1000); // Avatar
+                    player->GetSpellHistory()->ModifyCooldown(12975, -1000); // Last Stand
+                    player->GetSpellHistory()->ModifyCooldown(871, -1000); // Shield Wall
+                    player->GetSpellHistory()->ModifyCooldown(1160, -1000); // Demoralizing Shout
+                }
+            }
+        }
+    }
+};
+*//*
+// 202603 Into the Fray
+// MiscId - 5839
+struct at_into_the_fray : AreaTriggerAI
+{
+    at_into_the_fray(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnUpdate(uint32 diff) override
+    {
+        Unit* caster = at->GetCaster();
+        if (!caster)
+            return;
+
+        int32 timer = at->Variables.GetValue<int32>("_timer") + diff;
+        if (timer >= 250)
+        {
+            at->Variables.Set<int32>("_timer", 0);
+            if (uint32 count = at->GetInsideUnits().size() - 1) // -1 for self
+            {
+                if (!caster->HasAura(SPELL_WARRIOR_INTO_THE_FRAY))
+                    caster->CastSpell(caster, SPELL_WARRIOR_INTO_THE_FRAY, true);
+                if (Aura* itf = caster->GetAura(SPELL_WARRIOR_INTO_THE_FRAY))
+                    itf->SetStackAmount(std::min(itf->GetMaxStackAmount(), count));
+            }
+            else
+                caster->RemoveAurasDueToSpell(SPELL_WARRIOR_INTO_THE_FRAY);
+        }
+        else
+            at->Variables.Set("_timer", timer);
+    }
+};
+*/
+
 void AddSC_warrior_spell_scripts()
 {
     new spell_warr_berzerker_rage();
@@ -3027,5 +3410,18 @@ void AddSC_warrior_spell_scripts()
     RegisterCreatureAI(npc_warr_ravager);
 	RegisterAuraScript(spell_warr_victorious_state);
 	RegisterAuraScript(spell_warr_sudden_death);
-	
+
+
+    RegisterCreatureAI(npc_warr_banner);
+    new spell_warr_avatar();
+    new spell_warr_victory_rush_heal();
+    //RegisterSpellScript(spell_warr_warbreaker);
+    RegisterSpellScript(spell_warr_wirlwind_dmg);
+    RegisterAuraScript(aura_warr_victorious);
+    RegisterSpellScript(spell_warr_siegebreaker);
+    RegisterPlayerScript(war_machine);
+    RegisterAuraScript(spell_defensive_state);
+
+    //RegisterPlayerScript(anger_management);
+    //RegisterAreaTriggerAI(at_into_the_fray);	
 }

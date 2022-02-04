@@ -3122,6 +3122,53 @@ class spell_dk_unholy_frenzy : public AuraScript
     }
 };
 
+/// Blood Shield - 77535
+class spell_dk_blood_shield : public SpellScriptLoader
+{
+public:
+    spell_dk_blood_shield() : SpellScriptLoader("spell_dk_blood_shield") { }
+
+    class spell_dk_blood_shield_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_dk_blood_shield_AuraScript);
+
+        enum eSpells
+        {
+            T17Blood4P = 165571
+        };
+
+        void AfterAbsorb(AuraEffect* p_AurEff, DamageInfo& /*p_DmgInfo*/, uint32& p_AbsorbAmount)
+        {
+            if (Unit * l_Target = GetTarget())
+            {
+                /// While Vampiric Blood is active, your Blood Shield cannot be reduced below 3% of your maximum health.
+                if (AuraEffect * l_AurEff = l_Target->GetAuraEffect(eSpells::T17Blood4P, EFFECT_0))
+                {
+                    int32 l_FutureAbsorb = p_AurEff->GetAmount() - p_AbsorbAmount;
+                    int32 l_MinimaAbsorb = l_Target->CountPctFromMaxHealth(l_AurEff->GetAmount());
+
+                    /// We need to add some absorb amount to correct the absorb amount after that, and set it to 3% of max health
+                    if (l_FutureAbsorb < l_MinimaAbsorb)
+                    {
+                        int32 l_AddedAbsorb = l_MinimaAbsorb - l_FutureAbsorb;
+                        p_AurEff->ChangeAmount(p_AurEff->GetAmount() + l_AddedAbsorb);
+                    }
+                }
+            }
+        }
+
+        void Register() override
+        {
+            AfterEffectAbsorb += AuraEffectAbsorbFn(spell_dk_blood_shield_AuraScript::AfterAbsorb, EFFECT_0);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_dk_blood_shield_AuraScript();
+    }
+};
+
 void AddSC_deathknight_spell_scripts()
 {
     new spell_dk_advantage_t10_4p();
@@ -3188,9 +3235,7 @@ void AddSC_deathknight_spell_scripts()
     RegisterSpellScript(spell_dk_blighted_rune_weapon);
     new spell_dk_crimsom_scourge();
     RegisterSpellScript(spell_dk_clawing_shadows);
-    RegisterAreaTriggerAI(at_dk_death_and_decay);
     RegisterAuraScript(spell_dk_defile_aura);
-    RegisterAreaTriggerAI(at_dk_antimagic_zone);
     RegisterSpellScript(spell_dk_frost_strike);
     RegisterAuraScript(aura_grip_of_the_dead);
     RegisterAuraScript(aura_inexorable_assault);
@@ -3198,9 +3243,12 @@ void AddSC_deathknight_spell_scripts()
     RegisterSpellScript(spell_dk_ghoul_claw);
     RegisterSpellScript(spell_dk_festering_wound_damage);
     RegisterAuraScript(spell_dk_unholy_frenzy);
+    new spell_dk_blood_shield();
 
     RegisterAreaTriggerAI(at_dk_defile);
     RegisterAreaTriggerAI(at_dk_decomposing_aura);
+    RegisterAreaTriggerAI(at_dk_antimagic_zone);
+    RegisterAreaTriggerAI(at_dk_death_and_decay);
 
     new npc_dk_dancing_rune_weapon();
     RegisterCreatureAI(npc_dk_defile);

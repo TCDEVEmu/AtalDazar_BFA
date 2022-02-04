@@ -58,6 +58,8 @@ enum ShamanSpells
     SPELL_SHAMAN_CRASHING_STORM_DUMMY                       = 192246,
     SPELL_SHAMAN_CRASHING_STORM_AT                          = 210797,
     SPELL_SHAMAN_CRASHING_STORM_DAMAGE                      = 210801,
+    SPELL_SHAMAN_CARESS_OF_THE_TIDEMOTHER                   = 207354,
+    SPELL_SHAMAN_CARESS_OF_THE_TIDEMOTHER_AURA              = 209950,
     SPELL_SHAMAN_DOOM_WINDS                                 = 204945,
     SPELL_SHAMAN_EARTHBIND_FOR_EARTHGRAB_TOTEM              = 116947,
     SPELL_SHAMAN_EARTHEN_RAGE_DAMAGE                        = 170379,
@@ -182,6 +184,28 @@ enum ShamanSpells
     SPELL_SHAMAN_WINDFURY_ATTACK_OFF_HAND                   = 33750,
     SPELL_SHAMAN_WINDFURY_WEAPON_PASSIVE                    = 33757,
     SPELL_SHAMAN_WIND_RUSH_TOTEM                            = 192077,
+    //8.0
+    SPELL_SHAMAN_FORCEFUL_WINDS                             = 262647,
+    SPELL_SHAMAN_FORCEFUL_WINDS_MOD_DAMAGE_DONE             = 262652,
+    SPELL_SHAMAN_CRASHING_LIGHTNING_MOD_CL                  = 242286,
+    SPELL_SHAMAN_CRASHING_LIGHTNING_DAMAGE                  = 195592, //triggered by SS, LL
+    SPELL_SHAMAN_MASTERY_ELEMENTAL_OVERLOAD                 = 168534,
+    SPELL_SHAMAN_CHAIN_LIGHTNING                            = 188443,
+    
+    // Frostbrand and Hailstorm Talent 
+    SPELL_FROSTBRAND = 196834,
+    SPELL_FROSTBRAND_SLOW = 147732,
+    SPELL_HAILSTORM_TALENT = 210853,
+    SPELL_HAILSTORM_TALENT_PROC = 210854,
+    // Flametongue and Searing Assault talent
+    SPELL_FLAMETONGUE = 193796,
+    SPELL_FLAMETONGUE_AURA = 194084,
+    SPELL_SEARING_ASSAULT_TALENT = 192087,
+    SPELL_SEARING_ASSULAT_TALENT_PROC = 268429,
+    // Crash Lightning and Crashing Storm talent
+    SPELL_GATHERING_STORMS_AURA = 198300,
+    SPELL_CRASHING_STORM_TALENT_DAMAGE = 210801,
+    SPELL_CRASHING_STORM_TALENT_AT = 210797,
 };
 
 enum TotemSpells
@@ -3742,6 +3766,476 @@ public:
     }
 };
 
+// Summon Fire, Earth & Storm Elemental  - Called By 198067 Fire Elemental, 198103 Earth Elemental, 192249 Storm Elemental
+class spell_shaman_generic_summon_elemental : public SpellScriptLoader
+{
+public:
+    spell_shaman_generic_summon_elemental() : SpellScriptLoader("spell_shaman_generic_summon_elemental") { }
+
+    enum Spells
+    {
+        PrimalElementalist = 117013,
+        SummonFireElemental = 198067,
+        SummonFireElementalTriggered = 188592,
+        SummonPrimalElementalistFireElemental = 118291,
+        SummonEarthElemental = 198103,
+        SummonEarthElementalTriggered = 188616,
+        SummonPrimalElementalistEarthElemental = 118323,
+        SummonStormElemental = 192249,
+        SummonStormElementalTriggered = 157299,
+        SummonPrimalElementalistStormElemental = 157319,
+    };
+
+    class spell_shaman_generic_summon_elemental_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_shaman_generic_summon_elemental_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            return ValidateSpellInfo
+            ({
+                PrimalElementalist,
+                SummonFireElemental,
+                SummonFireElementalTriggered,
+                SummonPrimalElementalistFireElemental,
+                SummonEarthElemental,
+                SummonEarthElementalTriggered,
+                SummonPrimalElementalistEarthElemental,
+                SummonStormElemental,
+                SummonStormElementalTriggered,
+                SummonPrimalElementalistStormElemental,
+                });
+        }
+        void HandleSummon(SpellEffIndex /*p_EffIndex*/)
+        {
+            uint32 triggerSpell;
+
+            switch (GetSpellInfo()->Id)
+            {
+            case SummonFireElemental:
+                triggerSpell = (GetCaster()->HasAura(PrimalElementalist)) ? SummonPrimalElementalistFireElemental : SummonFireElementalTriggered;
+                break;
+            case SummonEarthElemental:
+                triggerSpell = (GetCaster()->HasAura(PrimalElementalist)) ? SummonPrimalElementalistEarthElemental : SummonEarthElementalTriggered;
+                break;
+            case SummonStormElemental:
+                triggerSpell = (GetCaster()->HasAura(PrimalElementalist)) ? SummonPrimalElementalistStormElemental : SummonStormElementalTriggered;
+                break;
+            default:
+                triggerSpell = 0;
+                break;
+            }
+
+            if (triggerSpell)
+                GetCaster()->CastSpell(GetCaster(), triggerSpell, true);
+        }
+
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_shaman_generic_summon_elemental_SpellScript::HandleSummon, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new spell_shaman_generic_summon_elemental_SpellScript;
+    }
+};
+
+//17364
+class spell_sha_stormstrike : public SpellScript
+{
+    PrepareSpellScript(spell_sha_stormstrike);
+
+    void HandleOnHit()
+    {
+        Unit* target = GetHitUnit();
+        if (!target)
+            return;
+
+        if (GetCaster()->HasAura(SPELL_SHAMAN_CRASHING_STORM_DUMMY) && GetCaster()->HasAura(SPELL_SHAMAN_CRASH_LIGTHNING_AURA))
+            GetCaster()->CastSpell(target, SPELL_SHAMAN_CRASHING_LIGHTNING_DAMAGE, true);
+
+        if (GetCaster() && GetCaster()->HasAura(SPELL_SHAMAN_CRASH_LIGTHNING_AURA))
+            GetCaster()->CastSpell(nullptr, SPELL_SHAMAN_CRASH_LIGHTNING_PROC, true);
+    }
+
+    void Register() override
+    {
+        OnHit += SpellHitFn(spell_sha_stormstrike::HandleOnHit);
+    }
+};
+
+//168534
+class mastery_elemental_overload : public PlayerScript
+{
+public:
+    mastery_elemental_overload() : PlayerScript("mastery_elemental_overload") { }
+
+    void OnSpellCast(Player* player, Spell* spell, bool) override
+    {
+        if (player->GetSpecializationId() != TALENT_SPEC_SHAMAN_ELEMENTAL)
+            return;
+
+        if (player->HasAura(SPELL_SHAMAN_MASTERY_ELEMENTAL_OVERLOAD) && roll_chance_f(15))
+        {
+            if (SpellInfo const* spellInfo = spell->GetSpellInfo())
+            {
+                switch (spell->GetSpellInfo()->Id)
+                {
+                case SPELL_SHAMAN_LIGHTNING_BOLT_ELEM:
+                    player->CastSpell(player->GetSelectedUnit(), SPELL_SHAMAN_LIGHTNING_BOLT_ELEM, true);
+                    break;
+                case SPELL_SHAMAN_ELEMENTAL_BLAST:
+                    player->CastSpell(player->GetSelectedUnit(), SPELL_SHAMAN_ELEMENTAL_BLAST, true);
+                    break;
+                case SPELL_SHAMAN_LAVA_BURST:
+                    player->CastSpell(player->GetSelectedUnit(), SPELL_SHAMAN_LAVA_BURST, true);
+                    break;
+                case SPELL_SHAMAN_CHAIN_LIGHTNING:
+                    player->CastSpell(player->GetSelectedUnit(), SPELL_SHAMAN_LAVA_BURST, true);
+                    break;
+                }
+            }
+        }
+    }
+};
+
+// Frostbrand - 196834
+class bfa_spell_frostbrand : public SpellScriptLoader
+{
+public:
+    bfa_spell_frostbrand() : SpellScriptLoader("bfa_spell_frostbrand") { }
+
+    class bfa_spell_frostbrand_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(bfa_spell_frostbrand_SpellScript);
+
+        bool Load() override
+        {
+            return GetCaster()->IsPlayer();
+        }
+
+        void HandleOnHit()
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetHitUnit();
+
+            if (!caster || !target)
+                return;
+
+            caster->CastSpell(target, SPELL_FROSTBRAND_SLOW, true);
+        }
+        void Register()
+        {
+            OnHit += SpellHitFn(bfa_spell_frostbrand_SpellScript::HandleOnHit);
+        }
+    };
+
+    class bfa_spell_frostbrand_AuraScript : public AuraScript
+    {
+    public:
+        PrepareAuraScript(bfa_spell_frostbrand_AuraScript);
+
+        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+
+            Unit* attacker = eventInfo.GetActionTarget();
+            Unit* caster = GetCaster();
+
+            if (!caster || !attacker)
+                return;
+
+            caster->CastSpell(attacker, SPELL_FROSTBRAND_SLOW, true);
+            if (caster->HasAura(SPELL_HAILSTORM_TALENT))
+                caster->CastSpell(attacker, SPELL_HAILSTORM_TALENT_PROC, true);
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(bfa_spell_frostbrand_AuraScript::HandleEffectProc, EFFECT_1, SPELL_AURA_PROC_TRIGGER_SPELL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new bfa_spell_frostbrand_AuraScript();
+    }
+
+    SpellScript* GetSpellScript() const
+    {
+        return new bfa_spell_frostbrand_SpellScript();
+    }
+};
+
+// Flametongue - 193796
+class bfa_spell_flametongue : public SpellScriptLoader
+{
+public:
+    bfa_spell_flametongue() : SpellScriptLoader("bfa_spell_flametongue") { }
+
+    class bfa_spell_flametongue_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(bfa_spell_flametongue_SpellScript);
+
+        bool Load() override
+        {
+            return GetCaster()->IsPlayer();
+        }
+
+        void HandleOnHit()
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetHitUnit();
+
+            if (!caster || !target)
+                return;
+
+            if (caster->HasAura(SPELL_SEARING_ASSAULT_TALENT))
+                caster->CastSpell(target, SPELL_SEARING_ASSULAT_TALENT_PROC, true);
+        }
+        void Register()
+        {
+            OnHit += SpellHitFn(bfa_spell_flametongue_SpellScript::HandleOnHit);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new bfa_spell_flametongue_SpellScript();
+    }
+};
+
+// Flametongue aura - 194084
+class bfa_spell_flametongue_proc_attack : public SpellScriptLoader
+{
+public:
+    bfa_spell_flametongue_proc_attack() : SpellScriptLoader("bfa_spell_flametongue_proc_attack")
+    {}
+
+    class bfa_spell_flametongue_proc_attack_AuraScript : public AuraScript
+    {
+    public:
+        PrepareAuraScript(bfa_spell_flametongue_proc_attack_AuraScript);
+
+        void HandleEffectProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+
+            Unit* attacker = eventInfo.GetActionTarget();
+            Unit* caster = GetCaster();
+
+            if (!caster || !attacker)
+                return;
+            caster->CastSpell(attacker, SPELL_SHAMAN_FLAMETONGUE_ATTACK, true);
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(bfa_spell_flametongue_proc_attack_AuraScript::HandleEffectProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+        }
+    };
+
+    AuraScript* GetAuraScript() const
+    {
+        return new bfa_spell_flametongue_proc_attack_AuraScript();
+    }
+};
+
+// Flametongue Attack - 10444
+class bfa_spell_flametongue_attack_damage : public SpellScriptLoader
+{
+public:
+    bfa_spell_flametongue_attack_damage() : SpellScriptLoader("bfa_spell_flametongue_attack_damage") { }
+
+    class bfa_spell_flametongue_attack_damage_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(bfa_spell_flametongue_attack_damage_SpellScript);
+
+        void HandleOnHit(SpellEffIndex /*effIndex*/)
+        {
+            Unit* caster = GetCaster();
+            if (!caster)
+                return;
+
+            if (Aura * flamet = caster->GetAura(SPELL_FLAMETONGUE_AURA))
+            {
+                uint32 damage = caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.2f;
+                SetHitDamage(damage);
+            }
+        }
+        void Register()
+        {
+            OnEffectHitTarget += SpellEffectFn(bfa_spell_flametongue_attack_damage_SpellScript::HandleOnHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new bfa_spell_flametongue_attack_damage_SpellScript();
+    }
+};
+
+// 187874 - Crash Lightning
+class bfa_spell_crash_lightning : public SpellScriptLoader
+{
+public:
+    bfa_spell_crash_lightning() : SpellScriptLoader("bfa_spell_crash_lightning") { }
+
+    class bfa_spell_crash_lightning_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(bfa_spell_crash_lightning_SpellScript);
+
+        uint32 hitTarget;
+
+        bool Load() override
+        {
+            hitTarget = 1; // load with 1 because we can't cast with no target
+            return true;
+        }
+
+        void CheckTargets(std::list<WorldObject*>& targets)
+        {
+            hitTarget = targets.size();
+        }
+
+        void HandleAfterCast(SpellEffIndex index)
+        {
+            Unit* caster = GetCaster();
+            Unit* target = GetHitUnit();
+
+            if (!caster || !target)
+                return;
+
+            CustomSpellValues values;
+            values.AddSpellMod(SPELLVALUE_BASE_POINT0, hitTarget);
+            caster->CastCustomSpell(SPELL_GATHERING_STORMS_AURA, values, NULL, TRIGGERED_FULL_MASK);
+
+            caster->CastSpell(caster, SPELL_SHAMAN_CRASH_LIGTHNING_AURA, true);
+            if (caster->HasAura(SPELL_SHAMAN_CRASHING_STORM_DUMMY))
+            {
+                caster->CastSpell(nullptr, SPELL_CRASHING_STORM_TALENT_AT, true);
+            }
+        }
+        void Register()
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(bfa_spell_crash_lightning_SpellScript::CheckTargets, EFFECT_0, TARGET_UNIT_CONE_ENEMY_104);
+            OnEffectHitTarget += SpellEffectFn(bfa_spell_crash_lightning_SpellScript::HandleAfterCast, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        }
+    };
+
+    SpellScript* GetSpellScript() const
+    {
+        return new bfa_spell_crash_lightning_SpellScript();
+    }
+};
+
+// 6826
+class bfa_at_crashing_storm : public AreaTriggerEntityScript
+{
+public:
+    bfa_at_crashing_storm() : AreaTriggerEntityScript("bfa_at_crashing_storm") { }
+
+    struct bfa_at_crashing_storm_AI : AreaTriggerAI
+    {
+        bfa_at_crashing_storm_AI(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+        uint32 damageTimer;
+
+        void OnInitialize()
+        {
+            damageTimer = 0;
+        }
+
+        void OnUpdate(uint32 diff)
+        {
+            damageTimer += diff;
+            if (damageTimer >= 2 * IN_MILLISECONDS)
+            {
+                CheckPlayers();
+                damageTimer = 0;
+            }
+        }
+
+        void CheckPlayers()
+        {
+            if (Unit * caster = at->GetCaster())
+            {
+                std::list<Player*> targetList;
+                float radius = 2.5f;
+
+                caster->GetPlayerListInGrid(targetList, radius);
+                if (targetList.size())
+                {
+                    for (auto player : targetList)
+                    {
+                        if (!player->IsGameMaster())
+                            caster->CastSpell(player, SPELL_CRASHING_STORM_TALENT_DAMAGE, true);
+                    }
+                }
+            }
+        }
+    };
+
+    AreaTriggerAI* GetAI(AreaTrigger* areatrigger) const override
+    {
+        return new bfa_at_crashing_storm_AI(areatrigger);
+    }
+};
+
+//192077, 12676
+class at_sha_wind_rush_totem : public AreaTriggerAI
+{
+public:
+    at_sha_wind_rush_totem(AreaTrigger* at) : AreaTriggerAI(at) { }
+
+    void OnUnitEnter(Unit* target) override
+    {
+        if (!target->IsPlayer())
+            return;
+
+        if (target->IsFriendlyTo(at->GetCaster()))
+            target->CastSpell(target, SPELL_TOTEM_WIND_RUSH_EFFECT, true);
+    }
+};
+
+//8143
+struct npc_sha_tremor_totem : public ScriptedAI
+{
+    npc_sha_tremor_totem(Creature* c) : ScriptedAI(c) { }
+
+    enum SpellRelated
+    {
+        SPELL_TREMOR_TOTEM_DISPELL = 8146,
+    };
+
+    void Reset() override
+    {
+        ScriptedAI::Reset();
+        me->GetOwner();
+    }
+
+    void OnUpdate(uint32 diff)
+    {
+        if (diff <= 1000)
+        {
+            std::list<Player*> playerList;
+            me->GetPlayerListInGrid(playerList, 30.0f);
+            if (playerList.size())
+            {
+                for (auto& targets : playerList)
+                {
+                    if (targets->IsFriendlyTo(me->GetOwner()))
+                        if (targets->HasAuraType(SPELL_AURA_MOD_FEAR) || targets->HasAuraType(SPELL_AURA_MOD_FEAR_2) || targets->HasAuraType(SPELL_AURA_MOD_CHARM) || targets->HasAuraType(SPELL_AURA_MOD_CHARM))
+                            me->CastSpell(targets, SPELL_TREMOR_TOTEM_DISPELL, true);
+                }
+            }
+        }
+    }
+};
+
 void AddSC_shaman_spell_scripts()
 {
     new at_sha_earthquake_totem();
@@ -3821,6 +4315,18 @@ void AddSC_shaman_spell_scripts()
     RegisterAreaTriggerAI(at_sha_crashing_storm);
     RegisterCreatureAI(npc_feral_spirit);
     RegisterAreaTriggerAI(at_sha_voodoo_totem);
+
+
+    new spell_shaman_generic_summon_elemental();
+    RegisterSpellScript(spell_sha_stormstrike);
+    RegisterPlayerScript(mastery_elemental_overload);
+    new bfa_spell_frostbrand();
+    new bfa_spell_flametongue();
+    new bfa_spell_flametongue_attack_damage();
+    new bfa_spell_flametongue_proc_attack();
+    new bfa_spell_crash_lightning();
+    new bfa_at_crashing_storm();
+    RegisterAreaTriggerAI(at_sha_wind_rush_totem);
 }
 
 void AddSC_npc_totem_scripts()
@@ -3839,4 +4345,7 @@ void AddSC_npc_totem_scripts()
     RegisterCreatureAI(npc_tailwind_totem);
     RegisterCreatureAI(npc_voodoo_totem);
     RegisterCreatureAI(npc_wind_rush_totem);
+
+
+    RegisterCreatureAI(npc_sha_tremor_totem);
 }

@@ -41,7 +41,6 @@
 
 enum MageSpells
 {
-    //7.3.2.25549
     SPELL_MAGE_COLD_SNAP                         = 235219,
     SPELL_MAGE_FROST_NOVA                        = 122,
     SPELL_MAGE_CONE_OF_COLD                      = 120,
@@ -121,6 +120,7 @@ enum MageSpells
     SPELL_MAGE_ARCANE_POWER                      = 12042,
     SPELL_MAGE_CHRONO_SHIFT                      = 235711,
     SPELL_MAGE_CHRONO_SHIFT_SLOW                 = 236299,
+    SPELL_MAGE_CHRONO_SHIFT_BUFF                 = 236298,
     SPELL_MAGE_ARCANE_BLAST                      = 30451,
     SPELL_MAGE_ARCANE_BARRAGE                    = 44425,
     SPELL_MAGE_ARCANE_BARRAGE_TRIGGERED          = 241241,
@@ -135,7 +135,6 @@ enum MageSpells
     SPELL_MAGE_ARCANE_ORB_DAMAGE                 = 153640,
     SPELL_MAGE_ARCANE_AMPLIFICATION              = 236628,
 
-    //7.3.2.25549 END
     SPELL_MAGE_RING_OF_FROST_FREEZE              = 82691,
     SPELL_MAGE_RING_OF_FROST_IMMUNE              = 91264,
     SPELL_MAGE_RING_OF_FROST                     = 113724,
@@ -174,6 +173,48 @@ enum MageSpells
     SPELL_MAGE_RULE_OF_THREES_BUFF               = 264774,
     SPELL_MAGE_SPLITTING_ICE                     = 56377,
     SPELL_ARCANE_CHARGE                          = 36032,
+    SPELL_MAGE_SQUIRREL_FORM = 32813,
+    SPELL_MAGE_GIRAFFE_FORM = 32816,
+    SPELL_MAGE_SERPENT_FORM = 32817,
+    SPELL_MAGE_DRAGONHAWK_FORM = 32818,
+    SPELL_MAGE_WORGEN_FORM = 32819,
+    SPELL_MAGE_SHEEP_FORM = 32820,
+    //Azerite Traits
+    SPELL_MAGE_WILDFIRE = 288755, 
+    SPELL_BLASTER_MASTER = 274596,
+    SPELL_BLASTER_MASTER_MASTERY_BUFF = 274598,
+    SPELL_CAUTERIZING_BLINK_PROC = 280177,
+    SPELL_IMPASSIVE_VISAGE_HEAL = 270117,
+    SPELL_FIREMIND_TRIGGER = 278539, 
+    SPELL_FIREMIND_MOD_INTELECT = 279715,
+    SPELL_PACKED_ICE_TRIGGER = 272968,
+    SPELL_GLACIAL_ASSAULT_TRIGGER = 279854,
+    SPELL_HEART_OF_DARKNESS_TRIGGER = 317137,
+    SPELL_EQUIPOISE_TRIGGER = 286027, 
+    SPELL_EQUIPOISE_INCREASE_ARCANE_BLAST_DAMAGE = 264352, 
+    SPELL_EQUIPOISE_REDUCE_MANA_COST_ARCANE_BLAST = 264353,
+    SPELL_FLASH_FREEZE_TRIGGER = 288164,
+    SPELL_GUTRIPER_TRIGGER = 266937,
+    SPELL_ARCANE_PUMMELING_TRIGGER = 270669,
+    SPELL_ELEMENTAL_WHIRL_TRIGGER = 263984,
+    SPELL_GALVANIZING_SPARK_TRIGGER = 278536,
+    SPELL_OVERWHELMING_POWER_TRIGGER = 266180,
+    SPELL_VAMPIRIC_SPEED_TRIGGER = 268599,
+    SPELL_VAMPIRIC_SPEED_HEAL = 269238,
+    SPELL_VAMPIRIC_SPEED_SPEED = 269239,
+    SPELL_ELDRITCH_WARDING_TRIGGER = 274379,
+    SPELL_BLOOD_SIPHON_TRIGGER = 264108, 
+    SPELL_ARCANE_PRESSURE_TRIGGER = 274594, 
+    SPELL_FLAMES_OF_ALACRITY_TRIGGER = 272932,
+    SPELL_MAGE_PRISMATIC_CLOAK = 198064,
+    SPELL_MAGE_PRISMATIC_CLOAK_BUFF = 198065,
+    SPELL_MAGE_CHAIN_REACTION_BFA = 278309,
+    SPELL_MAGE_CHAIN_REACTION_MOD_LANCE = 278310,
+
+    SplittingIce = 56377,
+    IciclesStack = 205473,
+    IciclesDamage = 148022,
+    MasteryIcicles = 76613
 };
 
 enum TemporalDisplacementSpells
@@ -2739,6 +2780,107 @@ class spell_mage_ebonbolt_damage : public SpellScript
     }
 };
 
+enum SilvermoonPolymorph
+{
+    NPC_AUROSALIA = 18744,
+};
+// TODO: move out of here and rename - not a mage spell
+class spell_mage_polymorph_cast_visual : public SpellScriptLoader
+{
+public:
+    spell_mage_polymorph_cast_visual() : SpellScriptLoader("spell_mage_polymorph_visual") { }
+
+    class spell_mage_polymorph_cast_visual_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_mage_polymorph_cast_visual_SpellScript);
+
+        static const uint32 PolymorhForms[6];
+
+        bool Validate(SpellInfo const* /*SpellInfo*/) override
+        {
+            // check if spell ids exist in dbc
+            for (uint32 i = 0; i < 6; i++)
+                if (!sSpellMgr->GetSpellInfo(PolymorhForms[i]))
+                    return false;
+            return true;
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit * target = GetCaster()->FindNearestCreature(NPC_AUROSALIA, 30.0f))
+                if (target->GetTypeId() == TYPEID_UNIT)
+                    target->CastSpell(target, PolymorhForms[urand(0, 5)], true);
+        }
+
+        void Register() override
+        {
+            // add dummy effect spell handler to Polymorph visual
+            OnEffectHitTarget += SpellEffectFn(spell_mage_polymorph_cast_visual_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_mage_polymorph_cast_visual_SpellScript();
+    }
+};
+
+const uint32 spell_mage_polymorph_cast_visual::spell_mage_polymorph_cast_visual_SpellScript::PolymorhForms[6] =
+{
+    SPELL_MAGE_SQUIRREL_FORM,
+    SPELL_MAGE_GIRAFFE_FORM,
+    SPELL_MAGE_SERPENT_FORM,
+    SPELL_MAGE_DRAGONHAWK_FORM,
+    SPELL_MAGE_WORGEN_FORM,
+    SPELL_MAGE_SHEEP_FORM
+};
+
+// Firestarter - 203283
+class spell_mage_firestarter_pvp : public AuraScript
+{
+    PrepareAuraScript(spell_mage_firestarter_pvp);
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        return eventInfo.GetSpellInfo()->Id == SPELL_MAGE_FIREBALL;
+    }
+
+    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& /*eventInfo*/)
+    {
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+
+        caster->GetSpellHistory()->ModifyCooldown(SPELL_MAGE_COMBUSTION, -aurEff->GetAmount() - 5000);
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_mage_firestarter_pvp::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_mage_firestarter_pvp::HandleProc, EFFECT_1, SPELL_AURA_DUMMY);
+    }
+};
+
+//1953
+class spell_mage_blink : public SpellScript
+{
+    PrepareSpellScript(spell_mage_blink);
+
+    void HandleLeap()
+    {
+        if (GetCaster()->HasAura(SPELL_MAGE_BLAZING_SOUL))
+            GetCaster()->AddAura(SPELL_MAGE_BLAZING_BARRIER);
+
+        if (GetCaster()->HasAura(SPELL_MAGE_PRISMATIC_CLOAK))
+            GetCaster()->AddAura(SPELL_MAGE_PRISMATIC_CLOAK_BUFF);
+    }
+
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_mage_blink::HandleLeap);
+    }
+};
+
 void AddSC_mage_spell_scripts()
 {
     new playerscript_mage_arcane();
@@ -2756,8 +2898,6 @@ void AddSC_mage_spell_scripts()
 
     RegisterSpellScript(spell_mage_ebonbolt);
     RegisterSpellScript(spell_mage_ebonbolt_damage);
-
-    //7.3.2.25549
     RegisterSpellScript(spell_mage_cold_snap);
     RegisterSpellScript(spell_mage_cone_of_cold);
     RegisterSpellScript(spell_mage_ice_lance);
@@ -2777,7 +2917,6 @@ void AddSC_mage_spell_scripts()
     RegisterSpellScript(spell_mage_arcane_barrage);
     RegisterSpellScript(spell_mage_arcane_missiles_damage);
     RegisterSpellScript(spell_mage_arcane_explosion);
-
     RegisterAuraScript(spell_mage_chrono_shift);
     RegisterAuraScript(spell_mage_arcane_missiles);
     RegisterAuraScript(spell_mage_arcane_barrier);
@@ -2797,8 +2936,6 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_chilled);
     RegisterAuraScript(spell_mage_ray_of_frost);
     RegisterAuraScript(spell_mage_ray_of_frost_buff);
-    //7.3.2.25549 END
-
     RegisterSpellScript(spell_mage_flamestrike);
     RegisterAuraScript(spell_mage_ring_of_frost);
     new spell_mage_ring_of_frost_stun();
@@ -2806,6 +2943,9 @@ void AddSC_mage_spell_scripts()
     RegisterAuraScript(spell_mage_clearcasting);
     RegisterAuraScript(spell_mage_presence_of_mind);
     RegisterSpellScript(spell_mage_arcane_blast);
+    new spell_mage_polymorph_cast_visual();
+    RegisterAuraScript(spell_mage_firestarter_pvp);
+    RegisterSpellScript(spell_mage_blink);
 
     // Spell Pet scripts
     RegisterAuraScript(spell_mage_pet_freeze);
@@ -2822,4 +2962,6 @@ void AddSC_mage_spell_scripts()
 
     // NPC Scripts
     new npc_mirror_image();
+
+    new playerscript_mage_arcane();
 }

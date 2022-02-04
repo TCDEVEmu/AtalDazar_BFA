@@ -4928,6 +4928,120 @@ class spell_item_heart_of_azeroth : public AuraScript
     }
 };
 
+uint32 MaleModels[] = { 20122, 20124, 20130, 20131, 20132, 20133, 20134, 20756, 20757, 20758, 20759 };
+class spell_item_demon_hunters_aspect : public AuraScript
+{
+    PrepareAuraScript(spell_item_demon_hunters_aspect);
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit * player = GetTarget()->ToPlayer())
+        {
+            if (player->getGender() == GENDER_MALE)
+                player->SetDisplayId(MaleModels[urand(0, 10)]);
+            else
+                player->SetDisplayId(20126);
+        }
+    }
+
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit * player = GetTarget()->ToPlayer())
+            player->SetDisplayId(player->GetNativeDisplayId());
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectRemoveFn(spell_item_demon_hunters_aspect::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(spell_item_demon_hunters_aspect::OnRemove, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+uint32 RandomMorphs[16] =
+{
+    30089,
+    30096,
+    30084,
+    29907,
+    19840,
+    30085,
+    30086,
+    29909,
+    30094,
+    30093,
+    29908,
+    30088,
+    7614,
+    30092,
+    30095,
+    11670
+};
+
+// 74589
+class spell_item_faded_wizard_hat : public AuraScript
+{
+    PrepareAuraScript(spell_item_faded_wizard_hat);
+
+    void OnApply(AuraEffect const*, AuraEffectHandleModes /*mode*/)
+    {
+        GetCaster()->SetDisplayId(RandomMorphs[urand(0, 15)]);
+    }
+
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_item_faded_wizard_hat::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// spell 188021 -  Avalanche Elixir
+enum AvalancheElixir
+{
+    SPELL_AVALANCHE_ELIXIR_BUFF = 188414,
+    SPELL_AVALANCHE_ELIXIR = 188021
+};
+
+class aura_item_avalanche_elixir : public AuraScript
+{
+    PrepareAuraScript(aura_item_avalanche_elixir);
+
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        return ValidateSpellInfo({ SPELL_AVALANCHE_ELIXIR_BUFF, SPELL_AVALANCHE_ELIXIR });
+    }
+
+    void HandleEffectPeriodic(AuraEffect const* aurEff)
+    {
+        if (Player * target = GetTarget()->ToPlayer())
+            if (target->HasAura(SPELL_AVALANCHE_ELIXIR) && target->IsFalling())
+            {
+                target->RemoveAurasDueToSpell(SPELL_AVALANCHE_ELIXIR);
+                target->CastSpell(target, SPELL_AVALANCHE_ELIXIR_BUFF, true);
+            }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_item_avalanche_elixir::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+
+//54814 Talisman of Flame Ascendancy
+class talisman_of_flame_ascendancy : public ItemScript
+{
+public:
+    talisman_of_flame_ascendancy() : ItemScript("talisman_of_flame_ascendancy") { }
+
+    bool OnUse(Player* plr, Item* /*item*/, SpellCastTargets const& targets, ObjectGuid /*castId*/) override
+    {
+        if (plr->GetQuestStatus(25310) == QUEST_STATUS_INCOMPLETE && plr->GetAreaId() == 4998)
+        {
+            if (plr->FindNearestCreature(139643, 25.0f, true))
+                plr->CastSpell(nullptr, 75554);
+        }
+        return true;
+    }
+};
+
 void AddSC_item_spell_scripts()
 {
     // 23074 Arcanite Dragonling
@@ -5052,4 +5166,9 @@ void AddSC_item_spell_scripts()
     new spell_item_crazy_alchemists_potion();
 
     RegisterAuraScript(spell_item_heart_of_azeroth);
+
+    RegisterAuraScript(spell_item_demon_hunters_aspect);
+    RegisterAuraScript(spell_item_faded_wizard_hat);
+    RegisterAuraScript(aura_item_avalanche_elixir);
+    new talisman_of_flame_ascendancy();
 }

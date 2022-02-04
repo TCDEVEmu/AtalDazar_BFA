@@ -134,6 +134,14 @@ enum PaladinSpells
     SPELL_PALADIN_WORD_OF_GLORY                 = 210191,
     SPELL_PALADIN_WORD_OF_GLORY_HEAL            = 214894,
     SPELL_PALADIN_BLESSED_HAMMER                = 204019,
+    //8.0
+    SPELL_PALADIN_JUDGMENT_OF_LIGHT             = 183778,
+    SPELL_PALADIN_JUDGMENT_OF_LIGHT_TARGET_DEBUFF = 196941, 
+    SPELL_PALADIN_AWAKENING                       = 248033,
+    SPELL_PALADIN_HAND_OF_HINDRANCE = 183218,
+    SPELL_PALADIN_LAW_AND_ORDER = 204934,
+    SPELL_PALADIN_DARKEST_BEFORE_THE_DAWN = 210378,
+    SPELL_PALADIN_DARKEST_BEFORE_THE_DAWN_BUFF = 210391
 };
 
 enum PaladinNPCs
@@ -2180,6 +2188,121 @@ class spell_pal_awakening : public AuraScript
     }
 };
 
+//183778
+class judgment_of_light : public PlayerScript
+{
+public:
+    judgment_of_light() : PlayerScript("judgment_of_light") { }
+
+    void OnDamage(Unit* caster, Unit* target, uint32& damage, SpellInfo const* spellProto)
+    {
+        if (Player * player = caster->ToPlayer())
+        {
+            if (player->getClass() != CLASS_PALADIN)
+                return;
+        }
+
+        if (!caster || !target)
+            return;
+
+        if (caster->HasAura(SPELL_PALADIN_JUDGMENT_OF_LIGHT) && target->HasAura(SPELL_PALADIN_JUDGMENT_OF_LIGHT_TARGET_DEBUFF))
+        {
+            if (caster->IsWithinMeleeRange(target))
+            {
+                caster->CastSpell(nullptr, SPELL_PALADIN_JUDGMENT_OF_LIGHT_HEAL, true);
+                target->RemoveAura(SPELL_PALADIN_JUDGMENT_OF_LIGHT_TARGET_DEBUFF, ObjectGuid::Empty, AuraRemoveMode::AURA_REMOVE_BY_ENEMY_SPELL);
+            }
+        }
+    }
+};
+
+//212056
+class absolution : public PlayerScript
+{
+public:
+    absolution() : PlayerScript("absolution") { }
+
+    void OnPlayerSuccessfulSpellCast(Player* player, Spell* spell)
+    {
+        if (player->getClass() != CLASS_PALADIN)
+            return;
+
+        uint32 absolution = 212056;
+
+        if (spell->GetSpellInfo()->Id == absolution)
+        {
+            std::list<Unit*> allies;
+            player->GetFriendlyUnitListInRange(allies, 30.0f, false);
+            for (auto& targets : allies)
+            {
+                if (targets->isDead())
+                {
+                    if (Player * playerTarget = targets->ToPlayer())
+                        playerTarget->ResurrectPlayer(0.35f, false);
+                }
+            }
+        }
+    }
+};
+
+//183218
+class spell_pal_hand_of_hindrance : public AuraScript
+{
+    PrepareAuraScript(spell_pal_hand_of_hindrance);
+
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes mode)
+    {
+        if (GetTargetApplication()->GetRemoveMode() == AURA_REMOVE_BY_ENEMY_SPELL)
+            if (Unit * caster = GetCaster())
+                if (caster->HasAura(SPELL_PALADIN_LAW_AND_ORDER))
+                    caster->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAND_OF_HINDRANCE, -15000);
+    }
+
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(spell_pal_hand_of_hindrance::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+//234299
+class fist_of_justice : public PlayerScript
+{
+public:
+    fist_of_justice() : PlayerScript("fist_of_justice") { }
+
+    void OnModifyPower(Player* player, Powers power, int32 oldValue, int32& newValue, bool /*regen*/, bool /*after*/)
+    {
+        if (player->getClass() != CLASS_PALADIN)
+            return;
+
+        if (!player->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE))
+            return;
+
+        if (player->GetPowerType() == POWER_HOLY_POWER)
+            if (newValue < oldValue)
+                if (player->HasAura(SPELL_PALADIN_FIST_OF_JUSTICE))
+                    player->GetSpellHistory()->ModifyCooldown(SPELL_PALADIN_HAMMER_OF_JUSTICE, -2000);
+    }
+};
+
+//210378
+class aura_darkest_before_the_dawn : public AuraScript
+{
+    PrepareAuraScript(aura_darkest_before_the_dawn);
+
+    void OnTick(AuraEffect const* /*aurEff*/)
+    {
+        if (GetCaster())
+            if (Aura * dawnTrigger = GetCaster()->GetAura(SPELL_PALADIN_DARKEST_BEFORE_THE_DAWN))
+                GetCaster()->AddAura(SPELL_PALADIN_DARKEST_BEFORE_THE_DAWN_BUFF);
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(aura_darkest_before_the_dawn::OnTick, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+
 void AddSC_paladin_spell_scripts()
 {
     new spell_pal_bastion_of_light();
@@ -2242,4 +2365,10 @@ void AddSC_paladin_spell_scripts()
 
     // Area Trigger scripts
     RegisterAreaTriggerAI(at_pal_aura_of_sacrifice);
+
+    RegisterPlayerScript(judgment_of_light);
+    RegisterPlayerScript(absolution);
+    RegisterPlayerScript(fist_of_justice);
+    RegisterAuraScript(spell_pal_hand_of_hindrance);
+    RegisterAuraScript(aura_darkest_before_the_dawn);
 }

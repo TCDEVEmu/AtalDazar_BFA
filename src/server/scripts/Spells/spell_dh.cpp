@@ -4152,9 +4152,9 @@ struct at_shattered_soul_fragment : AreaTriggerAI
 };
 
 //232893
-class spell_dh_felblade_sargero : public SpellScript
+class spell_dh_felblade2 : public SpellScript
 {
-    PrepareSpellScript(spell_dh_felblade_sargero);
+    PrepareSpellScript(spell_dh_felblade2);
 
     void HandleOnHit(SpellEffIndex /*effIndex*/)
     {
@@ -4168,9 +4168,9 @@ class spell_dh_felblade_sargero : public SpellScript
         }
     }
 
-    void Register()
+    void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_dh_felblade_sargero::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnEffectHitTarget += SpellEffectFn(spell_dh_felblade2::HandleOnHit, EFFECT_0, SPELL_EFFECT_DUMMY);
     }
 };
 
@@ -4255,7 +4255,7 @@ void AddSC_demon_hunter_spell_scripts()
     new spell_demon_hunter_unending_hatred();
     RegisterSpellScript(spell_dh_demon_spikes);
     RegisterSpellScript(spell_dh_annihilation);
-    RegisterSpellScript(spell_dh_felblade_sargero); //Sargero DeV Need Repair
+    RegisterSpellScript(spell_dh_felblade2);
 
     RegisterAreaTriggerAI(at_dh_soul_fragment_havoc);
     RegisterAreaTriggerAI(at_dh_lesser_soul_shard);

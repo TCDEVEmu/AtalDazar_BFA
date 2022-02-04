@@ -38,121 +38,122 @@
 
 enum RogueSpells
 {
-    SPELL_ROGUE_ADRENALINE_RUSH                     = 13750,
-    SPELL_ROGUE_ALACRITY                            = 193539,
-    SPELL_ROGUE_ALACRITY_BUFF                       = 193538,
-    SPELL_ROGUE_BLADE_FLURRY                        = 13877,
-    SPELL_ROGUE_BLADE_FLURRY_EXTRA_ATTACK           = 22482,
-    SPELL_ROGUE_CANNONBALL_BARRAGE_DAMAGE           = 185779,
-    SPELL_ROGUE_CANNONBALL_BARRAGE_SLOW             = 185778,
-    SPELL_ROGUE_CHEAT_DEATH_COOLDOWN                = 45181,
-    SPELL_ROGUE_CHEAT_DEATH_REDUCE_DAMAGE           = 45182,
-    SPELL_ROGUE_CRIMSON_TEMPEST_DOT                 = 122233,
-    SPELL_ROGUE_CRIPPLING_POISON                    = 3409,
-    SPELL_ROGUE_CRIPPLING_POISON_DEBUFF             = 3409,
-    SPELL_ROGUE_CUT_TO_THE_CHASE_AURA               = 51667,
-    SPELL_ROGUE_DEADLY_BREW                         = 51626,
-    SPELL_ROGUE_DEADLY_POISON                       = 2823,
-    SPELL_ROGUE_DEADLY_POISON_DOT                   = 2818,
-    SPELL_ROGUE_DEADLY_POISON_INSTANT_DAMAGE        = 113780,
-    SPELL_ROGUE_DEATH_FROM_ABOVE_DAMAGE_BONUS       = 163786,
-    SPELL_ROGUE_DEATH_FROM_ABOVE_JUMP               = 178153,
-    SPELL_ROGUE_DEBILITATING_POISON                 = 115196,
-    SPELL_ROGUE_DEEPENING_SHADOWS                   = 185314,
-    SPELL_ROGUE_DEEPER_STRATAGEM                    = 193531,
-    SPELL_ROGUE_ENERGETIC_RECOVERY_AURA             = 79152,
-    SPELL_ROGUE_ENVELOPING_SHADOWS                  = 206237,
-    SPELL_ROGUE_ENVENOM                             = 32645,
-    SPELL_ROGUE_EVISCERATE                          = 196819,
-    SPELL_ROGUE_FAN_OF_KNIVES                       = 51723,
-    SPELL_ROGUE_GARROTE_DOT                         = 703,
-    SPELL_ROGUE_GARROTE_SILENCE                     = 1330,
-    SPELL_ROGUE_GLYPH_OF_EXPOSE_ARMOR               = 56803,
-    SPELL_ROGUE_GLYPH_OF_HEMORRHAGE                 = 56807,
-    SPELL_ROGUE_GLYPH_OF_PREPARATION                = 56819,
-    SPELL_ROGUE_GLYPH_OF_REGENERATE                 = 146625,
-    SPELL_ROGUE_GRAPPLING_HOOK_TRIGGER              = 227180,
-    SPELL_ROGUE_HEMORRHAGE_DOT                      = 89775,
-    SPELL_ROGUE_HONOR_AMONG_THIEVES                 = 51698,
-    SPELL_ROGUE_HONOR_AMONG_THIEVES_PROC            = 51699,
-    SPELL_ROGUE_KIDNEY_SHOT                         = 408,
-    SPELL_ROGUE_KILLING_SPREE                       = 51690,
-    SPELL_ROGUE_KILLING_SPREE_DMG_BUFF              = 61851,
-    SPELL_ROGUE_KILLING_SPREE_TELEPORT              = 57840,
-    SPELL_ROGUE_KILLING_SPREE_WEAPON_DMG            = 57841,
-    SPELL_ROGUE_LEECHING_POISON                     = 108211,
-    SPELL_ROGUE_LEECHING_POISON_DEBUFF              = 112961,
-    SPELL_ROGUE_LEECH_VITALITY                      = 116921,
-    SPELL_ROGUE_MASTERY_MAIN_GAUCHE_DAMAGE          = 86392,
-    SPELL_ROGUE_MASTER_OF_SHADOWS                   = 196976,
-    SPELL_ROGUE_MASTER_OF_SUBTLETY_DAMAGE_PERCENT   = 31665,
-    SPELL_ROGUE_MASTER_OF_SUBTLETY_PASSIVE          = 31223,
-    SPELL_ROGUE_MASTER_POISONER_AURA                = 58410,
-    SPELL_ROGUE_MASTER_POISONER_DEBUFF              = 93068,
-    SPELL_ROGUE_MIND_NUMBLING_POISON                = 5761,
-    SPELL_ROGUE_MIND_PARALYSIS                      = 115194,
-    SPELL_ROGUE_NERVE_STRIKE_AURA                   = 108210,
-    SPELL_ROGUE_NERVE_STRIKE_REDUCE_DAMAGE_DONE     = 112947,
-    SPELL_ROGUE_NIGHTBLADE                          = 195452,
-    SPELL_ROGUE_NIGHTBLADE_SLOW                     = 206760,
-    SPELL_ROGUE_NIGHTSTALKER_AURA                   = 14062,
-    SPELL_ROGUE_NIGHTSTALKER_DAMAGE_DONE            = 130493,
-    SPELL_ROGUE_OPPORTUNITY                         = 195627,
-    SPELL_ROGUE_PARALYTIC_POISON                    = 108215,
-    SPELL_ROGUE_PARALYTIC_POISON_DEBUFF             = 113952,
-    SPELL_ROGUE_PARTIAL_PARALYSIS                   = 115197,
-    SPELL_ROGUE_PISTOL_SHOT                         = 185763,
-    SPELL_ROGUE_PREY_ON_THE_WEAK                    = 58670,
-    SPELL_ROGUE_RECUPERATE                          = 73651,
-    SPELL_ROGUE_REDIRECT                            = 73981,
-    SPELL_ROGUE_RELENTLESS_STRIKES                  = 58423,
-    SPELL_ROGUE_RELENTLESS_STRIKES_POWER            = 98440,
-    SPELL_ROGUE_RESTLESS_BLADES                     = 79096,
-    SPELL_ROGUE_RIPOSTE_DAMAGE                      = 199753,
-    SPELL_ROGUE_ROLL_THE_BONES                      = 193316,
-    SPELL_ROGUE_ROLL_THE_BONES_VISUAL               = 208244,
-    SPELL_ROGUE_RUN_THROUGH                         = 2098,
-    SPELL_ROGUE_RUPTURE                             = 1943,
-    SPELL_ROGUE_RUPTURE_DOT                         = 1943,
-    SPELL_ROGUE_SABER_SLASH                         = 193315,
-    SPELL_ROGUE_SANCTUARY                           = 98877,
-    SPELL_ROGUE_SANGUINARY_VEIN_DEBUFF              = 124271,
-    SPELL_ROGUE_SERRATED_BLADES_R1                  = 14171,
-    SPELL_ROGUE_SHADOWSTEP_LEAP                     = 36563,
-    SPELL_ROGUE_SHADOWSTRIKE                        = 185438,
-    SPELL_ROGUE_SHADOW_BLADES                       = 121471,
-    SPELL_ROGUE_SHADOW_DANCE                        = 185313,
-    SPELL_ROGUE_SHADOW_DANCE_AURA                   = 185422,
-    SPELL_ROGUE_SHADOW_FOCUS                        = 108209,
-    SPELL_ROGUE_SHADOW_FOCUS_AURA                   = 108209,
-    SPELL_ROGUE_SHADOW_FOCUS_COST_PCT               = 112942,
-    SPELL_ROGUE_SHADOW_FOCUS_EFFECT                 = 112942,
-    SPELL_ROGUE_SHADOW_TENCHNIQUES_POWER            = 196911,
-    SPELL_ROGUE_SHIV_TRIGGERED                      = 5940,
-    SPELL_ROGUE_SHROUD_OF_CONCEALMENT_AURA          = 115834,
-    SPELL_ROGUE_SHURIKEN_STORM                      = 197835,
-    SPELL_ROGUE_SILCE_AND_DICE                      = 5171,
-    SPELL_ROGUE_SLICE_AND_DICE                      = 5171,
-    SPELL_ROGUE_SMOKE_BOMB_AURA                     = 212183,
-    SPELL_ROGUE_SMOKE_BOMB_VISUAL                   = 183859,
-    SPELL_ROGUE_SPRINT                              = 2983,
-    SPELL_ROGUE_STEALTH                             = 1784,
-    SPELL_ROGUE_STEALTH_SHAPESHIFT_AURA             = 158188,
-    SPELL_ROGUE_STEALTH_STEALTH_AURA                = 158185,
-    SPELL_ROGUE_STRIKE_FROM_THE_SHADOWS             = 196951,
-    SPELL_ROGUE_SUBTERFUGE                          = 108208,
-    SPELL_ROGUE_SUBTERFUGE_AURA                     = 115192,
-    SPELL_ROGUE_THUGGEE                             = 196861,
-    SPELL_ROGUE_TOTAL_PARALYSIS                     = 113953,
-    SPELL_ROGUE_TRICKS_OF_THE_TRADE_DMG_BOOST       = 57933,
-    SPELL_ROGUE_TRICKS_OF_THE_TRADE_PROC            = 59628,
-    SPELL_ROGUE_VANISH_AURA                         = 11327,
-    SPELL_ROGUE_VENOMOUS_VIM_ENERGIZE               = 51637,
-    SPELL_ROGUE_VENOMOUS_WOUNDS                     = 79134,
-    SPELL_ROGUE_VENOMOUS_WOUND_DAMAGE               = 79136,
-    SPELL_ROGUE_VENOM_RUSH                          = 152152,
-    SPELL_ROGUE_WEAKENED_ARMOR                      = 113746,
-    SPELL_ROGUE_WOUND_POISON                        = 8679,
+    SPELL_ROGUE_ADRENALINE_RUSH = 13750,
+    SPELL_ROGUE_ALACRITY = 193539,
+    SPELL_ROGUE_ALACRITY_BUFF = 193538,
+    SPELL_ROGUE_BLADE_FLURRY = 13877,
+    SPELL_ROGUE_BLADE_FLURRY_EXTRA_ATTACK = 22482,
+    SPELL_ROGUE_CHEAT_DEATH_COOLDOWN = 45181,
+    SPELL_ROGUE_CHEAT_DEATH_REDUCE_DAMAGE = 45182,
+    SPELL_ROGUE_CRIMSON_TEMPEST_DOT = 122233,
+    SPELL_ROGUE_CRIPPLING_POISON = 3409,
+    SPELL_ROGUE_CRIPPLING_POISON_DEBUFF = 3409,
+    SPELL_ROGUE_CUT_TO_THE_CHASE_AURA = 51667,
+    SPELL_ROGUE_DEADLY_BREW = 51626,
+    SPELL_ROGUE_DEADLY_POISON = 2823,
+    SPELL_ROGUE_DEADLY_POISON_DOT = 2818,
+    SPELL_ROGUE_DEADLY_POISON_INSTANT_DAMAGE = 113780,
+    SPELL_ROGUE_DEATH_FROM_ABOVE_DAMAGE_BONUS = 163786,
+    SPELL_ROGUE_DEATH_FROM_ABOVE_JUMP = 178153,
+    SPELL_ROGUE_DEBILITATING_POISON = 115196,
+    SPELL_ROGUE_DEEPENING_SHADOWS = 185314,
+    SPELL_ROGUE_DEEPER_STRATAGEM = 193531,
+    SPELL_ROGUE_ENERGETIC_RECOVERY_AURA = 79152,
+    SPELL_ROGUE_ENVELOPING_SHADOWS = 206237,
+    SPELL_ROGUE_ENVENOM = 32645,
+    SPELL_ROGUE_EVISCERATE = 196819,
+    SPELL_ROGUE_FAN_OF_KNIVES = 51723,
+    SPELL_ROGUE_GARROTE_DOT = 703,
+    SPELL_ROGUE_GARROTE_SILENCE = 1330,
+    SPELL_ROGUE_GLYPH_OF_EXPOSE_ARMOR = 56803,
+    SPELL_ROGUE_GLYPH_OF_HEMORRHAGE = 56807,
+    SPELL_ROGUE_GLYPH_OF_PREPARATION = 56819,
+    SPELL_ROGUE_GLYPH_OF_REGENERATE = 146625,
+    SPELL_ROGUE_GRAPPLING_HOOK_TRIGGER = 227180,
+    SPELL_ROGUE_HEMORRHAGE_DOT = 89775,
+    SPELL_ROGUE_HONOR_AMONG_THIEVES = 51698,
+    SPELL_ROGUE_HONOR_AMONG_THIEVES_PROC = 51699,
+    SPELL_ROGUE_KIDNEY_SHOT = 408,
+    SPELL_ROGUE_KILLING_SPREE = 51690,
+    SPELL_ROGUE_KILLING_SPREE_DMG_BUFF = 61851,
+    SPELL_ROGUE_KILLING_SPREE_TELEPORT = 57840,
+    SPELL_ROGUE_KILLING_SPREE_WEAPON_DMG = 57841,
+    SPELL_ROGUE_LEECHING_POISON = 108211,
+    SPELL_ROGUE_LEECHING_POISON_DEBUFF = 112961,
+    SPELL_ROGUE_LEECH_VITALITY = 116921,
+    SPELL_ROGUE_MASTERY_MAIN_GAUCHE_DAMAGE = 86392,
+    SPELL_ROGUE_MASTER_OF_SHADOWS = 196976,
+    SPELL_ROGUE_MASTER_OF_SUBTLETY_DAMAGE_PERCENT = 31665,
+    SPELL_ROGUE_MASTER_OF_SUBTLETY_PASSIVE = 31223,
+    SPELL_ROGUE_MASTER_POISONER_AURA = 58410,
+    SPELL_ROGUE_MASTER_POISONER_DEBUFF = 93068,
+    SPELL_ROGUE_MIND_NUMBLING_POISON = 5761,
+    SPELL_ROGUE_MIND_PARALYSIS = 115194,
+    SPELL_ROGUE_NERVE_STRIKE_AURA = 108210,
+    SPELL_ROGUE_NERVE_STRIKE_REDUCE_DAMAGE_DONE = 112947,
+    SPELL_ROGUE_NIGHTBLADE = 195452,
+    SPELL_ROGUE_NIGHTBLADE_SLOW = 206760,
+    SPELL_ROGUE_NIGHTSTALKER_AURA = 14062,
+    SPELL_ROGUE_NIGHTSTALKER_DAMAGE_DONE = 130493,
+    SPELL_ROGUE_OPPORTUNITY = 195627,
+    SPELL_ROGUE_PARALYTIC_POISON = 108215,
+    SPELL_ROGUE_PARALYTIC_POISON_DEBUFF = 113952,
+    SPELL_ROGUE_PARTIAL_PARALYSIS = 115197,
+    SPELL_ROGUE_PISTOL_SHOT = 185763,
+    SPELL_ROGUE_PREY_ON_THE_WEAK = 58670,
+    SPELL_ROGUE_RECUPERATE = 73651,
+    SPELL_ROGUE_REDIRECT = 73981,
+    SPELL_ROGUE_RELENTLESS_STRIKES = 58423,
+    SPELL_ROGUE_RELENTLESS_STRIKES_POWER = 98440,
+    SPELL_ROGUE_RESTLESS_BLADES = 79096,
+    SPELL_ROGUE_RIPOSTE_DAMAGE = 199753,
+    SPELL_ROGUE_ROLL_THE_BONES = 193316,
+    SPELL_ROGUE_ROLL_THE_BONES_VISUAL = 208244,
+    SPELL_ROGUE_RUN_THROUGH = 2098,
+    SPELL_ROGUE_RUPTURE = 1943,
+    SPELL_ROGUE_RUPTURE_DOT = 1943,
+    SPELL_ROGUE_SINISTER_STRIKE = 193315,
+    SPELL_ROGUE_SANCTUARY = 98877,
+    SPELL_ROGUE_SANGUINARY_VEIN_DEBUFF = 124271,
+    SPELL_ROGUE_SERRATED_BLADES_R1 = 14171,
+    SPELL_ROGUE_SHADOWSTEP_LEAP = 36563,
+    SPELL_ROGUE_SHADOWSTRIKE = 185438,
+    SPELL_ROGUE_SHADOW_BLADES = 121471,
+    SPELL_ROGUE_SHADOW_DANCE = 185313,
+    SPELL_ROGUE_SHADOW_DANCE_AURA = 185422,
+    SPELL_ROGUE_SHADOW_FOCUS = 108209,
+    SPELL_ROGUE_SHADOW_FOCUS_AURA = 108209,
+    SPELL_ROGUE_SHADOW_FOCUS_COST_PCT = 112942,
+    SPELL_ROGUE_SHADOW_FOCUS_EFFECT = 112942,
+    SPELL_ROGUE_SHADOW_TENCHNIQUES_POWER = 196911,
+    SPELL_ROGUE_SHIV_TRIGGERED = 5940,
+    SPELL_ROGUE_SHROUD_OF_CONCEALMENT_AURA = 115834,
+    SPELL_ROGUE_SHURIKEN_STORM = 197835,
+    SPELL_ROGUE_SILCE_AND_DICE = 5171,
+    SPELL_ROGUE_SLICE_AND_DICE = 5171,
+    SPELL_ROGUE_SMOKE_BOMB_AURA = 212183,
+    SPELL_ROGUE_SMOKE_BOMB_VISUAL = 183859,
+    SPELL_ROGUE_SPRINT = 2983,
+    SPELL_ROGUE_STEALTH = 1784,
+    SPELL_ROGUE_STEALTH_SHAPESHIFT_AURA = 158188,
+    SPELL_ROGUE_STEALTH_STEALTH_AURA = 158185,
+    SPELL_ROGUE_STRIKE_FROM_THE_SHADOWS = 196951,
+    SPELL_ROGUE_SUBTERFUGE = 108208,
+    SPELL_ROGUE_SUBTERFUGE_AURA = 115192,
+    SPELL_ROGUE_THUGGEE = 196861,
+    SPELL_ROGUE_TOTAL_PARALYSIS = 113953,
+    SPELL_ROGUE_TRICKS_OF_THE_TRADE_DMG_BOOST = 57933,
+    SPELL_ROGUE_TRICKS_OF_THE_TRADE_PROC = 59628,
+    SPELL_ROGUE_VANISH_AURA = 11327,
+    SPELL_ROGUE_VENOMOUS_VIM_ENERGIZE = 51637,
+    SPELL_ROGUE_VENOMOUS_WOUNDS = 79134,
+    SPELL_ROGUE_VENOMOUS_WOUND_DAMAGE = 79136,
+    SPELL_ROGUE_VENOM_RUSH = 152152,
+    SPELL_ROGUE_WEAKENED_ARMOR = 113746,
+    SPELL_ROGUE_WOUND_POISON = 8679,
+    //8.0
+    SPELL_ROGUE_HIDDEN_BLADES = 270061,
+    SPELL_ROGUE_HIDDEN_BLADES_BUFF = 270070,
 };
 
 enum RollTheBones
@@ -189,86 +190,6 @@ enum TrueBearingIDs
     SPELL_ROGUE_CANNONBALL_BARRAGE                  = 185767,
     SPELL_ROGUE_MARKED_FOR_DEATH                    = 137619,
     SPELL_ROGUE_DEATH_FROM_ABOVE                    = 152150
-};
-
-// Cannonball Barrage - 185767
-class spell_rog_cannonball_barrage : public SpellScriptLoader
-{
-public:
-    spell_rog_cannonball_barrage() : SpellScriptLoader("spell_rog_cannonball_barrage") {}
-
-    class spell_rog_cannonball_barrage_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_rog_cannonball_barrage_AuraScript);
-
-        bool Validate(SpellInfo const*) override
-        {
-            return ValidateSpellInfo(
-            {
-                SPELL_ROGUE_CANNONBALL_BARRAGE,
-                SPELL_ROGUE_CANNONBALL_BARRAGE_DAMAGE,
-                SPELL_ROGUE_CANNONBALL_BARRAGE_SLOW
-            });
-        }
-
-        void HandlePeriodic(AuraEffect const* aurEff)
-        {
-            Unit* caster = aurEff->GetCaster();
-            if (!caster)
-                return;
-
-            DynamicObject* barrage = caster->GetDynObject(SPELL_ROGUE_CANNONBALL_BARRAGE);
-            if (!barrage)
-                return;
-
-            caster->CastSpell(barrage->GetPositionX(), barrage->GetPositionY(), barrage->GetPositionZ(), SPELL_ROGUE_CANNONBALL_BARRAGE_DAMAGE, true);
-        }
-
-        void Register() override
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(spell_rog_cannonball_barrage_AuraScript::HandlePeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
-        }
-    };
-
-    class spell_rog_cannonball_barrage_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_rog_cannonball_barrage_SpellScript);
-
-        bool Validate(SpellInfo const* /*spellInfo*/) override
-        {
-            return ValidateSpellInfo(
-            {
-                SPELL_ROGUE_CANNONBALL_BARRAGE,
-                SPELL_ROGUE_CANNONBALL_BARRAGE_DAMAGE,
-                SPELL_ROGUE_CANNONBALL_BARRAGE_SLOW
-            });
-        }
-
-        void HandleHit(SpellEffIndex /*effIndex*/)
-        {
-            Unit* caster = GetCaster();
-            Unit* target = GetHitUnit();
-            if (!target || !caster)
-                return;
-
-            caster->CastSpell(target, SPELL_ROGUE_CANNONBALL_BARRAGE_SLOW, true);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_rog_cannonball_barrage_SpellScript::HandleHit, EFFECT_2, SPELL_EFFECT_DUMMY);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_rog_cannonball_barrage_SpellScript();
-    }
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_rog_cannonball_barrage_AuraScript();
-    }
 };
 
 // Between the Eyes - 199804
@@ -2071,46 +1992,6 @@ public:
     }
 };
 
-// Saber slash - 193315
-class spell_rog_saber_slash : public SpellScript
-{
-    PrepareSpellScript(spell_rog_saber_slash);
-
-    void HandleHit(SpellEffIndex /*effIndex*/)
-    {
-        Unit* caster = GetCaster();
-        Unit* target = GetHitUnit();
-
-        if (!caster || !target)
-            return;
-
-        //Saber slash has 35% chance to strike again and make your next Pistol Shot free (buff called Opportunity)
-        SpellInfo const* rogueSaberSlashInfo = sSpellMgr->GetSpellInfo(SPELL_ROGUE_SABER_SLASH);
-        int32 chance = rogueSaberSlashInfo->GetEffect(4)->BasePoints;
-
-        //Jolly Roger increases the chance by 40%
-        if (caster->HasAura(SPELL_ROGUE_JOLLY_ROGER))
-            chance += sSpellMgr->GetSpellInfo(SPELL_ROGUE_JOLLY_ROGER)->GetEffect(0)->BasePoints;
-
-        if (roll_chance_i(chance))
-        {
-            caster->CastSpell(caster, SPELL_ROGUE_OPPORTUNITY, true);
-
-            SpellNonMeleeDamage dmg(caster, target, rogueSaberSlashInfo, GetSpellInfo()->GetSpellXSpellVisualId(), GetSpellInfo()->SchoolMask);
-            dmg.damage = GetHitDamage();
-            caster->DealSpellDamage(&dmg, false);
-            caster->SendSpellNonMeleeDamageLog(&dmg);
-
-            caster->ModifyPower(POWER_COMBO_POINTS, 1);
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_rog_saber_slash::HandleHit, EFFECT_2, SPELL_EFFECT_WEAPON_PERCENT_DAMAGE);
-    }
-};
-
 // True Bearing - 193359
 class spell_rog_true_bearing : public SpellScriptLoader
 {
@@ -2686,6 +2567,104 @@ public:
     }
 };
 
+// Mutilate 1329
+class spell_rog_mutilate : public SpellScript
+{
+    PrepareSpellScript(spell_rog_mutilate);
+
+    void HandleOnHit(SpellEffIndex /*effIndex*/)
+    {
+        Player* caster = GetCaster()->ToPlayer();
+        Unit* target = GetHitUnit();
+        if (!target || !caster)
+            return;
+
+        if (caster->HasAura(5374) || caster->HasAura(27576))
+            caster->ToPlayer()->ModifyPower(POWER_COMBO_POINTS, 1);
+        if (caster->HasAura(14190))
+            caster->ToPlayer()->ModifyPower(POWER_COMBO_POINTS, 1);
+
+        caster->ModifyPower(POWER_COMBO_POINTS, -3);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_rog_mutilate::HandleOnHit, EFFECT_2, SPELL_EFFECT_TRIGGER_SPELL);
+    }
+};
+
+//Saber slash - 193315
+class spell_rog_sinister_strike : public SpellScript
+{
+    PrepareSpellScript(spell_rog_sinister_strike);
+
+    void HandleOnHit()
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (Unit * target = GetHitUnit())
+            {
+                //Sinister strike has 35% chance to strike again and make your next Pistol Shot free (buff called Opportunity)
+                int32 chance = 35;
+
+                //Sinister Strike has an additional 30 % chance of striking an additional time.
+                if (caster->HasAura(SPELL_ROGUE_JOLLY_ROGER))
+                    chance = 65;
+
+                if (roll_chance_i(chance))
+                {
+                    caster->CastSpell(caster, SPELL_ROGUE_OPPORTUNITY, true);
+
+                    SpellNonMeleeDamage dmg(caster, target, GetSpellInfo(), GetSpellInfo()->GetSpellXSpellVisualId(), GetSpellInfo()->SchoolMask);
+
+                    dmg.damage = GetHitDamage();
+                    caster->DealSpellDamage(&dmg, false);
+                    caster->SendSpellNonMeleeDamageLog(&dmg);
+
+                    caster->ModifyPower(POWER_COMBO_POINTS, 1);
+                }
+            }
+            else
+                return;
+        }
+        else
+            return;
+    }
+
+    void Register() override
+    {
+        OnHit += SpellHitFn(spell_rog_sinister_strike::HandleOnHit);
+    }
+};
+
+//270061
+class spell_rog_hidden_blades : public AuraScript
+{
+    PrepareAuraScript(spell_rog_hidden_blades);
+
+private:
+    uint8 stacks;
+
+    void HandleEffectPeriodic(AuraEffect const* /*aurEff*/)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (this->stacks != 20)
+            {
+                caster->AddAura(SPELL_ROGUE_HIDDEN_BLADES_BUFF);
+                stacks++;
+            }
+            if (this->stacks >= 20)
+                return;
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_rog_hidden_blades::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
+};
+
 void AddSC_rogue_spell_scripts()
 {
     ///AreaTriggerScript
@@ -2696,7 +2675,6 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_backstab();
     RegisterSpellScript(spell_rog_between_the_eyes);
     new spell_rog_blade_flurry();
-    new spell_rog_cannonball_barrage();
     new spell_rog_cheat_death();
     new spell_rog_cloak_and_dagger();
     new spell_rog_deadly_poison();
@@ -2724,7 +2702,6 @@ void AddSC_rogue_spell_scripts()
     new spell_rog_roll_the_bones_visual();
     new spell_rog_ruthlessness();
     RegisterSpellScript(spell_rog_rupture);
-    RegisterSpellScript(spell_rog_saber_slash);
     new spell_rog_serrated_blades();
     new spell_rog_shadowstrike();
     new spell_rog_shadow_dance();
@@ -2740,4 +2717,9 @@ void AddSC_rogue_spell_scripts()
     new spell_rogue_blade_flurry();
     new spell_rogue_combat_potency();
     new spell_rog_weaponmaster();
+
+
+    RegisterSpellScript(spell_rog_mutilate);
+    RegisterSpellScript(spell_rog_sinister_strike);
+    RegisterAuraScript(spell_rog_hidden_blades);
 }

@@ -337,6 +337,15 @@ enum ProjectWarlockSpells
     WARLOCK_SOUL_LEECH_HEAL                         = 108366,
 };
 
+enum Grimoires
+{
+    SPELL_WARLOCK_GRIMOIRE_FELGUARD = 111898,
+    SPELL_WARLOCK_GRIMOIRE_FELHUNTER = 111897,
+    SPELL_WARLOCK_GRIMOIRE_IMP = 111859,
+    SPELL_WARLOCK_GRIMOIRE_VOIDWALKER = 111895,
+    SPELL_WARLOCK_GRIMOIRE_SUCCUBUS = 111896,
+};
+
 enum FreakzWarlockNPCs
 {
     NPC_WARLOCK_DEMONIC_GATEWAY_PURPLE              = 59271,
@@ -6249,6 +6258,102 @@ public:
     }
 };
 
+// 108415 - Soul Link 8.xx
+class spell_warl_soul_link : public SpellScript
+{
+    PrepareSpellScript(spell_warl_soul_link);
+
+    void HandleOnHit()
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (Unit * target = GetHitUnit())
+            {
+                if (!target->HasAura(SPELL_WARLOCK_SOUL_LINK_BUFF))
+                    caster->CastSpell(caster, SPELL_WARLOCK_SOUL_LINK_BUFF, true);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnHit += SpellHitFn(spell_warl_soul_link::HandleOnHit);
+    }
+};
+
+// 29858 - Soulshatter
+/// Updated 4.3.4
+class spell_warl_soulshatter : public SpellScriptLoader
+{
+public:
+    spell_warl_soulshatter() : SpellScriptLoader("spell_warl_soulshatter") { }
+
+    class spell_warl_soulshatter_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_warl_soulshatter_SpellScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_WARLOCK_SOULSHATTER))
+                return false;
+            return true;
+        }
+
+        void HandleDummy(SpellEffIndex /*effIndex*/)
+        {
+            Unit* caster = GetCaster();
+            if (Unit * target = GetHitUnit())
+                if (target->CanHaveThreatList() && target->GetThreatManager().getThreat(caster) > 0.0f)
+                    caster->CastSpell(target, SPELL_WARLOCK_SOULSHATTER, true);
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_warl_soulshatter_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_warl_soulshatter_SpellScript();
+    }
+};
+
+// Grimoire of Service - 108501
+class spell_warl_grimoire_of_service_aura : public AuraScript
+{
+    PrepareAuraScript(spell_warl_grimoire_of_service_aura);
+
+    void Handlearn(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player * player = GetCaster()->ToPlayer())
+        {
+            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_IMP, false);
+            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_VOIDWALKER, false);
+            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_SUCCUBUS, false);
+            player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_FELHUNTER, false);
+            if (player->GetSpecializationId() == TALENT_SPEC_WARLOCK_DEMONOLOGY)
+                player->LearnSpell(SPELL_WARLOCK_GRIMOIRE_FELGUARD, false);
+        }
+    }
+    void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player * player = GetCaster()->ToPlayer())
+        {
+            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_IMP, false, false);
+            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_VOIDWALKER, false, false);
+            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_SUCCUBUS, false, false);
+            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_FELHUNTER, false, false);
+            player->RemoveSpell(SPELL_WARLOCK_GRIMOIRE_FELGUARD, false, false);
+        }
+    }
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_warl_grimoire_of_service_aura::Handlearn, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectRemove += AuraEffectApplyFn(spell_warl_grimoire_of_service_aura::HandleRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
 void AddSC_warlock_spell_scripts()
 {
     // ADDED IN MOP
@@ -6390,4 +6495,9 @@ void AddSC_warlock_spell_scripts()
     new npc_warlock_soul_effigy();
     RegisterCreatureAI(npc_warlock_darkglare);
     new npc_warlock_fel_lord();
+
+
+    RegisterSpellScript(spell_warl_soul_link);
+    new spell_warl_soulshatter();
+    RegisterAuraScript(spell_warl_grimoire_of_service_aura);
 }
