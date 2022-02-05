@@ -31,7 +31,6 @@
 enum DruidSpells
 {
     SPELL_DRUID_THRASH_BEAR_PERIODIC_DAMAGE = 192090,
-    SPELL_DRUID_MAUL = 6807,
     SPELL_DRUID_BLESSING_OF_THE_ANCIENTS = 202360,
     SPELL_DRUID_BLESSING_OF_ELUNE = 202737,
     SPELL_DRUID_BLESSING_OF_ANSHE = 202739,
@@ -1214,13 +1213,6 @@ public:
     }
 };
 
-enum OmenOfClaritySpells
-{
-    SPELL_DRUID_CLEARCASTING       = 16870,
-    SPELL_DRUID_MOMENT_OF_CLARITY  = 155577,
-    SPELL_DRUID_OMEN_OF_CLARITY    = 113043
-};
-
 // Omen of Clarity - 113043
 // @Called : Lifebloom - 33763, Moment of Clarity - 155577
 // @Version : 7.1.0.22908
@@ -1243,11 +1235,11 @@ public:
             {
                 if (roll_chance_i(4))
                 {
-                    caster->CastSpell(caster, SPELL_DRUID_CLEARCASTING, true);
+                    caster->CastSpell(caster, SPELL_DRU_CLEARCASTING, true);
 
-                    if (caster->HasAura(SPELL_DRUID_MOMENT_OF_CLARITY))
+                    if (caster->HasAura(SPELL_DRU_MOMENT_OF_CLARITY))
                     {
-                        if (Aura* clearcasting = caster->GetAura(SPELL_DRUID_CLEARCASTING))
+                        if (Aura* clearcasting = caster->GetAura(SPELL_DRU_CLEARCASTING))
                             clearcasting->ModStackAmount(3);
                     }
                 }
@@ -2200,11 +2192,6 @@ struct at_dru_starfall : AreaTriggerAI
                         caster->CastSpell(unit, SPELL_DRUID_STELLAR_EMPOWERMENT, true);
                     }
     }
-};
-
-enum SolarBeamSpells
-{
-    SPELL_DRUID_SOLAR_BEAM_SILENCE = 81261
 };
 
 // Solar Beam - 78675
