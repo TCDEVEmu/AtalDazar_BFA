@@ -106,7 +106,8 @@ enum ConditionTypes
     CONDITION_DIFFICULTY_ID            = 49,                   // Difficulty       0              0                  true is map has difficulty id
     CONDITION_OBJECT_ENTRY_GUID        = 51,                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object
     CONDITION_ON_TRANSPORT             = 52,                   //                                                    true if on vehicle
-	CONDITION_TYPE_MASK                = 53,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
+	CONDITION_IN_RAID_OR_GROUP         = 53,                   // 0 - not in raid  isRaid         isGroup
+	CONDITION_TYPE_MASK                = 54,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
     CONDITION_MAX
 };
 
