@@ -340,6 +340,12 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
             }
             break;
         }
+		case CONDITION_ON_TRANSPORT:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->IsOnVehicle();
+            break;
+        }
         case CONDITION_TYPE_MASK:
         {
             condMeets = object->isType(ConditionValue1);

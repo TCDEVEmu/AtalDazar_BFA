@@ -105,7 +105,8 @@ enum ConditionTypes
     CONDITION_QUEST_OBJECTIVE_COMPLETE = 48,                   // ID               0              0                  true if player has ID objective complete, but quest not yet rewarded
     CONDITION_DIFFICULTY_ID            = 49,                   // Difficulty       0              0                  true is map has difficulty id
     CONDITION_OBJECT_ENTRY_GUID        = 51,                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object
-    CONDITION_TYPE_MASK                = 52,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
+    CONDITION_ON_TRANSPORT             = 52,                   //                                                    true if on vehicle
+	CONDITION_TYPE_MASK                = 53,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
     CONDITION_MAX
 };
 
