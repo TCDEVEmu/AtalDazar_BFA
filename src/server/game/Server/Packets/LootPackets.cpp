@@ -236,30 +236,48 @@ WorldPacket const* WorldPackets::Loot::AELootTargets::Write()
 
 WorldPacket const* WorldPackets::Loot::DisplayToast::Write()
 {
-    _worldPacket << uint64(Quantity);
-    _worldPacket << uint8(AsUnderlyingType(DisplayToastMethod));
-    _worldPacket << uint32(QuestID);
+    _worldPacket << Quantity;
+    _worldPacket << ToastMethod;
+    _worldPacket << QuestID;
 
-    _worldPacket.WriteBit(Mailed);
-    _worldPacket.WriteBits(AsUnderlyingType(Type), 2);
-    _worldPacket.WriteBit(IsSecondaryResult);
+    _worldPacket.WriteBit(IsBonusRoll);
 
-    switch (Type)
+    _worldPacket.WriteBits(ToastType, 2);
+
+    if (ToastType == TOAST_ITEM)
     {
-        case DisplayToastType::NewItem:
-            _worldPacket.WriteBit(BonusRoll);
-            _worldPacket << Item;
-            _worldPacket << int32(LootSpec);
-            _worldPacket << int32(Gender);
-            break;
-        case DisplayToastType::NewCurrency:
-            _worldPacket << uint32(CurrencyID);
-            break;
-        default:
-            break;
-    }
+        _worldPacket.WriteBit(Mailed);
+        _worldPacket.FlushBits();
 
-    _worldPacket.FlushBits();
+        // item instance
+        bool hasItemBonus = !bonusListIDs.empty();
+        _worldPacket << EntityId;
+        _worldPacket << uint32(0); // RandomPropertiesSeed
+        _worldPacket << uint32(RandomPropertiesID);
+        _worldPacket.WriteBit(hasItemBonus);
+        _worldPacket.WriteBit(false); // HasModifications
+        if (hasItemBonus)
+        {
+            _worldPacket << uint8(1); // Indexes (works in case of 1 bonus, possibly should be bit mask of indexes?)
+
+            uint32 bonusCount = bonusListIDs.size();
+            _worldPacket << uint32(bonusCount);
+            for (uint32 j = 0; j < bonusCount; ++j)
+                _worldPacket << uint32(bonusListIDs[j]);
+        }
+
+        _worldPacket.FlushBits();
+
+        _worldPacket << uint32(0); // SpecializationID
+        _worldPacket << uint32(0);
+    }
+    else if (ToastType == TOAST_CURRENCY)
+    {
+        _worldPacket.FlushBits();
+        _worldPacket << EntityId;
+    }
+    else
+        _worldPacket.FlushBits();
 
     return &_worldPacket;
 }
