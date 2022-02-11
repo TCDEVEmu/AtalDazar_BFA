@@ -142,6 +142,7 @@ public:
     bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
     {
         
+		return true;
     }
 };
 
