@@ -108,6 +108,13 @@ enum ConditionTypes
     CONDITION_ON_TRANSPORT             = 52,                   //                                                    true if on vehicle
 	CONDITION_IN_RAID_OR_GROUP         = 53,                   // 0 - not in raid  isRaid         isGroup
 	CONDITION_TYPE_MASK                = 54,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
+	// CONDITION_SAI_PHASE                = 55,                  // phase            0              0                  true if object sai phase = value1                      Athenas Condition To Do
+    // CONDITION_PLAYER_SPEC              = 56,                  // spec             0              0                  true if player spec = value1                           Athenas Condition To Do
+    // CONDITION_CURRENCY_SEASON          = 57,                  // currency         count          0                  true if player spec = value1                           Athenas Condition To Do
+    // CONDITION_HAS_GROUP                = 58,                  // 0                0              0                  true if player is in group                             Athenas Condition To Do
+    // CONDITION_WEEKLY_QUEST_DONE        = 59,                  // quest            0              0                  true if weekly quest has been completed for the week   Athenas Condition To Do
+    // CONDITION_MONTHLY_QUEST_DONE       = 60,                  // quest            0              0                  true if monthly quest has been completed for the month Athenas Condition To Do
+    // CONDITION_REPUTATION_VALUE         = 61,                  // faction_id       rep_value      0                  true if reputation value more or equal than rep_value  Athenas Condition To Do
     CONDITION_MAX
 };
 

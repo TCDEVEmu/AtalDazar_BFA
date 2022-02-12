@@ -193,6 +193,7 @@ enum SMART_EVENT
     SMART_EVENT_SCENE_TRIGGER            = 79,      // param_string : triggerName
     SMART_EVENT_SCENE_CANCEL             = 80,      // none
     SMART_EVENT_SCENE_COMPLETE           = 81,      // none
+	// SMART_EVENT_ON_GO_REPORT_USE         = 82,      // id  Athenas Event TO DO
 
     SMART_EVENT_END                      = 82
 };
@@ -634,6 +635,9 @@ enum SMART_ACTION
     SMART_ACTION_COMPLETE_SCENARIO                  = 218,    // none
     SMART_ACTION_SCENARIO_SEND_EVENT                = 219,    // EventId,
     SMART_ACTION_ENTER_LFG_QUEUE                    = 220,
+	// SMART_ACTION_OVERRIDE_INHABIT_TYPE              = 222,    // Athenas Action ToDo
+    // SMART_ACTION_STOP_FOLLOW                        = 223,    // Athenas Action ToDo
+    // SMART_ACTION_CAST_RANDOM_SPELL                  = 224,    // Athenas Action ToDo
 
     SMART_ACTION_END 
 };
@@ -1629,6 +1633,7 @@ const uint32 SmartAIEventMask[SMART_EVENT_END][2] =
     {SMART_EVENT_SCENE_TRIGGER,             SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_CANCEL,              SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_COMPLETE,            SMART_SCRIPT_TYPE_MASK_SCENE }
+	// {SMART_EVENT_ON_GO_REPORT_USE,         SMART_SCRIPT_TYPE_MASK_GAMEOBJECT }
 };
 
 enum SmartEventFlags
