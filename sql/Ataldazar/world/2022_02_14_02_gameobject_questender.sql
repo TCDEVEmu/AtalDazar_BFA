@@ -1,0 +1,12 @@
+DELETE FROM `gameobject_questender` WHERE `id`=206335 AND `quest`=27793;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (206335, 27793);
+DELETE FROM `gameobject_questender` WHERE `id`=206335 AND `quest`=27887;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (206335, 27887);
+DELETE FROM `gameobject_questender` WHERE `id`=206336 AND `quest`=27793;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (206336, 27793);
+DELETE FROM `gameobject_questender` WHERE `id`=206336 AND `quest`=27886;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (206336, 27886);
+DELETE FROM `gameobject_questender` WHERE `id`=206336 AND `quest`=27887;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (206336, 27887);
+DELETE FROM `gameobject_questender` WHERE `id`=213973 AND `quest`=31009;
+INSERT INTO `gameobject_questender` (`id`, `quest`) VALUES (213973, 31009);
