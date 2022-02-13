@@ -1,0 +1,12 @@
+DELETE FROM `transports` WHERE `guid`=35;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (35, 203730, 'Horde Submarine circling Abyssal Maw');
+DELETE FROM `transports` WHERE `guid`=36;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (36, 203620, 'Alliance Submarine to Leviathan Cave');
+DELETE FROM `transports` WHERE `guid`=37;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (37, 203621, 'Horde Submarine to Leviathan Cave');
+DELETE FROM `transports` WHERE `guid`=38;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (38, 201599, 'Orgrim\'s Hammer');
+DELETE FROM `transports` WHERE `guid`=39;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (39, 201598, 'The Skybreaker');
+DELETE FROM `transports` WHERE `guid`=40;
+INSERT INTO `transports` (`guid`, `entry`, `name`) VALUES (40, 218815, 'Zandalari Ship');
