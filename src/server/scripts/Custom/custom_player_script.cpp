@@ -164,9 +164,73 @@ public:
     }
 };
 
+#define MAX_RATE uint32(5)
+
+class npc_rate_xp_modifier : public CreatureScript
+{
+public:
+    npc_rate_xp_modifier() : CreatureScript("npc_rate_xp_modifier") { }
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        for (uint32 i = 1; i <= MAX_RATE; ++i)
+        {
+            if (i == player->GetPersonnalXpRate())
+                continue;
+
+            if (i == sWorld->getRate(RATE_XP_KILL))
+                continue;
+
+            std::ostringstream gossipText;
+            gossipText << "Experiencia por x" << i;
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, i);
+        }
+
+        if (player->GetPersonnalXpRate())
+        {
+            std::ostringstream gossipText;
+            gossipText << "Experiencia por  x" << sWorld->getRate(RATE_XP_KILL);
+            AddGossipItemFor(player, GOSSIP_ICON_CHAT, gossipText.str(), GOSSIP_SENDER_MAIN, 0);
+        }
+
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player * player, Creature* /*creature*/, uint32 /*uiSender*/, uint32 uiAction) override
+    {
+        CloseGossipMenuFor(player);
+        player->SetPersonnalXpRate(float(std::min(MAX_RATE, uiAction)));
+        return true;
+    }
+};
+
+class heirloom_mount_tempfix : public PlayerScript {
+private:
+    const uint32 heirloomSpell = 179244;
+    const int16 heirloomRequiredSize = 35;
+    const uint32 heirloomAchievement = 9909;
+
+public:
+    heirloom_mount_tempfix() : PlayerScript("heirloom_mount_tempfix") {}
+
+    void OnUpdate(Player* player, uint32 /*diff*/) {
+        if (!player->HasSpell(heirloomSpell)) {
+            const CollectionMgr* sCollectionMgr = player->GetSession()->GetCollectionMgr();
+
+            if (sCollectionMgr->GetAccountHeirlooms().size() == heirloomRequiredSize) {
+                player->CompletedAchievement(heirloomAchievement);
+                player->LearnSpell(heirloomSpell, false);
+            }
+        }
+    }
+};
+
 void AddSC_custom_player_script()
 {
     new ps_spell_azerite_residue();
     new PlayerScript_Hack_Phase_Update();
     new PlayerScript_Weekly_Quests();
+    new npc_rate_xp_modifier();
+    new heirloom_mount_tempfix();
 }

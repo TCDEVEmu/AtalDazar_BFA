@@ -1,89 +1,3 @@
-/*
-*Copyright (C) 2017-2019 LunarfallServer <https://lunarfallserver.com/>
-*Reino Azshara BFA 2019
-*Admin: Memesan <memesan@lunarfallserver.com>
-* Copyright (C) 2008-2018 TrinityCore <https://www.trinitycore.org/>
-* Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
-************************************************************************************************************************************
-Archivo para scripts custom que llevan un proceso de registro simple
-************************************************************************************************************************************
-Tipos de scripts que no necesitan ser metidos en base de datos:
-
-CommandScript  --->proceso de registro diferente
-PlayerScript
-WorldScript    --Proceso de registro diferente
-************************************************************************************************************************************
-Todos los tipos de scripts y como se inicia:
-*********************************************
-*DECLARACION        *           TIPO        *
-*********************************************
-class nombre_script : public AccountMgr
-class nombre_script : public Area
-class nombre_script : public AreaTrigger
-class nombre_script : public AreaTriggerAI
-class nombre_script : public AuctionHouseObject
-class nombre_script : public Aura
-class nombre_script : public AuraScript
-class nombre_script : public Battleground
-class nombre_script : public BattlegroundMap
-class nombre_script : public Channel
-class nombre_script : public ChatCommand
-class nombre_script : public Conversation
-class nombre_script : public Creature
-class nombre_script : public CreatureAI
-class nombre_script : public DynamicObject
-class nombre_script : public GameObject
-class nombre_script : public GameObjectAI
-class nombre_script : public Garrison
-class nombre_script : public GarrisonAI
-class nombre_script : public Guild
-class nombre_script : public GridMap
-class nombre_script : public Group
-class nombre_script : public InstanceMap
-class nombre_script : public InstanceScript
-class nombre_script : public Item
-class nombre_script : public Map
-class nombre_script : public ModuleReference
-class nombre_script : public OutdoorPvP
-class nombre_script : public Player
-class nombre_script : public Quest
-class nombre_script : public ScriptMgr
-class nombre_script : public Spell
-class nombre_script : public SpellInfo
-class nombre_script : public SpellScript
-class nombre_script : public SpellCastTargets
-class nombre_script : public Transport
-class nombre_script : public Unit
-class nombre_script : public Vehicle
-class nombre_script : public Weather
-class nombre_script : public WorldPacket
-class nombre_script : public WorldSocket
-class nombre_script : public WorldObject
-class nombre_script : public WorldSession
-class nombre_script : public RestResponse
-class nombre_script : public ZoneScript
-****************************************************************************************************************************************
-Tipos de registros validos:
-
-RegisterAreaTriggerAI(nombrescript);
-RegisterAuraScript(nombrescript);                  ----para scripts de auras
-RegisterConversationScript(nombrescript);          ----scripts de conversaciones
-RegisterCreatureAI(nombrescript);                  ----Inteligencia artificial de npc, depende de una creaturescript que se declara diferente
-RegisterCreatureAIWithFactory(nombrescript);
-RegisterGameObjectAI(nombrescript);                ----Inteligencia artificial de gameobject, depende de una gameobjectscript que se declara diferente
-RegisterGarrisonAI(nombrescript);             
-RegisterInstanceScript(nombrescript);              ----Script de instancia
-RegisterPlayerScript(nombrescript);                ----Script de jugador 
-RegisterQuestScript(nombrescript);                 ----Script de quest
-RegisterSceneScript(nombrescript);                 ----Script de escena
-RegisterSpellAndAuraScriptPair(nombrescript);
-RegisterSpellScript(nombrescript);                 ---- Script de spell
-
-Para otro tipo de script el proceso de registro es diferente
-****************************************************************************************************************************************
-*/
-
-//Librerias que incluye estos scripts para que funcione bien Memesan
 #include "Conversation.h"
 #include "Creature.h"
 #include "DatabaseEnv.h"
@@ -116,12 +30,6 @@ Para otro tipo de script el proceso de registro es diferente
 #include "Guild.h"
 #include "Log.h"
 
-/*
-****************************************************************************************************************************************
-SCRIPTS A PARTIR DE ACA
-****************************************************************************************************************************************
-*/
-
 //Arreglo Quest 29524 Zona inicio Pandaren Memesan
 class quest_29524 : public PlayerScript
 {
@@ -134,7 +42,6 @@ public:
         {
             player->AddAura(100711, player);            
         }
-
     }
 };
 
@@ -146,13 +53,12 @@ public:
 
     void OnUpdate(Player* player, uint32 diff) override
     {
-        if ((player->GetQuestStatus(40222) == QUEST_STATUS_REWARDED && !player->GetQuestStatus(40051) ==QUEST_STATUS_COMPLETE) ||
-            (player->GetQuestStatus(40222) == QUEST_STATUS_REWARDED && !player->GetQuestStatus(40051) == QUEST_STATUS_REWARDED))
+        if ((player->GetQuestStatus(40222) == QUEST_STATUS_REWARDED && player->GetQuestStatus(40051) != QUEST_STATUS_COMPLETE) ||
+            (player->GetQuestStatus(40222) == QUEST_STATUS_REWARDED && player->GetQuestStatus(40051) != QUEST_STATUS_REWARDED))
         {
             if (Quest const* quest = sObjectMgr->GetQuestTemplate(40051))
-                player->AddQuest(quest, NULL);
+                player->AddQuest(quest, nullptr);
         }
-
     }
 };
 
@@ -177,9 +83,7 @@ public:
                 ss << "|cff3DAEFF[ Anuncio de conexion ]|cffFFD800 : Jugador|cff4CFF00 " << player->GetName() << " |cffFFD800se ha conectado. Este jugador es|cffFF0000 Horda";
                 sWorld->SendServerMessage(SERVER_MSG_STRING, ss.str().c_str());
             }
-        }
-            
-        
+        } 
     }
 };
 
@@ -222,7 +126,6 @@ public:
         {            
             player->ForceCompleteQuest(39686);
         }
-
     }
 };
 
@@ -232,7 +135,6 @@ class resu_dh : public PlayerScript
 public:
     resu_dh() : PlayerScript("resu_dh") {}
 
-
     void OnUpdate(Player* player, uint32 diff) override
     {
         if (player->getClass() == CLASS_DEMON_HUNTER && player->GetZoneId() == 7814)
@@ -240,15 +142,12 @@ public:
             if (player->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
                 player->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
 
-
             if (!player->IsAlive())
             {
                 player->ResurrectPlayer(1.0f);
                 player->SpawnCorpseBones();
-                player->Yell("He muerto por manco pero he sido rescatado", LANG_UNIVERSAL);
             }
         }
-
     }
 };
 
@@ -264,7 +163,6 @@ public:
         {
             player->AddAura(102398, player);
         }
-
     }
 };
 
@@ -281,9 +179,7 @@ public:
             player->AddAura(102871, player);
             player->AddAura(102875, player);
             player->AddAura(128574, player);
-
         }
-
     }
 };
 
@@ -301,7 +197,6 @@ public:
         {
             player->AddAura(108822, player);
         }
-
     }
 };
 
@@ -318,11 +213,58 @@ public:
         {
             PhasingHandler::AddPhase(player, 878);
         }
+    }
+};
+
+enum misc
+{
+    CHOICEID_DH_SPEC               = 231,
+
+    RESPONSEID_DH_SPEC_DEVASTATION = 478,
+    RESPONSEID_DH_SPEC_VENGEANCE   = 479,
+
+    QUESTID_DH_SECRETOS_VILES      = 40051,
+
+    SPELLID_DH_DEVASTATION         = 194940,
+    SPELLID_DH_VENGANZA            = 194939,
+
+};
+
+/*Hacer funcionar el playerchoice de el dh para elegir especializacion*/
+class dh_choice_231 : public PlayerScript
+{
+public:
+    dh_choice_231() : PlayerScript("dh_choice_231") {}
+
+    void OnPlayerChoiceResponse(Player* player, uint32 choiceID, uint32 responseID) override
+    {
+        if (choiceID != CHOICEID_DH_SPEC)
+            return;
+
+        player->LearnSpell(200749, false); // permite escoger especializacion
+
+        switch (responseID)
+        {
+            case RESPONSEID_DH_SPEC_DEVASTATION:
+                player->CastSpell(player, SPELLID_DH_DEVASTATION, true);
+                player->KilledMonsterCredit(99071);
+                break;
+
+            case RESPONSEID_DH_SPEC_VENGEANCE:
+                player->CastSpell(player, SPELLID_DH_VENGANZA, true);
+                player->KilledMonsterCredit(99071);
+                
+                if (ChrSpecializationEntry const* spec = sChrSpecializationStore.AssertEntry(581))
+                    player->ActivateTalentGroup(spec);
+                break;
+        default:
+            break;
+        }
+
 
     }
 };
 
-//Registro de Scripts (Necesario para que funcionen)
 void AddSC_playerquest_fixes_lf()
 {
     RegisterPlayerScript(quest_29524);
@@ -335,4 +277,5 @@ void AddSC_playerquest_fixes_lf()
     RegisterPlayerScript(quest_29678);
     RegisterPlayerScript(quest_29768);
     RegisterPlayerScript(quest_29792);
+    RegisterPlayerScript(dh_choice_231);
 }
