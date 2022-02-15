@@ -3428,6 +3428,12 @@ void SpellMgr::LoadSpellInfoCorrections()
         spellInfo->ChannelInterruptFlags.fill(0);
     });
 
+    // Steady Shot
+    ApplySpellFix({ 56641 }, [](SpellInfo* spellInfo)
+    {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_1))->TargetA = SpellImplicitTargetInfo(TARGET_UNIT_CASTER);
+    });
+
     // Rocket Strike (Mimiron)
     ApplySpellFix({ 63036 }, [](SpellInfo* spellInfo)
     {

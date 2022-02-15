@@ -3968,6 +3968,22 @@ class spell_hun_bestial_wrath : public SpellScript
     }
 };
 
+// 56641 Steady Shot
+class spell_Steady_Shot : public SpellScript
+{
+    PrepareSpellScript(spell_Steady_Shot);
+
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit * caster = GetCaster())
+            caster->SetPower(POWER_FOCUS, caster->GetPower(POWER_FOCUS) + 10);
+    }
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_Steady_Shot::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -4040,6 +4056,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_explosive_shot_aura();
     new spell_hun_sidewinders();
     RegisterSpellScript(spell_hun_bestial_wrath);
+    RegisterSpellScript(spell_Steady_Shot);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
