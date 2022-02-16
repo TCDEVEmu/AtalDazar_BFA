@@ -3617,63 +3617,6 @@ public:
     }
 };
 
-// 19434 - Aimed shot
-class spell_hun_aimed_shot : public SpellScript
-{
-    PrepareSpellScript(spell_hun_aimed_shot);
-
-    void HandleDamage(SpellEffIndex effIndex)
-    {
-        float distance = 30.0f;
-        int32 damagePct = 50;
-        std::list<Unit*> targetList;
-        std::list<Unit*> victimList;
-        bool canApplyDamage = true;
-
-        if (Player * modOwner = GetCaster()->GetSpellModOwner())
-        {
-            if (modOwner->HasAura(199522))
-            {
-                if (Unit * mainTarget = GetHitUnit())
-                {
-                    mainTarget->GetAttackableUnitListInRange(targetList, distance);
-
-                    if (!targetList.empty())
-                    {
-                        for (auto target : targetList)
-                        {
-                            if (!modOwner->IsFriendlyTo(target))
-                            {
-                                if (target == mainTarget)
-                                    continue;
-
-                                if (target->HasAura(187131))
-                                    canApplyDamage = false;
-
-                                victimList.push_back(target);
-                            }
-                        }
-                        if (canApplyDamage)
-                            damagePct += 15;
-
-                        for (auto victim : victimList)
-                        {
-                            int32 castTime = 0;
-                            mainTarget->ModSpellCastTime(GetSpellInfo(), castTime);
-                            mainTarget->CastCustomSpell(victim, 164340, &damagePct, NULL, NULL, true, NULL, NULL, modOwner->GetGUID());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_hun_aimed_shot::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-    }
-};
-
 // 205434 - Flanking Strike Pet
 class spell_hun_flanking_strike_pet : public SpellScriptLoader
 {
