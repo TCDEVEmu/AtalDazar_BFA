@@ -4206,6 +4206,13 @@ void SpellMgr::LoadSpellInfoCorrections()
             const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TriggerSpell = 260242;
         });
 
+    ApplySpellFix({ 6203,  // Soulstone
+        2641 // Dismiss Pet
+        }, [](SpellInfo* spellInfo)
+        {
+            spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_DEAD;
+        });
+
     ApplySpellFix({
         67789, // 179
         68480, // 180
