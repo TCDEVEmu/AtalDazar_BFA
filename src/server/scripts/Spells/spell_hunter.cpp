@@ -158,7 +158,9 @@ enum HunterSpells
     SPELL_HUNTER_LETHAL_SHOTS = 260393,
     SPELL_HUNTER_CALLING_THE_SHOTS = 260404,
     SPELL_HUNTER_TRUESHOT = 288613,
-    SPELL_HUNTER_CAREFUL_AIM = 260228
+    SPELL_HUNTER_CAREFUL_AIM = 260228,
+    SPELL_HUNTER_MASTER_MARKSMAN = 269576,
+    SPELL_PRECISE_SHOTS = 260242
 };
 
 enum AncientHysteriaSpells
@@ -1201,9 +1203,22 @@ public:
             }
         }
 
+        void HandleOnCast()
+        {
+            if (Unit * caster = GetCaster())
+            { 
+                if (caster->HasAura(SPELL_HUNTER_MASTER_MARKSMAN))
+                    caster->RemoveAura(SPELL_HUNTER_MASTER_MARKSMAN);
+
+                if (caster->HasAura(SPELL_PRECISE_SHOTS))
+                    caster->RemoveAuraFromStack(SPELL_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+            }
+        }
+
         void Register() override
         {
             OnHit += SpellHitFn(spell_hun_arcane_shot_SpellScript::HandleOnHit);
+            OnCast += SpellCastFn(spell_hun_arcane_shot_SpellScript::HandleOnCast);
         }
     };
 
@@ -1239,9 +1254,22 @@ public:
             }
         }
 
+        void HandleOnCast()
+        {
+            if (Unit * caster = GetCaster())
+            {
+                if (caster->HasAura(SPELL_HUNTER_MASTER_MARKSMAN))
+                    caster->RemoveAura(SPELL_HUNTER_MASTER_MARKSMAN);
+
+                if (caster->HasAura(SPELL_PRECISE_SHOTS))
+                    caster->RemoveAuraFromStack(SPELL_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+            }
+        }
+
         void Register() override
         {
             OnHit += SpellHitFn(spell_hun_multi_shot_SpellScript::HandleOnHit);
+            OnCast += SpellCastFn(spell_hun_multi_shot_SpellScript::HandleOnCast);
         }
     };
 
@@ -3891,6 +3919,25 @@ public:
     }
 };
 
+// 260309 Master Marksman
+class spell_master_marksman_Proc : public AuraScript
+{
+    PrepareAuraScript(spell_master_marksman_Proc);
+
+    bool CheckProc(ProcEventInfo& eventInfo) {
+        if (eventInfo.GetSpellInfo()->Id == 19434 && eventInfo.GetActor()->HasAura(260309))
+            return true;
+        return false;
+
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_master_marksman_Proc::CheckProc);
+    }
+};
+
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -3957,7 +4004,6 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_windburst();
     new spell_hun_serpent_sting();
     new spell_hun_aspect_of_the_turtle();
-    RegisterSpellScript(spell_hun_aimed_shot);
     new spell_hun_flanking_strike_pet();
     new spell_hun_explosive_shot_aura();
     new spell_hun_sidewinders();
@@ -3965,6 +4011,7 @@ void AddSC_hunter_spell_scripts()
     RegisterSpellScript(spell_Steady_Shot);
     RegisterSpellScript(spell_aim_shot);
     new spell_Precise_Shots_Proc();
+    RegisterAuraScript(spell_master_marksman_Proc);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
