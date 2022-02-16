@@ -158,6 +158,7 @@ enum HunterSpells
     SPELL_HUNTER_LETHAL_SHOTS = 260393,
     SPELL_HUNTER_CALLING_THE_SHOTS = 260404,
     SPELL_HUNTER_TRUESHOT = 288613,
+    SPELL_HUNTER_CAREFUL_AIM = 260228
 };
 
 enum AncientHysteriaSpells
@@ -3984,6 +3985,37 @@ class spell_Steady_Shot : public SpellScript
     }
 };
 
+// 19434 Aimed Shot
+class spell_aim_shot : public SpellScript 
+{
+    PrepareSpellScript(spell_aim_shot);
+
+    void HandleDamage(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            if (caster->HasAura(SPELL_HUNTER_CAREFUL_AIM))
+            {
+                int32 tDamage = GetHitDamage();
+                uint8 pctHealthMax = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_0)->BasePoints;
+                uint8 pctHealthMin = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_1)->BasePoints;
+
+                if (Unit * target = GetHitUnit())
+                    if ((pctHealthMax < target->GetHealthPct()) || (target->GetHealthPct() < pctHealthMin))
+                        tDamage *= 1.5;
+
+                SetHitDamage(tDamage);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_aim_shot::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -4057,6 +4089,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_sidewinders();
     RegisterSpellScript(spell_hun_bestial_wrath);
     RegisterSpellScript(spell_Steady_Shot);
+    RegisterSpellScript(spell_aim_shot);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
