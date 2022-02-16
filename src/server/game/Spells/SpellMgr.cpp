@@ -4200,6 +4200,12 @@ void SpellMgr::LoadSpellInfoCorrections()
         spellInfo->RequiredAreasID = 0;
     });
 
+    // Precise Shots
+    ApplySpellFix({ 260240 }, [](SpellInfo* spellInfo)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TriggerSpell = 260242;
+        });
+
     ApplySpellFix({
         67789, // 179
         68480, // 180

@@ -3919,6 +3919,35 @@ public:
     }
 };
 
+// 260240 Precise Shots
+class spell_Precise_Shots_Proc : public SpellScriptLoader
+{
+public:
+    spell_Precise_Shots_Proc() : SpellScriptLoader("spell_Precise_Shots_Proc") { }
+
+    class spell_Precise_Shots_Proc_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(spell_Precise_Shots_Proc_AuraScript);
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            if (eventInfo.GetSpellInfo()->Id == 19434)
+                return true;
+            return false;
+        }
+
+        void Register() override
+        {
+            DoCheckProc += AuraCheckProcFn(spell_Precise_Shots_Proc_AuraScript::CheckProc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new spell_Precise_Shots_Proc_AuraScript();
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -3992,6 +4021,7 @@ void AddSC_hunter_spell_scripts()
     RegisterSpellScript(spell_hun_bestial_wrath);
     RegisterSpellScript(spell_Steady_Shot);
     RegisterSpellScript(spell_aim_shot);
+    new spell_Precise_Shots_Proc();
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
