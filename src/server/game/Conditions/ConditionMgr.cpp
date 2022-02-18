@@ -340,34 +340,7 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
             }
             break;
         }
-		case CONDITION_ON_TRANSPORT:
-        {
-            if (Player* player = object->ToPlayer())
-                condMeets = player->IsOnVehicle();
-            break;
-        }
-		case CONDITION_IN_RAID_OR_GROUP:
-        {
-            if (Player* player = object->ToPlayer())
-            {
-                if (ConditionValue1)
-                {
-                    if (ConditionValue2)
-                        condMeets = player->GetGroup() && player->GetGroup()->isRaidGroup();
-                    if (ConditionValue3)
-                        condMeets = player->GetGroup();
-                }
-                else
-                {
-                    if (ConditionValue2)
-                        condMeets = !player->GetGroup() || !player->GetGroup()->isRaidGroup();
-                    if (ConditionValue3)
-                        condMeets = !player->GetGroup();
-                }
-            }
-            break;
-        }
-        case CONDITION_TYPE_MASK:
+		case CONDITION_TYPE_MASK:
         {
             condMeets = object->isType(ConditionValue1);
             break;

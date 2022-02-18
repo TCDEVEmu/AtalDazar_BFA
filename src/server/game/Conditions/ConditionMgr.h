@@ -105,9 +105,7 @@ enum ConditionTypes
     CONDITION_QUEST_OBJECTIVE_COMPLETE = 48,                   // ID               0              0                  true if player has ID objective complete, but quest not yet rewarded
     CONDITION_DIFFICULTY_ID            = 49,                   // Difficulty       0              0                  true is map has difficulty id
     CONDITION_OBJECT_ENTRY_GUID        = 51,                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object
-    CONDITION_ON_TRANSPORT             = 52,                   //                                                    true if on vehicle
-	CONDITION_IN_RAID_OR_GROUP         = 53,                   // 0 - not in raid  isRaid         isGroup
-	CONDITION_TYPE_MASK                = 54,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
+    CONDITION_TYPE_MASK                = 52,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
 	// CONDITION_SAI_PHASE                = 55,                  // phase            0              0                  true if object sai phase = value1                      Athenas Condition To Do
     // CONDITION_PLAYER_SPEC              = 56,                  // spec             0              0                  true if player spec = value1                           Athenas Condition To Do
     // CONDITION_CURRENCY_SEASON          = 57,                  // currency         count          0                  true if player spec = value1                           Athenas Condition To Do
