@@ -45,122 +45,131 @@
 
 enum HunterSpells
 {
-    SPELL_HUNTER_A_MURDER_OF_CROWS_1 = 131894,
-    SPELL_HUNTER_A_MURDER_OF_CROWS_2 = 206505,
-    SPELL_HUNTER_A_MURDER_OF_CROWS_DAMAGE = 131900,
-    SPELL_HUNTER_ANIMAL_INSTINCTS = 204315,
-    SPELL_HUNTER_ANIMAL_INSTINCTS_CHEETAH = 204324,
-    SPELL_HUNTER_ANIMAL_INSTINCTS_MONGOOSE = 204333,
-    SPELL_HUNTER_ANIMAL_INSTINCTS_RAPTOR = 204321,
-    SPELL_HUNTER_ARCANE_SHOT = 185358,
-    SPELL_HUNTER_ASPECT_OF_THE_CHEETAH_EFFECT_2 = 186258,
-    SPELL_HUNTER_ASPECT_OF_THE_EAGLE = 186289,
-    SPELL_HUNTER_AUTO_SHOT = 75,
-    SPELL_HUNTER_BARRAGE = 120360,
-    SPELL_HUNTER_BASIC_ATTACK_COST_MODIFIER = 62762,
-    SPELL_HUNTER_BEAST_CLEAVE_AURA = 115939,
-    SPELL_HUNTER_BEAST_CLEAVE_DAMAGE = 118459,
-    SPELL_HUNTER_BEAST_CLEAVE_PROC = 118455,
-    SPELL_HUNTER_BESTIAL_WRATH = 19574,
-    SPELL_HUNTER_BLACK_ARROW = 194599,
-    SPELL_HUNTER_BLINK_STRIKES = 130392,
-    SPELL_HUNTER_BLINK_STRIKES_TELEPORT = 130393,
-    SPELL_HUNTER_CAMOUFLAGE = 199483,
-    SPELL_HUNTER_COBRA_SHOT = 193455,
-    SPELL_HUNTER_DIRE_BEAST_GENERIC = 120679,
-    SPELL_HUNTER_DIRE_FRENZY = 217200,
-    SPELL_HUNTER_DIRE_FRENZY_DAMAGE = 217207,
-    SPELL_HUNTER_DISENGAGE = 781,
-    SPELL_HUNTER_EXHILARATION = 109304,
-    SPELL_HUNTER_EXHILARATION_PET = 128594,
-    SPELL_HUNTER_EXHILARATION_PET_AURA = 231546,
-    SPELL_HUNTER_EXPLOSIVE_SHOT = 212431,
-    SPELL_HUNTER_EXPLOSIVE_SHOT_DAMAGE = 212680,
-    SPELL_HUNTER_EXPLOSIVE_SHOT_DETONATE = 212679,
-    SPELL_HUNTER_FLANKING_STRIKE = 202800,
-    SPELL_HUNTER_FLANKING_STRIKE_PROC = 204740,
-    SPELL_HUNTER_FLANKING_STRIKE_PROC_UP = 206933,
-    SPELL_HUNTER_FLARE_EFFECT = 28822,
-    SPELL_HUNTER_FRENZY_STACKS = 19615,
-    SPELL_HUNTER_HARPOON = 190925,
-    SPELL_HUNTER_HARPOON_ROOT = 190927,
-    SPELL_HUNTER_HUNTERS_MARK = 185987,
-    SPELL_HUNTER_HUNTERS_MARK_AURA = 185365, //This one is the graphics (The arrow effect)
-    SPELL_HUNTER_HUNTERS_MARK_AURA_2 = 185743, //This one is enabling "Marked Shot"
-    SPELL_HUNTER_IMPROVED_MEND_PET = 24406,
-    SPELL_HUNTER_INTIMIDATION_STUN = 24394,
-    SPELL_HUNTER_INVIGORATION_TRIGGERED = 53398,
-    SPELL_HUNTER_KILL_COMMAND = 34026,
-    SPELL_HUNTER_KILL_COMMAND_CHARGE = 118171,
-    SPELL_HUNTER_KILL_COMMAND_TRIGGER = 83381,
-    SPELL_HUNTER_LACERATE = 185855,
-    SPELL_HUNTER_LONE_WOLF = 155228,
-    SPELL_HUNTER_MARKED_SHOT = 185901,
-    SPELL_HUNTER_MARKED_SHOT_DAMAGE = 212621,
-    SPELL_HUNTER_MARKING_TARGETS = 223138,
-    SPELL_HUNTER_MASTERS_CALL_TRIGGERED = 62305,
-    SPELL_HUNTER_MISDIRECTION = 34477,
-    SPELL_HUNTER_MISDIRECTION_PROC = 35079,
-    SPELL_HUNTER_MONGOOSE_BITE = 190928,
-    SPELL_HUNTER_MONGOOSE_FURY = 190931,
-    SPELL_HUNTER_MULTISHOT = 2643,
-    SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX = 55709,
-    SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_DEBUFF = 55711,
+    SPELL_HUNTER_A_MURDER_OF_CROWS_1                = 131894,
+    SPELL_HUNTER_A_MURDER_OF_CROWS_2                = 206505,
+    SPELL_HUNTER_A_MURDER_OF_CROWS_DAMAGE           = 131900,
+    SPELL_HUNTER_ANIMAL_INSTINCTS                   = 204315,
+    SPELL_HUNTER_ANIMAL_INSTINCTS_CHEETAH           = 204324,
+    SPELL_HUNTER_ANIMAL_INSTINCTS_MONGOOSE          = 204333,
+    SPELL_HUNTER_ANIMAL_INSTINCTS_RAPTOR            = 204321,
+    SPELL_HUNTER_ARCANE_SHOT                        = 185358,
+    SPELL_HUNTER_ASPECT_OF_THE_CHEETAH_EFFECT_2     = 186258,
+    SPELL_HUNTER_ASPECT_OF_THE_EAGLE                = 186289,
+    SPELL_HUNTER_AUTO_SHOT                          = 75,
+    SPELL_HUNTER_BARRAGE                            = 120360,
+    SPELL_HUNTER_BASIC_ATTACK_COST_MODIFIER         = 62762,
+    SPELL_HUNTER_BEAST_CLEAVE_AURA                  = 115939,
+    SPELL_HUNTER_BEAST_CLEAVE_DAMAGE                = 118459,
+    SPELL_HUNTER_BEAST_CLEAVE_PROC                  = 118455,
+    SPELL_HUNTER_BESTIAL_WRATH                      = 19574,
+    SPELL_HUNTER_BLACK_ARROW                        = 194599,
+    SPELL_HUNTER_BLINK_STRIKES                      = 130392,
+    SPELL_HUNTER_BLINK_STRIKES_TELEPORT             = 130393,
+    SPELL_HUNTER_CAMOUFLAGE                         = 199483,
+    SPELL_HUNTER_COBRA_SHOT                         = 193455,
+    SPELL_HUNTER_DIRE_BEAST_GENERIC                 = 120679,
+    SPELL_HUNTER_DIRE_FRENZY                        = 217200,
+    SPELL_HUNTER_DIRE_FRENZY_DAMAGE                 = 217207,
+    SPELL_HUNTER_DISENGAGE                          = 781,
+    SPELL_HUNTER_EXHILARATION                       = 109304,
+    SPELL_HUNTER_EXHILARATION_PET                   = 128594,
+    SPELL_HUNTER_EXHILARATION_PET_AURA              = 231546,
+    SPELL_HUNTER_EXPLOSIVE_SHOT                     = 212431,
+    SPELL_HUNTER_EXPLOSIVE_SHOT_DAMAGE              = 212680,
+    SPELL_HUNTER_EXPLOSIVE_SHOT_DETONATE            = 212679,
+    SPELL_HUNTER_FLANKING_STRIKE                    = 202800,
+    SPELL_HUNTER_FLANKING_STRIKE_PROC               = 204740,
+    SPELL_HUNTER_FLANKING_STRIKE_PROC_UP            = 206933,
+    SPELL_HUNTER_FLARE_EFFECT                       = 28822,
+    SPELL_HUNTER_FRENZY_STACKS                      = 19615,
+    SPELL_HUNTER_HARPOON                            = 190925,
+    SPELL_HUNTER_HARPOON_ROOT                       = 190927,
+    SPELL_HUNTER_HUNTERS_MARK                       = 185987,
+    SPELL_HUNTER_HUNTERS_MARK_AURA                  = 185365, //This one is the graphics (The arrow effect)
+    SPELL_HUNTER_HUNTERS_MARK_AURA_2                = 185743, //This one is enabling "Marked Shot"
+    SPELL_HUNTER_IMPROVED_MEND_PET                  = 24406,
+    SPELL_HUNTER_INTIMIDATION_STUN                  = 24394,
+    SPELL_HUNTER_INVIGORATION_TRIGGERED             = 53398,
+    SPELL_HUNTER_KILL_COMMAND                       = 34026,
+    SPELL_HUNTER_KILL_COMMAND_CHARGE                = 118171,
+    SPELL_HUNTER_KILL_COMMAND_TRIGGER               = 83381,
+    SPELL_HUNTER_LACERATE                           = 185855,
+    SPELL_HUNTER_LONE_WOLF                          = 155228,
+    SPELL_HUNTER_MARKED_SHOT                        = 185901,
+    SPELL_HUNTER_MARKED_SHOT_DAMAGE                 = 212621,
+    SPELL_HUNTER_MARKING_TARGETS                    = 223138,
+    SPELL_HUNTER_MASTERS_CALL_TRIGGERED             = 62305,
+    SPELL_HUNTER_MISDIRECTION                       = 34477,
+    SPELL_HUNTER_MISDIRECTION_PROC                  = 35079,
+    SPELL_HUNTER_MONGOOSE_BITE                      = 190928,
+    SPELL_HUNTER_MONGOOSE_FURY                      = 190931,
+    SPELL_HUNTER_MULTISHOT                          = 2643,
+    SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX           = 55709,
+    SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_DEBUFF    = 55711,
     SPELL_HUNTER_PET_HEART_OF_THE_PHOENIX_TRIGGERED = 54114,
-    SPELL_HUNTER_PET_LAST_STAND_TRIGGERED = 53479,
-    SPELL_HUNTER_POSTHAST = 109215,
-    SPELL_HUNTER_POSTHAST_SPEED = 118922,
-    SPELL_HUNTER_RANGERS_NET_INCREASE_SPEED = 206755,
-    SPELL_HUNTER_RAPTOR_STRIKE = 186270,
-    SPELL_HUNTER_SENTINEL = 206817,
-    SPELL_HUNTER_SERPENT_STING = 87935,
-    SPELL_HUNTER_SERPENT_STING_DAMAGE = 118253,
-    SPELL_HUNTER_SPIKED_COLLAR = 53184,
-    SPELL_HUNTER_STEADY_FOCUS = 193533,
-    SPELL_HUNTER_STEADY_FOCUS_PROC = 193534,
-    SPELL_HUNTER_STICKY_BOMB_PROC = 191244,
-    SPELL_HUNTER_THOWING_AXES_DAMAGE = 200167,
-    SPELL_HUNTER_TRAILBLAZER = 199921,
-    SPELL_HUNTER_TRAILBLAZER_BUFF = 231390,
-    SPELL_HUNTER_VULNERABLE = 187131,
-    SPELL_HUNTER_WILD_CALL_AURA = 185791,
-    SPELL_HUNTER_GENERIC_ENERGIZE_FOCUS = 91954,
-    SPELL_HUNTER_PET_CARRION_FEEDER_TRIGGERED = 54045,
-    SPELL_HUNTER_READINESS = 23989,
-    SPELL_DRAENEI_GIFT_OF_THE_NAARU = 59543,
-    SPELL_HUNTER_FIRE = 82926,
-    SPELL_ROAR_OF_SACRIFICE_TRIGGERED = 67481,
-    SPELL_HUNTER_SNIPER_TRAINING_R1 = 53302,
-    SPELL_HUNTER_SNIPER_TRAINING_BUFF_R1 = 64418,
-    SPELL_HUNTER_STEADY_SHOT_FOCUS = 77443,
-    SPELL_HUNTER_LOCK_AND_LOAD = 56453,
-    SPELL_HUNTER_GLAIVE_TOSS_AURA = 117050,
-    SPELL_HUNTER_GLAIVE_TOSS_DAMAGE_AND_SNARE_LEFT = 120761,
+    SPELL_HUNTER_PET_LAST_STAND_TRIGGERED           = 53479,
+    SPELL_HUNTER_POSTHAST                           = 109215,
+    SPELL_HUNTER_POSTHAST_SPEED                     = 118922,
+    SPELL_HUNTER_RANGERS_NET_INCREASE_SPEED         = 206755,
+    SPELL_HUNTER_RAPTOR_STRIKE                      = 186270,
+    SPELL_HUNTER_SENTINEL                           = 206817,
+    SPELL_HUNTER_SERPENT_STING                      = 87935,
+    SPELL_HUNTER_SERPENT_STING_DAMAGE               = 118253,
+    SPELL_HUNTER_SPIKED_COLLAR                      = 53184,
+    SPELL_HUNTER_STEADY_FOCUS                       = 193533,
+    SPELL_HUNTER_STEADY_FOCUS_PROC                  = 193534,
+    SPELL_HUNTER_STICKY_BOMB_PROC                   = 191244,
+    SPELL_HUNTER_THOWING_AXES_DAMAGE                = 200167,
+    SPELL_HUNTER_TRAILBLAZER                        = 199921,
+    SPELL_HUNTER_TRAILBLAZER_BUFF                   = 231390,
+    SPELL_HUNTER_VULNERABLE                         = 187131,
+    SPELL_HUNTER_WILD_CALL_AURA                     = 185791,
+    SPELL_HUNTER_GENERIC_ENERGIZE_FOCUS             = 91954,
+    SPELL_HUNTER_PET_CARRION_FEEDER_TRIGGERED       = 54045,
+    SPELL_HUNTER_READINESS                          = 23989,
+    SPELL_DRAENEI_GIFT_OF_THE_NAARU                 = 59543,
+    SPELL_HUNTER_FIRE                               = 82926,
+    SPELL_ROAR_OF_SACRIFICE_TRIGGERED               = 67481,
+    SPELL_HUNTER_SNIPER_TRAINING_R1                 = 53302,
+    SPELL_HUNTER_SNIPER_TRAINING_BUFF_R1            = 64418,
+    SPELL_HUNTER_STEADY_SHOT_FOCUS                  = 77443,
+    SPELL_HUNTER_LOCK_AND_LOAD                      = 56453,
+    SPELL_HUNTER_GLAIVE_TOSS_AURA                   = 117050,
+    SPELL_HUNTER_GLAIVE_TOSS_DAMAGE_AND_SNARE_LEFT  = 120761,
     SPELL_HUNTER_GLAIVE_TOSS_DAMAGE_AND_SNARE_RIGHT = 121414,
-    SPELL_HUNTER_GLAIVE_TOSS_RIGHT = 120755,
-    SPELL_HUNTER_GLAIVE_TOSS_LEFT = 120756,
-    SPELL_HUNTER_GLYPH_OF_STAMPEDE = 57902,
-    SPELL_HUNTER_STAMPEDE_DAMAGE_REDUCTION = 130201,
-    SPELL_HUNTER_BOND_SPIRIT_HEAL = 149254,
-    SPELL_HUNTER_FOCUSING_SHOT = 152245,
-    SPELL_HUNTER_FOCUSING_SHOT_AIM = 163485,
-    SPELL_HUNTER_STEADY_FOCUS_TRIGGERED = 177668,
-    SPELL_HUNTER_STEADY_SHOT = 56641,
-    SPELL_HUNTER_BLINK_STRIKE = 130392,
-    SPELL_HUNTER_BLINK_STRIKE_TELEPORT = 130393,
-    SPELL_HUNTER_AURA_SHOOTING = 224729,
-    SPELL_HUNTER_AIMED_SHOT = 19434,
-    SPELL_HUNTER_GLYPH_OF_MISDIRECTION = 56829,
-    //8.0
-    SPELL_HUNTER_SCORCHING_WILDFIRE = 259496,
-    SPELL_HUNTER_RAPID_FIRE = 257044,
-    SPELL_HUNTER_RAPID_FIRE_MISSILE = 257045,
-    SPELL_HUNTER_LETHAL_SHOTS = 260393,
-    SPELL_HUNTER_CALLING_THE_SHOTS = 260404,
-    SPELL_HUNTER_TRUESHOT = 288613,
-    SPELL_HUNTER_CAREFUL_AIM = 260228,
-    SPELL_HUNTER_MASTER_MARKSMAN = 269576,
-    SPELL_PRECISE_SHOTS = 260242
+    SPELL_HUNTER_GLAIVE_TOSS_RIGHT                  = 120755,
+    SPELL_HUNTER_GLAIVE_TOSS_LEFT                   = 120756,
+    SPELL_HUNTER_GLYPH_OF_STAMPEDE                  = 57902,
+    SPELL_HUNTER_STAMPEDE_DAMAGE_REDUCTION          = 130201,
+    SPELL_HUNTER_BOND_SPIRIT_HEAL                   = 149254,
+    SPELL_HUNTER_FOCUSING_SHOT                      = 152245,
+    SPELL_HUNTER_FOCUSING_SHOT_AIM                  = 163485,
+    SPELL_HUNTER_STEADY_FOCUS_TRIGGERED             = 177668,
+    SPELL_HUNTER_STEADY_SHOT                        = 56641,
+    SPELL_HUNTER_BLINK_STRIKE                       = 130392,
+    SPELL_HUNTER_BLINK_STRIKE_TELEPORT              = 130393,
+    SPELL_HUNTER_AURA_SHOOTING                      = 224729,
+    SPELL_HUNTER_AIMED_SHOT                         = 19434,
+    SPELL_HUNTER_GLYPH_OF_MISDIRECTION              = 56829,
+    SPELL_HUNTER_SCORCHING_WILDFIRE                 = 259496,
+    SPELL_HUNTER_RAPID_FIRE                         = 257044,
+    SPELL_HUNTER_RAPID_FIRE_MISSILE                 = 257045,
+    SPELL_HUNTER_LETHAL_SHOTS                       = 260393,
+    SPELL_HUNTER_CALLING_THE_SHOTS                  = 260404,
+
+    SPELL_HUNTER_TRUESHOT2                          = 288613,
+    SPELL_HUNTER_CAREFUL_AIM                        = 260228,
+    SPELL_HUNTER_MASTER_MARKSMAN_AURA               = 269576,
+    SPELL_HUNTER_PRECISE_SHOTS                      = 260242,
+	SPELL_HUNTER_HUNTERS_MARK_2						= 257284,
+	SPELL_HUNTER_MASTER_MARKSMAN					= 260309,
+	SPELL_HUNTER_LETHAL_SHOT_AURA					= 260395,
+	SPELL_HUNTER_TRUESHOT							= 193526,
+	SPELL_HUNTER_RANGERS_FINESSE					= 248443,
+	SPELL_HUNTER_ASPECT_OF_TURTLE					= 186265,
+	SPELL_HUNTER_NATURAL_MENDING					= 270581,
+	SPELL_HUNTER_LOCK_AND_LOAD_AURA					= 194594,
+	SPELL_HUNTER_DOUBLE_TAP							= 260402,
 };
 
 enum AncientHysteriaSpells
@@ -1210,15 +1219,31 @@ public:
                 if (caster->HasAura(SPELL_HUNTER_MASTER_MARKSMAN))
                     caster->RemoveAura(SPELL_HUNTER_MASTER_MARKSMAN);
 
-                if (caster->HasAura(SPELL_PRECISE_SHOTS))
-                    caster->RemoveAuraFromStack(SPELL_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+                if (caster->HasAura(SPELL_HUNTER_PRECISE_SHOTS))
+                    caster->RemoveAuraFromStack(SPELL_HUNTER_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+
+                if (caster->HasAura(SPELL_HUNTER_CALLING_THE_SHOTS))
+                    caster->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_TRUESHOT, -sSpellMgr->GetSpellInfo(SPELL_HUNTER_CALLING_THE_SHOTS)->GetEffect(EFFECT_0)->BasePoints);
             }
+        }
+
+        void HandleDamage(SpellEffIndex /*effIndex*/)
+        {
+            int32 tDamage = GetHitDamage();
+
+            if (Unit * caster = GetCaster()) 
+                if (Aura * aura = caster->GetAura(SPELL_HUNTER_PRECISE_SHOTS))
+                    if (aura->GetStackAmount() == 2 || aura->GetStackAmount() == 1) 
+                        tDamage *= 2;
+
+            SetHitDamage(tDamage);
         }
 
         void Register() override
         {
             OnHit += SpellHitFn(spell_hun_arcane_shot_SpellScript::HandleOnHit);
             OnCast += SpellCastFn(spell_hun_arcane_shot_SpellScript::HandleOnCast);
+            OnEffectLaunch += SpellEffectFn(spell_hun_arcane_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         }
     };
 
@@ -1261,15 +1286,31 @@ public:
                 if (caster->HasAura(SPELL_HUNTER_MASTER_MARKSMAN))
                     caster->RemoveAura(SPELL_HUNTER_MASTER_MARKSMAN);
 
-                if (caster->HasAura(SPELL_PRECISE_SHOTS))
-                    caster->RemoveAuraFromStack(SPELL_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+                if (caster->HasAura(SPELL_HUNTER_PRECISE_SHOTS))
+                    caster->RemoveAuraFromStack(SPELL_HUNTER_PRECISE_SHOTS, caster->GetGUID(), AURA_REMOVE_BY_DEFAULT, 1);
+
+                if (caster->HasAura(SPELL_HUNTER_CALLING_THE_SHOTS))
+                    caster->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_TRUESHOT, -sSpellMgr->GetSpellInfo(SPELL_HUNTER_CALLING_THE_SHOTS)->GetEffect(EFFECT_0)->BasePoints);
             }
+        }
+
+        void HandleDamage(SpellEffIndex /*effIndex*/)
+        {
+            int32 tDamage = GetHitDamage();
+
+            if (Unit * caster = GetCaster())
+                if (Aura * aura = caster->GetAura(SPELL_HUNTER_PRECISE_SHOTS))
+                    if (aura->GetStackAmount() == 2 || aura->GetStackAmount() == 1)
+                        tDamage *= 2;
+
+            SetHitDamage(tDamage);
         }
 
         void Register() override
         {
             OnHit += SpellHitFn(spell_hun_multi_shot_SpellScript::HandleOnHit);
             OnCast += SpellCastFn(spell_hun_multi_shot_SpellScript::HandleOnCast);
+            OnEffectLaunch += SpellEffectFn(spell_hun_multi_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         }
     };
 
@@ -3830,32 +3871,66 @@ class spell_Steady_Shot : public SpellScript
 };
 
 // 19434 Aimed Shot
-class spell_aim_shot : public SpellScript
-{
-    PrepareSpellScript(spell_aim_shot);
+class spell_aimed_shot : public SpellScript {
+    PrepareSpellScript(spell_aimed_shot);
 
-    void HandleDamage(SpellEffIndex /*effIndex*/)
-    {
-        if (Unit* caster = GetCaster())
-        {
-            if (caster->HasAura(SPELL_HUNTER_CAREFUL_AIM))
-            {
-                int32 tDamage = GetHitDamage();
-                uint8 pctHealthMax = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_0)->BasePoints;
-                uint8 pctHealthMin = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_1)->BasePoints;
+    void HandleDamage(SpellEffIndex /*effIndex*/) {
+        int32 tDamage = GetHitDamage();
+        uint8 pctHealthMax = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_0)->BasePoints;
+        uint8 pctHealthMin = sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_1)->BasePoints;
 
-                if (Unit* target = GetHitUnit())
+        if (Unit * target = GetHitUnit())
+            if (Unit * caster = GetCaster())
+                if (caster->HasAura(SPELL_HUNTER_CAREFUL_AIM))
                     if ((pctHealthMax < target->GetHealthPct()) || (target->GetHealthPct() < pctHealthMin))
-                        tDamage *= 1.5;
+                        if (roll_chance_i(sSpellMgr->GetSpellInfo(SPELL_HUNTER_CAREFUL_AIM)->GetEffect(EFFECT_2)->BasePoints))
+                            tDamage *= 2;
 
-                SetHitDamage(tDamage);
+        SetHitDamage(tDamage);
+    }
+
+    void HandleOnCast() {
+        Unit* caster = GetCaster();
+
+        if (caster->HasAura(SPELL_HUNTER_LETHAL_SHOT_AURA)) {
+            caster->RemoveAura(SPELL_HUNTER_LETHAL_SHOT_AURA);
+        }
+
+        if (caster->HasAura(SPELL_HUNTER_RANGERS_FINESSE)) {
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_HUNTER_ASPECT_OF_TURTLE)) {
+                caster->GetSpellHistory()->ModifyCooldown((SPELL_HUNTER_ASPECT_OF_TURTLE), -((sSpellMgr->GetSpellInfo(SPELL_HUNTER_RANGERS_FINESSE)->GetEffect(EFFECT_0)->BasePoints) * IN_MILLISECONDS));
             }
+
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_HUNTER_EXHILARATION)) {
+                caster->GetSpellHistory()->ModifyCooldown((SPELL_HUNTER_EXHILARATION), -((sSpellMgr->GetSpellInfo(SPELL_HUNTER_RANGERS_FINESSE)->GetEffect(EFFECT_0)->BasePoints) * IN_MILLISECONDS));
+            }
+        }
+
+        if (Player * modOwner = GetCaster()->GetSpellModOwner()) {
+            if (modOwner->HasAura(SPELL_HUNTER_DOUBLE_TAP)) {
+                Unit* target = GetExplTargetUnit();
+                int32 castTime = 0;
+                modOwner->ModSpellCastTime(GetSpellInfo(), castTime);
+                modOwner->CastCustomSpell(target, 164340, NULL, NULL, NULL, true, NULL, NULL, modOwner->GetGUID());
+                modOwner->RemoveAura(SPELL_HUNTER_DOUBLE_TAP);
+            }
+        }
+    }
+
+    void HandleCalcCastTime(int32 & castTime) {
+        Unit* caster = GetCaster();
+
+        if (caster->HasAura(SPELL_HUNTER_LOCK_AND_LOAD_AURA)) {
+            castTime = 0;
+            caster->RemoveAura(SPELL_HUNTER_LOCK_AND_LOAD_AURA);
         }
     }
 
     void Register() override
     {
-        OnEffectHitTarget += SpellEffectFn(spell_aim_shot::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnEffectHitTarget += SpellEffectFn(spell_aimed_shot::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        AfterCast += SpellCastFn(spell_aimed_shot::HandleOnCast);
+        OnCalcCastTime += SpellOnCalcCastTimeFn(spell_aimed_shot::HandleCalcCastTime);
     }
 };
 
@@ -3937,6 +4012,60 @@ class spell_master_marksman_Proc : public AuraScript
     }
 };
 
+// Hunter's Mark
+class PlayerScript_spell_hunters_mark : public PlayerScript {
+public:
+    PlayerScript_spell_hunters_mark() : PlayerScript("PlayerScript_spell_hunters_mark") {}
+
+    void OnCreatureKill(Player* Player, Creature* Creature) {
+        if (Player->getClass() == CLASS_HUNTER) {
+            //   if (Creature->HasAura(SPELL_HUNTER_HUNTERS_MARK_2, Player->GetGUID())) {
+            Player->SetPower(POWER_FOCUS, Player->GetPower(POWER_FOCUS) + 20);
+
+            //  }
+        }
+    }
+
+    void OnPVPKill(Player * killer, Player * killed) {
+        if (killer->getClass() == CLASS_HUNTER) {
+            //  if (killed->HasAura(SPELL_HUNTER_HUNTERS_MARK_2, killer->GetGUID())) {
+            killer->SetPower(POWER_FOCUS, killer->GetPower(POWER_FOCUS) + 20);
+        }
+        // }
+    }
+};
+
+// 260393 Lethal Shot 
+class spell_lethal_shot_Proc : public AuraScript {
+    PrepareAuraScript(spell_lethal_shot_Proc);
+
+    bool CheckProc(ProcEventInfo& eventInfo) {
+        if (eventInfo.GetSpellInfo()->Id == 56641 && eventInfo.GetActor()->HasAura(SPELL_HUNTER_LETHAL_SHOTS))
+            return true;
+        return false;
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_lethal_shot_Proc::CheckProc);
+    }
+};
+
+// 193526 Trueshot
+class spell_trueshot : public SpellScript
+{
+    PrepareSpellScript(spell_trueshot);
+
+    void HandleOnCast() {
+        if (Unit * caster = GetCaster()) {
+            caster->GetSpellHistory()->RestoreCharge(sSpellMgr->GetSpellInfo(SPELL_HUNTER_AIMED_SHOT)->ChargeCategoryId);
+        }
+    }
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_trueshot::HandleOnCast);
+    }
+};
 
 void AddSC_hunter_spell_scripts()
 {
@@ -3994,8 +4123,6 @@ void AddSC_hunter_spell_scripts()
     RegisterAuraScript(aura_hun_volley);
     RegisterAuraScript(aura_trailblazer);
     RegisterSpellScript(spell_hun_call_pet);
-
-
     new spell_hun_roar_of_sacrifice();
     new spell_hun_scatter_shot();
     new spell_hun_glaive_toss_damage();
@@ -4009,9 +4136,10 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_sidewinders();
     RegisterSpellScript(spell_hun_bestial_wrath);
     RegisterSpellScript(spell_Steady_Shot);
-    RegisterSpellScript(spell_aim_shot);
     new spell_Precise_Shots_Proc();
     RegisterAuraScript(spell_master_marksman_Proc);
+    RegisterAuraScript(spell_lethal_shot_Proc);
+    RegisterSpellScript(spell_trueshot);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
@@ -4033,4 +4161,5 @@ void AddSC_hunter_spell_scripts()
     // Playerscripts
     new PlayerScript_black_arrow();
     RegisterPlayerScript(PlayerScript_Lone_Wolf);
+    RegisterPlayerScript(PlayerScript_spell_hunters_mark);
 }
