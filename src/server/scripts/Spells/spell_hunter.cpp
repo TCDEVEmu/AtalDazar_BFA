@@ -156,7 +156,6 @@ enum HunterSpells
     SPELL_HUNTER_RAPID_FIRE_MISSILE                 = 257045,
     SPELL_HUNTER_LETHAL_SHOTS                       = 260393,
     SPELL_HUNTER_CALLING_THE_SHOTS                  = 260404,
-
     SPELL_HUNTER_TRUESHOT2                          = 288613,
     SPELL_HUNTER_CAREFUL_AIM                        = 260228,
     SPELL_HUNTER_MASTER_MARKSMAN_AURA               = 269576,
@@ -170,6 +169,12 @@ enum HunterSpells
 	SPELL_HUNTER_NATURAL_MENDING					= 270581,
 	SPELL_HUNTER_LOCK_AND_LOAD_AURA					= 194594,
 	SPELL_HUNTER_DOUBLE_TAP							= 260402,
+    SPELL_HUNTER_ASPECT_OF_THE_WILD                 = 193530,
+    SPELL_HUNTER_VENOMOUS_BITE                      = 257891,
+    SPELL_HUNTER_STOMP_AURA                         = 199530,
+    SPELL_HUNTER_STOMP                              = 201754,
+    SPELL_HUNTER_THRILL_OF_THE_HUNT                 = 257944,
+    SPELL_HUNTER_THRILL_OF_THE_HUNT_AURA            = 257946,
 };
 
 enum AncientHysteriaSpells
@@ -1982,8 +1987,18 @@ public:
         {
             Unit* caster = GetCaster()->GetGuardianPet();
             Unit* target = GetExplTargetUnit();
+            Player* player = GetCaster()->ToPlayer();
             if (!caster || !target)
                 return;
+
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_HUNTER_BESTIAL_WRATH)) {
+                caster->GetSpellHistory()->ModifyCooldown((SPELL_HUNTER_BESTIAL_WRATH), -((sSpellMgr->GetSpellInfo(SPELL_HUNTER_BESTIAL_WRATH)->GetEffect(EFFECT_2)->BasePoints) * IN_MILLISECONDS));
+            }
+
+            if (caster->HasAura(SPELL_HUNTER_STOMP_AURA)) {
+                Pet* pet = player->GetPet();
+                pet->CastSpell(pet, SPELL_HUNTER_STOMP, true);
+            }
 
             if (caster->GetVictim())
                 caster->AttackStop();
@@ -4067,6 +4082,45 @@ class spell_trueshot : public SpellScript
     }
 };
 
+// 193455 Cobra Shot
+class spell_cobra_shot : public SpellScript {
+    PrepareSpellScript(spell_cobra_shot);
+
+    void HandleOnCast() {
+        Unit* caster = GetCaster();
+
+        if (caster->GetSpellHistory()->HasCooldown(SPELL_HUNTER_KILL_COMMAND)) {
+            caster->GetSpellHistory()->ModifyCooldown((SPELL_HUNTER_KILL_COMMAND), -((sSpellMgr->GetSpellInfo(SPELL_HUNTER_COBRA_SHOT)->GetEffect(EFFECT_2)->BasePoints) * IN_MILLISECONDS));
+        }
+
+        if (caster->HasAura(SPELL_HUNTER_VENOMOUS_BITE)) {
+            if (caster->GetSpellHistory()->HasCooldown(SPELL_HUNTER_BESTIAL_WRATH)) {
+                caster->GetSpellHistory()->ModifyCooldown((SPELL_HUNTER_BESTIAL_WRATH), -(((sSpellMgr->GetSpellInfo(SPELL_HUNTER_VENOMOUS_BITE)->GetEffect(EFFECT_0)->BasePoints) / 10) * IN_MILLISECONDS));
+            }
+        }
+    }
+
+    void Register() override {
+        OnCast += SpellCastFn(spell_cobra_shot::HandleOnCast);
+    }
+};
+
+// 257944 Thrill of the Hunt
+class spell_thrill_of_the_hunt_proc : public AuraScript {
+    PrepareAuraScript(spell_thrill_of_the_hunt_proc);
+
+    bool CheckProc(ProcEventInfo& eventInfo) {
+        if (eventInfo.GetSpellInfo()->Id == 217200 && eventInfo.GetActor()->HasAura(SPELL_HUNTER_THRILL_OF_THE_HUNT))
+            return true;
+        return false;
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_thrill_of_the_hunt_proc::CheckProc);
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -4141,6 +4195,8 @@ void AddSC_hunter_spell_scripts()
     RegisterAuraScript(spell_lethal_shot_Proc);
     RegisterSpellScript(spell_trueshot);
     RegisterSpellScript(spell_aimed_shot);
+    RegisterSpellScript(spell_cobra_shot);
+    RegisterAuraScript(spell_thrill_of_the_hunt_proc);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
