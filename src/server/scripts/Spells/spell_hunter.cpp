@@ -4084,7 +4084,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_a_murder_of_crows();
     new spell_hun_barrage();
     new spell_hun_beast_cleave();
-    new spell_hun_beast_cleave_proc();
+    new spell_hun_beast_cleave_proc(); 
     new spell_hun_dire_beast();
     new spell_hun_kill_command();
     new spell_hun_kill_command_proc();
@@ -4140,6 +4140,7 @@ void AddSC_hunter_spell_scripts()
     RegisterAuraScript(spell_master_marksman_Proc);
     RegisterAuraScript(spell_lethal_shot_Proc);
     RegisterSpellScript(spell_trueshot);
+    RegisterSpellScript(spell_aimed_shot);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
