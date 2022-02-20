@@ -27,12 +27,8 @@ public:
     void OnLogin(Player* p, bool firstLogin) override
     {
 		if (firstLogin)
-		{
-            if (p->GetMapId() == MAP_ALLIED_DK_ICECROWN && p->getClass() == CLASS_DEATH_KNIGHT && p->IsAlliedRace)
-            {
+            if (p->GetMapId() == MAP_ALLIED_DK_ICECROWN && p->getClass() == CLASS_DEATH_KNIGHT && p->IsAlliedRace())
                 p->GetSceneMgr().PlaySceneByPackageId(2780);
-            }
-		}
     }
 };
 
