@@ -27,26 +27,9 @@ public:
     {
 		if (firstLogin)
 		{
-			if (p->getRace() == RACE_PANDAREN_HORDE || RACE_PANDAREN_ALLIANCE && p->GetMapId() == 2297 && p->getClass() == 6)
-			{
-				p->GetSceneMgr().PlaySceneByPackageId(2780);
-				p->SetLevel(58);
-			}
-            if (p->getRace() == RACE_VULPERA)
+            if (p->GetMapId() == 2297 && p->getClass() == 6)
             {
-                p->GetSceneMgr().PlaySceneByPackageId(2790);
-            }
-            if (p->getRace() == RACE_ZANDALARI_TROLL)
-            {
-                p->GetSceneMgr().PlaySceneByPackageId(2087);
-            }
-            if (p->getRace() == RACE_MECHAGNOME)
-            {
-                p->GetSceneMgr().PlaySceneByPackageId(2763);
-            }
-            if (p->getRace() == RACE_KUL_TIRAN)
-            {
-                p->GetSceneMgr().PlaySceneByPackageId(2494);
+                p->GetSceneMgr().PlaySceneByPackageId(2780);
             }
 		}
     }
