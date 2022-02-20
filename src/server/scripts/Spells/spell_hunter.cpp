@@ -4126,6 +4126,22 @@ class spell_thrill_of_the_hunt_proc : public AuraScript {
     }
 };
 
+// 193533 Steady Focus
+class PlayerScript_steady_focus : public PlayerScript {
+public:
+    PlayerScript_steady_focus() : PlayerScript("PlayerScript_steady_focus") { }
+
+    void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/ ) {
+
+        if (player->HasAura(SPELL_HUNTER_STEADY_FOCUS_PROC)) {
+            if (spell->GetSpellInfo()->Id != SPELL_HUNTER_STEADY_SHOT && spell->GetSpellInfo()->Id != SPELL_HUNTER_AUTO_SHOT &&
+                spell->GetSpellInfo()->DmgClass != 0 && spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER) {
+                player->RemoveAura(SPELL_HUNTER_STEADY_FOCUS_PROC);
+            }
+        }
+    }
+};
+
 void AddSC_hunter_spell_scripts()
 {
     new spell_hun_harpoon();
@@ -4224,4 +4240,5 @@ void AddSC_hunter_spell_scripts()
     new PlayerScript_black_arrow();
     RegisterPlayerScript(PlayerScript_Lone_Wolf);
     RegisterPlayerScript(PlayerScript_spell_hunters_mark);
+    RegisterPlayerScript(PlayerScript_steady_focus);
 }
