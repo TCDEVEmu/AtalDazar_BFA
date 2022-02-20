@@ -17,6 +17,7 @@
 #include "ScriptedCreature.h"
 #include "TemporarySummon.h"
 
+#define MAP_ALLIED_DK_ICECROWN 2297
 
 class AlliedRaces : public PlayerScript
 {
@@ -27,7 +28,7 @@ public:
     {
 		if (firstLogin)
 		{
-            if (p->GetMapId() == 2297 && p->getClass() == 6)
+            if (p->GetMapId() == MAP_ALLIED_DK_ICECROWN && p->getClass() == CLASS_DEATH_KNIGHT && p->IsAlliedRace)
             {
                 p->GetSceneMgr().PlaySceneByPackageId(2780);
             }
@@ -114,7 +115,7 @@ public:
                         DoCast(player, 51918, true); // this is only for visual effect!
                         me->HandleEmoteCommand(EMOTE_ONESHOT_CUSTOM_SPELL_01);
                         Talk(0, player);
-                        player->TeleportTo(2297, 498.144653f, -2124.429932f, 840.856934f, 3.065104f);
+                        player->TeleportTo(MAP_ALLIED_DK_ICECROWN, 498.144653f, -2124.429932f, 840.856934f, 3.065104f);
                         player->ResurrectPlayer(100.0f, false);
                         FlyBackTimer = 3000;
                         break;
@@ -143,7 +144,7 @@ public:
 
     void OnPlayerDeath(Player* player) override
     {
-        if(player->GetMapId() == 2297)
+        if(player->GetMapId() == MAP_ALLIED_DK_ICECROWN)
             player->SummonCreature(228534, player->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN, 0U, 0U, true);
     }
 

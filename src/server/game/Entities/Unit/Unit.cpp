@@ -10257,6 +10257,40 @@ void Unit::SetLevel(uint8 lvl)
     }
 }
 
+bool Unit::IsAlliedRace()
+{
+    if (Player * player = ToPlayer())
+    {
+        /* pandaren death knight (basically same thing as allied death knight) */
+        if ((player->getRace() == RACE_PANDAREN_ALLIANCE) || (player->getRace() == RACE_PANDAREN_HORDE) || (player->getRace() == RACE_PANDAREN_NEUTRAL) && (player->getClass() == CLASS_DEATH_KNIGHT))
+        {
+            return true;
+        }
+
+        /* other allied races */
+        switch (player->getRace())
+        {
+        case RACE_NIGHTBORNE:
+        case RACE_HIGHMOUNTAIN_TAUREN:
+        case RACE_VOID_ELF:
+        case RACE_LIGHTFORGED_DRAENEI:
+        case RACE_ZANDALARI_TROLL:
+        case RACE_KUL_TIRAN:
+        case RACE_DARK_IRON_DWARF:
+        case RACE_VULPERA:
+        case RACE_MAGHAR_ORC:
+        case RACE_MECHAGNOME:
+            return true;
+            break;
+        default:
+            return false;
+            break;
+        }
+    }
+
+    return false;
+}
+
 // Return true if unit was above health pct and will be below with damage
 bool Unit::HealthWillBeBelowPctDamaged(int32 pct, uint32 damage) const
 {
