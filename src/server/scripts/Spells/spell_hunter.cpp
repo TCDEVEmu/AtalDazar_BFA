@@ -3876,8 +3876,13 @@ class spell_Steady_Shot : public SpellScript
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
     {
-        if (Unit* caster = GetCaster())
-            caster->SetPower(POWER_FOCUS, caster->GetPower(POWER_FOCUS) + sSpellMgr->GetSpellInfo(SPELL_HUNTER_STEADY_SHOT)->GetEffect(EFFECT_1)->BasePoints);
+        Unit* caster = GetCaster();
+
+        caster->SetPower(POWER_FOCUS, caster->GetPower(POWER_FOCUS) + sSpellMgr->GetSpellInfo(SPELL_HUNTER_STEADY_SHOT)->GetEffect(EFFECT_1)->BasePoints);
+
+        if (caster->HasAura(SPELL_HUNTER_STEADY_FOCUS))
+            caster->AddAura(SPELL_HUNTER_STEADY_FOCUS_PROC, caster);
+        
     }
     void Register() override
     {
