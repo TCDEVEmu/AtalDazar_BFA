@@ -22,8 +22,59 @@
 #include "ScriptMgr.h"
 #include "InstanceScript.h"
 
+enum 
+{
+	ACTION_NZOTH_TALK,
+	ACTION_WRATHION_TALK,
+};
+
+const Position annex_of_prophecy_first_elevator_pos = { -1099.468f, -45.313f, -237.333f, 0.043f };
+
+//161720, used as custom mini event because of first elevator
+struct npc_wrathion_special : public ScriptedAI
+{
+	npc_wrathion_special(Creature* c) : ScriptedAI(c) { }
+
+private:
+	bool Talk;
+
+	void Reset() override
+	{
+		ScriptedAI::Reset();
+		Talk = false;
+		me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+	}
+
+	void MoveInLineOfSight(Unit* who) override
+	{
+		if (!Talk && who->IsPlayer() && who->GetDistance2d(me) <= 15.0f)
+		{
+			Talk = true;
+
+			if (Talk)
+				me->Say("Champions! I will lead you to the top.", LANG_UNIVERSAL);
+		}
+	}
+
+	void OnSpellClick(Unit* clicker, bool& /*result*/) override
+	{
+		if (Player* player = clicker->ToPlayer())
+		{
+			if (!player->IsInCombat() && instance->GetBossState(DATA_SKITRA) == DONE && me->GetAreaId() == 12880)
+				player->NearTeleportTo(annex_of_prophecy_first_elevator_pos, false);
+
+			//Second elevator, teleport to Vexiona
+			if (!player->IsInCombat() && instance->GetBossState(DATA_XANESH) == DONE && me->GetAreaId() == 12870)
+				player->NearTeleportTo(-516.791f, -454.167f, -149.436f, 1.690f, false);
+
+			if (!player->IsInCombat() && instance->GetBossState(DATA_XANESH) == DONE && instance->GetBossState(DATA_VEXIONA) == DONE && instance->GetBossState(DATA_HIVEMIND) == DONE && instance->GetBossState(DATA_RADEN) == DONE)
+				player->NearTeleportTo(-11667.841f, 9313.372f, 130.078f, 6.273f, false);
+		}
+	}
+};
+
 void AddSC_nyalotha()
 {
-
+	RegisterCreatureAI(npc_wrathion_special);
 }
 

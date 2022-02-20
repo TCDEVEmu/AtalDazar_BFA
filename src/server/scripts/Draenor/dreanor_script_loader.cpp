@@ -136,6 +136,13 @@ void AddSC_boss_warlord_zaela();
 void AddSC_upper_blackrock_spire();
 void AddSC_instance_upper_blackrock_spire();
 
+// Scenarios
+void AddSC_scenario_draenor_shadowmoon_valley();
+void AddSC_scenario_frostfire_finale();
+void AddSC_scenario_talador_iron_horde_finale();
+void AddSC_scenario_grommashar();
+void AddSC_scenario_gorgrond_finale_1();
+
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
 void AddDraenorScripts()
@@ -258,4 +265,11 @@ void AddDraenorScripts()
     AddSC_boss_warlord_zaela();
     AddSC_upper_blackrock_spire();
     AddSC_instance_upper_blackrock_spire();
+
+    // Scenarios
+    AddSC_scenario_draenor_shadowmoon_valley();
+    AddSC_scenario_frostfire_finale();
+    AddSC_scenario_talador_iron_horde_finale();
+    AddSC_scenario_grommashar();
+    AddSC_scenario_gorgrond_finale_1();
 }

@@ -16,6 +16,12 @@ struct instance_nyalotha : public InstanceScript
         SetBossNumber(EncounterCount);
     }
 
+    void OnPlayerEnter(Player* player) override
+    {
+        if (InstanceScript* instance = player->GetInstanceScript())
+            if (instance->GetBossState(DATA_WRATHION) == DONE)
+                player->TeleportTo(2217, -1760.0f, -43.0f, -518.0f, 6.26f);
+    }
 };
 
 void AddSC_instance_nyalotha()

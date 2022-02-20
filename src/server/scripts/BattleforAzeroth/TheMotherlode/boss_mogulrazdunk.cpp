@@ -117,6 +117,7 @@ const Position centerPos = { 1101.65f, -3918.86f, 79.52f }; //40
 #define DRILL_TEXT "Crush!"
 #define PHASE2_TEXT "What am I payin' you fools for?! Get out here and fix this!"
 
+// 129232
 class bfa_boss_mogul_razdunk : public CreatureScript
 {
 public:
@@ -367,7 +368,7 @@ public:
                     SelectSoundAndText(me, 3);
                     me->GetMotionMaster()->Clear();
                     std::list<Unit*> targets;
-                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 500.0f, true);
+                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 0, 500.0f, true);
 
                     if (!targets.empty())
                         if (targets.size() >= 1)
@@ -392,6 +393,7 @@ public:
     }
 };
 
+// ?
 class bfa_npc_homing_missile : public CreatureScript
 {
 public:
@@ -446,7 +448,7 @@ public:
                 case EVENT_FIXATE:
                 {
                     std::list<Unit*> targets;
-                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 500.0f, true);
+                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 0, 500.0f, true);
 
                     if (!targets.empty())
                         if (targets.size() >= 1)
@@ -454,7 +456,7 @@ public:
 
                     for (auto target : targets)
                     {
-                        //  me->AddThreat(target, 9999999999.9f);
+                        //  me->GetThreatManager().AddThreat(target, 9999999999.9f);
                         me->AI()->AttackStart(target);
                     }
 
@@ -492,6 +494,7 @@ public:
     }
 };
 
+// ?
 class bfa_npc_boomba : public CreatureScript
 {
 public:
@@ -567,7 +570,7 @@ public:
         return new bfa_npc_boomba_AI(creature);
     }
 };
-
+// ?
 class bfa_npc_venture_skyscorcher : public CreatureScript
 {
 public:

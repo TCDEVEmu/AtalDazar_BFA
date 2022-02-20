@@ -68,50 +68,6 @@ struct npc_reanimation_totem : public ScriptedAI
     }
 
 };
-//129985
-struct npc_tiki_mask : public ScriptedAI
-{
-    npc_tiki_mask(Creature* creature) : ScriptedAI(creature) { }
-
-    void InitializeAI() override
-    {
-        ScriptedAI::InitializeAI();
-    }
-
-    void Reset() override
-    {
-        ScriptedAI::Reset();
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        //if(me->isplayer)
-        ScriptedAI::UpdateAI(diff);
-    }
-
-};
-
-//129985
-struct npc_zandalar_witch : public ScriptedAI
-{
-    npc_zandalar_witch(Creature* creature) : ScriptedAI(creature) { }
-
-    void InitializeAI() override
-    {
-        ScriptedAI::InitializeAI();
-    }
-
-    void Reset() override
-    {
-        ScriptedAI::Reset();
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        //if(me->isplayer)
-        ScriptedAI::UpdateAI(diff);
-    }
-};
 
 //npc 126734
 struct npc_mob_echo_of_shadra : public ScriptedAI
@@ -169,7 +125,7 @@ void OpenGate(InstanceScript* instance)
     if (GameObject* go = instance->instance->GetGameObject(instance->GetGuidData(GO_GATE_004)))
         go->SetGoState(GO_STATE_ACTIVE);
 };
-
+/*
 class go_ad_switch : public GameObjectScript {
 public:
     go_ad_switch() : GameObjectScript("go_ad_switch") { }
@@ -180,7 +136,8 @@ public:
             OpenGate(go->GetInstanceScript());
     }
 };
-
+*/
+// 278422
 class go_waterfall_stairs : public GameObjectScript {
 public:
     go_waterfall_stairs() : GameObjectScript("go_waterfall_stairs") { }
@@ -212,7 +169,7 @@ class spell_rooting_decay : public AuraScript
 
 void AddSC_atal_dazar()
 {
-    new go_ad_switch();
+    // new go_ad_switch();
     new go_waterfall_stairs();
     RegisterCreatureAI(npc_mob_echo_of_shadra);
     RegisterCreatureAI(npc_reanimation_totem);

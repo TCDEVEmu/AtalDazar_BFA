@@ -220,7 +220,7 @@ struct npc_irontide_granadier : public ScriptedAI
                 {
                     me->CastSpell(target, BlackPowderBombAura, true);
                     me->GetThreatManager().resetAllAggro();
-                    me->GetThreatManager().addThreat(target, 1000000.0f);
+                    me->GetThreatManager().AddThreat(target, 1000000.0f);
                     me->GetMotionMaster()->MoveChase(target);
                     targetGUID = target->GetGUID();
                 }

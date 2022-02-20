@@ -18,6 +18,19 @@
 #include "ScriptMgr.h"
 #include "siege_of_boralus.h"
 
+const Position pos = { };
+
+enum Texts
+{
+	SAY_AGGRO = 0,
+	SAY_DEATH = 1,
+};
+
+enum Events
+{
+	EVENT_BREAK_WATER = 1,
+};
+
 enum Spells
 {
 	CRASHING_TIDE_SS = 261563,
@@ -32,7 +45,53 @@ enum Spells
 	TIDAL_SURGE_KC = 290586
 };
 
+//128651
+struct boss_hadal_darkfathom : public BossAI
+{
+	boss_hadal_darkfathom(Creature* creature) : BossAI(creature, DATA_HADAL_DARKFATHOM) { }
+
+	void Reset() override
+	{
+		BossAI::Reset();
+		me->SetPowerType(POWER_MAELSTROM);
+		me->SetPower(POWER_MAELSTROM, 0);
+	}
+
+	void EnterCombat(Unit* u) override
+	{
+		_EnterCombat();
+		Talk(SAY_AGGRO);
+		events.ScheduleEvent(EVENT_BREAK_WATER, 5s);
+	}
+
+	void JustDied(Unit* u) override
+	{
+		_JustDied();
+		Talk(SAY_DEATH);
+	}
+
+	void ExecuteEvent(uint32 eventid) override
+	{
+		switch (eventid)
+		{
+		case EVENT_BREAK_WATER:
+		{
+			DoCast(BREAK_WATER_SS);
+			UnitList tarlist;
+			SelectTargetList(tarlist, 5, SELECT_TARGET_RANDOM, 0, 100.0f, true);
+			for (Unit* tar : tarlist)
+			DoCast(tar, BREAK_WATER_MISSILE, true);
+			events.Repeat(15s);
+			break;
+		}
+
+		default:
+			break;
+		}
+	}
+};
+
 void AddSC_boss_hadal_darkfathom()
 {
-
+	RegisterCreatureAI(boss_hadal_darkfathom);
 }

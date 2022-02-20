@@ -3959,6 +3959,11 @@ bool Map::IsRaidOrHeroicDungeon() const
     return IsRaid() || IsHeroic();
 }
 
+bool Map::IsNormal() const
+{
+    return i_spawnMode == DIFFICULTY_NORMAL || i_spawnMode == DIFFICULTY_NORMAL_RAID || i_spawnMode == DIFFICULTY_NORMAL_ISLAND || i_spawnMode == DIFFICULTY_NORMAL_WARFRONT;
+}
+
 bool Map::IsHeroic() const
 {
     if (DifficultyEntry const* difficulty = sDifficultyStore.LookupEntry(i_spawnMode))

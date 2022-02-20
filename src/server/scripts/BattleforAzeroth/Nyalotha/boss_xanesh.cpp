@@ -26,6 +26,16 @@
 #include "AreaTriggerAI.h"
 #include "nyalotha.h"
 
+enum Texts
+{
+	SAY_AGGRO = 0,
+	SAY_SOUL_FLAY,
+	SAY_ABYSSAL_STRIKE,
+	SAY_TORMENT,
+	SAY_VOID_RITUAL,
+	SAY_OBELISKS,
+};
+
 enum Spells
 {
 	SPELL_TORMENT_DAMAGE = 311383,
@@ -63,6 +73,16 @@ enum Spells
 	SPELL_BERSERK = 306845,
 };
 
+enum Events
+{
+	EVENT_TORMENT = 1,
+	EVENT_ABYSSAL_STRIKE,
+	EVENT_SOUL_FLY,
+	EVENT_VOID_RITUAL,
+	EVENT_OBELISKS,
+	EVENT_BERSERK
+};
+
 const Position goal_portal_spawn_one = { -559.329f, -342.082f, -251.202f, 1.0f };
 const Position goal_portal_spawn_two = { -501.874f, -336.755f, -251.092f, 1.0f };
 const Position goal_portal_spawn_three = { -496.966f, -378.767f, -251.133f, 1.0f };
@@ -70,7 +90,273 @@ const Position goal_portal_spawn_four = { -551.031f, -382.878f, -251.157f, 1.0f 
 const Position void_orb_spawn = { -521.773f, -392.395f, -251.088f, 1.682f };
 const Position azshara_pos = { -524.841f, -357.070f, -250.923f, 4.783f };
 
+//156575
+struct boss_xanesh : public BossAI
+{
+	boss_xanesh(Creature* creature) : BossAI(creature, DATA_XANESH) { }
+
+	void Reset() override
+	{
+		BossAI::Reset();
+		me->SetPowerType(POWER_ENERGY);
+		me->SetMaxPower(POWER_ENERGY, 100);
+		me->SetPower(POWER_ENERGY, 0);
+	}
+
+	void EnterCombat(Unit* /*who*/) override
+	{
+		Talk(SAY_AGGRO);
+		_EnterCombat();
+		if (IsHeroic() || IsMythic())
+			events.ScheduleEvent(EVENT_OBELISKS, 5s);
+		events.ScheduleEvent(EVENT_ABYSSAL_STRIKE, 10s);
+		events.ScheduleEvent(EVENT_VOID_RITUAL, 18s);
+		events.ScheduleEvent(EVENT_SOUL_FLY, 25s);
+		events.ScheduleEvent(EVENT_TORMENT, 50s);
+		events.ScheduleEvent(EVENT_BERSERK, 15min);
+		if (Creature* azshara = me->FindNearestCreature(NPC_QUEEN_AZSHARA_XANESH, 100.0f, true))
+			me->AddAura(SPELL_ANQUISH, azshara);
+	}
+
+	void ExecuteEvent(uint32 eventId) override
+	{
+		switch (eventId)
+		{
+		case EVENT_ABYSSAL_STRIKE:
+			Talk(SAY_ABYSSAL_STRIKE);
+			if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT, 0, 100.0f, true))
+				me->CastSpell(target, SPELL_ABYSSAL_STRIKE, false);
+			events.Repeat(45s);
+			break;
+
+		case EVENT_SOUL_FLY:
+			Talk(SAY_SOUL_FLAY);
+			me->CastSpell(nullptr, SPELL_SOUL_FLY_TRIGGER, false);
+			if (IsMythic())
+			{
+				UnitList tarlist;
+				SelectTargetList(tarlist, 6, SELECT_TARGET_RANDOM, 0, 100.0f);
+				for (Unit* targets : tarlist)
+				{
+					me->CastSpell(targets, SPELL_SOUL_FLY_DEBUFF, true);
+					me->CastSpell(targets->GetPosition(), SPELL_SOUL_FLY_MISSILE, true);
+				}
+			}
+			else
+			{
+				UnitList tarlist;
+				SelectTargetList(tarlist, 3, SELECT_TARGET_RANDOM, 0, 100.0f);
+				for (Unit* targets : tarlist)
+				{
+					me->CastSpell(targets, SPELL_SOUL_FLY_DEBUFF, true);
+					me->CastSpell(targets->GetPosition(), SPELL_SOUL_FLY_MISSILE, true);
+				}
+			}
+			events.Repeat(35s);
+			break;
+
+		case EVENT_VOID_RITUAL:
+			Talk(SAY_VOID_RITUAL);
+			me->CastSpell(nullptr, SPELL_VOID_RITUAL, false);
+			events.Repeat(80s);
+			break;
+
+		case EVENT_TORMENT:
+		{
+			Talk(SAY_TORMENT);
+			std::list<Creature*> tormentVehicles;
+			me->GetCreatureListWithEntryInGrid(tormentVehicles, NPC_TORMENT_VEHICLE, 100.0f);
+			for (auto& controllers : tormentVehicles)
+			{
+				controllers->CastSpell(nullptr, SPELL_TORMENT_DAMAGE, false);
+			}
+			events.Repeat(30s);
+			break;
+		}
+
+		case EVENT_OBELISKS:
+		{
+			me->DespawnCreaturesInArea(NPC_RITUAL_OBELISK, 125.0f);
+			me->DespawnCreaturesInArea(NPC_LARGE_RITUAL_OBELISK, 125.0f);
+			Talk(SAY_OBELISKS);
+			me->CastSpell(nullptr, SPELL_SUMMON_RITUAL_OBELISKS, false);
+			if (Creature* azshara = me->FindNearestCreature(NPC_QUEEN_AZSHARA_XANESH, 100.0f, true))
+			{		
+				for (uint8 i = 0; i < 8; i++)
+				{
+					azshara->SummonCreature(NPC_RITUAL_OBELISK, azshara->GetRandomNearPosition(25.0f), TEMPSUMMON_MANUAL_DESPAWN);
+				}
+			}
+			events.Repeat(65s);
+			break;
+		}
+
+		case EVENT_BERSERK:
+			me->CastSpell(nullptr, SPELL_BERSERK, true);
+			break;
+		}
+	}
+
+	void ChooseGoalPortal()
+	{
+		me->DespawnCreaturesInArea(NPC_GOAL_PORTAL, 125.0f);
+		uint32 ChoosePortal = urand(0, 3);
+		switch (ChoosePortal)
+		{
+		case 0:			
+			me->SummonCreature(NPC_GOAL_PORTAL, goal_portal_spawn_one, TEMPSUMMON_MANUAL_DESPAWN);
+			break;
+
+		case 1:
+			me->SummonCreature(NPC_GOAL_PORTAL, goal_portal_spawn_two, TEMPSUMMON_MANUAL_DESPAWN);
+			break;
+
+		case 2:
+			me->SummonCreature(NPC_GOAL_PORTAL, goal_portal_spawn_three, TEMPSUMMON_MANUAL_DESPAWN);
+			break;
+
+		case 3:
+			me->SummonCreature(NPC_GOAL_PORTAL, goal_portal_spawn_four, TEMPSUMMON_MANUAL_DESPAWN);
+			break;
+		}
+	}
+
+	void OnSpellFinished(SpellInfo const* spellInfo) override
+	{
+		switch (spellInfo->Id)
+		{
+		case SPELL_VOID_RITUAL:
+		{
+			me->SummonCreature(NPC_VOID_ORB, void_orb_spawn, TEMPSUMMON_MANUAL_DESPAWN);
+			ChooseGoalPortal();
+			break;
+		}
+
+		}
+	}
+
+	void CleanupEncounter(InstanceScript* instance, Creature* me)
+	{
+		_JustReachedHome();
+		me->DespawnCreaturesInArea(NPC_FLAYED_SOUL, 125.0f);
+		me->DespawnCreaturesInArea(NPC_RITUAL_OBELISK, 125.0f);
+		me->DespawnCreaturesInArea(NPC_LARGE_RITUAL_OBELISK, 125.0f);
+		me->DespawnCreaturesInArea(NPC_AWAKENED_TERROR, 125.0f);
+		me->DespawnCreaturesInArea(NPC_FLAYED_SOUL, 125.0f);
+		me->DespawnCreaturesInArea(NPC_TORMENT_VEHICLE, 125.0f);
+		me->DespawnCreaturesInArea(NPC_VOID_ORB, 125.0f);
+		me->DespawnCreaturesInArea(NPC_GOAL_PORTAL, 125.0f);
+		me->RemoveAllAreaTriggers();
+		if (Creature* azshara = me->FindNearestCreature(NPC_QUEEN_AZSHARA_XANESH, 100.0f, true))
+			azshara->RemoveAura(SPELL_ANQUISH);
+	}
+
+	void EnterEvadeMode(EvadeReason /*why*/) override
+	{
+		CleanupEncounter(instance, me);
+		_DespawnAtEvade();
+	}
+
+	void JustDied(Unit* /*attacker*/) override
+	{
+		_JustDied();
+		instance->DoModifyPlayerCurrencies(CURRENCY_ECHOES_OF_NYALOTHA, 12);
+	}
+};
+
+//156579
+struct npc_queen_azshara_xanesh : public ScriptedAI
+{
+	npc_queen_azshara_xanesh(Creature* c) : ScriptedAI(c) { }
+
+	void Reset() override
+	{
+		ScriptedAI::Reset();
+		me->AddUnitState(UNIT_STATE_STUNNED);
+		me->CastSpell(nullptr, SPELL_LARGE_OBELISK_AREA_DENIAL, true);
+		me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+	}
+};
+
+//156840
+struct npc_torment_vehicle : public ScriptedAI
+{
+	npc_torment_vehicle(Creature* c) : ScriptedAI(c) { }
+
+	void Reset() override
+	{
+		ScriptedAI::Reset();
+		me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
+	}
+};
+
+//157126,162098
+struct npc_ritual_obelisk : public ScriptedAI
+{
+	npc_ritual_obelisk(Creature* c) : ScriptedAI(c) { }
+
+	void Reset() override
+	{
+		ScriptedAI::Reset();
+		me->SetReactState(REACT_PASSIVE);
+		me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
+		switch (me->GetEntry())
+		{
+		case NPC_RITUAL_OBELISK:
+			me->CastSpell(nullptr, SPELL_OBELISK_AREA_DENIAL, true);
+			break;
+
+		case NPC_LARGE_RITUAL_OBELISK:
+			me->CastSpell(nullptr, SPELL_LARGE_OBELISK_AREA_DENIAL, true);
+			break;
+		}
+	}
+
+	void MoveInLineOfSight(Unit* unit) override
+	{
+		 switch (me->GetEntry())
+		 {
+		 case NPC_RITUAL_OBELISK:
+			 if (unit->IsPlayer() && me->GetDistance2d(unit) <= 4.9f && !unit->HasAura(SPELL_RITUAL_FIELD))
+				 me->AddAura(SPELL_RITUAL_FIELD, unit);
+
+			 if (unit->IsPlayer() && me->GetDistance2d(unit) > 4.9f && unit->HasAura(SPELL_RITUAL_FIELD))
+				 unit->RemoveAura(SPELL_RITUAL_FIELD);
+			 break;
+
+		 case NPC_LARGE_RITUAL_OBELISK:
+			 if (unit->IsPlayer() && me->GetDistance2d(unit) <= 8.3f && !unit->HasAura(SPELL_RITUAL_FIELD))
+				 me->AddAura(SPELL_RITUAL_FIELD, unit);
+
+			 if (unit->IsPlayer() && me->GetDistance2d(unit) > 8.3f && unit->HasAura(SPELL_RITUAL_FIELD))
+				 unit->RemoveAura(SPELL_RITUAL_FIELD);
+			 break;
+		 }
+	}
+};
+
+//157005
+struct npc_flayed_soul : public ScriptedAI
+{
+	npc_flayed_soul(Creature* c) : ScriptedAI(c) { }
+
+	void Reset() override
+	{
+		ScriptedAI::Reset();
+		DoZoneInCombat(nullptr);		
+	}
+
+	void EnterCombat(Unit* /*who*/) override
+	{
+		me->CastSpell(nullptr, SPELL_SOUL_FLY, false);
+	}
+};
+
 void AddSC_xanesh()
 {
-
+	RegisterCreatureAI(boss_xanesh);
+	RegisterCreatureAI(npc_queen_azshara_xanesh);
+	RegisterCreatureAI(npc_torment_vehicle);
+	RegisterCreatureAI(npc_ritual_obelisk);
+	RegisterCreatureAI(npc_flayed_soul);
 };

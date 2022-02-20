@@ -1075,6 +1075,22 @@ bool Unit::CastSpell(Unit* victim, SpellInfo const* spellInfo, TriggerCastFlags 
     return CastSpell(targets, spellInfo, nullptr, triggerFlags, castItem, triggeredByAura, originalCaster);
 }
 
+bool Unit::CastSpellWithOrientation(Unit* victim, uint32 spellId, bool triggered, float orientation)
+{
+    SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(spellId);
+    if (!spellInfo)
+    {
+        TC_LOG_ERROR("entities.unit", "CastSpellWithOrientation: unknown spell id %u by caster: %s", spellId, GetGUID().ToString().c_str());
+        return false;
+    }
+    SetFacingTo(orientation);
+    SpellCastTargets targets;
+    targets.SetUnitTarget(victim);
+    targets.SetOrientation(orientation);
+    targets.SetMapId(GetMapId());   // always set in sniffs
+    return CastSpell(targets, spellInfo, nullptr, triggered ? TRIGGERED_FULL_MASK : TRIGGERED_NONE);
+}
+
 bool Unit::CastCustomSpell(Unit* target, uint32 spellId, int32 const* bp0, int32 const* bp1, int32 const* bp2, bool triggered, Item* castItem, AuraEffect const* triggeredByAura, ObjectGuid originalCaster)
 {
     CustomSpellValues values;

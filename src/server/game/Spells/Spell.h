@@ -268,6 +268,8 @@ class TC_GAME_API SpellCastTargets
         void SetPitch(float pitch) { m_pitch = pitch; }
         float GetSpeed() const { return m_speed; }
         void SetSpeed(float speed) { m_speed = speed; }
+        void SetOrientation(float orientation) { m_orientation = orientation; };
+        void SetMapId(uint32 mapId) { m_mapId = mapId; };
 
         float GetDist2d() const { return m_src._position.GetExactDist2d(&m_dst._position); }
         float GetSpeedXY() const { return m_speed * std::cos(m_pitch); }
@@ -294,6 +296,8 @@ class TC_GAME_API SpellCastTargets
         SpellDestination m_dst;
 
         float m_pitch, m_speed;
+        Optional<float> m_orientation;
+        Optional<uint32> m_mapId;
         std::string m_strTarget;
 };
 

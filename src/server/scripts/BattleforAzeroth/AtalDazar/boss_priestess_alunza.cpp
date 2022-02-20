@@ -369,7 +369,7 @@ private:
     bool touched;
 };
 
-//259205
+// 131009
 struct npc_spirit_of_gold : public ScriptedAI
 {
     npc_spirit_of_gold(Creature* creature) : ScriptedAI(creature) { }
@@ -413,7 +413,7 @@ struct npc_spirit_of_gold : public ScriptedAI
             if (Player* player = me->SelectNearestPlayer(100.0f))
             {
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->GetThreatManager().addThreat(player, 1000000.0f);
+                me->GetThreatManager().AddThreat(player, 1000000.0f);
                 me->GetMotionMaster()->MoveChase(player);
                 me->Attack(player, true);
             }
@@ -474,6 +474,7 @@ class spell_priestess_tranfusion_damage : public SpellScript
     }
 };
 
+// 255835
 class spell_priestess_transfusion_heal : public SpellScript
 {
     PrepareSpellScript(spell_priestess_transfusion_heal);
@@ -497,7 +498,6 @@ class spell_priestess_transfusion_heal : public SpellScript
         OnEffectHitTarget += SpellEffectFn(spell_priestess_transfusion_heal::HandleHeal, EFFECT_0, SPELL_EFFECT_HEAL_PCT);
     }
 };
-
 
 // 255577 - Transfusion
 class spell_priestess_transfusion : public AuraScript

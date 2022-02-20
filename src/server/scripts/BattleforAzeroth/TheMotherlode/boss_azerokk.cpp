@@ -86,6 +86,7 @@ const Position frackingPos[2] =
 #define DEATH_TEXT "Oh nooo..."
 #define AGGRO_TEXT "Come here..."
 
+// 129227
 class bfa_boss_azerokk : public CreatureScript
 {
 public:
@@ -275,6 +276,7 @@ public:
     }
 };
 
+// 129802
 class bfa_npc_earthrager : public CreatureScript
 {
 public:
@@ -319,7 +321,7 @@ public:
                     {
                         me->CastSpell(target, SPELL_RAGING_GAZE_BEAM, true);
                         me->Attack(target, true);
-                        //  me->AddThreat(target, 999999.9f);
+                        //  me->GetThreatManager().AddThreat(target, 999999.9f);
                     }
                     break;
                 case EVENT_JAGGED_CUT:
@@ -344,6 +346,7 @@ public:
     }
 };
 
+// 136500
 class bfa_npc_fracking_totem : public CreatureScript
 {
 public:
@@ -395,6 +398,7 @@ public:
     }
 };
 
+// 129804
 class bfa_npc_fracking_totem_selector : public CreatureScript
 {
 public:

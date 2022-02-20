@@ -26,7 +26,7 @@ void AddSC_zone_tiragarde_sound();
 void AddSC_boss_aqusirr();
 void AddSC_boss_lord_stormsong();
 void AddSC_boss_tidesage_council();
-void AddSC_volzith_the_whisperer();
+void AddSC_boss_volzith_the_whisperer();
 void AddSC_shrine_of_the_storm();
 void AddSC_instance_shrine_of_the_storm();
 
@@ -149,6 +149,7 @@ void AddSC_zone_nazjatar();
 void AddSC_eternal_palace();
 void AddSC_instance_eternal_palace();
 void AddSC_boss_commander_sivara();
+void AddSC_boss_lady_ashvane();
 void AddSC_boss_blackwater_behemoth();
 void AddSC_boss_queen_azshara_ep();
 void AddSC_boss_radiance_of_azshara();
@@ -176,17 +177,13 @@ void AddSC_stormwind_extraction();
 void AddSC_scenario_stormwind_extraction();
 void AddSC_scenario_zuldazar();
 void AddSC_instance_scenario_zuldazar();
+
+// Island Expeditions
 void AddSC_uncharted_island_tutorial();
 void AddSC_scenario_uncharted_island_tutorial();
 void AddSC_scenario_snowblossom_village();
-void AddSC_scenario_draenor_shadowmoon_valley();
-void AddSC_scenario_frostfire_finale();
-void AddSC_scenario_talador_iron_horde_finale();
-void AddSC_scenario_grommashar();
-void AddSC_scenario_gorgrond_finale_1();
 void AddSC_scenario_verdant_wilds();
 void AddSC_scenario_ungol_ruins();
-
 
 // The name of this function should match:
 // void Add${NameOfDirectory}Scripts()
@@ -200,7 +197,7 @@ void AddBattleforAzerothScripts()
     AddSC_boss_aqusirr();
     AddSC_boss_lord_stormsong();
     AddSC_boss_tidesage_council();
-    AddSC_volzith_the_whisperer();
+    AddSC_boss_volzith_the_whisperer();
     AddSC_shrine_of_the_storm();
     AddSC_instance_shrine_of_the_storm();
 
@@ -323,6 +320,7 @@ void AddBattleforAzerothScripts()
 	// The Eternal Palace
 	AddSC_instance_eternal_palace();
 	AddSC_boss_commander_sivara();
+    AddSC_boss_lady_ashvane();
 	AddSC_boss_blackwater_behemoth();
 	AddSC_boss_queen_azshara_ep();
 	AddSC_boss_radiance_of_azshara();
@@ -350,14 +348,11 @@ void AddBattleforAzerothScripts()
     AddSC_scenario_stormwind_extraction();
     AddSC_scenario_zuldazar();
     AddSC_instance_scenario_zuldazar();
+
+    // Island Expeditions
     AddSC_uncharted_island_tutorial();
     AddSC_scenario_uncharted_island_tutorial();
     AddSC_scenario_snowblossom_village();
-    AddSC_scenario_draenor_shadowmoon_valley();
-    AddSC_scenario_frostfire_finale();
-    AddSC_scenario_talador_iron_horde_finale();
-    AddSC_scenario_grommashar();
-    AddSC_scenario_gorgrond_finale_1();
     AddSC_scenario_verdant_wilds();
     AddSC_scenario_ungol_ruins();
 	

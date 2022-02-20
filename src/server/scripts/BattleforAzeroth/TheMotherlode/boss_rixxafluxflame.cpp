@@ -59,6 +59,7 @@ const Position centerPos = { 1273.14f, -3698.62f, 26.71f }; //40 y
 
 // pusback movement force, hardcoded atm and areatrigger visual not working so mechanic won't work either
 
+// 129231
 class bfa_boss_rixxa_fluxflame : public CreatureScript
 {
 public:

@@ -1,51 +1,36 @@
-/*
- * Copyright (C) 2017-2019 AshamaneProject <https://github.com/AshamaneProject>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "AreaTrigger.h"
 #include "AreaTriggerAI.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
-#include "SpellScript.h"
-#include "SpellAuras.h"
+#include "SpellAuraEffects.h"
+#include "Spell.h"
+#include "ObjectMgr.h"
+#include "Log.h"
 #include "shrine_of_the_storm.h"
 
-enum Aquasirr
+enum Spells
 {
-    SPELL_SEA_BLAST                    = 265001,
-    SPELL_CHOKING_BRINE                = 264560,
+    SPELL_SEA_BLAST = 265001,
+    SPELL_CHOKING_BRINE = 264560,
     SPELL_CHOKING_BRINE_MISSILE_SINGLE = 264714,
-    SPELL_CHOKING_BRINE_MISSILE_MULTI  = 264703,
-    SPELL_SURGING_RUSH                 = 264101,
-    SPELL_UNDERTOW                     = 264144,
-    SPELL_GRASP_FROM_THE_DEPTHS        = 264477,
+    SPELL_CHOKING_BRINE_MISSILE_MULTI = 264703,
+    SPELL_SURGING_RUSH = 264101,
+    SPELL_UNDERTOW = 264144,
+    SPELL_GRASP_FROM_THE_DEPTHS = 264477,
     SPELL_GRASP_FROM_THE_DEPTHS_SUMMON = 264522,
-    SPELL_GRASP_FROM_THE_DEPTHS_ROOT   = 264526,
+    SPELL_GRASP_FROM_THE_DEPTHS_ROOT = 264526,
 
-    SPELL_ERUPTING_WATER               = 264903,
-    SPELL_DIMINISH                     = 264899,
+    SPELL_ERUPTING_WATER = 264903,
+    SPELL_DIMINISH = 264899,
 
-    SPELL_EMERGE_VISUAL                = 274948,
+    SPELL_EMERGE_VISUAL = 274948,
 };
 
 enum Creatures
 {
-    BOSS_AQUSIRR           = 134056,
+    BOSS_AQUSIRR = 134056,
 
-    NPC_AQUALING           = 134828,
+    NPC_AQUALING = 134828,
     NPC_GRASPING_TENTACLES = 134612,
 };
 
@@ -63,13 +48,13 @@ enum Events
 enum Timers
 {
     TIMER_SEA_BLAST_CHECK = 2 * IN_MILLISECONDS,
-    TIMER_CHOKING_BRINE   = 11 * IN_MILLISECONDS,
-    TIMER_UNDERTOW        = 30 * IN_MILLISECONDS,
-    TIMER_SURGING_RUSH    = 17 * IN_MILLISECONDS,
+    TIMER_CHOKING_BRINE = 11 * IN_MILLISECONDS,
+    TIMER_UNDERTOW = 30 * IN_MILLISECONDS,
+    TIMER_SURGING_RUSH = 17 * IN_MILLISECONDS,
 
     TIMER_GRASPING_TENTACLES = 15 * IN_MILLISECONDS,
 
-    TIMER_SEA_BLAST_CAST     = 2 * IN_MILLISECONDS, //adds
+    TIMER_SEA_BLAST_CAST = 2 * IN_MILLISECONDS, //adds
 };
 
 #define ROOT me->AddUnitState(UNIT_STATE_ROOT)
@@ -77,12 +62,12 @@ enum Timers
 
 const Position centerPlatform = { 3931.72f, -1244.48f, 128.45f }; //also cheaters check 30y
 
-
 // movement force
-class boss_aquasirr : public CreatureScript
+// 134056
+class bfa_boss_aqusirr : public CreatureScript
 {
 public:
-    boss_aquasirr() : CreatureScript("boss_aquasirr")
+    bfa_boss_aqusirr() : CreatureScript("bfa_boss_aqusirr")
     {
     }
 
@@ -148,8 +133,8 @@ public:
             summons.DespawnAll();
             instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
         }
-
-        void JustSummoned(Creature * summon)
+        
+        void JustSummoned(Creature* summon)
         {
             summons.Summon(summon);
 
@@ -162,7 +147,7 @@ public:
             }
         }
 
-        void DamageTaken(Unit * attacker, uint32 & damage)
+        void DamageTaken(Unit* attacker, uint32& damage)
         {
             if (me->HealthBelowPct(50) && !splitPhase2)
             {
@@ -199,7 +184,7 @@ public:
         {
             Map::PlayerList const& playerList = me->GetMap()->GetPlayers();
             for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-                if (Player * player = i->GetSource())
+                if (Player* player = i->GetSource())
                 {
                     if (!player->IsGameMaster()) //gm check
                     {
@@ -307,16 +292,16 @@ public:
                     events.ScheduleEvent(EVENT_SURGING_RUSH, TIMER_SURGING_RUSH);
                     break;
                 case EVENT_UNDERTOW:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
                         me->CastSpell(target, SPELL_UNDERTOW);
                     events.ScheduleEvent(EVENT_UNDERTOW, TIMER_UNDERTOW);
                     break;
                 case EVENT_CHOKING_BRINE:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
                         me->CastSpell(target, SPELL_CHOKING_BRINE);
                     break;
                 case EVENT_GRASPING_TENTACLES:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f))
                     {
                         me->CastSpell(target, SPELL_GRASP_FROM_THE_DEPTHS);
                         me->AddAura(SPELL_GRASP_FROM_THE_DEPTHS_ROOT, target);
@@ -335,16 +320,17 @@ public:
     }
 };
 
-class npc_aqualing : public CreatureScript
+// 134828
+class bfa_npc_aqualing : public CreatureScript
 {
 public:
-    npc_aqualing() : CreatureScript("npc_aqualing")
+    bfa_npc_aqualing() : CreatureScript("bfa_npc_aqualing")
     {
     }
 
-    struct npc_aqualing_AI : public ScriptedAI
+    struct bfa_npc_aqualing_AI : public ScriptedAI
     {
-        npc_aqualing_AI(Creature* creature) : ScriptedAI(creature)
+        bfa_npc_aqualing_AI(Creature* creature) : ScriptedAI(creature)
         {
             ROOT;
             me->AddAura(SPELL_DIMINISH);
@@ -389,21 +375,22 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_aqualing_AI(creature);
+        return new bfa_npc_aqualing_AI(creature);
     }
 
 };
 
-class npc_grasping_tentacle : public CreatureScript
+// 134612 ?
+class bfa_npc_grasping_tentacle : public CreatureScript
 {
 public:
-    npc_grasping_tentacle() : CreatureScript("npc_grasping_tentacle")
+    bfa_npc_grasping_tentacle() : CreatureScript("bfa_npc_grasping_tentacle")
     {
     }
 
-    struct npc_grasping_tentacle_AI : public ScriptedAI
+    struct bfa_npc_grasping_tentacle_AI : public ScriptedAI
     {
-        npc_grasping_tentacle_AI(Creature* creature) : ScriptedAI(creature)
+        bfa_npc_grasping_tentacle_AI(Creature* creature) : ScriptedAI(creature)
         {
             ROOT;
         }
@@ -412,7 +399,7 @@ public:
         {
             Map::PlayerList const& playerList = me->GetMap()->GetPlayers();
             for (Map::PlayerList::const_iterator i = playerList.begin(); i != playerList.end(); ++i)
-                if (Player * player = i->GetSource())
+                if (Player* player = i->GetSource())
                 {
                     if (!player->IsGameMaster()) //gm check
                     {
@@ -425,21 +412,21 @@ public:
 
     CreatureAI* GetAI(Creature* creature) const override
     {
-        return new npc_grasping_tentacle_AI(creature);
+        return new bfa_npc_grasping_tentacle_AI(creature);
     }
 };
 
 // 264560 
-class spell_choking_brine : public SpellScriptLoader
+class bfa_spell_choking_brine : public SpellScriptLoader
 {
 public:
-    spell_choking_brine() : SpellScriptLoader("spell_choking_brine")
+    bfa_spell_choking_brine() : SpellScriptLoader("bfa_spell_choking_brine")
     {}
 
-    class spell_choking_brine_AuraScript : public AuraScript
+    class bfa_spell_choking_brine_AuraScript : public AuraScript
     {
     public:
-        PrepareAuraScript(spell_choking_brine_AuraScript);
+        PrepareAuraScript(bfa_spell_choking_brine_AuraScript);
 
         void HandleEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes /*mode*/)
         {
@@ -457,25 +444,25 @@ public:
         }
         void Register()
         {
-            AfterEffectRemove += AuraEffectRemoveFn(spell_choking_brine_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+            AfterEffectRemove += AuraEffectRemoveFn(bfa_spell_choking_brine_AuraScript::HandleEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
     AuraScript* GetAuraScript() const
     {
-        return new spell_choking_brine_AuraScript();
+        return new bfa_spell_choking_brine_AuraScript();
     }
 };
 
 // 264144
-class spell_undertow : public SpellScriptLoader
+class bfa_spell_undertow : public SpellScriptLoader
 {
 public:
-    spell_undertow() : SpellScriptLoader("spell_undertow") { }
+    bfa_spell_undertow() : SpellScriptLoader("bfa_spell_undertow") { }
 
-    class spell_undertow_AuraScript : public AuraScript
+    class bfa_spell_undertow_AuraScript : public AuraScript
     {
-        PrepareAuraScript(spell_undertow_AuraScript);
+        PrepareAuraScript(bfa_spell_undertow_AuraScript);
 
         void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
         {
@@ -501,56 +488,55 @@ public:
 
         void Register()
         {
-            OnEffectApply += AuraEffectApplyFn(spell_undertow_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
-            OnEffectRemove += AuraEffectRemoveFn(spell_undertow_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+            OnEffectApply += AuraEffectApplyFn(bfa_spell_undertow_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
+            OnEffectRemove += AuraEffectRemoveFn(bfa_spell_undertow_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL);
         }
     };
 
     AuraScript* GetAuraScript() const
     {
-        return new spell_undertow_AuraScript();
+        return new bfa_spell_undertow_AuraScript();
     }
 };
 
 //264477
-class spell_grasp_from_the_depths : public SpellScriptLoader
+class bfa_spell_grasp_from_the_depths : public SpellScriptLoader
 {
 public:
-    spell_grasp_from_the_depths() : SpellScriptLoader("spell_grasp_from_the_depths")
+    bfa_spell_grasp_from_the_depths() : SpellScriptLoader("bfa_spell_grasp_from_the_depths")
     {}
 
-    class spell_grasp_from_the_depths_SpellScript : public SpellScript
+    class bfa_spell_grasp_from_the_depths_SpellScript : public SpellScript
     {
     public:
-        PrepareSpellScript(spell_grasp_from_the_depths_SpellScript);
+        PrepareSpellScript(bfa_spell_grasp_from_the_depths_SpellScript);
 
         void HandleOnHitTarget(SpellEffIndex /* effIndex */)
         {
-            if (Unit * target = GetHitUnit())
+            if (Unit* target = GetHitUnit())
                 target->CastSpell(target, SPELL_GRASP_FROM_THE_DEPTHS_SUMMON, true);
         }
 
         void Register() override
         {
-            OnEffectHitTarget += SpellEffectFn(spell_grasp_from_the_depths_SpellScript::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
+            OnEffectHitTarget += SpellEffectFn(bfa_spell_grasp_from_the_depths_SpellScript::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_DUMMY);
         }
 
     };
 
     SpellScript* GetSpellScript() const
     {
-        return new spell_grasp_from_the_depths_SpellScript();
+        return new bfa_spell_grasp_from_the_depths_SpellScript();
     }
 };
 
 void AddSC_boss_aqusirr()
 {
-    new boss_aquasirr();
-    new npc_aqualing();
-    new npc_grasping_tentacle();
-    new spell_undertow();
-    new spell_grasp_from_the_depths();
-    new spell_choking_brine();
+    new bfa_boss_aqusirr();
+    new bfa_npc_aqualing();
+    new bfa_npc_grasping_tentacle();
 
-    
+    new bfa_spell_undertow();
+    new bfa_spell_grasp_from_the_depths();
+    new bfa_spell_choking_brine();
 }

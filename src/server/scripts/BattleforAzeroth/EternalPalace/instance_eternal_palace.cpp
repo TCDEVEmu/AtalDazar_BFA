@@ -34,14 +34,63 @@ DoorData const doorData[] =
 
 struct instance_eternal_palace : public InstanceScript
 {
-    instance_eternal_palace(InstanceMap* map) : InstanceScript(map)
+    instance_eternal_palace(InstanceMap* map) : InstanceScript(map), intro_conv(false)
     {
         SetHeaders(DataHeader);
         SetBossNumber(EncounterCount);
     }
+
+    void Initialize() override
+    {
+        LoadDoorData(doorData);
+    }
+
+    void OnPlayerEnter(Player* player) override
+    {
+        intro_conv = true;
+        if (intro_conv == true)
+        {
+            intro_conv = false;
+            //Conversation::CreateConversation(1000, player, player->GetPosition(), { player->GetGUID() });
+        }
+    }
+
+private:
+    bool intro_conv;
 };
+/*
+//329650 - Ashvane arcane wall
+struct go_ashvane_arcane_wall : public GameObjectAI
+{
+    go_ashvane_arcane_wall(GameObject* go) : GameObjectAI(go) { }
+
+    void Reset() override
+    {
+        go->GetScheduler().CancelAll();
+        go->GetScheduler().Schedule(1s, [this] (TaskContext context)
+        {
+            if (InstanceScript* instance = go->GetInstanceScript())
+            {
+                if (instance->GetBossState(DATA_COMMANDER_SIVARA == DONE) && instance->GetBossState(DATA_BLACKWATER_BEHEMOTH == DONE) && instance->GetBossState(DATA_RADIANCE_OF_AZSHARA == DONE))
+                    go->RemoveFromWorld();
+
+                if (go->IsInWorld())
+                    context.Repeat(1s);
+            }
+        });
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        scheduler.Update(diff);
+    }
+
+private:
+    TaskScheduler scheduler;
+}; */
 
 void AddSC_instance_eternal_palace()
 {
     RegisterInstanceScript(instance_eternal_palace, 2164);
+    // RegisterGameObjectAI(go_ashvane_arcane_wall);
 }

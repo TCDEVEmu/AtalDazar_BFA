@@ -129,7 +129,7 @@ void CloseBossGate(InstanceScript* instance)
         go->SetGoState(GO_STATE_READY);
 };
 
-
+// 122965
 struct boss_ataldazar_volkaal : public BossAI
 {
     boss_ataldazar_volkaal(Creature* creature) : BossAI(creature, DATA_VOLKAAL) { }
@@ -310,6 +310,7 @@ private:
     uint8 phase;
 };
 
+// 125977
 struct npc_ataldazar_reanimation_totem : public ScriptedAI
 {
     npc_ataldazar_reanimation_totem(Creature* pCreature) : ScriptedAI(pCreature) { }
@@ -368,7 +369,7 @@ struct npc_ataldazar_reanimation_totem : public ScriptedAI
                 me->CallAssistance();
                 boss->SetInCombatWith(attacker);
                 attacker->SetInCombatWith(boss);
-                //boss->AddThreat(attacker, 0.1f);
+                //boss->GetThreatManager().AddThreat(attacker, 0.1f);
                 boss->Attack(attacker, true);
             }
         }

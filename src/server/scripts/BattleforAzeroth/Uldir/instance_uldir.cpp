@@ -23,6 +23,11 @@
 #include "ObjectMgr.h"
 #include "uldir.h"
 
+DoorData const doorData[] =
+{
+    { GO_MYTHRAX_DOOR, DATA_MYTHRAX, DOOR_TYPE_PASSAGE },
+};
+
 struct instance_uldir : public InstanceScript
 {
     instance_uldir(InstanceMap* map) : InstanceScript(map)
@@ -30,6 +35,20 @@ struct instance_uldir : public InstanceScript
         SetBossNumber(EncounterCount);
     }
 
+    void Initialize()
+    {
+        LoadDoorData(doorData);
+    }
+
+    void OnGameObjectCreate(GameObject* go) override
+    {
+        switch (go->GetEntry())
+        {
+        case GO_MYTHRAX_DOOR:
+            go->SetGoState(GO_STATE_READY);
+            break;
+        }
+    }
 };
 
 void AddSC_instance_uldir()

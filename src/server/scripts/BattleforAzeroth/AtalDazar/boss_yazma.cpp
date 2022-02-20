@@ -72,7 +72,7 @@ enum Events {
     EVENT_SHADOW_EMPOWERED_STOP = 2,
 };
 
-
+// 122968
 struct boss_ataldazar_yazma : public BossAI
 {
     boss_ataldazar_yazma(Creature* creature) : BossAI(creature, DATA_YAZMA) { }
@@ -254,6 +254,7 @@ struct npc_ataldazar_soulspawn : public ScriptedAI
     }
 };
 
+// 125868
 struct npc_ataldazar_echo_of_shadra : public ScriptedAI
 {
     npc_ataldazar_echo_of_shadra(Creature* creature) : ScriptedAI(creature) {
