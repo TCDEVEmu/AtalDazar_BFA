@@ -143,6 +143,9 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool IsInEvadeMode() const { return HasUnitState(UNIT_STATE_EVADE); }
         bool IsEvadingAttacks() const { return IsInEvadeMode() || CanNotReachTarget(); }
 
+        void SetPosition(float x, float y, float z, float o);
+        void SetPosition(const Position& pos) { SetPosition(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation()); }
+
         bool AIM_Destroy();
         bool AIM_Create(CreatureAI* ai = nullptr);
         void AI_InitializeAndEnable();

@@ -3123,6 +3123,21 @@ float Creature::GetPetChaseDistance() const
     return range;
 }
 
+
+void Creature::SetPosition(float x, float y, float z, float o)
+{
+    // evita Crash cuando el cliente envía una mala coord
+    if (!Trinity::IsValidMapCoord(x, y, z, o))
+    {
+        TC_LOG_DEBUG("entities.unit", "Creature::SetPosition(%f, %f, %f) .. bad coordinates!", x, y, z);
+        return;
+    }
+
+    GetMap()->CreatureRelocation(this, x, y, z, o);
+    if (IsVehicle())
+        GetVehicleKit()->RelocatePassengers();
+}
+
 float Creature::GetAggroRange(Unit const* target) const
 {
     // Determines the aggro range for creatures (usually pets), used mainly for aggressive pet target selection.
