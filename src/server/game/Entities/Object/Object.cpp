@@ -2394,6 +2394,14 @@ void WorldObject::GetContactPoint(const WorldObject* obj, float &x, float &y, fl
     GetNearPoint(obj, x, y, z, obj->GetCombatReach(), distance2d, GetAngle(obj));
 }
 
+float WorldObject::GetObjectSize() const
+{
+    if (Unit const* thisUnit = ToUnit())
+        return thisUnit->m_unitData->CombatReach;
+
+    return DEFAULT_PLAYER_BOUNDING_RADIUS;
+}
+
 void WorldObject::MovePosition(Position &pos, float dist, float angle)
 {
     angle += GetOrientation();
