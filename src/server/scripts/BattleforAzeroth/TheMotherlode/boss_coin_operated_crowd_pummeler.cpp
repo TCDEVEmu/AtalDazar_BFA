@@ -436,9 +436,9 @@ public:
                 return;
             for (uint8 i = 0; i < 3; ++i)
             {
-             Position randomPos = caster->GetRandomPoint(centerPos, 15.0f);                  
-             caster->CastSpell(randomPos, SPELL_FOOTBOMB_LAUNCHER, true);
-             }   
+                Position randomPos = caster->GetRandomPoint(centerPos, 15.0f);
+                caster->CastSpell(randomPos, SPELL_FOOTBOMB_LAUNCHER, true);
+            }   
         }
 
 

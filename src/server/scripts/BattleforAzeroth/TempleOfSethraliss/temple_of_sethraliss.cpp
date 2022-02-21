@@ -32,7 +32,6 @@ enum MiscData
 };
 
  // npc 136108
- // misc 13248
 struct npc_loose_spark : public ScriptedAI
 {
     npc_loose_spark(Creature* creature) : ScriptedAI(creature) { }

@@ -37,6 +37,7 @@ enum Events {
     EVENT_TERROR_WALL       = 4,
 };
 
+// 132701
 struct boss_tzane : public BossAI
 {
     boss_tzane(Creature* creature) : BossAI(creature, DATA_TZANE) { }

@@ -203,62 +203,7 @@ struct instance_free_hold : public InstanceScript
      bool isAlliance;
 };
 
-// 9000000 - NPC Teleporter Free Hold
-class npc_free_hold_entrance_teleporter : public CreatureScript
-{
-public:
-    npc_free_hold_entrance_teleporter() : CreatureScript("npc_free_hold_entrance_teleporter") { }
-    struct npc_free_hold_entrance_teleporterAI : public ScriptedAI
-    {
-        npc_free_hold_entrance_teleporterAI(Creature* creature) : ScriptedAI(creature)
-        {
-            instance = me->GetInstanceScript();
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            std::list<Player*> targetList;
-            GetPlayerListInGrid(targetList, me, 8.0f);
-
-            if (!targetList.empty())
-            {
-                for (auto itr : targetList)
-                {
-                    if (Player * player = itr->ToPlayer())
-                    {
-                        if ((player->GetGroup() && player->GetGroup()->isRaidGroup()) || player->IsGameMaster())
-                        {
-                            uint32 playerMapID = player->GetMap()->GetId();
-
-                            switch (playerMapID)
-                            {
-                            case 1643:
-                                player->TeleportTo(1754, -1591.513f, -995.6175f, 73.85955f, 2.4204f, TELE_TO_NOT_LEAVE_COMBAT);
-                                break;
-                            case 1754:
-                                player->TeleportTo(1643, -1576.46313f, -1298.69787f, 31.31189f, 5.513684f, TELE_TO_NOT_LEAVE_COMBAT);
-                                break;
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-    private:
-        InstanceScript* instance;
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_free_hold_entrance_teleporterAI(creature);
-    }
-};
-
 void AddSC_instance_freehold()
 {
     RegisterInstanceScript(instance_free_hold, 1754);
-    new npc_free_hold_entrance_teleporter();
 }

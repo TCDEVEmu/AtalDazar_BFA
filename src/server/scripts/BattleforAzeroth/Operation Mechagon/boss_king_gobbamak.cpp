@@ -226,12 +226,6 @@ struct npc_stolen_scrapbot : public ScriptedAI
     }
 };
 
-//153172
-struct npc_scrapbone_grunter : public ScriptedAI
-{
-    npc_scrapbone_grunter(Creature* creature) : ScriptedAI(creature) { }
-};
-
 //153245
 struct npc_stolen_shock_coil : public ScriptedAI
 {
@@ -287,6 +281,5 @@ void AddSC_boss_king_gobbamak()
 {
     RegisterCreatureAI(boss_king_gobbamak);
     RegisterCreatureAI(npc_stolen_scrapbot);
-    RegisterCreatureAI(npc_scrapbone_grunter);
     RegisterCreatureAI(npc_stolen_shock_coil);
 }

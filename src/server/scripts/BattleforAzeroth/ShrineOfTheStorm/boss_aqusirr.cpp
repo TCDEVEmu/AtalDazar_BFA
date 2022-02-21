@@ -380,7 +380,7 @@ public:
 
 };
 
-// 134612 ?
+// 134612
 class bfa_npc_grasping_tentacle : public CreatureScript
 {
 public:

@@ -30,6 +30,7 @@ enum Spells {
     SPELL_MATRIARCHS_CALL = 261467,
 };
 
+// 132253
 struct boss_jiarak : public BossAI
 {
     boss_jiarak(Creature* creature) : BossAI(creature, DATA_JIRAK) { }

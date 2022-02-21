@@ -33,6 +33,7 @@ enum Spells {
     SPELL_SONIC_BELLOW_VISUAL = 275177,
 };
 
+// 138794
 struct boss_dunegorger_kraulok : public BossAI
 {
     boss_dunegorger_kraulok(Creature* creature) : BossAI(creature, DATA_DUNEGORGER_KRAULOK) { }

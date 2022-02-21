@@ -359,31 +359,6 @@ struct npc_apetagonizer_3000 : public ScriptedAI
     }
 };
 
-//500501
-struct npc_apetagonize_core : public ScriptedAI
-{
-    npc_apetagonize_core(Creature* c) : ScriptedAI(c) { }
-
-    void Reset() override
-    {
-        ScriptedAI::Reset();
-        me->SetReactState(REACT_PASSIVE);
-    }
-
-    void sGossipHello(Player* player)
-    { 
-        CloseGossipMenuFor(player);
-        me->RemoveNpcFlag(UNIT_NPC_FLAG_GOSSIP);
-        player->AddAura(APETAGONIZE_CORE_BUFF);
-        me->DespawnOrUnsummon();
-    }
-
-    void IsSummonedBy(Unit* summoner) override
-    {
-        me->CastSpell(me, APETAGONIZE_CORE_MISSILE);
-    }
-};
-
 //19750
 struct at_megatomic : public AreaTriggerAI
 {
@@ -406,6 +381,5 @@ void AddSC_boss_grong()
 {
     RegisterCreatureAI(boss_grong);
     RegisterCreatureAI(npc_apetagonizer_3000);
-    RegisterCreatureAI(npc_apetagonize_core);
     RegisterAreaTriggerAI(at_megatomic);
 }

@@ -308,42 +308,9 @@ private:
 	TaskScheduler scheduler;
 };
 
-//500500
-struct npc_dread_cannon_bunny : public ScriptedAI
-{
-	npc_dread_cannon_bunny(Creature* c) : ScriptedAI(c) { }
-
-	void Reset() override
-	{
-		ScriptedAI::Reset();
-		me->SetReactState(REACT_PASSIVE);
-		me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-		me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-		me->SetDisplayId(16925, 1.0f);
-	}
-
-	void DamageTaken(Unit* done_by, uint32& damage) override
-	{
-		damage = 0;
-		if (me->HealthBelowPct(99))
-		{
-			me->SetFullHealth();
-		}
-	}
-
-	void UpdateAI(uint32 diff)
-	{
-		scheduler.Update(diff);
-	}
-
-private:
-	TaskScheduler scheduler;
-};
-
 void AddSC_boss_dread_captain_lockwood()
 {
 	RegisterCreatureAI(boss_dread_captain_lockwood);
 	RegisterCreatureAI(npc_unstable_ordnace);
 	RegisterCreatureAI(npc_dread_cannon);
-	RegisterCreatureAI(npc_dread_cannon_bunny);
 }
