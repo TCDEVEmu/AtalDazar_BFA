@@ -3767,47 +3767,6 @@ public:
     }
 };
 
-// Nourish - 203374 <- wrong spell id + needs a rework as far as I can see, but I have no single clue about druids in this exp -- Damieninabox
-class spell_dru_nourish : public SpellScriptLoader
-{
-public:
-    spell_dru_nourish() : SpellScriptLoader("spell_dru_nourish") { }
-
-private:
-    class spell_dru_nourish_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_dru_nourish_SpellScript);
-
-        enum
-        {
-            SPELL_DRUID_NOURISH_PASSIVE = 203374,
-            SPELL_DRUID_REJUVENATION = 774
-        };
-
-        void HandleOnHit()
-        {
-            if (Unit * caster = GetCaster())
-            {
-                if (Unit * target = GetHitUnit())
-                {
-                    if (caster->HasAura(SPELL_DRUID_NOURISH_PASSIVE))
-                        caster->CastSpell(target, SPELL_DRUID_REJUVENATION, true);
-                }
-            }
-        }
-
-        void Register() override
-        {
-            OnHit += SpellHitFn(spell_dru_nourish_SpellScript::HandleOnHit);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_dru_nourish_SpellScript();
-    }
-};
-
 // Called by Ironfur - 192081
 // Den Mother - 201522
 class spell_dru_denmother : public SpellScriptLoader
@@ -5032,7 +4991,6 @@ void AddSC_druid_spell_scripts()
     new spell_dru_t10_restoration_4p_bonus_dummy();
     //new spell_dru_eclipse();
     new spell_dru_primal_vitality();
-    new spell_dru_nourish();
     new spell_dru_denmother();
     new spell_dru_overgrowth();
     new spell_dru_skull_bash_charge();

@@ -5089,53 +5089,6 @@ public:
     }
 };
 
-// SPELL_PRINCIPLES_OF_WAR - 197912
-class spell_principles_of_war : public SpellScriptLoader
-{
-public:
-    spell_principles_of_war() : SpellScriptLoader("spell_principles_of_war") {}
-
-    class spell_principles_of_war_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_principles_of_war_AuraScript);
-
-        void CalculateAmount(AuraEffect const* /*aurEff*/, float& amount, bool& canBeRecalculated)
-        {
-            auto caster = GetCaster();
-            if (!caster)
-                return;
-
-            auto player = caster->ToPlayer();
-            if (!player)
-                return;
-
-            canBeRecalculated = true;
-
-            // float itemLevel = player->GetFloatValue(PLAYER_FIELD_AVG_ITEM_LEVEL);
-            // if (itemLevel > 1000.f)
-             //    itemLevel = 1000.f;
-
-         //    if (itemLevel < 800.f)
-            {
-                amount = 0;
-                return;
-            }
-
-            //   amount = RoundingFloatValue((itemLevel - 800.f) * 0.1f);
-        }
-
-        void Register() override
-        {
-            //  DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_principles_of_war_AuraScript::CalculateAmount, EFFECT_1, SPELL_AURA_DUMMY);
-        }
-    };
-
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_principles_of_war_AuraScript();
-    }
-};
-
 //! 192190
 //! triggered from spells: 210908, 192190 at quest complete.
 //! for example SELECT * FROM `quest_template` WHERE `RewardDisplaySpell` = 210908
@@ -7612,7 +7565,6 @@ void AddSC_generic_spell_scripts()
     new spell_sa_place_seaforium_charge();
     new spell_gen_taunt_flag_targeting();
     new spell_gen_absorb_if_health();
-    new spell_principles_of_war();
     new spell_gen_create_artefact();
     new spell_gen_herbalism_trap();
     new spell_gen_mining_trap();

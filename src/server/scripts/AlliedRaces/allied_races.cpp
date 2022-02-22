@@ -157,9 +157,22 @@ struct npc_Katherine_Proudmoore_kultiran_race : public ScriptedAI
     }
 };
 
+//144152 Moira Thaurissan
+struct npc_Thaurissan_Iron_Dwarf : public ScriptedAI
+{
+    npc_Thaurissan_Iron_Dwarf(Creature* creature) : ScriptedAI(creature) { }
+
+    void QuestAccept(Player* player, Quest const* /*quest*/) override
+    {
+        player->PlayConversation(9652);
+    }
+};
+
 void AddSC_AlliedRaces()
 {
     RegisterPlayerScript(AlliedRaces);
     new npc_valkyr_battle_maiden_allied();
     new zone_allied_dk();
+    RegisterCreatureAI(npc_Thaurissan_Iron_Dwarf);
+    RegisterCreatureAI(npc_Katherine_Proudmoore_kultiran_race);
 }

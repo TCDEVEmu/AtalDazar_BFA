@@ -4201,7 +4201,7 @@ public:
     }
 };
 
-//8143
+//5913
 struct npc_sha_tremor_totem : public ScriptedAI
 {
     npc_sha_tremor_totem(Creature* c) : ScriptedAI(c) { }
