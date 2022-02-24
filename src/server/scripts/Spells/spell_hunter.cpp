@@ -1248,7 +1248,7 @@ public:
         {
             OnHit += SpellHitFn(spell_hun_arcane_shot_SpellScript::HandleOnHit);
             OnCast += SpellCastFn(spell_hun_arcane_shot_SpellScript::HandleOnCast);
-            OnEffectLaunch += SpellEffectFn(spell_hun_arcane_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            OnEffectHitTarget += SpellEffectFn(spell_hun_arcane_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         }
     };
 
@@ -1315,7 +1315,7 @@ public:
         {
             OnHit += SpellHitFn(spell_hun_multi_shot_SpellScript::HandleOnHit);
             OnCast += SpellCastFn(spell_hun_multi_shot_SpellScript::HandleOnCast);
-            OnEffectLaunch += SpellEffectFn(spell_hun_multi_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            OnEffectHitTarget += SpellEffectFn(spell_hun_multi_shot_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
         }
     };
 
@@ -3701,44 +3701,6 @@ public:
     }
 };
 
-// 205434 - Flanking Strike Pet
-class spell_hun_flanking_strike_pet : public SpellScriptLoader
-{
-public:
-    spell_hun_flanking_strike_pet() : SpellScriptLoader("spell_hun_flanking_strike_pet") { }
-
-    class spell_hun_flanking_strike_pet_SpellScript : public SpellScript
-    {
-        PrepareSpellScript(spell_hun_flanking_strike_pet_SpellScript);
-
-        void HandleDamage(SpellEffIndex /*effIndex*/)
-        {
-            int32 damage = GetHitDamage();
-
-            if (Unit * target = GetHitUnit())
-            {
-                if (Unit * caster = GetCaster())
-                {
-                    if (target->isAttackingPlayer() && target->GetTarget() != caster->GetGUID())
-                        damage += CalculatePct(damage, GetSpellInfo()->GetEffect(EFFECT_2)->BasePoints);
-                }
-            }
-
-            SetHitDamage(damage);
-        }
-
-        void Register() override
-        {
-            OnEffectHitTarget += SpellEffectFn(spell_hun_flanking_strike_pet_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_WEAPON_PERCENT_DAMAGE);
-        }
-    };
-
-    SpellScript* GetSpellScript() const override
-    {
-        return new spell_hun_flanking_strike_pet_SpellScript();
-    }
-};
-
 // 212431 - Explosive Shot
 class spell_hun_explosive_shot_aura : public SpellScriptLoader
 {
@@ -4032,29 +3994,6 @@ class spell_master_marksman_Proc : public AuraScript
     }
 };
 
-// Hunter's Mark
-class PlayerScript_spell_hunters_mark : public PlayerScript {
-public:
-    PlayerScript_spell_hunters_mark() : PlayerScript("PlayerScript_spell_hunters_mark") {}
-
-    void OnCreatureKill(Player* Player, Creature* Creature) {
-        if (Player->getClass() == CLASS_HUNTER) {
-            //   if (Creature->HasAura(SPELL_HUNTER_HUNTERS_MARK_2, Player->GetGUID())) {
-            Player->SetPower(POWER_FOCUS, Player->GetPower(POWER_FOCUS) + 20);
-
-            //  }
-        }
-    }
-
-    void OnPVPKill(Player * killer, Player * killed) {
-        if (killer->getClass() == CLASS_HUNTER) {
-            //  if (killed->HasAura(SPELL_HUNTER_HUNTERS_MARK_2, killer->GetGUID())) {
-            killer->SetPower(POWER_FOCUS, killer->GetPower(POWER_FOCUS) + 20);
-        }
-        // }
-    }
-};
-
 // 260393 Lethal Shot 
 class spell_lethal_shot_Proc : public AuraScript {
     PrepareAuraScript(spell_lethal_shot_Proc);
@@ -4131,12 +4070,70 @@ class PlayerScript_steady_focus : public PlayerScript {
 public:
     PlayerScript_steady_focus() : PlayerScript("PlayerScript_steady_focus") { }
 
-    void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/ ) {
+    void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/) {
 
         if (player->HasAura(SPELL_HUNTER_STEADY_FOCUS_PROC)) {
-            if (spell->GetSpellInfo()->Id != SPELL_HUNTER_STEADY_SHOT && spell->GetSpellInfo()->Id != SPELL_HUNTER_AUTO_SHOT &&
-                spell->GetSpellInfo()->DmgClass != 0 && spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER) {
+            if (spell->GetSpellInfo()->Id != SPELL_HUNTER_STEADY_SHOT && spell->GetSpellInfo()->Id != SPELL_HUNTER_AUTO_SHOT && spell->GetSpellInfo()->DmgClass != 0 &&
+                spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER && spell->GetSpellInfo()->Id != SPELL_HUNTER_A_MURDER_OF_CROWS_1 &&
+                spell->GetSpellInfo()->Id != SPELL_HUNTER_A_MURDER_OF_CROWS_2 && spell->GetSpellInfo()->Id != SPELL_HUNTER_A_MURDER_OF_CROWS_DAMAGE) {
+
                 player->RemoveAura(SPELL_HUNTER_STEADY_FOCUS_PROC);
+            }
+        }
+    }
+};
+
+// 270581 Natural Mending
+class PlayerScript_natural_mending : public PlayerScript {
+public:
+    PlayerScript_natural_mending() : PlayerScript("PlayerScript_natural_mending") { }
+
+    int32 focus = 0;
+
+    void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/) {
+
+        if (focus >= 20) {
+            do {
+                player->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_EXHILARATION, -1000);
+                focus -= 20;
+            } while (focus >= 20);
+        }
+
+        if (player->HasAura(SPELL_HUNTER_NATURAL_MENDING)) {
+            if (spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER) {
+                if (SpellPowerCost const* powerCost = spell->GetPowerCost(POWER_FOCUS))
+                    focus += powerCost->Amount;
+            }
+        }
+    }
+};
+
+// Hunter's Mark
+class PlayerScript_hunters_mark : public PlayerScript {
+public:
+    PlayerScript_hunters_mark() : PlayerScript("PlayerScript_hunters_mark") {}
+
+    Unit* target;
+
+    void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/) {
+        if (spell->GetSpellInfo()->Id == SPELL_HUNTER_HUNTERS_MARK_2) {
+            target = player->GetSelectedUnit()->ToUnit();
+        }
+    }
+
+    void OnCreatureKill(Player* Player, Creature* Creature) {
+        if (Player->getClass() == CLASS_HUNTER) {
+            if (Creature == target) {
+                Player->SetPower(POWER_FOCUS, Player->GetPower(POWER_FOCUS) + 20);
+            }
+        }
+    }
+
+    void OnPVPKill(Player * killer, Player * killed) {
+        if (killer->getClass() == CLASS_HUNTER) {
+            if (killed == target) {
+                killer->SetPower(POWER_FOCUS, killer->GetPower(POWER_FOCUS) + 20);
+
             }
         }
     }
@@ -4206,7 +4203,6 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_windburst();
     new spell_hun_serpent_sting();
     new spell_hun_aspect_of_the_turtle();
-    new spell_hun_flanking_strike_pet();
     new spell_hun_explosive_shot_aura();
     new spell_hun_sidewinders();
     RegisterSpellScript(spell_hun_bestial_wrath);
@@ -4239,6 +4235,7 @@ void AddSC_hunter_spell_scripts()
     // Playerscripts
     new PlayerScript_black_arrow();
     RegisterPlayerScript(PlayerScript_Lone_Wolf);
-    RegisterPlayerScript(PlayerScript_spell_hunters_mark);
     RegisterPlayerScript(PlayerScript_steady_focus);
+    RegisterPlayerScript(PlayerScript_natural_mending);
+    RegisterPlayerScript(PlayerScript_hunters_mark);
 }
