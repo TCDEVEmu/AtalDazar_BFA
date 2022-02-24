@@ -1,4 +1,4 @@
-/*
+
 void AddSC_boss_oondasta();
 void AddSC_boss_nalak();
 void AddSC_boss_sha_of_anger();
@@ -15,10 +15,7 @@ void AddSC_vale_of_eternal_blossoms();
 void AddSC_valley_of_the_four_winds();
 
 // WanderingIsland
-void AddSC_wandering_island_east();
-void AddSC_wandering_island_north();
-void AddSC_wandering_island_south();
-void AddSC_wandering_island_west();
+void AddSC_the_wandering_isle();
 
 // TimelessIsle
 void AddSC_boss_chi_ji();
@@ -211,10 +208,10 @@ void AddSC_instance_dagger_in_the_dark();
 // LittlePatience
 void AddSC_little_patience();
 void AddSC_instance_little_patience();
-*/
+
 
 void AddPandariaScripts()
-{ /*
+{ 
     AddSC_boss_oondasta();
     AddSC_boss_nalak();
     AddSC_boss_sha_of_anger();
@@ -229,13 +226,10 @@ void AddPandariaScripts()
     AddSC_townlong_steppes();
     AddSC_vale_of_eternal_blossoms();
     AddSC_valley_of_the_four_winds();
-
+  
     // WanderingIsland
-    AddSC_wandering_island_east();
-    AddSC_wandering_island_north();
-    AddSC_wandering_island_south();
-    AddSC_wandering_island_west();
-
+    AddSC_the_wandering_isle();
+  
     // TimelessIsle
     AddSC_boss_chi_ji();
     AddSC_boss_niuzao();
@@ -243,7 +237,7 @@ void AddPandariaScripts()
     AddSC_boss_xuen();
     AddSC_boss_yu_lon();
     AddSC_timeless_isle();
-
+  
     // GateOfTheSettingSun
     AddSC_boss_commander_rimok();
     AddSC_boss_raigonn();
@@ -257,7 +251,7 @@ void AddPandariaScripts()
     AddSC_boss_trial_of_the_king();
     AddSC_boss_xin_the_weaponmaster();
     AddSC_instance_mogu_shan_palace();
-
+  
     // ShadopanMonastery
     AddSC_boss_gu_cloudstrike();
     AddSC_boss_master_snowdrift();
@@ -287,7 +281,7 @@ void AddPandariaScripts()
     AddSC_boss_sha_of_doubt();
     AddSC_boss_wise_mari();
     AddSC_instance_temple_of_the_jade_serpent();
-
+  
     // HeartOfFear
     AddSC_boss_garalon();
     AddSC_boss_meljarak();
@@ -297,7 +291,7 @@ void AddPandariaScripts()
     AddSC_boss_zorlok();
     AddSC_heart_of_fear();
     AddSC_instance_heart_of_fear();
-
+  
     // MogushanVault
     AddSC_boss_elegon();
     AddSC_boss_feng();
@@ -426,5 +420,5 @@ void AddPandariaScripts()
 
     // LittlePatience
     AddSC_little_patience();
-    AddSC_instance_little_patience(); */
+    AddSC_instance_little_patience();
 }
