@@ -4213,6 +4213,12 @@ void SpellMgr::LoadSpellInfoCorrections()
             spellInfo->AttributesEx2 |= SPELL_ATTR2_CAN_TARGET_DEAD;
         });
 
+    // 280721 Sudden Death
+    ApplySpellFix({ 280721 }, [](SpellInfo* spellInfo)
+        {
+            const_cast<SpellEffectInfo*>(spellInfo->GetEffect(EFFECT_0))->TriggerSpell = 280776;
+        });
+
     ApplySpellFix({
         67789, // 179
         68480, // 180

@@ -179,24 +179,26 @@ enum WarriorSpells
     SPELL_WARRIOR_COLD_STEEL_HOT_BLOOD              = 288085,
     SPELL_WARRIOR_COLD_STEEL_HOT_BLOOD_GIVE_POWER   = 288087,
     SPELL_WARRIOR_GUSHING_WOUND                     = 288091,
-    // 8.0
-    SPELL_WARRIOR_WAR_MACHINE = 262231,
-    SPELL_WARRRIOR_WAR_MACHINE_BUFF = 262232,
-    SPELL_WARRIOR_FURIOUS_CHARGE = 202224,
-    SPELL_WARRIOR_FURIOUS_CHARGE_BUFF = 202225,
-    SPELL_WARRIOR_FRESH_MEAT = 215568,
-    SPELL_WARRIOR_MEAT_CLEAVER = 280392,
-    SPELL_WARRIOR_THIRST_FOR_BATTLE = 199202,
-    SPELL_WARRIOR_THIRST_FOR_BATTLE_BUFF = 199203,
-    SPELL_WARRIOR_BARBARIAN = 280745,
-    SPELL_WARRIOR_BARBARIAN_ALLOW_HEROIC_LEAP = 280746,
-    SPELL_WARRIOR_BATTLE_TRANCE = 213857,
-    SPELL_WARRIOR_BATTLE_TRANCE_BUFF = 213858,
-    SPELL_WARRIOR_ENDLESS_RAGE = 202296,
-    SPELL_WARRIOR_ENDLESS_RAGE_GIVE_POWER = 280283,
-    SPELL_WARRIOR_SUDDEN_DEATH = 280721,
-    SPELL_WARRIOR_SUDDEN_DEATH_PROC = 280776,
-    SPELL_WARRIOR_WAR_BANNER_BUFF = 236321,
+    SPELL_WARRIOR_WAR_MACHINE                       = 262231,
+    SPELL_WARRRIOR_WAR_MACHINE_BUFF                 = 262232,
+    SPELL_WARRIOR_FURIOUS_CHARGE                    = 202224,
+    SPELL_WARRIOR_FURIOUS_CHARGE_BUFF               = 202225,
+    SPELL_WARRIOR_FRESH_MEAT                        = 215568,
+    SPELL_WARRIOR_MEAT_CLEAVER                      = 280392,
+    SPELL_WARRIOR_THIRST_FOR_BATTLE                 = 199202,
+    SPELL_WARRIOR_THIRST_FOR_BATTLE_BUFF            = 199203,
+    SPELL_WARRIOR_BARBARIAN                         = 280745,
+    SPELL_WARRIOR_BARBARIAN_ALLOW_HEROIC_LEAP       = 280746,
+    SPELL_WARRIOR_BATTLE_TRANCE                     = 213857,
+    SPELL_WARRIOR_BATTLE_TRANCE_BUFF                = 213858,
+    SPELL_WARRIOR_ENDLESS_RAGE                      = 202296,
+    SPELL_WARRIOR_ENDLESS_RAGE_GIVE_POWER           = 280283,
+    SPELL_WARRIOR_SUDDEN_DEATH                      = 280721,
+    SPELL_WARRIOR_SUDDEN_DEATH_PROC                 = 280776,
+    SPELL_WARRIOR_WAR_BANNER_BUFF                   = 236321,
+    SPELL_WARRIOR_RAGING_BLOW                       = 85288,
+    SPELL_WARRIOR_FROTHING_BERSERKER2               = 215571,
+    SPELL_WARRIOR_SIEGEBREAKER_AURA                 = 280773,
 };
 
 enum WarriorSpellIcons
@@ -504,10 +506,22 @@ public:
                 SetHitDamage(GetHitDamage() / 2);
         }
 
+        void HandleOnCast() {
+            Unit* caster = GetCaster();
+
+            if (caster->HasAura(SPELL_WARRIOR_ENRAGE)) {
+                if (roll_chance_i(sSpellMgr->GetSpellInfo(SPELL_WARRIOR_ENRAGE)->GetEffect(EFFECT_1)->BasePoints)) {
+                    caster->AddAura(SPELL_WARRIOR_ENRAGE_AURA);
+
+                }
+            }
+        }
+
         void Register() override
         {
             OnCast += SpellCastFn(spell_warr_bloodthirst_SpellScript::HandleHeal);
             OnEffectHitTarget += SpellEffectFn(spell_warr_bloodthirst_SpellScript::HandleDamage, EFFECT_1, SPELL_EFFECT_WEAPON_PERCENT_DAMAGE);
+            OnCast += SpellCastFn(spell_warr_bloodthirst_SpellScript::HandleOnCast);
         }
     };
 
@@ -1400,6 +1414,7 @@ public:
     }
 };
 
+// 85288 Raging Blow
 class spell_warr_raging_blow : public SpellScriptLoader
 {
 public:
@@ -1415,9 +1430,21 @@ public:
                 _player->CastSpell(_player, SPELL_WARRIOR_ALLOW_RAGING_BLOW, true);
         }
 
+        void HandleOnCast() {
+
+            if (Player* caster = GetCaster()->ToPlayer()) {
+                if (caster->GetSpecializationId() == TALENT_SPEC_WARRIOR_FURY) {
+                    if (roll_chance_i(sSpellMgr->GetSpellInfo(SPELL_WARRIOR_RAGING_BLOW)->GetEffect(EFFECT_0)->BasePoints)) {
+                        caster->GetSpellHistory()->RestoreCharge(sSpellMgr->GetSpellInfo(SPELL_WARRIOR_RAGING_BLOW)->ChargeCategoryId);
+                    }
+                }
+            }
+        }
+
         void Register() override
         {
             OnHit += SpellHitFn(spell_warr_raging_blow_SpellScript::HandleOnHit);
+            OnCast += SpellCastFn(spell_warr_raging_blow_SpellScript::HandleOnCast);
         }
     };
 
@@ -1702,7 +1729,7 @@ class spell_warr_charge : public SpellScript
         ({
             SPELL_WARRIOR_CHARGE_EFFECT,
             SPELL_WARRIOR_CHARGE_EFFECT_BLAZING_TRAIL
-        });
+            });
     }
 
     void HandleDummy(SpellEffIndex /*effIndex*/)
@@ -1714,9 +1741,18 @@ class spell_warr_charge : public SpellScript
         GetCaster()->CastSpell(GetHitUnit(), spellId, true);
     }
 
+    void HandleOnCast() {
+        Unit* caster = GetCaster();
+
+        if (caster->HasAura(SPELL_WARRIOR_FURIOUS_CHARGE)) {
+            caster->AddAura(SPELL_WARRIOR_FURIOUS_CHARGE_BUFF);
+        }
+    }
+
     void Register() override
     {
         OnEffectHitTarget += SpellEffectFn(spell_warr_charge::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnCast += SpellCastFn(spell_warr_charge::HandleOnCast);
     }
 };
 
@@ -3201,23 +3237,6 @@ class aura_warr_victorious : public AuraScript
     }
 };
 
-//280772 - Siegebreaker
-class spell_warr_siegebreaker : public SpellScript
-{
-    PrepareSpellScript(spell_warr_siegebreaker);
-
-    void HandleOnHit()
-    {
-        Unit* caster = GetCaster();
-        caster->CastSpell(nullptr, 280773, true);
-    }
-
-    void Register() override
-    {
-        OnHit += SpellHitFn(spell_warr_siegebreaker::HandleOnHit);
-    }
-};
-
 //262231
 class war_machine : public PlayerScript
 {
@@ -3260,6 +3279,37 @@ class spell_defensive_state : public AuraScript
         OnEffectApply += AuraEffectApplyFn(spell_defensive_state::OnApply, EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, AURA_EFFECT_HANDLE_REAL);
     }
 };
+
+// 215571 Frothing Berserker
+class spell_frothing_berserker : public AuraScript {
+    PrepareAuraScript(spell_frothing_berserker);
+
+    bool CheckProc(ProcEventInfo& eventInfo) {
+        if (eventInfo.GetSpellInfo()->Id == SPELL_WARRIOR_RAMPAGE && eventInfo.GetActor()->HasAura(SPELL_WARRIOR_FROTHING_BERSERKER2))
+            return true;
+        return false;
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_frothing_berserker::CheckProc);
+    }
+};
+
+// 280772 Siegebreaker
+class spell_warr_siegebreaker : public SpellScript {
+    PrepareSpellScript(spell_warr_siegebreaker);
+
+    void HandleDamage(SpellEffIndex /*effIndex*/) {
+        GetCaster()->CastSpell(GetHitUnit(), SPELL_WARRIOR_SIEGEBREAKER_AURA);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_warr_siegebreaker::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
 /*
 //152278 Anger Management
 class anger_management : public PlayerScript
@@ -3421,6 +3471,7 @@ void AddSC_warrior_spell_scripts()
     RegisterSpellScript(spell_warr_siegebreaker);
     RegisterPlayerScript(war_machine);
     RegisterAuraScript(spell_defensive_state);
+    RegisterAuraScript(spell_frothing_berserker);
 
     //RegisterPlayerScript(anger_management);
     //RegisterAreaTriggerAI(at_into_the_fray);	
