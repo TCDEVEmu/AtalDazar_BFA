@@ -546,6 +546,45 @@ namespace WorldPackets
             void Read() override { }
         };
 
+        class ArenaPrepOpponentSpecializations final : public ServerPacket
+        {
+        public:
+            ArenaPrepOpponentSpecializations() : ServerPacket(SMSG_ARENA_PREP_OPPONENT_SPECIALIZATIONS, 4) { }
+
+            WorldPacket const* Write() override;
+
+            struct OpponentSpecData
+            {
+                int32 SpecializationID = 0;
+                int32 Unk = 0;
+                ObjectGuid Guid;
+            };
+
+            std::vector<OpponentSpecData> Data;
+        };
+
+        class Points final : public ServerPacket
+        {
+        public:
+            Points() : ServerPacket(SMSG_BATTLEGROUND_POINTS, 3) { }
+
+            WorldPacket const* Write() override;
+
+            uint16 BgPoints = 0;
+            bool Team = false; // 0 - alliance; 1 - horde
+        };
+
+        class Init final : public ServerPacket
+        {
+        public:
+            Init(uint16 maxPoints) : ServerPacket(SMSG_BATTLEGROUND_INIT, 2 + 4), MaxPoints(maxPoints) { }
+
+            WorldPacket const* Write() override;
+
+            uint32 ServerTime = getMSTime();
+            uint16 MaxPoints = 0;
+        };
+
     }
 }
 
