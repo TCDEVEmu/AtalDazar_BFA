@@ -246,6 +246,8 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
     void SetCombatMovement(bool allowMovement);
     bool IsCombatMovementAllowed() const { return _isCombatMovementAllowed; }
 
+    bool CheckHomeDistToEvade(uint32 diff, float dist = 0.0f, float x = 0.0f, float y = 0.0f, float z = 0.0f, bool onlyZ = false);
+
     // return true for heroic mode. i.e.
     //   - for dungeon in mode 10-heroic,
     //   - for raid in mode 10-Heroic
@@ -322,6 +324,7 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
     private:
         Difficulty _difficulty;
         bool _isCombatMovementAllowed;
+        uint32 _checkHomeTimer;
         bool _isHeroic;
 };
 
