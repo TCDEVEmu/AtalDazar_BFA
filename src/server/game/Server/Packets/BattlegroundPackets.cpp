@@ -395,3 +395,34 @@ WorldPacket const * WorldPackets::Battleground::SendPvpBrawlInfo::Write()
     return &_worldPacket;
 
 }
+
+WorldPacket const* WorldPackets::Battleground::ArenaPrepOpponentSpecializations::Write()
+{
+    _worldPacket << static_cast<uint32>(Data.size());
+    for (auto const& itr : Data)
+    {
+        _worldPacket << itr.SpecializationID;
+        _worldPacket << itr.Unk;
+        _worldPacket << itr.Guid;
+    }
+
+    return &_worldPacket;
+}
+
+
+WorldPacket const* WorldPackets::Battleground::Points::Write()
+{
+    _worldPacket << BgPoints;
+    _worldPacket.WriteBit(Team);
+    _worldPacket.FlushBits();
+
+    return &_worldPacket;
+}
+
+WorldPacket const* WorldPackets::Battleground::Init::Write()
+{
+    _worldPacket << ServerTime; // C_PvP.GetArenaCrowdControlInfo
+    _worldPacket << MaxPoints;
+
+    return &_worldPacket;
+}

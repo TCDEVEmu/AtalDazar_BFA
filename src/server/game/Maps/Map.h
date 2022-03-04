@@ -618,6 +618,13 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
             _updateObjects.erase(obj);
         }
 
+        void SetWorldState(uint32 id, uint64 value) { m_worldStates[id] = value; }
+        uint64 GetWorldState(uint32 id) const
+        {
+            auto itr = m_worldStates.find(id);
+            return itr != m_worldStates.end() ? itr->second : uint64(0);
+        }
+
     private:
         void LoadMapAndVMap(int gx, int gy);
         void LoadVMap(int gx, int gy);
@@ -658,6 +665,8 @@ class TC_GAME_API Map : public GridRefManager<NGridType>
 
         bool _areaTriggersToMoveLock;
         std::vector<AreaTrigger*> _areaTriggersToMove;
+
+        std::map<uint32, uint64> m_worldStates;
 
         bool IsGridLoaded(const GridCoord &) const;
         void EnsureGridCreated(const GridCoord &);
