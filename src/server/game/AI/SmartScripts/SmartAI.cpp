@@ -902,6 +902,21 @@ void SmartAI::StopFollow(bool complete)
     GetScript()->ProcessEventsFor(SMART_EVENT_FOLLOW_COMPLETED);
 }
 
+void SmartAI::SetUnfollow()
+{
+    mFollowGuid.Clear();
+    mFollowDist = 0;
+    mFollowAngle = 0;
+    mFollowCredit = 0;
+    mFollowArrivedTimer = 0;
+    mFollowArrivedEntry = 0;
+    mFollowCreditType = 0;
+
+    me->StopMoving();
+    me->GetMotionMaster()->Clear();
+    me->GetMotionMaster()->MoveIdle();
+}
+
 void SmartAI::SetScript9(SmartScriptHolder& e, uint32 entry, Unit* invoker)
 {
     if (invoker)
@@ -979,6 +994,7 @@ bool SmartGameObjectAI::GossipHello(Player* player)
 {
     _gossipReturn = false;
     GetScript()->ProcessEventsFor(SMART_EVENT_GOSSIP_HELLO, player, 0, 0, false, nullptr, me);
+    GetScript()->ProcessEventsFor(SMART_EVENT_ON_GO_REPORT_USE, player, 0, 0, false, nullptr, me);
     return _gossipReturn;
 }
 

@@ -2542,6 +2542,27 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             }
             break;
         }
+        case SMART_ACTION_OVERRIDE_INHABIT_TYPE:
+        {
+            for (WorldObject* const target : targets)
+            {
+                if (IsCreature(target))
+                {
+                    target->ToCreature()->OverrideInhabitType(InhabitTypeValues(e.action.inhabbitType.type));
+                    target->ToCreature()->UpdateMovementFlags();
+                }
+            }
+
+            break;
+        }
+        case SMART_ACTION_STOP_FOLLOW:
+        {
+            if (!me)
+                break;
+
+            ENSURE_AI(SmartAI, me->AI())->SetUnfollow();
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "SmartScript::ProcessAction: Entry " SI64FMTD " SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
             break;
@@ -3238,6 +3259,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_EVENT_JUST_CREATED:
         case SMART_EVENT_FOLLOW_COMPLETED:
         case SMART_EVENT_ON_SPELLCLICK:
+        case SMART_EVENT_ON_GO_REPORT_USE:
             ProcessAction(e, unit, var0, var1, bvar, spell, gob);
             break;
         case SMART_EVENT_GOSSIP_HELLO:

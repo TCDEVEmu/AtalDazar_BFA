@@ -1625,6 +1625,16 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
 
             break;
         }
+        case SMART_ACTION_OVERRIDE_INHABIT_TYPE:
+        {
+            uint32 inhabbitType = e.action.inhabbitType.type;
+            if (inhabbitType > 7)
+            {
+                TC_LOG_ERROR("sql.sql", "SmartAIMgr: Entry %u SourceType %u Event %u Action %u uses non-existent inhabit type %u, skipped.", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType(), inhabbitType);
+                return false;
+            }
+            break;
+        }
         case SMART_ACTION_FOLLOW:
         case SMART_ACTION_SET_ORIENTATION:
         case SMART_ACTION_STORE_TARGET_LIST:
@@ -1713,6 +1723,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_TRIGGER_RANDOM_TIMED_EVENT:
         case SMART_ACTION_SET_COUNTER:
         case SMART_ACTION_REMOVE_ALL_GAMEOBJECTS:
+        case SMART_ACTION_STOP_FOLLOW:
             break;
         default:
             TC_LOG_ERROR("sql.sql", "SmartAIMgr: Not handled action_type(%u), event_type(%u), Entry " SI64FMTD " SourceType %u Event %u, skipped.", e.GetActionType(), e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id);

@@ -193,9 +193,9 @@ enum SMART_EVENT
     SMART_EVENT_SCENE_TRIGGER            = 79,      // param_string : triggerName
     SMART_EVENT_SCENE_CANCEL             = 80,      // none
     SMART_EVENT_SCENE_COMPLETE           = 81,      // none
-	// SMART_EVENT_ON_GO_REPORT_USE         = 82,      // id  Athenas Event TO DO
+	SMART_EVENT_ON_GO_REPORT_USE         = 82,      // id
 
-    SMART_EVENT_END                      = 82
+    SMART_EVENT_END                      = 83
 };
 
 struct SmartEvent
@@ -472,9 +472,9 @@ struct SmartEvent
 enum SMART_SCRIPT_RESPAWN_CONDITION
 {
     SMART_SCRIPT_RESPAWN_CONDITION_NONE = 0,
-    SMART_SCRIPT_RESPAWN_CONDITION_MAP = 1,
+    SMART_SCRIPT_RESPAWN_CONDITION_MAP  = 1,
     SMART_SCRIPT_RESPAWN_CONDITION_AREA = 2,
-    SMART_SCRIPT_RESPAWN_CONDITION_END = 3
+    SMART_SCRIPT_RESPAWN_CONDITION_END  = 3
 };
 
 enum SMART_ACTION
@@ -635,10 +635,10 @@ enum SMART_ACTION
     SMART_ACTION_COMPLETE_SCENARIO                  = 218,    // none
     SMART_ACTION_SCENARIO_SEND_EVENT                = 219,    // EventId,
     SMART_ACTION_ENTER_LFG_QUEUE                    = 220,
-	// SMART_ACTION_OVERRIDE_INHABIT_TYPE              = 222,    // Athenas Action ToDo
-    // SMART_ACTION_STOP_FOLLOW                        = 223,    // Athenas Action ToDo
-    // SMART_ACTION_CAST_RANDOM_SPELL                  = 224,    // Athenas Action ToDo
-
+    //SMART_ACTION_CAST_RANDOM_SPELL                  = 221,    // Athenas Action ToDo
+    SMART_ACTION_OVERRIDE_INHABIT_TYPE              = 222,    // inhabbitType
+    SMART_ACTION_STOP_FOLLOW                        = 223,    // none
+        
     SMART_ACTION_END 
 };
 
@@ -1305,6 +1305,11 @@ struct SmartAction
             uint32 RoleMask;
         } enterLfgQueue;
 
+        struct
+        {
+            uint32 type;
+        } inhabbitType;
+
         //! Note for any new future actions
         //! All parameters must have type uint32
 
@@ -1505,33 +1510,33 @@ struct SmartTarget
 
 enum SmartScriptType
 {
-    SMART_SCRIPT_TYPE_CREATURE = 0, //done
-    SMART_SCRIPT_TYPE_GAMEOBJECT = 1, //done
-    SMART_SCRIPT_TYPE_AREATRIGGER = 2, //done
-    SMART_SCRIPT_TYPE_EVENT = 3, //
-    SMART_SCRIPT_TYPE_GOSSIP = 4, //
-    SMART_SCRIPT_TYPE_QUEST = 5, // done
-    SMART_SCRIPT_TYPE_SPELL = 6, //
-    SMART_SCRIPT_TYPE_TRANSPORT = 7, //
-    SMART_SCRIPT_TYPE_INSTANCE = 8, //
+    SMART_SCRIPT_TYPE_CREATURE         = 0, //done
+    SMART_SCRIPT_TYPE_GAMEOBJECT       = 1, //done
+    SMART_SCRIPT_TYPE_AREATRIGGER      = 2, //done
+    SMART_SCRIPT_TYPE_EVENT            = 3, //
+    SMART_SCRIPT_TYPE_GOSSIP           = 4, //
+    SMART_SCRIPT_TYPE_QUEST            = 5, //done
+    SMART_SCRIPT_TYPE_SPELL            = 6, //
+    SMART_SCRIPT_TYPE_TRANSPORT        = 7, //
+    SMART_SCRIPT_TYPE_INSTANCE         = 8, //
     SMART_SCRIPT_TYPE_TIMED_ACTIONLIST = 9, //
-    SMART_SCRIPT_TYPE_SCENE = 10, //done
-    SMART_SCRIPT_TYPE_MAX = 11
+    SMART_SCRIPT_TYPE_SCENE            = 10, //done
+    SMART_SCRIPT_TYPE_MAX              = 11
 };
 
 enum SmartAITypeMaskId
 {
-    SMART_SCRIPT_TYPE_MASK_CREATURE = 1,
-    SMART_SCRIPT_TYPE_MASK_GAMEOBJECT = 2,
-    SMART_SCRIPT_TYPE_MASK_AREATRIGGER = 4,
-    SMART_SCRIPT_TYPE_MASK_EVENT = 8,
-    SMART_SCRIPT_TYPE_MASK_GOSSIP = 16,
-    SMART_SCRIPT_TYPE_MASK_QUEST = 32,
-    SMART_SCRIPT_TYPE_MASK_SPELL = 64,
-    SMART_SCRIPT_TYPE_MASK_TRANSPORT = 128,
-    SMART_SCRIPT_TYPE_MASK_INSTANCE = 256,
+    SMART_SCRIPT_TYPE_MASK_CREATURE         = 1,
+    SMART_SCRIPT_TYPE_MASK_GAMEOBJECT       = 2,
+    SMART_SCRIPT_TYPE_MASK_AREATRIGGER      = 4,
+    SMART_SCRIPT_TYPE_MASK_EVENT            = 8,
+    SMART_SCRIPT_TYPE_MASK_GOSSIP           = 16,
+    SMART_SCRIPT_TYPE_MASK_QUEST            = 32,
+    SMART_SCRIPT_TYPE_MASK_SPELL            = 64,
+    SMART_SCRIPT_TYPE_MASK_TRANSPORT        = 128,
+    SMART_SCRIPT_TYPE_MASK_INSTANCE         = 256,
     SMART_SCRIPT_TYPE_MASK_TIMED_ACTIONLIST = 512,
-    SMART_SCRIPT_TYPE_MASK_SCENE = 1024
+    SMART_SCRIPT_TYPE_MASK_SCENE            = 1024
 };
 
 const uint32 SmartAITypeMask[SMART_SCRIPT_TYPE_MAX][2] =
@@ -1632,8 +1637,8 @@ const uint32 SmartAIEventMask[SMART_EVENT_END][2] =
     {SMART_EVENT_SCENE_START,               SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_TRIGGER,             SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_CANCEL,              SMART_SCRIPT_TYPE_MASK_SCENE },
-    {SMART_EVENT_SCENE_COMPLETE,            SMART_SCRIPT_TYPE_MASK_SCENE }
-	// {SMART_EVENT_ON_GO_REPORT_USE,         SMART_SCRIPT_TYPE_MASK_GAMEOBJECT }
+    {SMART_EVENT_SCENE_COMPLETE,            SMART_SCRIPT_TYPE_MASK_SCENE },
+	{SMART_EVENT_ON_GO_REPORT_USE,          SMART_SCRIPT_TYPE_MASK_GAMEOBJECT }
 };
 
 enum SmartEventFlags
