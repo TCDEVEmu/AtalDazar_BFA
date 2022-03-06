@@ -568,12 +568,16 @@ struct CreatureModelInfo
 
 enum InhabitTypeValues
 {
+    INHABIT_NONE   = 0,
+
     INHABIT_GROUND = 1,
     INHABIT_WATER  = 2,
     INHABIT_AIR    = 4,
     INHABIT_ROOT   = 8,
     INHABIT_ANYWHERE = INHABIT_GROUND | INHABIT_WATER | INHABIT_AIR | INHABIT_ROOT
 };
+
+inline InhabitTypeValues operator|(InhabitTypeValues a, InhabitTypeValues b) { return static_cast<InhabitTypeValues>(static_cast<std::underlying_type<InhabitTypeValues>::type>(a) | static_cast<std::underlying_type<InhabitTypeValues>::type>(b)); }
 
 #pragma pack(pop)
 

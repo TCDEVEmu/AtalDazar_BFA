@@ -858,7 +858,7 @@ void Creature::Update(uint32 diff)
 
 bool Creature::CanFly() const
 {
-    if (GetCreatureTemplate()->InhabitType & INHABIT_AIR)
+    if (GetInhabitType() & INHABIT_AIR)
         return true;
 
     CreatureDisplayInfoEntry const* displayInfo = sCreatureDisplayInfoStore.LookupEntry(GetNativeDisplayId());

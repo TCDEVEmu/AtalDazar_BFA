@@ -103,10 +103,23 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         bool IsCivilian() const { return (GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_CIVILIAN) != 0; }
         bool IsTrigger() const { return (GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_TRIGGER) != 0; }
         bool IsGuard() const { return (GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_GUARD) != 0; }
-        bool CanWalk() const { return (GetCreatureTemplate()->InhabitType & INHABIT_GROUND) != 0; }
-        bool CanSwim() const override { return (GetCreatureTemplate()->InhabitType & INHABIT_WATER) != 0 || IsPet(); }
+        bool CanWalk() const { return (GetInhabitType() & INHABIT_GROUND) != 0; }
+        bool CanSwim() const override { return (GetInhabitType() & INHABIT_WATER) != 0 || IsPet(); }
         bool CanFly()  const override;
         bool IsDungeonBoss() const { return (GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_DUNGEON_BOSS) != 0; }
+
+        // Used to dynamically change allowed path generator and movement flags behavior during scripts.
+        // Can be used to allow ground-only creatures to temporarily fly, restrict flying creatures to the ground etc.
+        void OverrideInhabitType(InhabitTypeValues inhabitType) { m_inhabitTypeOverride = inhabitType; }
+        void ResetInhabitTypeOverride() { m_inhabitTypeOverride = (InhabitTypeValues)0; }
+        InhabitTypeValues GetInhabitType() const
+        {
+            if (IsPet())
+                return INHABIT_GROUND | INHABIT_WATER;
+            if (m_inhabitTypeOverride)
+                return m_inhabitTypeOverride;
+            return (InhabitTypeValues)GetCreatureTemplate()->InhabitType;
+        }
 
         void SetReactState(ReactStates st) { m_reactState = st; }
         ReactStates GetReactState() const { return m_reactState; }
@@ -419,6 +432,8 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         CreatureTemplate const* m_creatureInfo;                 // Can differ from sObjectMgr->GetCreatureTemplate(GetEntry()) in difficulty mode > 0
         CreatureData const* m_creatureData;
+
+        InhabitTypeValues m_inhabitTypeOverride = INHABIT_NONE;
 
         uint16 m_LootMode;                                  // Bitmask (default: LOOT_MODE_DEFAULT) that determines what loot will be lootable
 
