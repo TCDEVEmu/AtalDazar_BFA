@@ -197,6 +197,8 @@ class TC_GAME_API SmartAI : public CreatureAI
 
         void OnSpellClick(Unit* clicker, bool& result) override;
 
+        uint32 GetEventPhaseMask() { return GetScript()->GetEventPhaseMask(); }
+
         void SetWPPauseTimer(uint32 time) { mWPPauseTimer = time; }
 
         void SetGossipReturn(bool val) { _gossipReturn = val; }

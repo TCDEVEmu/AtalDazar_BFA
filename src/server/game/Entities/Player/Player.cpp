@@ -25375,6 +25375,18 @@ void Player::SetWeeklyQuestStatus(uint32 quest_id)
     m_WeeklyQuestChanged = true;
 }
 
+bool Player::IsWeeklyQuestDone(uint32 quest_id) const
+{
+    if (!sObjectMgr->GetQuestTemplate(quest_id))
+        return false;
+
+    for (auto&& weeklyQuestId : m_weeklyquests)
+        if (weeklyQuestId == quest_id)
+            return true;
+
+    return false;
+}
+
 void Player::SetSeasonalQuestStatus(uint32 quest_id)
 {
     Quest const* quest = sObjectMgr->GetQuestTemplate(quest_id);
@@ -25389,6 +25401,18 @@ void Player::SetMonthlyQuestStatus(uint32 quest_id)
 {
     m_monthlyquests.insert(quest_id);
     m_MonthlyQuestChanged = true;
+}
+
+bool Player::IsMonthlyQuestDone(uint32 quest_id) const
+{
+    if (!sObjectMgr->GetQuestTemplate(quest_id))
+        return false;
+
+    for (auto&& monthlyQuestId : m_monthlyquests)
+        if (monthlyQuestId == quest_id)
+            return true;
+
+    return false;
 }
 
 void Player::DailyReset()

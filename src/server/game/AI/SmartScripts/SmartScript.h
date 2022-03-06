@@ -100,6 +100,8 @@ class TC_GAME_API SmartScript
         void OnReset();
         void ResetBaseObject();
 
+        uint32 GetEventPhaseMask() { return mEventPhase; }
+
         //TIMED_ACTIONLIST (script type 9 aka script9)
         void SetScript9(SmartScriptHolder& e, uint32 entry);
         Unit* GetLastInvoker(Unit* invoker = nullptr) const;
