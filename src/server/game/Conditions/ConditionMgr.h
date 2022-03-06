@@ -106,13 +106,13 @@ enum ConditionTypes
     CONDITION_DIFFICULTY_ID            = 49,                   // Difficulty       0              0                  true is map has difficulty id
     CONDITION_OBJECT_ENTRY_GUID        = 51,                   // TypeID           entry          guid               true if object is type TypeID and the entry is 0 or matches entry of the object or matches guid of the object
     CONDITION_TYPE_MASK                = 52,                   // TypeMask         0              0                  true if object is type object's TypeMask matches provided TypeMask
-	// CONDITION_SAI_PHASE                = 55,                  // phase            0              0                  true if object sai phase = value1                      Athenas Condition To Do
-    // CONDITION_PLAYER_SPEC              = 56,                  // spec             0              0                  true if player spec = value1                           Athenas Condition To Do
-    // CONDITION_CURRENCY_SEASON          = 57,                  // currency         count          0                  true if player spec = value1                           Athenas Condition To Do
-    // CONDITION_HAS_GROUP                = 58,                  // 0                0              0                  true if player is in group                             Athenas Condition To Do
-    // CONDITION_WEEKLY_QUEST_DONE        = 59,                  // quest            0              0                  true if weekly quest has been completed for the week   Athenas Condition To Do
-    // CONDITION_MONTHLY_QUEST_DONE       = 60,                  // quest            0              0                  true if monthly quest has been completed for the month Athenas Condition To Do
-    // CONDITION_REPUTATION_VALUE         = 61,                  // faction_id       rep_value      0                  true if reputation value more or equal than rep_value  Athenas Condition To Do
+    CONDITION_PLAYER_SPEC              = 53,                   // spec             0              0                  true if player spec = value1 
+    CONDITION_HAS_GROUP                = 54,                   // 0                0              0                  true if player is in group                            
+    CONDITION_SAI_PHASE                = 55,                   // phase            0              0                  true if object sai phase = value1                      
+    CONDITION_WEEKLY_QUEST_DONE        = 56,                   // quest            0              0                  true if weekly quest has been completed for the week   Athenas Condition To Do
+    CONDITION_MONTHLY_QUEST_DONE       = 57,                   // quest            0              0                  true if monthly quest has been completed for the month Athenas Condition To Do
+    CONDITION_REPUTATION_VALUE         = 58,                   // faction_id       rep_value      0                  true if reputation value more or equal than rep_value  Athenas Condition To Do
+
     CONDITION_MAX
 };
 

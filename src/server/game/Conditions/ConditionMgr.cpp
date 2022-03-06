@@ -38,6 +38,8 @@
 #include "Realm.h"
 #include "ReputationMgr.h"
 #include "ScriptMgr.h"
+#include "ScriptedCreature.h"
+#include "SmartAI.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "World.h"
@@ -522,6 +524,52 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
             condMeets = object->GetMap()->GetDifficultyID() == ConditionValue1;
             break;
         }
+        case CONDITION_SAI_PHASE:
+        {
+            if (Creature* creature = object->ToCreature())
+                if (creature->GetAIName() == "SmartAI" && !creature->IsPet())
+                    condMeets = ENSURE_AI(SmartAI, creature->AI())->GetEventPhaseMask() == ConditionValue1;
+            if (GameObject* go = object->ToGameObject())
+                if (go->GetAIName() == "SmartAI")
+                    condMeets = ENSURE_AI(SmartAI, go->AI())->GetEventPhaseMask() == ConditionValue1;
+            break;
+        }
+        case CONDITION_PLAYER_SPEC:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->GetSpecializationId() == ConditionValue1;
+            break;
+        }
+        case CONDITION_HAS_GROUP:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                Group* group = player->GetGroup();
+                condMeets = group ? true : false;
+            }
+            break;
+        }
+        case CONDITION_WEEKLY_QUEST_DONE:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->IsWeeklyQuestDone(ConditionValue1);
+            break;
+        }
+        case CONDITION_MONTHLY_QUEST_DONE:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->IsMonthlyQuestDone(ConditionValue1);
+            break;
+        }
+        case CONDITION_REPUTATION_VALUE:
+        {
+            if (Player * player = object->ToPlayer())
+            {
+                if (FactionEntry const* faction = sFactionStore.LookupEntry(ConditionValue1))
+                    condMeets = (ConditionValue2 && player->GetReputationMgr().GetReputation(faction) >= int32(ConditionValue2));
+            }
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -720,6 +768,24 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
             break;
         case CONDITION_DIFFICULTY_ID:
             mask |= GRID_MAP_TYPE_MASK_ALL;
+            break;
+        case CONDITION_SAI_PHASE:
+            mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_GAMEOBJECT;
+            break;
+        case CONDITION_PLAYER_SPEC:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_HAS_GROUP:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_WEEKLY_QUEST_DONE:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_MONTHLY_QUEST_DONE:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_REPUTATION_VALUE:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
             ASSERT(false && "Condition::GetSearcherTypeMaskForCondition - missing condition handling!");
@@ -1952,6 +2018,7 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
             break;
         }
         case CONDITION_REPUTATION_RANK:
+        case CONDITION_REPUTATION_VALUE:
         {
             FactionEntry const* factionEntry = sFactionStore.LookupEntry(cond->ConditionValue1);
             if (!factionEntry)
@@ -1998,6 +2065,8 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
         case CONDITION_QUEST_NONE:
         case CONDITION_QUEST_COMPLETE:
         case CONDITION_DAILY_QUEST_DONE:
+        case CONDITION_WEEKLY_QUEST_DONE:
+        case CONDITION_MONTHLY_QUEST_DONE:
         {
             if (!sObjectMgr->GetQuestTemplate(cond->ConditionValue1))
             {
@@ -2382,6 +2451,10 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
                 TC_LOG_ERROR("sql.sql", "%s has non existing difficulty in value1 (%u), skipped.", cond->ToString(true).c_str(), cond->ConditionValue1);
                 return false;
             }
+            break;
+        case CONDITION_SAI_PHASE:
+        case CONDITION_PLAYER_SPEC:
+        case CONDITION_HAS_GROUP:
             break;
         default:
             TC_LOG_ERROR("sql.sql", "%s Invalid ConditionType in `condition` table, ignoring.", cond->ToString().c_str());
