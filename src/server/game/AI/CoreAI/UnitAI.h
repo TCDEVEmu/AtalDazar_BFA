@@ -99,6 +99,17 @@ struct TC_GAME_API NonTankTargetSelector : public std::unary_function<Unit*, boo
         bool _playerOnly;
 };
 
+struct TC_GAME_API CasterSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+public:
+    CasterSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+
+    bool operator ()(WorldObject* target) const;
+
+private:
+    uint32 _spellId;
+};
+
 // Simple selector for units using mana
 struct TC_GAME_API PowerUsersSelector
 {

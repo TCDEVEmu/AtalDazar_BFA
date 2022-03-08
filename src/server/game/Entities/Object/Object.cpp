@@ -2081,6 +2081,15 @@ GameObject* WorldObject::FindNearestGameObject(uint32 entry, float range) const
     return go;
 }
 
+Player* WorldObject::FindNearestPlayer(float range) const
+{
+    Player* player = nullptr;
+    Trinity::NearestPlayerInObjectRangeCheck checker(this, range);
+    Trinity::PlayerLastSearcher<Trinity::NearestPlayerInObjectRangeCheck> searcher(this, player, checker);
+    Cell::VisitGridObjects(this, searcher, range);
+    return player;
+}
+
 std::list<GameObject*> WorldObject::FindNearestGameObjects(uint32 entry, float range) const
 {
     std::list<GameObject*> goList;
