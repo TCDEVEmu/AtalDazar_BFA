@@ -374,13 +374,13 @@ WorldPacket const* WorldPackets::Battleground::PVPMatchEnd::Write()
     return &_worldPacket;
 }
 
-WorldPacket const* WorldPackets::Battleground::ConquestFormulaContants::Write()
+WorldPacket const* WorldPackets::Battleground::ConquestFormulaConstants::Write()
 {
     _worldPacket << uint32(PvpMinCPPerWeek);
     _worldPacket << uint32(PvpMaxCPPerWeek);
     _worldPacket << float(PvpCPBaseCoefficient);
     _worldPacket << float(PvpCPExpCoefficient);
-    _worldPacket << float(PvpCPNumerato);
+    _worldPacket << float(PvpCPNumerator);
 
     return &_worldPacket;
 }
