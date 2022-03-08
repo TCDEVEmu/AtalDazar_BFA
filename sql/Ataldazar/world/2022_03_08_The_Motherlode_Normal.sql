@@ -122,7 +122,7 @@ MySQL - 5.6.47-log
 *********************************************************************
 */
 /*!40101 SET NAMES utf8 */;
-set @CGUID := 1056444;
+set @CGUID := 1056449;
 replace into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values(@CGUID+1,'137716','1594','8064','9729','0','0','0','0','-1','0','0','593.956','-3581.68','0.984246','3.79526','7200','10','0','0','0','1','0','0','0','0','0','','27101');
 replace into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values(@CGUID+2,'130485','1594','8064','9729','0','0','0','0','-1','0','0','671.43','-3703.72','2.44121','2.47393','7200','0','0','0','0','0','0','0','0','0','0','','27101');
 replace into `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `ScriptName`, `VerifiedBuild`) values(@CGUID+3,'137716','1594','8064','9729','0','0','0','0','-1','0','0','599.763','-3661.58','-4.80994','1.01783','7200','10','0','0','0','1','0','0','0','0','0','','27101');
@@ -1476,6 +1476,7 @@ replace into `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `
 replace into `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `visibilityDistanceType`, `auras`) values('130485','0','0','0','1','0','0','0','0','0','267367');
 replace into `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `visibilityDistanceType`, `auras`) values('137716','0','0','0','1','0','0','0','0','0','');
 replace into `creature_template_addon` (`entry`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `visibilityDistanceType`, `auras`) values('138052','0','0','0','1','0','0','0','0','0','');
+
 /*
 SQLyog Community
 MySQL - 5.6.47-log 
@@ -1483,71 +1484,7 @@ MySQL - 5.6.47-log
 */
 /*!40101 SET NAMES utf8 */;
 
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','1','0','enUS','Systems engaged. Commence pummeling.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','2','0','enUS','Voltage increased.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','3','0','enUS','|TINTERFACE\\ICONS\\INV_MISC_SOCCERBALL.BLP:20|t Coin-Operated Crowd Pummeler casts |cFFFF0000|Hspell:256214|h[Footbomb Launcher]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','4','0','enUS','Lethal force authorized.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','5','0','enUS','Voltage increased.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','6','0','enUS','Lethal force authorized.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','7','0','enUS','|TINTERFACE\\ICONS\\INV_MISC_SOCCERBALL.BLP:20|t Coin-Operated Crowd Pummeler casts |cFFFF0000|Hspell:256214|h[Footbomb Launcher]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','8','0','enUS','Voltage increased.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','9','0','enUS','Lethal force authorized.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','10','0','enUS','|TINTERFACE\\ICONS\\INV_MISC_SOCCERBALL.BLP:20|t Coin-Operated Crowd Pummeler casts |cFFFF0000|Hspell:256214|h[Footbomb Launcher]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','11','0','enUS','Voltage increased.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','12','0','enUS','Damaging this unit violates the terms of use.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','13','0','enUS','Lethal force authorized.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','14','0','enUS','Voltage increased.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','15','0','enUS','|TINTERFACE\\ICONS\\INV_MISC_SOCCERBALL.BLP:20|t Coin-Operated Crowd Pummeler casts |cFFFF0000|Hspell:256214|h[Footbomb Launcher]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129214','16','0','enUS','Systems... failing. Coin release... malfunction...');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','1','0','enUS','|TINTERFACE\\ICONS\\SPELL_SHAMAN_EARTHQUAKE.BLP:20|t Azerokk prepares to cast |cFFFF0000|Hspell:258622|h[Resonant Pulse]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','2','0','enUS','Shatter!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','3','0','enUS','The blood of Azeroth flows through you!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','4','0','enUS','The blood of Azeroth flows through you!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','5','0','enUS','|TINTERFACE\\ICONS\\SPELL_SHAMAN_EARTHQUAKE.BLP:20|t Azerokk prepares to cast |cFFFF0000|Hspell:258622|h[Resonant Pulse]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','6','0','enUS','The ground will consume you!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','7','0','enUS','Unleash your power!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','8','0','enUS','Arise!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','9','0','enUS','The blood of Azeroth flows through you!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','10','0','enUS','|TINTERFACE\\ICONS\\SPELL_SHAMAN_EARTHQUAKE.BLP:20|t Azerokk prepares to cast |cFFFF0000|Hspell:258622|h[Resonant Pulse]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129227','11','0','enUS','The wounds... must be mended...');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','1','0','enUS','Lookin\' for Azerite? Have a face full!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','2','0','enUS','Safety first!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','3','0','enUS','|TINTERFACE\\ICONS\\SPELL_FROST_ARCTICWINDS.BLP:20|t Rixxa Fluxflame is casting |cFFFF0000|Hspell:259940|h[Propellant Blast]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','4','0','enUS','I love the smell of propellant in the morning!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','5','0','enUS','|TINTERFACE\\ICONS\\SPELL_FROST_ARCTICWINDS.BLP:20|t Rixxa Fluxflame is casting |cFFFF0000|Hspell:259940|h[Propellant Blast]|h|r!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','6','0','enUS','Lookin\' for Azerite? Have a face full!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129231','7','0','enUS','I shoulda... gotten... hazard pay...');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','1','0','enUS','Right where you belong--under my heel!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','2','0','enUS','Get a load of 300 rounds per minute!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','3','0','enUS','Get a load of 300 rounds per minute!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','4','0','enUS','What am I payin\' you fools for?! Get out here and fix this!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','5','0','enUS','Pulverize!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','6','0','enUS','Smash!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','7','0','enUS','Pulverize!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','8','0','enUS','Pulverize!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','9','0','enUS','Crush!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','10','0','enUS','You\'ll pay for that!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','11','0','enUS','Smash!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('129232','12','0','enUS','Pulverize!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('130435','1','0','enUS','Reusable chewing gum! Share it with your friends, your pets� or even strangers!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('130485','1','0','enUS','It\'s bashin\' time!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('130488','1','0','enUS','It\'s time for some upgrades!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('130488','2','0','enUS','Alright, I\'m done fightin\' fair.');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('130488','3','0','enUS','Why I oughta... lemme at \'em!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','1','0','enUS','You dumb lout! Those were expensive!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','2','0','enUS','Toilet paper shotguns! Think of all the time you could save!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','3','0','enUS','Some kind of arcane crystal that makes you better in every way! A bit unstable, maybe, but that\'s ok!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','4','0','enUS','A whistle that brings flight masters to you!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','5','0','enUS','Toilet paper shotguns! Think of all the time you could save!');
-replace into `creature_text_locale` (`CreatureID`, `GroupID`, `ID`, `Locale`, `Text`) values('136470','6','0','enUS','Bards!');
-/*
-SQLyog Community
-MySQL - 5.6.47-log 
-*********************************************************************
-*/
-/*!40101 SET NAMES utf8 */;
-
-set @GGUID := 270025;
+set @GGUID := 308500;
 replace into `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `isActive`, `ScriptName`, `VerifiedBuild`) values(@GGUID+0,'290545','1594','8064','9729','0','0','0','0','-1','624.167','-3617.33','-1.2312','2.38781','0','0','0.929813','0.368031','7200','255','1','0','','27101');
 replace into `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `isActive`, `ScriptName`, `VerifiedBuild`) values(@GGUID+1,'252247','1594','8064','9729','0','0','0','0','-1','630.34','-3620.71','3.56242','5.49184','0','0','-0.385431','0.922737','7200','255','1','0','','27101');
 replace into `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `phaseUseFlags`, `PhaseId`, `PhaseGroup`, `terrainSwapMap`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `isActive`, `ScriptName`, `VerifiedBuild`) values(@GGUID+3,'287042','1594','8064','9729','0','0','0','0','-1','782.925','-3684.1','11.0066','4.2003','0','0','-0.863132','0.504978','7200','255','1','0','','27101');
@@ -1666,41 +1603,3 @@ INSERT INTO `areatrigger` VALUES
 
 UPDATE `creature_template` SET `inhabittype`=7 WHERE `entry`=51346;
 UPDATE `creature_template` SET `faction`=14 WHERE `entry`=129547;
-
-DELETE FROM `creature_text` WHERE `CreatureID`=129231;
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(129231, 0, 0, '¡¡¡You are not prepared!!!!', 14, 0, 100, 0, 0, 0, 0, 'Rixxafluxflame - YELL_AGGRO'),
-(129231, 0, 1, 'Burn...', 14, 0, 100, 0, 0, 0, 0, 'Rixxafluxflame- YELL_CHEMICAL_BURN'),
-(129231, 1, 0, 'Figth with me.', 14, 0, 100, 0, 0, 0, 0, 'Rixxafluxflame - YELL_PROPELLANT_BLAST'),
-(129231, 2, 0, 'Arg', 41, 0, 100, 0, 0, 0, 0, 'Rixxafluxflame - YELL_SEARING_REAGENT'),
-(129231, 3, 0, 'Oh nooo...', 14, 0, 100, 0, 0, 0, 0, 'Rixxafluxflame - YELL_KILLED');
-
-DELETE FROM `creature_text` WHERE `CreatureID`=129232;
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(129232, 0, 0, '¡¡¡You are not prepared!!!!', 14, 0, 100, 0, 0, 0, 0, 'Mogulrazdunk - YELL_AGGRO'),
-(129232, 0, 1, 'Burn...', 14, 0, 100, 0, 0, 0, 0, 'Mogulrazdunk- YELL_GATLING_GUN'),
-(129232, 1, 0, 'Figth with me.', 14, 0, 100, 0, 0, 0, 0, 'Mogulrazdunk - YELL_DRILL_SMASH'),
-(129232, 2, 0, 'Arg', 41, 0, 100, 0, 0, 0, 0, 'Mogulrazdunk - YELL_MICRO_MISSILES'),
-(129232, 3, 0, 'Oh nooo...', 14, 0, 100, 0, 0, 0, 0, 'Mogulrazdunk - YELL_KILLED');
-
-DELETE FROM `creature_text` WHERE (`CreatureID`=129227 AND `GroupID`='0' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='0' AND `ID`='1') OR(`CreatureID`=129227 AND `GroupID`='1' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='2' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='3' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='4' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='5' AND `ID`='0') OR (`CreatureID`=129227 AND `GroupID`='6' AND `ID`='0');
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Emote`, `Duration`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(129227, 0, 0, '¡¡¡You are not prepared!!!!', 14, 0, 100, 0, 0, 97390, 0, 'Azerok - YELL_AZERITE_INFUSION'),
-(129227, 0, 1, 'Burn...', 14, 0, 100, 0, 0, 97384, 0, 'Azerok- YELL_CALL_EARTHRAGER'),
-(129227, 1, 0, 'Figth with me.', 14, 0, 100, 0, 0, 97381, 0, 'Azerok - YELL_RESONANT_PULSE'),
-(129227, 2, 0, 'Arg', 41, 0, 100, 0, 0, 115344, 0, 'Azerok - YELL_TECTONIC_SMASH'),
-(129227, 3, 0, 'Oh nooo...', 14, 0, 100, 0, 0, 97380, 0, 'Azerok - YELL_KILLED'),
-(129227, 4, 0, 'I will kill you', 14, 0, 100, 0, 0, 97379, 0, 'Azerok - YELL_KILL'),
-(129227, 5, 0, 'Come here...', 14, 0, 100, 0, 0, 97385, 0, 'Azerok - YELL_ENTER_COMBAT');
-
-DELETE FROM `creature_text` WHERE `CreatureID` = 129227;
-INSERT INTO `creature_text` (`CreatureID`, `GroupID`, `ID`, `Text`, `Type`, `Language`, `Probability`, `Duration`, `TextRange`, `Emote`, `Sound`, `BroadcastTextId`, `comment`) VALUES
-(129227, 0, 0, 'You trespass in my domain!', 14, 0, 100, 0, 0, 0, 97428, 0, ''),
-(129227, 1, 0, '|TINTERFACE\\ICONS\\SPELL_SHAMAN_EARTHQUAKE.BLP:20|t Azerokk prepares to cast |cFFFF0000|Hspell:258622|h[Resonant Pulse]|h|r!', 41, 0, 100, 0, 0, 0, 0, 0, ''),
-(129227, 2, 0, 'Shatter!', 14, 0, 100, 0, 0, 0, 0, 0, ''),
-(129227, 3, 0, 'The blood of Azeroth flows through you!', 14, 0, 100, 0, 0, 0, 97424, 0, ''),
-(129227, 4, 0, 'The ground will consume you!', 14, 0, 100, 0, 0, 0, 97426, 0, ''),
-(129227, 5, 0, 'Unleash your power!', 14, 0, 100, 0, 0, 0, 0, 0, ''),
-(129227, 6, 0, 'Arise!', 14, 0, 100, 0, 0, 0, 97427, 0, ''),
-(129227, 7, 0, 'The blood of Azeroth flows through you!', 14, 0, 100, 0, 0, 0, 0, 0, ''),
-(129227, 8, 0, 'The wounds... must be mended...', 12, 0, 100, 0, 0, 0, 97429, 0, '');
