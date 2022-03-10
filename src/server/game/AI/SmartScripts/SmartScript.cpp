@@ -2563,6 +2563,81 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             ENSURE_AI(SmartAI, me->AI())->SetUnfollow();
             break;
         }
+        case SMART_ACTION_FORCE_COMPLETE_QUEST:
+        {
+            for (WorldObject* const target : targets)
+            {
+                if (!IsUnit(target))
+                    continue;
+
+                if (Player * player = target->ToUnit()->ToPlayer())
+                    for (auto const& questID : e.action.ForceCompleteQuest.quest)
+                        player->ForceCompleteQuest(questID);
+            }
+            break;
+        }
+        case SMART_ACTION_SET_HEALTH_IN_PERCENT:
+        {
+            if (!me)
+                break;
+
+            me->SetHealth(me->CountPctFromMaxHealth(e.action.setHpPerc.hpvalue));
+            break;
+        }
+        case SMART_ACTION_MOD_CURRENCY:
+        {
+            for (WorldObject* const target : targets)
+            {
+                if (!IsUnit(target))
+                    continue;
+
+                if (Player * player = target->ToUnit()->ToPlayer())
+                    player->ModifyCurrency(e.action.modCurrency.currencyID, e.action.modCurrency.count, true, false);
+            }
+            break;
+        }
+        case SMART_ACTION_CLEAR_QUEST:
+        {
+
+            for (WorldObject* const target : targets)
+            {
+                if (!IsUnit(target))
+                    continue;
+
+                if (Player * player = target->ToUnit()->ToPlayer())
+                    for (auto const& questID : e.action.clearQuest.quest)
+                        player->RemoveRewardedQuest(questID);
+            }
+            break;
+        }
+        case SMART_ACTION_UNLEARN_SPELL:
+        {
+
+            for (WorldObject* const target : targets)
+            {
+                if (!IsUnit(target))
+                    continue;
+
+                if (Player * player = target->ToUnit()->ToPlayer())
+                    for (auto const& entryID : e.action.unlearnSpell.spell)
+                        player->RemoveSpell(entryID);
+            }
+            break;
+        }
+        case SMART_ACTION_LEARN_SPELL:
+        {
+
+            for (WorldObject* const target : targets)
+            {
+                if (!IsUnit(target))
+                    continue;
+
+                if (Player * player = target->ToUnit()->ToPlayer())
+                    for (auto const& entryID : e.action.learnSpell.spell)
+                        player->LearnSpell(entryID, false);
+            }
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "SmartScript::ProcessAction: Entry " SI64FMTD " SourceType %u, Event %u, Unhandled Action type %u", e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
             break;

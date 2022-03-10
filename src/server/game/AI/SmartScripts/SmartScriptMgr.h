@@ -638,6 +638,12 @@ enum SMART_ACTION
     //SMART_ACTION_CAST_RANDOM_SPELL                  = 221,    // Athenas Action ToDo
     SMART_ACTION_OVERRIDE_INHABIT_TYPE              = 222,    // inhabbitType
     SMART_ACTION_STOP_FOLLOW                        = 223,    // none
+    SMART_ACTION_FORCE_COMPLETE_QUEST               = 224,    // Force complete quest by ID (misc1, misc2 ...)
+    SMART_ACTION_SET_HEALTH_IN_PERCENT              = 225,    // Set hp in percent
+    SMART_ACTION_MOD_CURRENCY                       = 226,    // Modify currency to player by ID and count
+    SMART_ACTION_CLEAR_QUEST                        = 227,    // Clear rewarded quest from player (quest ID)
+    SMART_ACTION_UNLEARN_SPELL                      = 228,    // Unlearn spells from player
+    SMART_ACTION_LEARN_SPELL                        = 229,    // Learn spells to player
         
     SMART_ACTION_END 
 };
@@ -1322,6 +1328,37 @@ struct SmartAction
             uint32 param5;
             uint32 param6;
         } raw;
+
+        struct
+        {
+            uint32 quest[6];
+        } ForceCompleteQuest;
+
+        struct
+        {
+            uint32 hpvalue;
+        } setHpPerc;
+
+        struct
+        {
+            uint32 currencyID;
+            uint32 count;
+        } modCurrency;
+
+        struct
+        {
+            uint32 quest[6];
+        } clearQuest;
+
+        struct
+        {
+            uint32 spell[6];
+        } unlearnSpell;
+
+        struct
+        {
+            uint32 spell[6];
+        } learnSpell;
     };
 };
 
