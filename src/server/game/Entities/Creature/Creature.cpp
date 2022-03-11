@@ -1243,6 +1243,22 @@ void Creature::InitializeReactState()
         SetReactState(REACT_AGGRESSIVE);
 }
 
+void Creature::RemoveChanneledCast(ObjectGuid target)
+{
+    SetReactState(REACT_AGGRESSIVE);
+
+    if (Unit * itr = ObjectAccessor::GetUnit(*this, target))
+    {
+        GetMotionMaster()->MoveChase(itr);
+        Attack(itr, true);
+    }
+    else if (Player * itr = FindNearestPlayer(100.0f))
+    {
+        GetMotionMaster()->MoveChase(itr);
+        Attack(itr, true);
+    }
+}
+
 bool Creature::isCanInteractWithBattleMaster(Player* player, bool msg) const
 {
     if (!IsBattleMaster())

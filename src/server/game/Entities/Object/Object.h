@@ -563,6 +563,8 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         std::list<AreaTrigger*> SelectNearestAreaTriggers(uint32 spellId, float range);
         AreaTrigger*            SelectRandomAreaTriggerInRange(uint32 spellId, float range);
 
+        Player* FindNearestPlayer(float range) const;
+
         template <typename Container>
         void GetGameObjectListWithEntryInGrid(Container& gameObjectContainer, uint32 entry, float maxSearchRange = 250.0f) const;
 

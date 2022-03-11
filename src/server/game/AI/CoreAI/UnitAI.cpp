@@ -462,6 +462,43 @@ bool NonTankTargetSelector::operator()(Unit const* target) const
     return target != _source->GetVictim();
 }
 
+// Range Group (meele in range group shouldn`ve execute)
+bool CasterSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    switch (target->ToPlayer()->getClass())
+    {
+    case CLASS_MAGE:
+    case CLASS_PRIEST:
+    case CLASS_WARLOCK:
+    case CLASS_HUNTER:
+        return _spellId ? !target->ToPlayer()->HasAura(_spellId) : true;
+    case CLASS_MONK:
+        return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_MONK_MISTWEAVER && !target->ToPlayer()->HasAura(_spellId)
+            : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_MONK_MISTWEAVER;
+    case CLASS_DRUID:
+        return _spellId ? (target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_BALANCE || target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_RESTORATION) && !target->ToPlayer()->HasAura(_spellId)
+            : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_BALANCE || target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_RESTORATION;
+    case CLASS_SHAMAN:
+        return _spellId ? (target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_ELEMENTAL || target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_RESTORATION) && !target->ToPlayer()->HasAura(_spellId)
+            : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_ELEMENTAL || target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_RESTORATION;
+    case CLASS_PALADIN:
+        return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_PALADIN_HOLY && !target->ToPlayer()->HasAura(_spellId)
+            : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_PALADIN_HOLY;
+    }
+
+    return false;
+}
+
 bool BehindTargetSelector::operator()(Unit const* target) const
 {
     if (!me)

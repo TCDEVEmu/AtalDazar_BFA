@@ -833,12 +833,12 @@ void WorldSession::HandleHearthAndResurrect(WorldPackets::Battleground::HearthAn
 
 void WorldSession::HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& /*requestConquestFormulaConstants*/)
 {
-    WorldPackets::Battleground::ConquestFormulaContants packet;
+    WorldPackets::Battleground::ConquestFormulaConstants packet;
     packet.PvpMinCPPerWeek = uint32(ArenaHelper::g_PvpMinCPPerWeek);
     packet.PvpMaxCPPerWeek = uint32(ArenaHelper::g_PvpMaxCPPerWeek);
-    packet.PvpCPBaseCoefficient = float(ArenaHelper::g_PvpCPNumerator);
-    packet.PvpCPExpCoefficient = float(ArenaHelper::g_PvpCPBaseCoefficient);
-    packet.PvpCPNumerato = float(ArenaHelper::g_PvpCPExpCoefficient);
+    packet.PvpCPBaseCoefficient = float(ArenaHelper::g_PvpCPBaseCoefficient);
+    packet.PvpCPExpCoefficient = float(ArenaHelper::g_PvpCPExpCoefficient);
+    packet.PvpCPNumerator = float(ArenaHelper::g_PvpCPNumerator);
     SendPacket(packet.Write());
 }
 

@@ -510,18 +510,18 @@ namespace WorldPackets
             void Read() override { }
         };
 
-        class ConquestFormulaContants final : public ServerPacket
+        class ConquestFormulaConstants final : public ServerPacket
         {
         public:
-            ConquestFormulaContants() : ServerPacket(SMSG_CONQUEST_FORMULA_CONSTANTS, 20) { }
+            ConquestFormulaConstants() : ServerPacket(SMSG_CONQUEST_FORMULA_CONSTANTS, 20) { }
 
             WorldPacket const* Write() override;
 
-            uint32 PvpMinCPPerWeek;
-            uint32 PvpMaxCPPerWeek;
-            float PvpCPBaseCoefficient;
-            float PvpCPExpCoefficient;
-            float PvpCPNumerato;
+            uint32 PvpMinCPPerWeek = 0;
+            uint32 PvpMaxCPPerWeek = 0;
+            float PvpCPBaseCoefficient = 0.0f;
+            float PvpCPExpCoefficient = 0.0f;
+            float PvpCPNumerator = 0.0f;
         };
 
 
