@@ -475,6 +475,11 @@ void Aura::_ApplyForTarget(Unit* target, Unit* caster, AuraApplication * auraApp
             caster->GetSpellHistory()->StartCooldown(m_spellInfo, castItem ? castItem->GetEntry() : 0, nullptr, true);
         }
     }
+
+    if (target)
+        if (Creature * creature = target->ToCreature())
+            if (creature->IsAIEnabled)
+                creature->AI()->OnApplyOrRemoveAura(auraApp->GetBase()->GetId(), auraApp->GetRemoveMode(), true);
 }
 
 void Aura::_UnapplyForTarget(Unit* target, Unit* caster, AuraApplication * auraApp)
@@ -503,6 +508,10 @@ void Aura::_UnapplyForTarget(Unit* target, Unit* caster, AuraApplication * auraA
     if (caster && GetSpellInfo()->IsCooldownStartedOnEvent())
         // note: item based cooldowns and cooldown spell mods with charges ignored (unknown existed cases)
         caster->GetSpellHistory()->SendCooldownEvent(GetSpellInfo());
+
+    if (Creature * creature = target->ToCreature())
+        if (creature->IsAIEnabled)
+            creature->AI()->OnApplyOrRemoveAura(auraApp->GetBase()->GetId(), auraApp->GetRemoveMode(), false);
 }
 
 // removes aura from all targets

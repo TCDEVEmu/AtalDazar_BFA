@@ -937,6 +937,11 @@ void SmartAI::OnSpellClick(Unit* clicker, bool& result)
     GetScript()->ProcessEventsFor(SMART_EVENT_ON_SPELLCLICK, clicker);
 }
 
+void SmartAI::OnApplyOrRemoveAura(uint32 spellId, AuraRemoveMode mode, bool apply)
+{
+    GetScript()->ProcessEventsFor(SMART_EVENT_ON_APPLY_OR_REMOVE_AURA, nullptr, spellId, mode, apply);
+}
+
 void SmartAI::CheckConditions(uint32 diff)
 {
     if (!mHasConditions)

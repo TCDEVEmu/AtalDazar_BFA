@@ -3718,6 +3718,33 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
             ProcessAction(e, unit, var0, 0, false, nullptr, nullptr, varString);
             break;
         }
+        case SMART_EVENT_CHECK_DIST_TO_HOME:
+        {
+            if (!me || !me->IsInCombat() || !me->GetVictim())
+                return;
+
+            Position const& _homePosition = me->GetHomePosition();
+            if (me->GetDistance2d(_homePosition.GetPositionX(), _homePosition.GetPositionY()) > static_cast<float>(e.event.dist.maxDist))
+            {
+                ProcessAction(e, me->GetVictim());
+                RecalcTimer(e, e.event.dist.repeatMin, e.event.dist.repeatMax);
+            }
+            break;
+        }
+        case SMART_EVENT_ON_APPLY_OR_REMOVE_AURA:
+        {
+            if (e.event.applyorremoveaura.spellId && var0 == e.event.applyorremoveaura.spellId && e.event.applyorremoveaura.apply && bvar)
+            {
+                ProcessAction(e, unit, var0);
+                RecalcTimer(e, e.event.applyorremoveaura.cooldown, e.event.applyorremoveaura.cooldown);
+            }
+            else if (e.event.applyorremoveaura.spellId && var0 == e.event.applyorremoveaura.spellId && !e.event.applyorremoveaura.apply && !bvar)
+            {
+                ProcessAction(e, unit, var0);
+                RecalcTimer(e, e.event.applyorremoveaura.cooldown, e.event.applyorremoveaura.cooldown);
+            }
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "SmartScript::ProcessEvent: Unhandled Event type %u", e.GetEventType());
             break;
@@ -3810,6 +3837,7 @@ void SmartScript::UpdateTimer(SmartScriptHolder& e, uint32 const diff)
             case SMART_EVENT_FRIENDLY_HEALTH_PCT:
             case SMART_EVENT_DISTANCE_CREATURE:
             case SMART_EVENT_DISTANCE_GAMEOBJECT:
+            case SMART_EVENT_CHECK_DIST_TO_HOME:
             {
                 ProcessEvent(e);
                 if (e.GetScriptType() == SMART_SCRIPT_TYPE_TIMED_ACTIONLIST)

@@ -763,6 +763,10 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
                 if (!IsMinMaxValid(e, e.event.los.cooldownMin, e.event.los.cooldownMax))
                     return false;
                 break;
+            case SMART_EVENT_CHECK_DIST_TO_HOME:
+                if (!IsMinMaxValid(e, e.event.dist.repeatMin, e.event.dist.repeatMax))
+                    return false;
+                break;
             case SMART_EVENT_RESPAWN:
                 if (e.event.respawn.type == SMART_SCRIPT_RESPAWN_CONDITION_MAP && !sMapStore.LookupEntry(e.event.respawn.map))
                 {
@@ -1063,6 +1067,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
             case SMART_EVENT_SCENE_CANCEL:
             case SMART_EVENT_SCENE_COMPLETE:
             case SMART_EVENT_SCENE_TRIGGER:
+            case SMART_EVENT_ON_APPLY_OR_REMOVE_AURA:
                 break;
             default:
                 TC_LOG_ERROR("sql.sql", "SmartAIMgr: Not handled event_type(%u), Entry " SI64FMTD " SourceType %u Event %u Action %u, skipped.", e.GetEventType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());

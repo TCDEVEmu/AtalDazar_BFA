@@ -287,6 +287,8 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Called when the Creature power changed
         virtual void OnPowerChanged(Powers /*power*/, int32 /*oldValue*/, int32& /*newValue*/) { }
 
+        virtual void OnApplyOrRemoveAura(uint32 /*spellId*/, AuraRemoveMode /*mode*/, bool /*apply*/) {}
+
         /// == Triggered Actions Requested ==================
 
         // Called when creature attack expected (if creature can and no have current victim)

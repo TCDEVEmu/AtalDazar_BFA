@@ -203,6 +203,8 @@ class TC_GAME_API SmartAI : public CreatureAI
 
         void SetGossipReturn(bool val) { _gossipReturn = val; }
 
+        void OnApplyOrRemoveAura(uint32 spellId, AuraRemoveMode mode, bool apply)  override;
+
     private:
         bool mIsCharmed;
         uint32 mFollowCreditType;

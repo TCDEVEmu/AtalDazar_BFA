@@ -194,8 +194,10 @@ enum SMART_EVENT
     SMART_EVENT_SCENE_CANCEL             = 80,      // none
     SMART_EVENT_SCENE_COMPLETE           = 81,      // none
 	SMART_EVENT_ON_GO_REPORT_USE         = 82,      // id
+    SMART_EVENT_CHECK_DIST_TO_HOME       = 83,      // clicker (unit)
+	SMART_EVENT_ON_APPLY_OR_REMOVE_AURA  = 84,      // SpellId, Mode, ApplyOrRemove(1/0), Cooldown
 
-    SMART_EVENT_END                      = 83
+    SMART_EVENT_END                      = 85
 };
 
 struct SmartEvent
@@ -464,6 +466,22 @@ struct SmartEvent
         {
             uint32 id;
         } questObjective;
+
+        struct
+        {
+            uint32 maxDist;
+            uint32 param2;
+            uint32 repeatMin;
+            uint32 repeatMax;
+        } dist;
+
+        struct
+        {
+            uint32 spellId;
+            uint32 mode;
+            uint32 apply;
+            uint32 cooldown;
+        } applyorremoveaura;
     };
 
     std::string param_string;
@@ -570,7 +588,7 @@ enum SMART_ACTION
     SMART_ACTION_RANDOM_MOVE                        = 89,     // maxDist
     SMART_ACTION_SET_UNIT_FIELD_BYTES_1             = 90,     // bytes, target
     SMART_ACTION_REMOVE_UNIT_FIELD_BYTES_1          = 91,     // bytes, target
-    SMART_ACTION_INTERRUPT_SPELL                    = 92,
+    SMART_ACTION_INTERRUPT_SPELL                    = 92,     //
     SMART_ACTION_SEND_GO_CUSTOM_ANIM                = 93,     // anim id
     SMART_ACTION_SET_DYNAMIC_FLAG                   = 94,     // Flags
     SMART_ACTION_ADD_DYNAMIC_FLAG                   = 95,     // Flags
@@ -614,7 +632,6 @@ enum SMART_ACTION
     SMART_ACTION_SET_MOVEMENT_SPEED                 = 136,    // movementType, speedInteger, speedFraction
     SMART_ACTION_PLAY_SPELL_VISUAL_KIT              = 137,    // spellVisualKitId, kitType (unknown values, copypaste from packet dumps), duration
 
-    // Ashamane' specific actions
     SMART_ACTION_PLAY_SPELL_VISUAL                  = 201,    // id, travelSpeed, target type variation.
     SMART_ACTION_PLAY_ORPHAN_SPELL_VISUAL           = 202,    // id, travelSpeed, target type variation.
     SMART_ACTION_CANCEL_VISUAL                      = 203,    // VisualType, VisualId.
@@ -634,7 +651,7 @@ enum SMART_ACTION
     SMART_ACTION_COMPLETE_SCENARIO_STEP             = 217,    // none
     SMART_ACTION_COMPLETE_SCENARIO                  = 218,    // none
     SMART_ACTION_SCENARIO_SEND_EVENT                = 219,    // EventId,
-    SMART_ACTION_ENTER_LFG_QUEUE                    = 220,
+    SMART_ACTION_ENTER_LFG_QUEUE                    = 220,    //
     //SMART_ACTION_CAST_RANDOM_SPELL                  = 221,    // Athenas Action ToDo
     SMART_ACTION_OVERRIDE_INHABIT_TYPE              = 222,    // inhabbitType
     SMART_ACTION_STOP_FOLLOW                        = 223,    // none
@@ -1675,7 +1692,9 @@ const uint32 SmartAIEventMask[SMART_EVENT_END][2] =
     {SMART_EVENT_SCENE_TRIGGER,             SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_CANCEL,              SMART_SCRIPT_TYPE_MASK_SCENE },
     {SMART_EVENT_SCENE_COMPLETE,            SMART_SCRIPT_TYPE_MASK_SCENE },
-	{SMART_EVENT_ON_GO_REPORT_USE,          SMART_SCRIPT_TYPE_MASK_GAMEOBJECT }
+	{SMART_EVENT_ON_GO_REPORT_USE,          SMART_SCRIPT_TYPE_MASK_GAMEOBJECT },
+    {SMART_EVENT_CHECK_DIST_TO_HOME,        SMART_SCRIPT_TYPE_MASK_CREATURE },
+    {SMART_EVENT_ON_APPLY_OR_REMOVE_AURA,   SMART_SCRIPT_TYPE_MASK_CREATURE }
 };
 
 enum SmartEventFlags
