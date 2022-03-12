@@ -116,7 +116,14 @@ enum ConditionTypes
     CONDITION_CURRENCY_ON_WEEK         = 60,                   // currency_id      countMin       countMax           true if has #countMin and countMax
     CONDITION_QUEST_OBJECTIVE_DONE     = 61,                   // QuestID          ObjectiveID    Count
     CONDITION_CRITERIA                 = 62,                   // criteriatree_id  0              0                  true if Criteria is complete
-    CONDITION_ON_TRANSPORT             = 63,                   //                                                    true if on vehicle
+    CONDITION_ON_TRANSPORT             = 63,                   // 0                0              0                  true if on vehicle
+    CONDITION_IN_RAID_OR_GROUP         = 64,                   // 0 - not in raid  isRaid         isGroup
+    CONDITION_HAS_POWER                = 65,                   // PowerType        > this         < this             true if power > or power < if set
+    CONDITION_GAMEMASTER               = 66,                   // 0                0              0                  true if player is GameMaster
+    CONDITION_HAS_EMOTE_STATE          = 67,                   // 0                0              0                  true if has EmoteState
+    CONDITION_IN_COMBAT                = 68,                   // 0                0              0                  true if in combat
+    CONDITION_GET_AMOUNT_STACK_AURA    = 69,                   // spell_id         stack          0                  true if player (or target) has aura of spell_id with stack amount
+    CONDITION_TIMEWALKING              = 70,                   // 0                0              0                  true if player is in timewalking.
 
     CONDITION_MAX
 };

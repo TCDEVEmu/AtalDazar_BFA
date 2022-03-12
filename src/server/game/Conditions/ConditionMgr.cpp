@@ -132,6 +132,25 @@ ConditionMgr::ConditionTypeInfo const ConditionMgr::StaticConditionTypeData[COND
     { nullptr,               false, false, false },
     { "Object Entry or Guid", true, true,  true  },
     { "Object TypeMask",      true, false, false },
+    { "Specialization",       true, false, false },
+    { "Group",               false, false, false },
+    { "EventPhaseMask",       true, false, false },
+    { "WeeklyQuest",          true, false, false },
+    { "MonthlyQuest",         true, false, false },
+    { "Reputation Value",     true, true,  false },
+    { "Currency",             true, true,  true  },
+    { "Currency on Week",     true, true,  true  },
+    { "Quest Objetive",       true, true,  true  },
+    { "Criteria",             true, false, false },
+    { "On Transport",        false, false, false },
+    { "Raid or Group",        true, true,  true  },
+    { "Has Power",            true, true,  true  },
+    { "GameMaster",          false, false, false },
+    { "Emote State",         false, false, false },
+    { "In Combat",           false, false, false },
+    { "Amount Stacks",        true, true,  false },
+    { "Is TimeWalking",      false, false, false },
+
 };
 
 // Checks if object meets the condition
@@ -612,6 +631,69 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
                 condMeets = player->IsOnVehicle();
             break;
         }
+        case CONDITION_IN_RAID_OR_GROUP:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                if (ConditionValue1)
+                {
+                    if (ConditionValue2)
+                        condMeets = player->GetGroup() && player->GetGroup()->isRaidGroup();
+                    if (ConditionValue3)
+                        condMeets = player->GetGroup();
+                }
+                else
+                {
+                    if (ConditionValue2)
+                        condMeets = !player->GetGroup() || !player->GetGroup()->isRaidGroup();
+                    if (ConditionValue3)
+                        condMeets = !player->GetGroup();
+                }
+            }
+
+            break;
+        }
+        case CONDITION_HAS_POWER:
+        {
+            if (Unit* unit = object->ToUnit())
+            {
+                condMeets = unit->GetPower(Powers(ConditionValue1)) >= ConditionValue2;
+                if (ConditionValue3)
+                    condMeets = unit->GetPower(Powers(ConditionValue1)) <= ConditionValue3;
+            }
+            break;
+        }
+        case CONDITION_GAMEMASTER:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->IsGameMaster();
+            break;
+        }
+        case CONDITION_HAS_EMOTE_STATE:
+        {
+            if (Unit* unit = object->ToUnit())
+                condMeets = unit->GetEmoteState();
+            break;
+        }
+        case CONDITION_IN_COMBAT:
+        {
+            if (auto unit = object->ToUnit())
+                condMeets = unit->IsInCombat();
+            break;
+        }
+        case CONDITION_GET_AMOUNT_STACK_AURA:
+        {
+            if (Unit* unit = object->ToUnit())
+                if (Aura* aura = unit->GetAura(ConditionValue1))
+                    condMeets = aura->GetStackAmount() == ConditionValue2;
+            break;
+        }
+        case CONDITION_TIMEWALKING:
+        {
+            if (auto player = object->ToPlayer())
+                condMeets = player->GetMap()->GetDifficultyID() == DIFFICULTY_TIMEWALKING || player->GetMap()->GetDifficultyID() == DIFFICULTY_TIMEWALKING_RAID;
+            break;
+        }
         default:
             condMeets = false;
             break;
@@ -794,6 +876,10 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_CHARMED:
+        case CONDITION_HAS_POWER:
+        case CONDITION_HAS_EMOTE_STATE:
+        case CONDITION_IN_COMBAT:
+        case CONDITION_GET_AMOUNT_STACK_AURA:
             mask |= GRID_MAP_TYPE_MASK_CREATURE | GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_PET_TYPE:
@@ -834,6 +920,9 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
         case CONDITION_QUEST_OBJECTIVE_DONE:
         case CONDITION_CRITERIA:
         case CONDITION_ON_TRANSPORT:
+        case CONDITION_IN_RAID_OR_GROUP:
+        case CONDITION_GAMEMASTER:
+        case CONDITION_TIMEWALKING:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
@@ -2535,6 +2624,15 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
                 }
                 if (!found)
                     TC_LOG_ERROR("sql.sql", "Quest condition specifies non-existing quest (%d) non existen objective %d, skipped", cond->ConditionValue1, cond->ConditionValue2);
+            }
+            break;
+        }
+        case CONDITION_GET_AMOUNT_STACK_AURA:
+        {
+            if (!sSpellMgr->GetSpellInfo(cond->ConditionValue1))
+            {
+                TC_LOG_ERROR("sql.sql", "Aura (CONDITION_GET_AMOUNT_STACK_AURA) condition has non existing spell (Id: %d), skipped", cond->ConditionValue1);
+                return false;
             }
             break;
         }
