@@ -109,9 +109,14 @@ enum ConditionTypes
     CONDITION_PLAYER_SPEC              = 53,                   // spec             0              0                  true if player spec = value1 
     CONDITION_HAS_GROUP                = 54,                   // 0                0              0                  true if player is in group                            
     CONDITION_SAI_PHASE                = 55,                   // phase            0              0                  true if object sai phase = value1                      
-    CONDITION_WEEKLY_QUEST_DONE        = 56,                   // quest            0              0                  true if weekly quest has been completed for the week   Athenas Condition To Do
-    CONDITION_MONTHLY_QUEST_DONE       = 57,                   // quest            0              0                  true if monthly quest has been completed for the month Athenas Condition To Do
-    CONDITION_REPUTATION_VALUE         = 58,                   // faction_id       rep_value      0                  true if reputation value more or equal than rep_value  Athenas Condition To Do
+    CONDITION_WEEKLY_QUEST_DONE        = 56,                   // quest            0              0                  true if weekly quest has been completed for the week  
+    CONDITION_MONTHLY_QUEST_DONE       = 57,                   // quest            0              0                  true if monthly quest has been completed for the month
+    CONDITION_REPUTATION_VALUE         = 58,                   // faction_id       rep_value      0                  true if reputation value more or equal than rep_value 
+    CONDITION_CURRENCY                 = 59,                   // currency_id      countMin       countMax           true if has #countMin and countMax
+    CONDITION_CURRENCY_ON_WEEK         = 60,                   // currency_id      countMin       countMax           true if has #countMin and countMax
+    CONDITION_QUEST_OBJECTIVE_DONE     = 61,                   // QuestID          ObjectiveID    Count
+    CONDITION_CRITERIA                 = 62,                   // criteriatree_id  0              0                  true if Criteria is complete
+    CONDITION_ON_TRANSPORT             = 63,                   //                                                    true if on vehicle
 
     CONDITION_MAX
 };

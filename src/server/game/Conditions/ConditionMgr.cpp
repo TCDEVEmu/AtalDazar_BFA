@@ -563,11 +563,53 @@ bool Condition::Meets(ConditionSourceInfo& sourceInfo) const
         }
         case CONDITION_REPUTATION_VALUE:
         {
-            if (Player * player = object->ToPlayer())
+            if (Player* player = object->ToPlayer())
             {
                 if (FactionEntry const* faction = sFactionStore.LookupEntry(ConditionValue1))
                     condMeets = (ConditionValue2 && player->GetReputationMgr().GetReputation(faction) >= int32(ConditionValue2));
             }
+            break;
+        }
+        case CONDITION_CURRENCY:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                uint32 count = player->GetCurrency(ConditionValue1);
+                condMeets = count >= ConditionValue2 && (!ConditionValue3 || count < ConditionValue3);
+            }
+            break;
+        }
+        case CONDITION_CURRENCY_ON_WEEK:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                uint32 count = player->GetCurrencyOnWeek(ConditionValue1);
+                condMeets = count >= ConditionValue2 && (!ConditionValue3 || count < ConditionValue3);
+            }
+            break;
+        }
+        case CONDITION_QUEST_OBJECTIVE_DONE:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                uint32 count = player->GetQuestObjectiveData(ConditionValue1, ConditionValue2);
+                condMeets = ConditionValue3 ? count >= ConditionValue3 : count;
+            }
+            break;
+        }
+        case CONDITION_CRITERIA:
+        {
+            if (Player* player = object->ToPlayer())
+            {
+                if (CriteriaTree const* tree = sCriteriaMgr->GetCriteriaTree(ConditionValue1))
+                    condMeets = tree->Criteria && tree->Entry && player->GetAchievementMgr()->IsCompletedCriteria(tree->Criteria, tree->Entry->Amount);
+            }
+            break;
+        }
+        case CONDITION_ON_TRANSPORT:
+        {
+            if (Player* player = object->ToPlayer())
+                condMeets = player->IsOnVehicle();
             break;
         }
         default:
@@ -785,6 +827,13 @@ uint32 Condition::GetSearcherTypeMaskForCondition() const
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         case CONDITION_REPUTATION_VALUE:
+            mask |= GRID_MAP_TYPE_MASK_PLAYER;
+            break;
+        case CONDITION_CURRENCY:
+        case CONDITION_CURRENCY_ON_WEEK:
+        case CONDITION_QUEST_OBJECTIVE_DONE:
+        case CONDITION_CRITERIA:
+        case CONDITION_ON_TRANSPORT:
             mask |= GRID_MAP_TYPE_MASK_PLAYER;
             break;
         default:
@@ -2456,6 +2505,39 @@ bool ConditionMgr::isConditionTypeValid(Condition* cond) const
         case CONDITION_PLAYER_SPEC:
         case CONDITION_HAS_GROUP:
             break;
+        case CONDITION_CURRENCY:
+        case CONDITION_CURRENCY_ON_WEEK:
+        {
+            CurrencyTypesEntry const* currencyEntry = sCurrencyTypesStore.LookupEntry(cond->ConditionValue1);
+            if (!currencyEntry)
+            {
+                TC_LOG_ERROR("sql.sql", "Currency condition has non existing currency (%u), skipped", cond->ConditionValue1);
+                return false;
+            }
+            break;
+        }
+        case CONDITION_QUEST_OBJECTIVE_DONE:
+        {
+            Quest const* quest = sObjectMgr->GetQuestTemplate(cond->ConditionValue1);
+            if (!quest)
+            {
+                TC_LOG_ERROR("sql.sql", "Quest condition specifies non-existing quest (%u), skipped (objective_done)", cond->ConditionValue1);
+                return false;
+            }
+
+            if (cond->ConditionValue2 > 0)
+            {
+                bool found = false;
+                for (QuestObjective const& obj : quest->GetObjectives())
+                {
+                    if (obj.ObjectID == cond->ConditionValue2)
+                        found = true;
+                }
+                if (!found)
+                    TC_LOG_ERROR("sql.sql", "Quest condition specifies non-existing quest (%d) non existen objective %d, skipped", cond->ConditionValue1, cond->ConditionValue2);
+            }
+            break;
+        }
         default:
             TC_LOG_ERROR("sql.sql", "%s Invalid ConditionType in `condition` table, ignoring.", cond->ToString().c_str());
             return false;
