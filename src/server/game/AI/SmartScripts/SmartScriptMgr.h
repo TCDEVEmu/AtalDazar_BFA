@@ -661,6 +661,7 @@ enum SMART_ACTION
     SMART_ACTION_CLEAR_QUEST                        = 227,    // Clear rewarded quest from player (quest ID)
     SMART_ACTION_UNLEARN_SPELL                      = 228,    // Unlearn spells from player
     SMART_ACTION_LEARN_SPELL                        = 229,    // Learn spells to player
+    SMART_ACTION_UPDATE_ACHIEVEMENT_CRITERIA        = 230,    // Update Achievement Criteria
         
     SMART_ACTION_END 
 };
@@ -1376,6 +1377,14 @@ struct SmartAction
         {
             uint32 spell[6];
         } learnSpell;
+
+        struct
+        {
+            uint32 type;
+            uint32 misc1;
+            uint32 misc2;
+            uint32 misc3;
+        } achievementCriteria;
     };
 };
 
