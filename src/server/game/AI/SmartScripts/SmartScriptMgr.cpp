@@ -532,6 +532,9 @@ bool SmartAIMgr::IsTargetValid(SmartScriptHolder const& e)
         case SMART_TARGET_LOOT_RECIPIENTS:
         case SMART_TARGET_FARTHEST:
         case SMART_TARGET_VEHICLE_ACCESSORY:
+        case SMART_TARGET_HOSTILE_RANDOM_PLAYER:
+        case SMART_TARGET_HOSTILE_RANDOM_NOT_TOP_PLAYER:
+        case SMART_TARGET_HOSTILE_RANDOM_AURA:
             break;
         default:
             TC_LOG_ERROR("sql.sql", "SmartAIMgr: Not handled target_type(%u), Entry " SI64FMTD " SourceType %u Event %u Action %u, skipped.", e.GetTargetType(), e.entryOrGuid, e.GetScriptType(), e.event_id, e.GetActionType());
