@@ -1,4 +1,3 @@
-
 #include "SpellScript.h"
 #include "SpellAuras.h"
 #include "SpellAuraEffects.h"
@@ -26,8 +25,6 @@ enum ZuldazarQuests
 
 enum ZuldazarSpells
 {
-    SPELL_TALANJI_EXPOSITION_CONVERSATION_1 = 261541,
-    SPELL_TALANJI_EXPOSITION_CONVERSATION_2 = 261549,
     SPELL_TALANJI_EXPOSITION_KILL_CREDIT = 265711,
 
     SPELL_PREVIEW_TO_ZANDALAR = 273387,
@@ -39,17 +36,6 @@ enum ZuldazarNpcs
     NPC_FOLLOW_ZOLANI_KILL_CREDIT = 120169,
 };
 
-// 132332
-struct npc_talanji_arrival : public ScriptedAI
-{
-    npc_talanji_arrival(Creature* creature) : ScriptedAI(creature) { }
-
-    void QuestAccept(Player* player, Quest const* /*quest*/) override
-    {
-        me->DestroyForPlayer(player);
-    }
-};
-
 // 132661
 struct npc_talanji_arrival_escort : public npc_escortAI
 {
@@ -59,21 +45,33 @@ struct npc_talanji_arrival_escort : public npc_escortAI
     {
         me->Mount(80358);
         Start(false, true, summoner->GetGUID());
-        Player* player = summoner->ToPlayer();
         SetDespawnAtEnd(false);
 
-        AddTimedDelayedOperation(50000, [this, player]() -> void
-        {
-            player->PlayConversation(6721);
-        });
+        me->GetScheduler()
+            .Schedule(8s, [this](TaskContext /*context*/)
+                {
+                    if (Player * player = GetPlayerForEscort())\
+                    {
+                        player->PlayConversation(6721);
+                    }
+                });
     }
 
     void LastWaypointReached() override
     {
-        me->SetFacingTo(0.f);
-        
-       if (Player * player = GetPlayerForEscort())
-             player->PlayConversation(6722);
+        me->SetFacingTo(6.108650f);
+        me->CastSpell(me, SPELL_TALANJI_EXPOSITION_KILL_CREDIT, true);
+
+        me->GetScheduler()
+            .Schedule(2s, [this](TaskContext /*context*/)
+                {
+                    if (Player * player = GetPlayerForEscort())
+                    {
+                        player->RemoveAurasDueToSpell(261486);
+                        player->PlayConversation(6722);
+                        me->ForcedDespawn();
+                    }
+                });
     }
 };
 
@@ -85,28 +83,19 @@ struct npc_enforcer_pterrordax : public npc_escortAI
     void IsSummonedBy(Unit* summoner) override
     {
         Player* player = summoner->ToPlayer();
-        if (!player || player->GetQuestStatus(QUEST_RASTAKHAN) != QUEST_STATUS_INCOMPLETE)
-        {
-            me->ForcedDespawn();
-            return;
-        }
 
-        KillCreditMe(player);
+        me->SetCanFly(true);
+        player->KilledMonsterCredit(135438);
         me->SetSpeed(MOVE_RUN, 21.f);
         player->EnterVehicle(me);
         Start(false, true, player->GetGUID());
+        player->PlayConversation(8383);
+
     }
-};
 
-// 120740
-struct npc_rastakhan_zuldazar_arrival : public ScriptedAI
-{
-    npc_rastakhan_zuldazar_arrival(Creature* creature) : ScriptedAI(creature) { }
-
-    void QuestAccept(Player* player, Quest const* quest) override
+    void LastWaypointReached() override
     {
-        if (quest->GetQuestId() == QUEST_SPEAKER_OF_THE_HORDE)
-            player->SummonCreature(NPC_ZOLANI, -1100.689941f, 817.934021f, 497.243011f, 6.062160f, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 120000, true);
+        me->ForcedDespawn();
     }
 };
 
@@ -660,10 +649,8 @@ public:
 
 void AddSC_zone_zuldazar()
 {
-    RegisterCreatureAI(npc_talanji_arrival);
     RegisterCreatureAI(npc_talanji_arrival_escort);
     RegisterCreatureAI(npc_enforcer_pterrordax);
-    RegisterCreatureAI(npc_rastakhan_zuldazar_arrival);
     RegisterCreatureAI(npc_soth_zolani);
     RegisterCreatureAI(npc_brillin_the_beauty);
     RegisterCreatureAI(npc_natal_hakata);

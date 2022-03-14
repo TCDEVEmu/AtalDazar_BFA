@@ -1368,19 +1368,6 @@ class go_wind_stone : public GameObjectScript
         }
 };
 
-// 130216 - Magni Bronzebeard
-struct npc_magni_bronzebeard_silithus : public ScriptedAI
-{
-    npc_magni_bronzebeard_silithus(Creature* creature) : ScriptedAI(creature) { }
-
-    void MoveInLineOfSight(Unit* unit) override
-    {
-        if (Player* player = unit->ToPlayer())
-            if (player->GetDistance(me) < 20.0f)
-                player->KilledMonsterCredit(me->GetEntry());
-    }
-};
-
 // 136907 - Magni Bronzebeard
 struct npc_magni_bronzebeard_heart_chamber : public ScriptedAI
 {
@@ -1476,11 +1463,20 @@ class spell_azeroth_heart_chamber_heart_of_azeroth : public SpellScript
 
         GetCaster()->GetScheduler().Schedule(500ms, [](TaskContext context)
         {
-            GetContextUnit()->CastSpell(nullptr, SPELL_AZERITE_EXPLOSION, true);
-            GetContextUnit()->ModifyPower(POWER_ALTERNATE_POWER, 1);
+                GetContextPlayer()->CastSpell(nullptr, SPELL_AZERITE_EXPLOSION, true);
+                GetContextPlayer()->ModifyPower(POWER_ALTERNATE_POWER, 1);
 
-            if (GetContextUnit()->HasAura(SPELL_MAIN))
-                context.Repeat();
+                if (GetContextPlayer()->GetPower(POWER_ALTERNATE_POWER) == 5)
+                    GetContextPlayer()->PlayConversation(9435);
+                if (GetContextPlayer()->GetPower(POWER_ALTERNATE_POWER) == 25)
+                    GetContextPlayer()->PlayConversation(9436);
+                if (GetContextPlayer()->GetPower(POWER_ALTERNATE_POWER) == 70)
+                    GetContextPlayer()->PlayConversation(9437);
+                if (GetContextPlayer()->GetPower(POWER_ALTERNATE_POWER) == 99)
+                    GetContextPlayer()->PlayConversation(9438);
+
+                if (GetContextUnit()->HasAura(SPELL_MAIN))
+                    context.Repeat();
         });
     }
 
@@ -1536,7 +1532,6 @@ void AddSC_silithus()
     new npc_anachronos_the_ancient();
     new npc_qiraj_war_spawn();
     new go_wind_stone();
-    RegisterCreatureAI(npc_magni_bronzebeard_silithus);
     RegisterCreatureAI(npc_magni_bronzebeard_heart_chamber);
     RegisterGameObjectAI(go_azeroth_heart_chamber_titan_console);
     RegisterCreatureAI(npc_azeroth_heart_chamber_azerite_wound);
