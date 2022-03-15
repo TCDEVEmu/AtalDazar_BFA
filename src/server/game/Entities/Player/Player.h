@@ -601,7 +601,7 @@ enum PlayerSlots
 };
 
 #define INVENTORY_SLOT_BAG_0    255
-#define INVENTORY_DEFAULT_SIZE  16
+#define INVENTORY_DEFAULT_SIZE  20
 
 enum EquipmentSlots : uint8                                 // 19 slots
 {
