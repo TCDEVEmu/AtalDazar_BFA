@@ -2028,7 +2028,7 @@ CREATE TABLE `updates_include` (
 -- ----------------------------
 -- Records of updates_include
 -- ----------------------------
-INSERT INTO `updates_include` VALUES ('$/sql/zandalar/auth', 'RELEASED');
+INSERT INTO `updates_include` VALUES ('$/sql/Ataldazar/auth', 'RELEASED');
 
 -- ----------------------------
 -- Table structure for uptime
