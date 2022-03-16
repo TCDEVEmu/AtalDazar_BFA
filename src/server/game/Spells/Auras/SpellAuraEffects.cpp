@@ -378,7 +378,7 @@ NonDefaultConstructible<pAuraEffectHandler> AuraEffectHandler[TOTAL_AURAS]=
     &AuraEffect::HandleNULL,                                      //309 SPELL_AURA_MOD_RESILIENCE
     &AuraEffect::HandleNoImmediateEffect,                         //310 SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE implemented in Spell::CalculateDamageDone
     &AuraEffect::HandleNULL,                                      //311 0 spells in 3.3.5
-    &AuraEffect::HandleAnimReplacementSet,                        //312 SPELL_AURA_ANIM_REPLACEMENT_SET 
+    &AuraEffect::HandleNULL,                                      //312 SPELL_AURA_ANIM_REPLACEMENT_SET - No server handling required
     &AuraEffect::HandleUnused,                                    //313 unused (4.3.4)
     &AuraEffect::HandlePreventResurrection,                       //314 SPELL_AURA_PREVENT_RESURRECTION todo
     &AuraEffect::HandleNoImmediateEffect,                         //315 SPELL_AURA_UNDERWATER_WALKING todo
@@ -6651,21 +6651,6 @@ void AuraEffect::HandleAuraModDodgeByCritPct(AuraApplication const* aurApp, uint
         return;
 
     target->ToPlayer()->UpdateDodgePercentage();
-}
-
-void AuraEffect::HandleAnimReplacementSet(AuraApplication const* aurApp, uint8 mode, bool /*apply*/) const
-{
-    if (!(mode & AURA_EFFECT_HANDLE_REAL))
-        return;
-
-    Unit* target = aurApp->GetTarget();
-    if (!target)
-        return;
-
-    uint16 animid = GetMiscValue();
-
-    if (animid != 61)
-        target->SetAIAnimKitId(animid);
 }
 
 template TC_GAME_API void AuraEffect::GetTargetList(std::list<Unit*>&) const;
