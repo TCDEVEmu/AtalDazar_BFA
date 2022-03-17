@@ -18,6 +18,21 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (1057123, 139028, 1, 1637, 5170, '0', 170, 0, 0, 1, 1569.4132080078125, -4435.03125, 16.13552284240722656, 1.800256252288818359, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359), -- 139028 (Area: 5170 - Difficulty: 0)
 (1057124, 135213, 1, 1637, 5170, '0', 170, 0, 0, 1, 1573.8072509765625, -4433.2587890625, 16.13552284240722656, 2.0272674560546875, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359); -- 135213 (Area: 5170 - Difficulty: 0)
 
+
+update `creature` set `phaseid` = 11604 where `guid` in (1057121,1055837,194746);
+
+
+DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=169;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 169, 'Orgrimmar  - Default phase');
+DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11604;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11604, 'Orgrimmar - BFA Intro');
+
+DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11279;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11279, 'Orgrimmar - after accept quest 51796');
+DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11189;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11189, 'Orgrimmar - after accept quest 51796');
+
+
 delete from `creature_addon` where `guid`in (1057121,1057122);
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
 (1057121, 0, 0, 50331648, 1, 0, 0, 0, 0, ''), -- 140210
@@ -80,15 +95,21 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (130216, 0, 0, 0, 10, 0, 100, 0, 1, 20, 0, 0, 0, '', 85, 279991 , 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - kc'),
 (130216, 0, 1, 0, 19, 0, 100, 0, 51211, 0, 0, 0, 0, '', 12, 130216, 5, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on quest start - summon npc in personal visibility'),
 (130216, 0, 2, 3, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 80, 13021600, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on spawn - run actionlist'),
-(130216, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 44, 169, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - add phase');
+(130216, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 44, 169, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - add phase'),
+(130216, 0, 4, 5, 40, 0, 100, 0, 1, 0, 0, 0, 0, '', 54, 2000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on wp reached 1 - pause wp'),
+(130216, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 97, 15, 15, 0, 0, 0, 0, 1, 0, 0, 0, -7085.55,  1258.85,  -103.65, 0, ' on link - jump'),
+(130216, 0, 6, 0, 40, 0, 100, 0, 2, 0, 0, 0, 0, '', 41, 100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on wp reached 2 - despawn');
+
 DELETE FROM `smart_scripts` WHERE `entryorguid`=13021600 AND `source_type`=9;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (13021600, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 81, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'set npcflag 0'),
 (13021600, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'text'),
-(13021600, 9, 2, 0, 0, 0, 100, 0, 4000, 4000, 0, 0, 0, '', 69, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -7074.6494,  1266.6727,  -92.045135, 0, 'move'),
-(13021600, 9, 3, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, '', 97, 15, 15, 0, 0, 0, 0, 1, 0, 0, 0, -7085.55,  1258.85,  -103.65, 0, 'jump'),
-(13021600, 9, 4, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, '', 69, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, -7077.59,  1231.29,  -112.250404, 0, 'move'),
-(13021600, 9, 5, 0, 0, 0, 100, 0, 4000, 4000, 0, 0, 0, '', 41, 100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'despawn');
+(13021600, 9, 2, 0, 0, 0, 100, 0, 4000, 4000, 0, 0, 0, '', 53, 1, 1302160, 0, 0, 0, 0, 1, 0, 0, 0, 0,  0,  0, 0, 'move');
+
+DELETE FROM `waypoints` WHERE `entry`=1302160;
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES 
+(1302160, 1,  -7074.6494,  1266.6727,  -92.045135, 'wp 1'),
+(1302160, 2,  -7077.59,  1231.29,  -112.250404, 'wp 2');
 
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=1 AND `SourceEntry`=130216 AND `SourceId`=0 AND `ElseGroup`=0;
@@ -489,24 +510,8 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 
 DELETE FROM `phase_area` WHERE `AreaId`=8670;
 INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(8670, 169, 'Dazar_alor Default Phase'),
-(8670, 170, 'Dazar_alor Q-46930'),
-(8670, 171, 'Dazar_alor QE-46930');
+(8670, 169, 'Dazar_alor Default Phase');
 
-
-update `creature` set `phaseid` = 170 where `guid` in (967164, 965532); 
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=8670;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 8670, 0, 0, 48, 0, 289869, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest objetive 289869'),
-(26, 170, 8670, 0, 0, 48, 0, 290542, 0, 0, 1, 0, 0, '', 'Phase 170 if not Quest objetive 290542');
-
-update `creature` set `phaseid` = 171 where `guid` = 965534; 
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=171 AND `SourceEntry`=8670;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 171, 8670, 0, 0, 28, 0, 46930, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest complete 46930'),
-(26, 171, 8670, 0, 1, 8, 0, 46930, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest rewarded 46930');
 
 /*
 UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 120740;
@@ -514,3 +519,40 @@ DELETE FROM `smart_scripts` WHERE `entryorguid`=120740 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (120740, 0, 0, 0, 19, 0, 100, 0, 46931, 0, 0, 0, 0, '', 12, 135441, 5, 0, 0, 1, 0, 8, 0, 0, 0, -1100.689941, 817.934021, 497.243011, 6.062160, 'on quest start - summon creature');
 */
+
+UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 132661;
+
+DELETE FROM `smart_scripts` WHERE `entryorguid`=132661 AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(132661, 0, 0, 1, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 43, 0, 80358, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
+(132661, 0, 1, 2, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 1, 1326610, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
+(132661, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 80, 13266100, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
+(132661, 0, 3, 0, 40, 0, 100, 0, 11, 0, 0, 0, 0, '', 80, 13266101, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk');
+
+DELETE FROM `smart_scripts` WHERE `entryorguid`=13266100 AND `source_type`=9;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(13266100, 9, 0, 0, 0, 0, 100, 0, 8000, 8000, 0, 0, 0, '', 206, 6721, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation');
+DELETE FROM `smart_scripts` WHERE `entryorguid`=13266101 AND `source_type`=9;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(13266101, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 66, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 6.108650, 'play conversation'),
+(13266101, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 11, 265711, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
+(13266101, 9, 2, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, '', 28, 261486, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
+(13266101, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 206, 6722, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
+(13266101, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'play conversation');
+
+
+DELETE FROM `script_waypoint` WHERE `entry`=132661;
+DELETE FROM `waypoints` WHERE `entry`=1326610;
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES 
+(1326610, 1, -2069.57, 802.97, 5.933,     'wp 1'),
+(1326610, 2, -2035.97, 803.092, 5.933,    'wp 2'),
+(1326610, 3, -2007.02, 783.316, 5.933,    'wp 3'),
+(1326610, 4, -1982.4, 790.391, 19.2036,   'wp 4'),
+(1326610, 5, -1971.43, 794.131, 25.5329,  'wp 5'),
+(1326610, 6, -1929.82, 802.68, 25.4165,   'wp 6'),
+(1326610, 7, -1900.44, 802.798, 41.6337,  'wp 7'),
+(1326610, 8, -1877.9, 802.887, 53.8157,   'wp 8'),
+(1326610, 9, -1845.29, 821.676, 53.7782,  'wp 9'),
+(1326610, 10, -1828.54, 821.559, 53.7431, 'wp 10'),
+(1326610, 11, -1812.54, 803.364, 53.4007, 'wp 11');
+

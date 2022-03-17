@@ -25,7 +25,6 @@ enum ZuldazarQuests
 
 enum ZuldazarSpells
 {
-    SPELL_TALANJI_EXPOSITION_KILL_CREDIT = 265711,
 
     SPELL_PREVIEW_TO_ZANDALAR = 273387,
 };
@@ -34,45 +33,6 @@ enum ZuldazarNpcs
 {
     NPC_ZOLANI = 135441,
     NPC_FOLLOW_ZOLANI_KILL_CREDIT = 120169,
-};
-
-// 132661
-struct npc_talanji_arrival_escort : public npc_escortAI
-{
-    npc_talanji_arrival_escort(Creature* creature) : npc_escortAI(creature) { }
-
-    void IsSummonedBy(Unit* summoner) override
-    {
-        me->Mount(80358);
-        Start(false, true, summoner->GetGUID());
-        SetDespawnAtEnd(false);
-
-        me->GetScheduler()
-            .Schedule(8s, [this](TaskContext /*context*/)
-                {
-                    if (Player * player = GetPlayerForEscort())\
-                    {
-                        player->PlayConversation(6721);
-                    }
-                });
-    }
-
-    void LastWaypointReached() override
-    {
-        me->SetFacingTo(6.108650f);
-        me->CastSpell(me, SPELL_TALANJI_EXPOSITION_KILL_CREDIT, true);
-
-        me->GetScheduler()
-            .Schedule(2s, [this](TaskContext /*context*/)
-                {
-                    if (Player * player = GetPlayerForEscort())
-                    {
-                        player->RemoveAurasDueToSpell(261486);
-                        player->PlayConversation(6722);
-                        me->ForcedDespawn();
-                    }
-                });
-    }
 };
 
 // 138912
@@ -96,35 +56,6 @@ struct npc_enforcer_pterrordax : public npc_escortAI
     void LastWaypointReached() override
     {
         me->ForcedDespawn();
-    }
-};
-
-// 135441
-struct npc_soth_zolani : public npc_escortAI
-{
-    npc_soth_zolani(Creature* creature) : npc_escortAI(creature) { }
-
-    bool GossipHello(Player* player) override
-    {
-        //Zolani at the beginning shouldn't start running through the air
-        if (player->hasQuest(46931))
-        {
-            SetDespawnAtEnd(false);
-            Start(false, false, player->GetGUID());
-            Talk(0);
-        }
-
-        return false;
-    }
-
-    void LastWaypointReached() override
-    {
-        if (Player * player = GetPlayerForEscort())
-        {
-            Talk(1);
-            player->KilledMonsterCredit(NPC_FOLLOW_ZOLANI_KILL_CREDIT);
-            me->ForcedDespawn(10000);
-        }
     }
 };
 
@@ -649,9 +580,7 @@ public:
 
 void AddSC_zone_zuldazar()
 {
-    RegisterCreatureAI(npc_talanji_arrival_escort);
     RegisterCreatureAI(npc_enforcer_pterrordax);
-    RegisterCreatureAI(npc_soth_zolani);
     RegisterCreatureAI(npc_brillin_the_beauty);
     RegisterCreatureAI(npc_natal_hakata);
     RegisterCreatureAI(npc_telemancer_oculeth_zuldazar);
