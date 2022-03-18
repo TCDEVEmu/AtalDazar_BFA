@@ -371,7 +371,8 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPackets::Quest::Quest
                 }
 
                 _player->PlayerTalkClass->ClearMenus();
-                creatureQGiver->GetAI()->QuestReward(_player, quest, packet.ItemChoiceID);
+                if (creatureQGiver)
+                    creatureQGiver->GetAI()->sQuestReward(_player, quest, packet.ItemChoiceID);
                 break;
             }
             case TYPEID_GAMEOBJECT:
