@@ -35,7 +35,7 @@
 
 enum SpellIds
 {
-
+    SPELL_CRUSHING_ASSAULT_AMOUNT = 278751
 };
 
 // 280713 Champion of Azeroth
@@ -155,9 +155,46 @@ public:
     }
 };
 
+// 278826 Crushing Assault (Level 120)
+class spell_crushing_assault : public AuraScript
+{
+    PrepareAuraScript(spell_crushing_assault);
+
+    void CalculateAmount(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (AuraEffect * aurEf = caster->GetAuraEffect(SPELL_CRUSHING_ASSAULT_AMOUNT, EFFECT_0))
+            {
+                amount = aurEf->GetAmount();
+            }
+        }
+    }
+
+    void CalculateAmount2(AuraEffect const* /*aurEff*/, int32& amount, bool& /*canBeRecalculated*/)
+    {
+        if (Unit * caster = GetCaster())
+        {
+            if (AuraEffect * aurEf = caster->GetAuraEffect(SPELL_CRUSHING_ASSAULT_AMOUNT, EFFECT_1))
+            {
+                amount = -(aurEf->GetAmount());
+            }
+        }
+    }
+
+    void Register() override
+    {
+        DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_crushing_assault::CalculateAmount, EFFECT_0, SPELL_AURA_DUMMY);
+        DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_crushing_assault::CalculateAmount2, EFFECT_1, SPELL_AURA_ADD_FLAT_MODIFIER);
+    }
+};
+
+
+
 void AddSC_azerite_spell_scripts()
 {
     new spell_champion_of_azeroth();
     new spell_vampiric_speed_speed();
     new spell_vampiric_speed_heal();
+    RegisterAuraScript(spell_crushing_assault);
 }

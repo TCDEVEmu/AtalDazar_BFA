@@ -129,7 +129,7 @@ enum WarriorSpells
     SPELL_WARRIOR_SHIELD_SLAM                       = 23922,
     SPELL_WARRIOR_SHOCKWAVE                         = 46968,
     SPELL_WARRIOR_SHOCKWAVE_STUN                    = 132168,
-    SPELL_WARRIOR_SLAM                              = 23922,
+    SPELL_WARRIOR_SLAM                              = 1464,
     SPELL_WARRIOR_SLAM_ARMS                         = 1464,
     SPELL_WARRIOR_SLUGGISH                          = 129923,
     SPELL_WARRIOR_STORM_BOLT_STUN                   = 132169,
@@ -199,6 +199,8 @@ enum WarriorSpells
     SPELL_WARRIOR_RAGING_BLOW                       = 85288,
     SPELL_WARRIOR_FROTHING_BERSERKER2               = 215571,
     SPELL_WARRIOR_SIEGEBREAKER_AURA                 = 280773,
+    SPELL_WARRIOR_CRUSHING_ASSAULT                  = 278826,
+    SPELL_WARRIOR_CRUSHING_ASSAULT_AMOUNT           = 278751,
 };
 
 enum WarriorSpellIcons
@@ -837,9 +839,31 @@ public:
                 GetCaster()->CastCustomSpell(SPELL_WARRIOR_SLAM, SPELLVALUE_BASE_POINT0, GetEffectValue(), GetHitUnit(), TRIGGERED_FULL_MASK);
         }
 
+        void HandleDamage(SpellEffIndex /*effIndex*/) {
+            int32 damage = GetHitDamage();
+            if (Unit * caster = GetCaster()) {
+                if (caster->HasAura(SPELL_WARRIOR_CRUSHING_ASSAULT)) {
+                    if (AuraEffect * aurEff = caster->GetAuraEffect(SPELL_WARRIOR_CRUSHING_ASSAULT, EFFECT_0)) {
+                        damage += aurEff->GetAmount();
+                    }
+                }
+            }
+            SetHitDamage(damage);
+        }
+
+        void HandleAfterCast() {
+            if (Player * player = GetCaster()->ToPlayer()) {
+                if (player->HasAura(SPELL_WARRIOR_CRUSHING_ASSAULT)) {
+                    player->RemoveAura(SPELL_WARRIOR_CRUSHING_ASSAULT);
+                }
+            }
+        }
+
         void Register() override
         {
             OnEffectHitTarget += SpellEffectFn(spell_warr_slam_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            OnEffectHitTarget += SpellEffectFn(spell_warr_slam_SpellScript::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+            AfterCast += SpellCastFn(spell_warr_slam_SpellScript::HandleAfterCast);
         }
     };
 
