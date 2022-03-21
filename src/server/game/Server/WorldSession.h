@@ -270,6 +270,7 @@ namespace WorldPackets
         class SetFactionInactive;
         class SetWatchedFaction;
         class SetPlayerDeclinedNames;
+        class SetCurrencyFlags;
 
         enum class LoginFailureReason : uint8;
     }
@@ -1919,6 +1920,8 @@ class TC_GAME_API WorldSession
         void HandleAzeriteEssenceActivateEssence(WorldPackets::Azerite::AzeriteEssenceActivateEssence& azeriteEssenceActivateEssence);
         void HandleAzeriteEmpoweredItemViewed(WorldPackets::Azerite::AzeriteEmpoweredItemViewed& azeriteEmpoweredItemViewed);
         void HandleAzeriteEmpoweredItemSelectPower(WorldPackets::Azerite::AzeriteEmpoweredItemSelectPower& azeriteEmpoweredItemSelectPower);
+
+        void HandleSetCurrencyFlags(WorldPackets::Character::SetCurrencyFlags& packet);
      
         AuthFlags GetAF() const { return atAuthFlag; }
         bool HasAuthFlag(AuthFlags f) const { return atAuthFlag & f; }

@@ -2718,3 +2718,8 @@ void WorldSession::SendUndeleteCharacterResponse(CharacterUndeleteResult result,
 
     SendPacket(response.Write());
 }
+
+void WorldSession::HandleSetCurrencyFlags(WorldPackets::Character::SetCurrencyFlags& packet)
+{
+    GetPlayer()->ModifyCurrencyFlag(packet.CurrencyID, packet.Flags);
+}

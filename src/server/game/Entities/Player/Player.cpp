@@ -7090,6 +7090,19 @@ uint32 Player::GetBattlegroundRewardCrate() const
     return 0;
 }
 
+void Player::ModifyCurrencyFlag(uint32 id, uint8 flag)
+{
+    if (!id)
+        return;
+
+    if (_currencyStorage.find(id) == _currencyStorage.end())
+        return;
+
+    _currencyStorage[id].Flags = flag;
+    if (_currencyStorage[id].state != PLAYERCURRENCY_NEW)
+        _currencyStorage[id].state = PLAYERCURRENCY_CHANGED;
+}
+
 void Player::SendPvpRewards() const
 {
     WorldPackets::LFG::RequestPVPRewardsResponse rewards;
