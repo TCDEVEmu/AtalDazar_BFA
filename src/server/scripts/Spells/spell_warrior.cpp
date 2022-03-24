@@ -23,6 +23,8 @@
  */
 
 #include "Creature.h"
+#include "GridNotifiers.h"
+#include "GridNotifiersImpl.h"
 #include "Item.h"
 #include "Map.h"
 #include "MotionMaster.h"
@@ -201,6 +203,8 @@ enum WarriorSpells
     SPELL_WARRIOR_SIEGEBREAKER_AURA                 = 280773,
     SPELL_WARRIOR_CRUSHING_ASSAULT                  = 278826,
     SPELL_WARRIOR_CRUSHING_ASSAULT_AMOUNT           = 278751,
+    SPELL_WARRIOR_INTIMIDATING_SHOUT                = 5246,
+    SPELL_WARRIOR_OVERPOWER_AURA                    = 7384,
 };
 
 enum WarriorSpellIcons
@@ -571,8 +575,7 @@ public:
     {
         PrepareSpellScript(spell_warr_intimidating_shout_SpellScript);
 
-        void FilterTargets(std::list<WorldObject*>& unitList)
-        {
+        void FilterTargets(std::list<WorldObject*>& unitList) {
             unitList.remove(GetExplTargetWorldObject());
         }
 
@@ -583,9 +586,35 @@ public:
         }
     };
 
-    SpellScript* GetSpellScript() const override
-    {
+    class spell_warr_intimidating_shout_AuraScript : public AuraScript {
+
+        PrepareAuraScript(spell_warr_intimidating_shout_AuraScript);
+
+        void HandleOnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& p_ProcInfo) {
+
+            Unit* target = p_ProcInfo.GetActionTarget();
+
+            if (target->HasAura(SPELL_WARRIOR_INTIMIDATING_SHOUT)) {
+                target->RemoveAura(SPELL_WARRIOR_INTIMIDATING_SHOUT);
+            }
+
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(spell_warr_intimidating_shout_AuraScript::HandleOnProc, EFFECT_0, SPELL_AURA_MOD_FEAR_2);
+            OnEffectProc += AuraEffectProcFn(spell_warr_intimidating_shout_AuraScript::HandleOnProc, EFFECT_2, SPELL_AURA_MOD_FEAR_2);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override {
+
         return new spell_warr_intimidating_shout_SpellScript();
+    }
+
+    AuraScript* GetAuraScript() const override {
+
+        return new spell_warr_intimidating_shout_AuraScript();
     }
 };
 
@@ -1427,9 +1456,19 @@ public:
             }
         }
 
+        void HandleAfterCast() {
+
+            if (Unit * caster = GetCaster()) {
+                if (caster->HasAura(SPELL_WARRIOR_OVERPOWER_AURA)) {
+                    caster->RemoveAura(SPELL_WARRIOR_OVERPOWER_AURA);
+                }
+            }
+        }
+
         void Register() override
         {
             OnHit += SpellHitFn(spell_warr_mortal_strike_SpellScript::HandleOnHit);
+            AfterCast += SpellCastFn(spell_warr_mortal_strike_SpellScript::HandleAfterCast);
         }
     };
     SpellScript* GetSpellScript() const override
@@ -3161,52 +3200,32 @@ public:
         return new spell_warr_victory_rush_heal_SpellScript;
     }
 };
-/*
+
 // 262161 Warbreaker
-class spell_warr_warbreaker : public SpellScript
-{
+
+class spell_warr_warbreaker : public SpellScript {
+
     PrepareSpellScript(spell_warr_warbreaker);
 
-    void HandleOnHitTarget(SpellEffIndex /*effIndex)
-    {
-        if (Unit * caster = GetCaster())
-        {
+    void FilterTargets(std::list<WorldObject*>& unitList) {
+        unitList.remove(GetExplTargetWorldObject());
+    }
+
+    void HandleOnHitTarget(SpellEffIndex /*effIndex*/) {
+
+        if (Unit * caster = GetCaster()) {
             if (Unit * target = GetHitUnit())
                 caster->CastSpell(target, SPELL_WARRIOR_COLOSSUS_SMASH_BUFF, true);
         }
     }
 
-    void CountTargets(std::list<WorldObject*> & targets)
-    {
-        if (Unit * caster = GetCaster())
-        {
-            if (Aura * inForTheKill = caster->GetAura(248621)) // In For The Kill
-            {
-                int32 hpPct = inForTheKill->GetSpellEffectInfo(EFFECT_2)->CalcValue(caster);
-                int32 hastePct = inForTheKill->GetEffect(EFFECT_0)->GetAmount();
-                for (std::list<WorldObject*>::const_iterator itr = targets.begin(); itr != targets.end(); ++itr)
-                {
-                    if (Unit * target = (*itr)->ToUnit())
-                    {
-                        if (target->HealthBelowPct(hpPct))
-                        {
-                            hastePct = inForTheKill->GetSpellEffectInfo(EFFECT_1)->CalcValue(caster);
-                            break;
-                        }
-                    }
-                }
-                caster->CastCustomSpell(caster, 248622, &hastePct, nullptr, nullptr, true); // In For The Kill
-            }
-        }
-    }
-
     void Register() override
     {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_warbreaker::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
         OnEffectHitTarget += SpellEffectFn(spell_warr_warbreaker::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_warbreaker::CountTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
     }
 };
-*/
+
 // 1680 Whirlwind
 class spell_warr_wirlwind_dmg : public SpellScript
 {
@@ -3489,7 +3508,7 @@ void AddSC_warrior_spell_scripts()
     RegisterCreatureAI(npc_warr_banner);
     new spell_warr_avatar();
     new spell_warr_victory_rush_heal();
-    //RegisterSpellScript(spell_warr_warbreaker);
+    RegisterSpellScript(spell_warr_warbreaker);
     RegisterSpellScript(spell_warr_wirlwind_dmg);
     RegisterAuraScript(aura_warr_victorious);
     RegisterSpellScript(spell_warr_siegebreaker);
