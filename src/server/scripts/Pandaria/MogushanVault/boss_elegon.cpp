@@ -655,7 +655,7 @@
 //                        case EVENT_CELESTIAL_BREATH:
 //                        {
 //                            if (phase == PHASE_1)
-//                                if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                                if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                {
 //                                    me->SetFacingTo(me->GetAngle(target));
 //                                    me->CastSpell(target, SPELL_CELESTIAL_BREATH, false);

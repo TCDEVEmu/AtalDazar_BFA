@@ -1067,12 +1067,12 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_SECRET_FLESH_TO_STONE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_FLESH_TO_STONE, false);
 //                            events.ScheduleEvent(EVENT_SECRET_FLESH_TO_STONE, 8 * IN_MILLISECONDS);
 //                            break;
 //                        case EVENT_SECRET_STONE_BLOCK:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_STONE_BLOCK, false);
 //                            events.ScheduleEvent(EVENT_SECRET_STONE_BLOCK, urand(15000, 20000));
 //                            break;
@@ -1129,17 +1129,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_WARDEN_FORCEFUL_SWING:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_FORCEFUL_SWING, false);
 //                            events.ScheduleEvent(EVENT_WARDEN_FORCEFUL_SWING, 30000);
 //                            break;
 //                        case EVENT_WARDEN_TOUCH_OF_NALAK_SHA:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_TOUCH_OF_NALAK_SHA, false);
 //                            events.ScheduleEvent(EVENT_WARDEN_TOUCH_OF_NALAK_SHA, 30000);
 //                            break;
 //                        case EVENT_WARDEN_WARDEN_S_FURY:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_WARDEN_S_FURY, false);
 //                            events.ScheduleEvent(EVENT_WARDEN_WARDEN_S_FURY, 30000);
 //                            break;

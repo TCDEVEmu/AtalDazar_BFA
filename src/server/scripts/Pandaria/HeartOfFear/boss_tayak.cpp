@@ -727,7 +727,7 @@
 //
 //                void SetAggro()
 //                { /*
-//                    if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                    if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                    {
 //                        AttackStart(victim);
 //                        me->SetInCombatWith(victim);

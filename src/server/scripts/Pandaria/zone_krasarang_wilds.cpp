@@ -223,7 +223,7 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_GRAPPLING_HOOK:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_GRAPPLING_HOOK, false);
 //                            events.ScheduleEvent(EVENT_GRAPPLING_HOOK,      10000);
 //                            break;
@@ -232,7 +232,7 @@
 //                            events.ScheduleEvent(EVENT_VANISH, 20000);
 //                            break;
 //                        case EVENT_VICIOUS_REND:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_VICIOUS_REND, false);
 //                            events.ScheduleEvent(EVENT_VICIOUS_REND, 15000);
 //                            break;
@@ -314,17 +314,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_BLADE_FURY:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_BLADE_FURY, false);
 //                            events.ScheduleEvent(EVENT_BLADE_FURY,      8000);
 //                            break;
 //                        case EVENT_TORNADO:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_TORNADO, false);
 //                            events.ScheduleEvent(EVENT_TORNADO, 40000);
 //                            break;
 //                        case EVENT_WINDSONG:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_WINDSONG, false);
 //                            events.ScheduleEvent(EVENT_WINDSONG, 32000);
 //                            break;
@@ -402,17 +402,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_BELLOWING_RAGE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_BELLOWING_RAGE, false);
 //                            events.ScheduleEvent(EVENT_BELLOWING_RAGE,      50000);
 //                            break;
 //                        case EVENT_RUSHING_CHARGE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_RUSHING_CHARGE, false);
 //                            events.ScheduleEvent(EVENT_RUSHING_CHARGE, 40000);
 //                            break;
 //                        case EVENT_YAUNGOL_STOMP:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_YAUNGOL_STOMP, false);
 //                            events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 65000);
 //                            break;

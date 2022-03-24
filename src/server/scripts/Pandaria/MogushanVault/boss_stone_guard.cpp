@@ -919,7 +919,7 @@
 //                        }
 //                        case EVENT_REND_FLESH:
 //                        {
-//                            if (Unit* victim = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* victim = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                if (Creature* controller = GetController())
 //                                    me->CastSpell(victim, SPELL_REND_FLESH, true, NULL, NULL, controller->GetGUID());
 //

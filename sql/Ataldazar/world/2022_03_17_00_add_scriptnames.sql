@@ -11,7 +11,7 @@ INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (129356, 'spell_sha_of_anger_overcome_by_anger');
 
 
-UPDATE `creature_template` SET `ScriptName`= 'boss_galion ' WHERE `entry`= 62346;
+UPDATE `creature_template` SET `ScriptName`= 'boss_galion' WHERE `entry`= 62346;
 UPDATE `creature_template` SET `ScriptName`= 'npc_salyin_skrimisher' WHERE `entry`= 62350;
 UPDATE `creature_template` SET `ScriptName`= 'npc_salyin_warmonger' WHERE `entry`= 62351;
 UPDATE `creature_template` SET `ScriptName`= 'boss_nalak' WHERE `entry`= 69099;
