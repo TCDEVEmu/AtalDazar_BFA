@@ -205,6 +205,9 @@ enum WarriorSpells
     SPELL_WARRIOR_CRUSHING_ASSAULT_AMOUNT           = 278751,
     SPELL_WARRIOR_INTIMIDATING_SHOUT                = 5246,
     SPELL_WARRIOR_OVERPOWER_AURA                    = 7384,
+    SPELL_WARRIOR_IN_FOR_THE_KILL                   = 248621,
+    SPELL_WARRIOR_IN_FOR_THE_KILL_AURA              = 248622,
+    SPELL_WARRIOR_WARBREAKER                        = 262161,
 };
 
 enum WarriorSpellIcons
@@ -1377,6 +1380,7 @@ public:
     }
 };
 
+// Colossus Smash 167105
 class spell_warr_colossus_smash : public SpellScriptLoader
 {
 public:
@@ -1395,9 +1399,25 @@ public:
                 }
         }
 
+        void HandleOnCast() {
+            if (Unit * caster = GetCaster()) {
+                if (caster->HasAura(SPELL_WARRIOR_IN_FOR_THE_KILL)) {
+                    if(Unit* target = GetExplTargetUnit()){
+                        if (target->GetHealthPct() <= sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IN_FOR_THE_KILL)->GetEffect(EFFECT_2)->BasePoints) {
+                            caster->CastCustomSpell(SPELL_WARRIOR_IN_FOR_THE_KILL_AURA, SPELLVALUE_BASE_POINT0, sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IN_FOR_THE_KILL)->GetEffect(EFFECT_1)->BasePoints, caster);
+                        }
+                        else {
+                            caster->CastSpell(caster, SPELL_WARRIOR_IN_FOR_THE_KILL_AURA);
+                        }
+                    }
+                }
+            }
+        }
+
         void Register() override
         {
             OnHit += SpellHitFn(spell_warr_colossus_smash_SpellScript::HandleOnHit);
+            OnCast += SpellCastFn(spell_warr_colossus_smash_SpellScript::HandleOnCast);
         }
     };
 
@@ -3219,10 +3239,26 @@ class spell_warr_warbreaker : public SpellScript {
         }
     }
 
+    void HandleOnCast() {
+        if (Player * caster = GetCaster()->ToPlayer()) {
+            if (caster->HasAura(SPELL_WARRIOR_IN_FOR_THE_KILL)) {
+                if (Unit * target = caster->GetSelectedUnit()) {
+                    if (target->GetHealthPct() <= sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IN_FOR_THE_KILL)->GetEffect(EFFECT_2)->BasePoints) {
+                        caster->CastCustomSpell(SPELL_WARRIOR_IN_FOR_THE_KILL_AURA, SPELLVALUE_BASE_POINT0, sSpellMgr->GetSpellInfo(SPELL_WARRIOR_IN_FOR_THE_KILL)->GetEffect(EFFECT_1)->BasePoints, caster);
+                    }
+                    else {
+                        caster->CastSpell(caster, SPELL_WARRIOR_IN_FOR_THE_KILL_AURA);
+                    }
+                }
+            }
+        }
+    }
+
     void Register() override
     {
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_warr_warbreaker::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENEMY);
         OnEffectHitTarget += SpellEffectFn(spell_warr_warbreaker::HandleOnHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        OnCast += SpellCastFn(spell_warr_warbreaker::HandleOnCast);
     }
 };
 
