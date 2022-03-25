@@ -11,26 +11,13 @@
 46930
 */
 
-delete from `creature` where `guid` in (1057121,1057122,1057123,1057124);
+delete from `creature` where `guid` in (1057121,1057122,1057123,1057124,1057162);
 INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficulties`, `PhaseId`, `PhaseGroup`, `modelid`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `spawndist`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `VerifiedBuild`) VALUES
 (1057121, 140210, 1, 1637, 5356, '0', 0, 0, 0, 0, 1652.078125, -4339.15283203125, 26.43912506103515625, 5.011474132537841796, 120, 0, 0, 14962, 0, 0, 0, 0, 0, 27144), -- 140210 (Area: Grommash Hold - Difficulty: 0)
 (1057122, 134711, 1, 1637, 5356, '0', 0, 0, 0, 0, 1661.68408203125, -4347.095703125, 26.41849517822265625, 3.586645841598510742, 120, 0, 0, 51876000, 5902100, 0, 0, 0, 0, 27144), -- 134711 (Area: Grommash Hold - Difficulty: Normal)
 (1057123, 139028, 1, 1637, 5170, '0', 170, 0, 0, 1, 1569.4132080078125, -4435.03125, 16.13552284240722656, 1.800256252288818359, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359), -- 139028 (Area: 5170 - Difficulty: 0)
-(1057124, 135213, 1, 1637, 5170, '0', 170, 0, 0, 1, 1573.8072509765625, -4433.2587890625, 16.13552284240722656, 2.0272674560546875, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359); -- 135213 (Area: 5170 - Difficulty: 0)
-
-
-update `creature` set `phaseid` = 11604 where `guid` in (1057121,1055837,194746);
-
-
-DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=169;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 169, 'Orgrimmar  - Default phase');
-DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11604;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11604, 'Orgrimmar - BFA Intro');
-
-DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11279;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11279, 'Orgrimmar - after accept quest 51796');
-DELETE FROM `phase_area` WHERE `AreaId`=5356 AND `PhaseId`=11189;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES (5356, 11189, 'Orgrimmar - after accept quest 51796');
+(1057124, 135213, 1, 1637, 5170, '0', 170, 0, 0, 1, 1573.8072509765625, -4433.2587890625, 16.13552284240722656, 2.0272674560546875, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359), -- 135213 (Area: 5170 - Difficulty: 0)
+(1057162, 135441, 1642, 8499, 8670, '0', 0, 0, 0, 0, -1100.6875, 817.93402099609375, 497.160064697265625, 6.062157630920410156, 120, 0, 0, 864600, 2951050, 0, 0, 0, 0, 27404); -- Zolani (Area: Dazar'alor - Difficulty: 0)
 
 
 delete from `creature_addon` where `guid`in (1057121,1057122);
@@ -54,7 +41,7 @@ UPDATE `creature_template` SET `AIName` = 'SmartAI', `ScriptName`= '' WHERE `ent
 
 DELETE FROM `smart_scripts` WHERE `entryorguid`=139093 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(139093, 0, 0, 0, 62, 0, 100, 0, 22787, 1, 0, 0, 0, '', 224, 51796, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on gossip select 1 - kc');
+(139093, 0, 0, 0, 62, 0, 100, 0, 22787, 1, 0, 0, 0, '', 224, 51796, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on gossip select 1 - questcomplete');
 
 UPDATE `creature_template` SET `AIName` = 'SmartAI', `ScriptName`= '' WHERE `entry` = 140176;
 
@@ -73,21 +60,11 @@ DELETE FROM `conversation_actors` WHERE `ConversationId`=8383 AND `Idx`=0;
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `ConversationActorGuid`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES 
 (8383, 0, 0, 138913, 0, 31478);
 
-DELETE FROM `phase_area` WHERE `AreaId`=9609;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(9609, 169, 'Silithus Default Phase'),
-(9609, 170, 'Silithus S-Q-53028 / Q-S-51211');
 
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=9609;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 9609, 0, 0, 9, 0, 53028, 0, 0, 0, 0, 0, '', 'Phase 170 if has Quest 53028 '),
-(26, 170, 9609, 0, 1, 28, 0, 53028, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest 53028 complete'),
-(26, 170, 9609, 0, 2, 8, 0, 53028, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest 53028 rewarded'),
-(26, 170, 9609, 0, 2, 9, 0, 51211, 0, 0, 1, 0, 0, '', 'Phase 170 if not has Quest 53028');
 
 UPDATE `creature_template` SET `flags_extra`= 128 WHERE `entry` in (135917,137607,137580);
 
-update `creature` set `phaseid` = 170 where `guid`=933142;
+
 
 UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 130216;
 DELETE FROM `smart_scripts` WHERE `entryorguid`=130216 AND `source_type`=0;
@@ -116,11 +93,6 @@ DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=1 
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 (22, 1, 130216, 0, 0, 9, 0, 53028, 0, 0, 0, 0, 0, '', 'SAI only if has quest 53028'),
 (22, 1, 130216, 0, 0, 28, 0, 53028, 0, 0, 1, 0, 0, '', 'SAI only if not complete quest 53028');
-
-DELETE FROM `phase_area` WHERE `AreaId`=9667;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(9667, 169, 'Chamber of Heart Default Phase'),
-(9667, 170, 'Chamber of Heart Intro Phase');
 
 UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 137580;
 DELETE FROM `smart_scripts` WHERE `entryorguid`=137580 AND `source_type`=0;
@@ -154,11 +126,6 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (139828, 0, 0, 1, 10, 0, 100, 1, 1, 10, 0, 0, 0, '', 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
 (139828, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 1, 1398280, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - wp'),
 (139828, 0, 2, 0, 40, 0, 100, 0, 5, 0, 0, 0, 0, '', 41, 100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on wp end - despawn');
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=9667;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 9667, 0, 0, 8, 0, 53031, 0, 0, 1, 0, 0, '', 'Phase 170 if Quest 51211 complete');
 
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=15 AND `SourceGroup`=22620 AND `SourceEntry`=0 AND `SourceId`=0 AND `ElseGroup`=0;
@@ -214,7 +181,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (135205, 0, 7, 8, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 0, 1352052, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on just spawned - play wp'),
 (135205, 0, 8, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 80, 13520502, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - run action list'),
 (135205, 0, 9, 10, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 81, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on just spawned - set npcflag'),
-(135205, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 45, 2, 2, 0, 0, 0, 0, 11, 134711, 20, 0, 0, 0, 0, 0, 'on just spawned - set npcflag');
+(135205, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 45, 2, 2, 0, 0, 0, 0, 11, 134711, 20, 0, 0, 0, 0, 0, 'on link - set data 2 2');
 
 
 
@@ -306,55 +273,6 @@ INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `positi
 
 
 
-update `creature` set `phaseid` = 170 where `guid` in (1053407,1053406);
-
-DELETE FROM `phase_area` WHERE `AreaId`=8618;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(8618, 169, 'The broken Tusk Default Phase'),
-(8618, 170, 'The broken Tusk Intro bfa Phase'),
-(8618, 171, 'The broken Tusk Intro bfa Phase2');
-
-update `creature` set `phaseid` = 171 where `guid` = 1053405;
-
-DELETE FROM `phase_area` WHERE `AreaId`=5170;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(5170, 169, 'Valley of Strength Default Phase'),
-(5170, 170, 'Valley of Strength Intro bfa Phase');
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=5170;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 5170, 0, 0, 48, 0, 335883, 0, 0, 0, 0, 0, '', 'Phase 170 if quest objetive 335883 '),
-(26, 170, 5170, 0, 0, 48, 0, 10000002, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest objetive 10000002'),
-
-(26, 170, 5170, 0, 1, 28, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest complete 51443'),
-
-(26, 170, 5170, 0, 2, 8, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest rewarded 51443'),
-(26, 170, 5170, 0, 2, 9, 0, 50769, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest has 50769'),
-
-(26, 170, 5170, 0, 3, 9, 0, 50769, 0, 0, 0, 0, 0, '', 'Phase 170 if quest has 50769'),
-(26, 170, 5170, 0, 3, 48, 0, 333785, 0, 0, 1, 0, 0, '', 'Phase 170 if quest objetive 333785');
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=8618;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 8618, 0, 0, 48, 0, 335883, 0, 0, 0, 0, 0, '', 'Phase 170 if quest objetive 335883 '),
-(26, 170, 8618, 0, 1, 28, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest complete 51443'),
-(26, 170, 8618, 0, 2, 8, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest rewarded 51443'),
-(26, 170, 8618, 0, 2, 9, 0, 50769, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest has 50769'),
-(26, 170, 8618, 0, 3, 9, 0, 50769, 0, 0, 0, 0, 0, '', 'Phase 170 if quest has 50769'),
-(26, 170, 8618, 0, 3, 48, 0, 333785, 0, 0, 1, 0, 0, '', 'Phase 170 if quest objetive 333785');
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=171 AND `SourceEntry`=8618;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 171, 8618, 0, 0, 48, 0, 10000002, 0, 0, 0, 0, 0, '', 'Phase 170 if quest objetive 10000002 '),
-(26, 171, 8618, 0, 1, 28, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest complete 51443'),
-(26, 171, 8618, 0, 2, 8, 0, 51443, 0, 0, 0, 0, 0, '', 'Phase 170 if quest rewarded 51443'),
-(26, 171, 8618, 0, 2, 8, 0, 50769, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest rewarded 50769'),
-(26, 171, 8618, 0, 2, 48, 0, 333785, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest objetive 333785');
-
-
-
 UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 135206;
 DELETE FROM `smart_scripts` WHERE `entryorguid`=135206 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
@@ -426,76 +344,9 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (22, 1, 132332, 0, 0, 8, 0, 50769, 0, 0, 1, 0, 0, '', 'SAI only if not quest rewarded 50769');
 
 
-DELETE FROM `phase_area` WHERE `AreaId`=8665;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(8665, 169, 'Port of Zandalar Default Phase'),
-(8665, 170, 'Port of Zandalar Q-46957'),
-(8665, 171, 'Port of Zandalar QE-50769 QR-46957');
-
-
-update `creature` set `phaseid` = 170 where `guid` = 965214;
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=8665;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 8665, 0, 0, 28, 0, 50769, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest complete 50769'),
-(26, 170, 8665, 0, 1, 8, 0, 50769, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest rewarded 50769'),
-(26, 170, 8665, 0, 1, 9, 0, 46957, 0, 0, 1, 0, 0, '', 'Phase 170 if not Quest has 46957'),
-(26, 170, 8665, 0, 1, 28, 0, 46957, 0, 0, 1, 0, 0, '', 'Phase 170 if not quest complete 46957'),
-(26, 170, 8665, 0, 1, 8, 0, 46957, 0, 0, 1, 0, 0, '', 'Phase 170 if not Quest rewarded 46957');
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=171 AND `SourceEntry`=8665;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 171, 8665, 0, 0, 8, 0, 46957, 0, 0, 1, 0, 0, '', 'Phase 171 if not Quest rewarded 46957'),
-(26, 171, 8665, 0, 0, 6, 0, 67, 0, 0, 0, 0, 0, '', 'Phase 171 if player horde');
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=171 AND `SourceEntry`=8666;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 171, 8666, 0, 0, 8, 0, 46957, 0, 0, 1, 0, 0, '', 'Phase 171 if not Quest rewarded 46957'),
-(26, 171, 8666, 0, 0, 6, 0, 67, 0, 0, 0, 0, 0, '', 'Phase 171 if player horde');
-
-/*
-update `creature` set `phaseid` = 171 where `guid` in ( 
-210401244,210401227,210401241,210401235,210401240,210401243,210401251,210401247,210401256,210401259,210401258,210401250,210401252,210401255,210401264,210401270,210401189,210401190,210401253,210401257,210401248,210401254,210401242,210401239,210401236,210401238,210401233,
-210401217,210401194,210401233,210401212,210401218,210401223,210401222,210401221,210401209,210401213,210401220,210401219,210401208,210401206,210401203,210401201,210401205,210401207,210401200,210401202,210401204,210401184,210401181,210401196,210401186,210401192,210401195,
-210401199,210401191,210401183);
-*/
-
 DELETE FROM `conversation_actors` WHERE `ConversationId`=6722 AND `Idx`=1;
 INSERT INTO `conversation_actors` (`ConversationId`, `ConversationActorId`, `ConversationActorGuid`, `ConversationActorNearId`, `Idx`, `VerifiedBuild`) VALUES 
 (6722, 0, 0, 120169, 1, 28153);
-
-update `creature` set `phaseid` = 170 where `guid` = 965280;
-
-DELETE FROM `phase_area` WHERE `AreaId`=8666;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(8666, 169, 'Grand Bazaar Default Phase'),
-(8666, 170, 'Grand Bazaar Q-46957 QE-46957'),
-(8666, 171, 'Port of Zandalar QE-50769 QR-46957');
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=8666;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 8666, 0, 0, 48, 0, 296686, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest objetive 296686'),
-(26, 170, 8666, 0, 1, 8, 0, 46957, 0, 0, 0, 0, 0, '', 'Phase 170 if Quest rewarded 46957'),
-(26, 170, 8666, 0, 1, 48, 0, 289869, 0, 0, 1, 0, 0, '', 'Phase 170 if not Quest objetive 289869');
-
-
-DELETE FROM `phase_area` WHERE `AreaId`=1637;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(1637, 169, 'Orgrimmar Default Phase'),
-(1637, 170, 'Orgrimmar Q-50769  Q-46930');
-
-update `creature` set `phaseid` = 170 where `id` = 135211; 
-update `creature` set `phaseid` = 170 where `guid` in (996963,996934,996951,996942,996930,996932,996961); 
-
-
-DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=170 AND `SourceEntry`=1637 AND `SourceId`=0 AND `ElseGroup`=0;
-INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
-(26, 170, 1637, 0, 0, 9, 0, 50769, 0, 0, 0, 0, 0, '',   'phase only if has quest 50769'),
-(26, 170, 1637, 0, 0, 8, 0, 50769, 0, 0, 1, 0, 0, '',   'phase only if not quest rewarded 50769'),
-(26, 170, 1637, 0, 0, 48, 0, 335889, 0, 0, 1, 0, 0, '', 'phase only if not  quest objetive 335889'),
-(26, 170, 1637, 0, 0, 48, 0, 333785, 0, 0, 0, 0, 0, '', 'phase only if quest objetive 333785');
 
 
 -- 138913
@@ -508,37 +359,26 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (135440, 0, 0, 0, 62, 0, 100, 0, 21433, 0, 0, 0, 0, '', 85, 244534, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on gossip menu - kc');
 
 
-DELETE FROM `phase_area` WHERE `AreaId`=8670;
-INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
-(8670, 169, 'Dazar_alor Default Phase');
-
-
-/*
-UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 120740;
-DELETE FROM `smart_scripts` WHERE `entryorguid`=120740 AND `source_type`=0;
-INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(120740, 0, 0, 0, 19, 0, 100, 0, 46931, 0, 0, 0, 0, '', 12, 135441, 5, 0, 0, 1, 0, 8, 0, 0, 0, -1100.689941, 817.934021, 497.243011, 6.062160, 'on quest start - summon creature');
-*/
 
 UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 132661;
 
 DELETE FROM `smart_scripts` WHERE `entryorguid`=132661 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(132661, 0, 0, 1, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 43, 0, 80358, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
-(132661, 0, 1, 2, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 1, 1326610, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
-(132661, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 80, 13266100, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk'),
-(132661, 0, 3, 0, 40, 0, 100, 0, 11, 0, 0, 0, 0, '', 80, 13266101, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occ lost - talk');
+(132661, 0, 0, 1, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 43, 0, 80358, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on just spawn - mount'),
+(132661, 0, 1, 2, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 1, 1326610, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - play wp'),
+(132661, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 80, 13266100, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ' on link - run actionlist'),
+(132661, 0, 3, 0, 40, 0, 100, 0, 11, 0, 0, 0, 0, '', 80, 13266101, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on wp reached - play actionlist');
 
 DELETE FROM `smart_scripts` WHERE `entryorguid`=13266100 AND `source_type`=9;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(13266100, 9, 0, 0, 0, 0, 100, 0, 8000, 8000, 0, 0, 0, '', 206, 6721, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation');
+(13266100, 9, 0, 0, 0, 0, 100, 0, 8000, 8000, 0, 0, 0, '', 206, 6721, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'conversation');
 DELETE FROM `smart_scripts` WHERE `entryorguid`=13266101 AND `source_type`=9;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(13266101, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 66, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 6.108650, 'play conversation'),
-(13266101, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 11, 265711, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
-(13266101, 9, 2, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, '', 28, 261486, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
-(13266101, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 206, 6722, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'play conversation'),
-(13266101, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'play conversation');
+(13266101, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 66, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 6.108650, 'set o'),
+(13266101, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 11, 265711, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'cast spell'),
+(13266101, 9, 2, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 0, '', 28, 261486, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'remove aura'),
+(13266101, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 206, 6722, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'conversation'),
+(13266101, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'despawn');
 
 
 DELETE FROM `script_waypoint` WHERE `entry`=132661;
@@ -556,3 +396,114 @@ INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `positi
 (1326610, 10, -1828.54, 821.559, 53.7431, 'wp 10'),
 (1326610, 11, -1812.54, 803.364, 53.4007, 'wp 11');
 
+
+
+
+UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 135441;
+UPDATE `creature_template` SET `AIName`='', `ScriptName`= '' WHERE `entry`= 120740;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=120740 AND `source_type`=0;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=135441 AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(135441, 0, 0, 0, 64, 0, 100, 0, 0, 0, 0, 0, 0, '', 33, 10000006, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on gossip hello - kc'),
+(135441, 0, 1, 2, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 0, 1354410, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on just spawned - play wp'),
+(135441, 0, 2, 6, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 1, 0, 6000, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - talk'),
+(135441, 0, 3, 4, 40, 0, 100, 0, 8, 0, 0, 0, 0, '', 33, 120169, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 'on wp reached 8 - kc'),
+(135441, 0, 4, 5, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 1, 1, 6000, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - text'),
+(135441, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - despawn'),
+(135441, 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 81, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - set npcflag 0');
+
+UPDATE `quest_template_addon` SET `ScriptName`= 'SmartQuest' WHERE `id`= 46931;
+
+
+DELETE FROM `creature_template` WHERE `entry`=10000006;
+INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES 
+(10000006, 0, 0, 0, 0, 0, '', NULL, '', 'Custom Objetive for Quest 46931', NULL, 0, 1, 1, 0, 0, 0, 35, 0, 1, 1.14286, 1, 1, 0, 2000, 2000, 1, 1, 1, 0, 2048, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 12, 1, 1, 1, 1, 3, 3, 0, 0, 1, 0, 128, '', -1);
+
+DELETE FROM `quest_objectives` WHERE `ID`=10000006;
+INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`, `ObjectID`, `Amount`, `Flags`, `Flags2`, `ProgressBarWeight`, `Description`, `VerifiedBuild`) VALUES 
+(10000006, 46931, 0, 0, 7, 10000006, 1, 28, 0, 0, 'Custom - Player Summon Zolani', -1);
+
+DELETE FROM `creature_template_model` WHERE `CreatureID`=10000006 AND `CreatureDisplayID`=78159;
+INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES 
+(10000006, 0, 78159, 1, 1, -1);
+
+
+
+
+DELETE FROM `script_waypoint` WHERE `entry`=135441;
+DELETE FROM `waypoints` WHERE `entry`=1354410;
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 1, -1100.43, 821.323, 497.072, '1 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 2, -1097.96, 834.612,  487.71, '2 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 3, -1099.14, 838.111,   487.7, '3 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 4, -1110.93, 839.762,  487.69, '4 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 5,  -1123.1, 840.027, 487.863, '5 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 6,    -1130, 843.566, 487.863, '6 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 7, -1129.66, 845.916, 487.865, '7 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1354410, 8, -1128.93, 845.625, 487.865, '8 wp');
+
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=1 AND `SourceEntry`=135441 AND `SourceId`=0 AND `ElseGroup`=0;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(22, 1, 135441, 0, 0, 48, 0, 10000006, 0, 0, 1, 0, 0, '', 'sAI only if - not complete qobjetive 10000006'),
+(22, 1, 135441, 0, 0, 9, 0, 46931, 0, 0, 0, 0, 0, '', 'sAI only if - has quest 46931');
+
+DELETE FROM `creature_template` WHERE `entry`=10000004;
+INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES 
+(10000004, 0, 0, 0, 0, 0, '', NULL, '', 'Custom Objetive for Quest 46931', NULL, 0, 1, 1, 0, 0, 0, 35, 0, 1, 1.14286, 1, 1, 0, 2000, 2000, 1, 1, 1, 0, 2048, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 12, 1, 1, 1, 1, 3, 3, 0, 0, 1, 0, 128, '', -1);
+DELETE FROM `creature_template` WHERE `entry`=10000005;
+INSERT INTO `creature_template` (`entry`, `difficulty_entry_1`, `difficulty_entry_2`, `difficulty_entry_3`, `KillCredit1`, `KillCredit2`, `name`, `femaleName`, `subname`, `TitleAlt`, `IconName`, `gossip_menu_id`, `minlevel`, `maxlevel`, `HealthScalingExpansion`, `RequiredExpansion`, `VignetteID`, `faction`, `npcflag`, `speed_walk`, `speed_run`, `scale`, `rank`, `dmgschool`, `BaseAttackTime`, `RangeAttackTime`, `BaseVariance`, `RangeVariance`, `unit_class`, `unit_flags`, `unit_flags2`, `unit_flags3`, `dynamicflags`, `family`, `trainer_type`, `trainer_class`, `trainer_race`, `type`, `type_flags`, `type_flags2`, `lootid`, `pickpocketloot`, `skinloot`, `resistance1`, `resistance2`, `resistance3`, `resistance4`, `resistance5`, `resistance6`, `spell1`, `spell2`, `spell3`, `spell4`, `spell5`, `spell6`, `spell7`, `spell8`, `VehicleId`, `mingold`, `maxgold`, `AIName`, `MovementType`, `InhabitType`, `HoverHeight`, `HealthModifier`, `HealthModifierExtra`, `ManaModifier`, `ManaModifierExtra`, `ArmorModifier`, `DamageModifier`, `ExperienceModifier`, `RacialLeader`, `movementId`, `RegenHealth`, `mechanic_immune_mask`, `flags_extra`, `ScriptName`, `VerifiedBuild`) VALUES 
+(10000005, 0, 0, 0, 0, 0, '', NULL, '', 'Custom Objetive for Quest 46931', NULL, 0, 1, 1, 0, 0, 0, 35, 0, 1, 1.14286, 1, 1, 0, 2000, 2000, 1, 1, 1, 0, 2048, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', 0, 3, 1, 12, 1, 1, 1, 1, 3, 3, 0, 0, 1, 0, 128, '', -1);
+
+
+DELETE FROM `quest_objectives` WHERE `ID`=10000004;
+INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`, `ObjectID`, `Amount`, `Flags`, `Flags2`, `ProgressBarWeight`, `Description`, `VerifiedBuild`) VALUES 
+(10000004, 46931, 0, 0, 5, 10000004, 1, 28, 0, 0, 'Custom - Talanji Event', -1);
+DELETE FROM `quest_objectives` WHERE `ID`=10000005;
+INSERT INTO `quest_objectives` (`ID`, `QuestID`, `Type`, `Order`, `StorageIndex`, `ObjectID`, `Amount`, `Flags`, `Flags2`, `ProgressBarWeight`, `Description`, `VerifiedBuild`) VALUES 
+(10000005, 46931, 0, 0, 6, 10000005, 1, 28, 0, 0, 'Custom - Talanji Event2', -1);
+
+
+DELETE FROM `creature_template_model` WHERE `CreatureID`=10000004 AND `CreatureDisplayID`=78159;
+INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES 
+(10000004, 0, 78159, 1, 1, -1);
+DELETE FROM `creature_template_model` WHERE `CreatureID`=10000005 AND `CreatureDisplayID`=78159;
+INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES 
+(10000005, 0, 78159, 1, 1, -1);
+
+
+
+UPDATE `creature_template` SET `AIName`='SmartAI', `ScriptName`= '' WHERE `entry`= 133050;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=-965537 AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(-965537, 0, 0, 1, 10, 0, 100, 0, 1, 20, 0, 0, 0, '', 12, 133050, 5, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on occlost - summon creature'),
+(-965537, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 33, 10000004, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on link - kc');
+DELETE FROM `smart_scripts` WHERE `entryorguid`=133050 AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(133050, 0, 0, 1, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 1, 0, 6000, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on justspawned - talk'),
+(133050, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 0, 1330500, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - play wp'),
+(133050, 0, 2, 3, 40, 0, 100, 0, 999999, 0, 0, 0, 0, '', 33, 10000005, 0, 0, 0, 0, 0, 18, 30, 0, 0, 0, 0, 0, 0, 'on wp reached - XXXX - kc'),
+(133050, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - despawn'),
+(133050, 0, 4, 0, 19, 0, 100, 0, 52131, 0, 0, 0, 0, '', 85, 273387, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on quest accept 52131 - self castspell');
+
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=1 AND `SourceEntry`=-965537 AND `SourceId`=0 AND `ElseGroup`=0;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(22, 1, -965537, 0, 0, 48, 0, 10000004, 0, 0, 1, 0, 0, '', 'sAI only if - not complete qobjetive 10000004'),
+(22, 1, -965537, 0, 0, 9, 0, 46931, 0, 0, 0, 0, 0, '', 'sAI only if - has quest 46931');
+
+
+
+
+
+
+
+
+/*
+965535
+
+121000
+
+
+1894 
+1975 
+*/
