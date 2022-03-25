@@ -175,6 +175,8 @@ enum HunterSpells
     SPELL_HUNTER_STOMP                              = 201754,
     SPELL_HUNTER_THRILL_OF_THE_HUNT                 = 257944,
     SPELL_HUNTER_THRILL_OF_THE_HUNT_AURA            = 257946,
+    SPELL_HUNTER_BARBED_SHOT                        = 217200,
+    SPELL_HUNTER_FRENZY                             = 272790,
 };
 
 enum AncientHysteriaSpells
@@ -726,6 +728,26 @@ public:
     {
         return new spell_hun_chimera_shot_SpellScript();
     }
+};
+
+// Barbed Shot 217200
+class spell_hun_barbed_shot : public SpellScript {
+
+    PrepareSpellScript(spell_hun_barbed_shot);
+
+    void HandleOnCast() {
+
+        if (Player * hunt = GetCaster()->ToPlayer()) {
+            if (Pet* pet = hunt->GetPet()) {
+                hunt->CastSpell(pet, SPELL_HUNTER_FRENZY);
+            }
+        }
+    }
+
+    void Register() {
+        OnCast += SpellCastFn(spell_hun_barbed_shot::HandleOnCast);
+    }
+
 };
 
 // A Murder of Crows (Beast Mastery, Marksmanship) - 131894 and A Murder of Crows (Survival) - 206505
@@ -1958,7 +1980,7 @@ public:
         return new spell_hun_sentinel_SpellScript();
     }
 };
-
+/*
 // Dire Frenzy - 217200
 class spell_hun_dire_frenzy : public SpellScriptLoader
 {
@@ -2038,7 +2060,7 @@ public:
         return new spell_hun_dire_frenzy_SpellScript();
     }
 };
-
+*/
 // Flanking Strike - 202800
 // Trigger for Animal Instincts - 204315
 class spell_hun_flanking_strike : public SpellScriptLoader
@@ -4181,7 +4203,7 @@ void AddSC_hunter_spell_scripts()
     new spell_hun_bombardment();
     new spell_hun_lock_and_load();
     new spell_hun_sentinel();
-    new spell_hun_dire_frenzy();
+   // new spell_hun_dire_frenzy();
     new spell_hun_flanking_strike();
     new spell_hun_flanking_strike_proc();
     new spell_hun_flanking_strike_proc_up();
@@ -4214,6 +4236,7 @@ void AddSC_hunter_spell_scripts()
     RegisterSpellScript(spell_aimed_shot);
     RegisterSpellScript(spell_cobra_shot);
     RegisterAuraScript(spell_thrill_of_the_hunt_proc);
+    RegisterSpellScript(spell_hun_barbed_shot);
 
     // Spell Pet scripts
     new spell_hun_pet_last_stand();
