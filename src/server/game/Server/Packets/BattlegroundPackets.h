@@ -585,6 +585,14 @@ namespace WorldPackets
             uint16 MaxPoints = 0;
         };
 
+        class BattlemasterJoinRatedBG final : public ClientPacket
+        {
+        public:
+            BattlemasterJoinRatedBG(WorldPacket&& packet) : ClientPacket(CMSG_JOIN_RATED_BATTLEGROUND, std::move(packet)) { }
+
+            void Read() override { }
+        };
+
     }
 }
 

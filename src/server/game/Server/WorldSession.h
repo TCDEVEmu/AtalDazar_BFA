@@ -177,6 +177,7 @@ namespace WorldPackets
         class RequestRatedBattlefieldInfo;
         class RequestConquestFormulaConstants;
         class RequestPvpBrawlInfo;
+        class BattlemasterJoinRatedBG;
     }
 
     namespace Battlenet
@@ -1664,6 +1665,7 @@ class TC_GAME_API WorldSession
         void HandleRequestBattlefieldStatusOpcode(WorldPackets::Battleground::RequestBattlefieldStatus& requestBattlefieldStatus);
         void HandleRequestConquestFormulaConstants(WorldPackets::Battleground::RequestConquestFormulaConstants& requestConquestFormulaConstants);
         void HandleRequestPvpBrawlInfo(WorldPackets::Battleground::RequestPvpBrawlInfo& pvpBrawlInfo);
+        void HandleJoinRatedBattleground(WorldPackets::Battleground::BattlemasterJoinRatedBG& packet);
 
         // Battlefield
         void SendBfInvitePlayerToWar(uint64 queueId, uint32 zoneId, uint32 acceptTime);
