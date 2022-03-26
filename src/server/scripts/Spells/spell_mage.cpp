@@ -2189,8 +2189,14 @@ public:
         {
             if (Player* player = GetCaster()->ToPlayer())
             {
-                if (player->GetGroup())
+                if (player->GetGroup()) {
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_GROUP, true);
+                    Player* player = GetCaster()->ToPlayer();
+                    uint32 spawntm = 180;
+                    // 167145 = https://fr.wowhead.com/spell=167145/invocation-dune-table-de-rafra%C3%AEchissements
+                    uint32 objectId = atoul("167145");
+                    GameObject* tempGob = player->SummonGameObject(objectId, *player, QuaternionData::fromEulerAnglesZYX(player->GetOrientation(), 0.0f, 0.0f), spawntm);
+                }
                 else
                     player->CastSpell(player, SPELL_MAGE_CONJURE_REFRESHMENT_SOLO, true);
             }
