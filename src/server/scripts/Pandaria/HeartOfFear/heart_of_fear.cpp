@@ -533,7 +533,7 @@
 //                    switch (id)
 //                    {/*
 //                        case EVENT_DISMANTLED_ARMOR:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_DISMANTLED_ARMOR, true);
 //                            events.ScheduleEvent(EVENT_DISMANTLED_ARMOR, 40000);
 //                            break;
@@ -542,12 +542,12 @@
 //                            events.ScheduleEvent(EVENT_MASS_SPELL_REFLEXION, 40000);
 //                            break;
 //                        case EVENT_SHIELD_SLAM:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_SHIELD_SLAM, true);
 //                            events.ScheduleEvent(EVENT_SHIELD_SLAM, 40000);
 //                            break;
 //                        case EVENT_STUNNING_STRIKE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_STUNNING_STRIKE, true);
 //                            events.ScheduleEvent(EVENT_STUNNING_STRIKE, 40000);
 //                            break;
@@ -608,12 +608,12 @@
 //                    switch (id)
 //                    {/*
 //                        case EVENT_BLURRING_SLASH:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_BLURRING_SLASH, true);
 //                            events.ScheduleEvent(EVENT_BLURRING_SLASH, 22000);
 //                            break;
 //                        case EVENT_RIPOSTE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_RIPOSTE, true);
 //                            events.ScheduleEvent(EVENT_RIPOSTE, 22000);
 //                            break;
@@ -1812,7 +1812,7 @@
 //                {
 //                    if (eventId == EVENT_BURST)
 //                    {
-//                        if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                        if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                            me->CastSpell(target, SPELL_BURST, true);
 //
 //                        events.ScheduleEvent(EVENT_BURST, 22000);

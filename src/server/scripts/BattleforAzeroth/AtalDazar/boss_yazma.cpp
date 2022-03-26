@@ -212,10 +212,11 @@ private:
 //125828
 struct npc_ataldazar_soulspawn : public ScriptedAI
 {
-    npc_ataldazar_soulspawn(Creature* pCreature) : ScriptedAI(pCreature) {
-        if (Creature* yazma = me->FindNearestCreature(NPC_YAZMA, 100))
-            me->GetMotionMaster()->MoveFollow(yazma, 0, 0);
-        me->SetDisplayId(me->SelectNearestPlayer()->GetDisplayId());
+    npc_ataldazar_soulspawn(Creature* pCreature) : ScriptedAI(pCreature)
+    {
+        // if (Creature* yazma = me->FindNearestCreature(NPC_YAZMA, 100)) this causing crash, fix leater the mechanic
+        //     me->GetMotionMaster()->MoveFollow(yazma, 0, 0);
+        // me->SetDisplayId(me->SelectNearestPlayer()->GetDisplayId());
     }
 
     void Reset() override

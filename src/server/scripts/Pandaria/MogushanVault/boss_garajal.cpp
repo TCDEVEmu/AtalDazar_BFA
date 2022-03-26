@@ -490,7 +490,7 @@
 //                            me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
 //                            me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, false);
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                            {
 //                                me->AddAura(SPELL_BANISHMENT,       target);
 //                                me->AddAura(SPELL_SOUL_CUT_SUICIDE, target);

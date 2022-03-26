@@ -28,6 +28,7 @@
 #include "PhasingHandler.h"
 #include "Player.h"
 #include "Log.h"
+#include "ObjectMgr.h"
 
 enum CaveOfMeditationSpells
 {
@@ -2527,6 +2528,63 @@ public:
     }
 };
 
+// Pandaren's Start Quest
+class pandaren_start_quest : public PlayerScript
+{
+public:
+    pandaren_start_quest() : PlayerScript("pandaren_start_quest") { }
+
+    void OnLogin(Player* player, bool /*firstLogin*/)
+    {
+        if (player->getRace() == RACE_PANDAREN_NEUTRAL)
+        {
+            if (player->getClass() == CLASS_WARRIOR && player->GetQuestStatus(30045) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30045))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30045);
+            }
+            if (player->getClass() == CLASS_SHAMAN && player->GetQuestStatus(30044) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30044))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30044);
+            }
+            if (player->getClass() == CLASS_ROGUE && player->GetQuestStatus(30043) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30043))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30043);
+            }
+            if (player->getClass() == CLASS_PRIEST && player->GetQuestStatus(30042) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30042))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30042);
+            }            
+            if (player->getClass() == CLASS_HUNTER && player->GetQuestStatus(30041) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30041))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30041);
+            }
+            if (player->getClass() == CLASS_MAGE && player->GetQuestStatus(30040) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30040))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30040);
+            }
+            if (player->getClass() == CLASS_MONK && player->GetQuestStatus(30039) == QUEST_STATE_NONE)
+            {
+                if (const Quest * quest = sObjectMgr->GetQuestTemplate(30039))
+                    player->AddQuest(quest, nullptr);
+                    player->ForceCompleteQuest(30039);
+            }
+        }
+
+    }
+};
+
 void AddSC_the_wandering_isle()
 {
     new at_cave_of_meditation();
@@ -2572,4 +2630,5 @@ void AddSC_the_wandering_isle()
     new spell_pandaren_faction_choice();
     new spell_faction_choice_trigger();
     new spell_balloon_exit_timer();
+    new pandaren_start_quest();
 }

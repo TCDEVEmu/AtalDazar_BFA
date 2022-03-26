@@ -642,14 +642,14 @@
 //                                if (Unit* target = me->GetVictim())
 //                                    me->CastSpell(target, dotSpellId, false);
 //                            }
-//                            else if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            else if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, dotSpellId, false);
 //                            events.ScheduleEvent(EVENT_DOT_ATTACK, 12500);
 //                            break;
 //                        }
 //                        case EVENT_RE_ATTACK:
 //                        {
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->GetMotionMaster()->MoveChase(target);
 //
 //                            me->SetReactState(REACT_AGGRESSIVE);

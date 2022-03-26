@@ -6250,7 +6250,7 @@ CREATE TABLE `updates_include` (
 -- ----------------------------
 -- Records of updates_include
 -- ----------------------------
-INSERT INTO `updates_include` VALUES ('$/sql/zandalar/characters', 'RELEASED');
+INSERT INTO `updates_include` VALUES ('$/sql/Ataldazar/characters', 'RELEASED');
 
 -- ----------------------------
 -- Table structure for warden_action

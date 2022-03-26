@@ -1029,22 +1029,22 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                             pCurrChar->GetSceneMgr().PlayScene(1903);
                             break;
                         case RACE_DARK_IRON_DWARF:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2086, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2086);
                             break;
                         case RACE_MAGHAR_ORC:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2085, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2085);
                             break;
                         case RACE_KUL_TIRAN:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2494, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2494);
                             break;
                         case RACE_ZANDALARI_TROLL:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2087, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2087);
                             break;
                         case RACE_VULPERA:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2790, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2790);
                             break;
                         case RACE_MECHAGNOME:
-                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2763, 2);
+                            pCurrChar->GetSceneMgr().PlaySceneByPackageId(2763);
                             break;
                         default:
                             break;
@@ -2717,4 +2717,9 @@ void WorldSession::SendUndeleteCharacterResponse(CharacterUndeleteResult result,
     response.Result = result;
 
     SendPacket(response.Write());
+}
+
+void WorldSession::HandleSetCurrencyFlags(WorldPackets::Character::SetCurrencyFlags& packet)
+{
+    GetPlayer()->ModifyCurrencyFlag(packet.CurrencyID, packet.Flags);
 }

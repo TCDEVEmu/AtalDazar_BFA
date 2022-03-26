@@ -59,17 +59,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_GOING_BANANAS:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_GOING_BANANAS, false);
 //                            events.ScheduleEvent(EVENT_GOING_BANANAS,      10000);
 //                            break;
 //                        case EVENT_BANANARANG:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_BANANARANG, false);
 //                            events.ScheduleEvent(EVENT_BANANARANG, 20000);
 //                            break;
 //                        case EVENT_TOSS_FILTH:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_TOSS_FILTH, false);
 //                            events.ScheduleEvent(EVENT_TOSS_FILTH, 15000);
 //                            break;
@@ -144,17 +144,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_RAIN_DANCE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_RAIN_DANCE, false);
 //                            events.ScheduleEvent(EVENT_RAIN_DANCE,       5000);
 //                            break;
 //                        case EVENT_TORRENT:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_TORRENT, false);
 //                            events.ScheduleEvent(EVENT_TORRENT, 15000);
 //                            break;
 //                        case EVENT_WATER_BOLT:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_WATER_BOLT, false);
 //                            events.ScheduleEvent(EVENT_WATER_BOLT, 25000);
 //                            break;
@@ -229,17 +229,17 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_BELLOWING_RAGE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_BELLOWING_RAGE, false);
 //                            events.ScheduleEvent(EVENT_BELLOWING_RAGE,       25000);
 //                            break;
 //                        case EVENT_RUSHING_RAGE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_RUSHING_RAGE, false);
 //                            events.ScheduleEvent(EVENT_RUSHING_RAGE, 5000);
 //                            break;
 //                        case EVENT_YAUNGOL_STOMP:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_YAUNGOL_STOMP, false);
 //                            events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 15000);
 //                            break;
@@ -311,12 +311,12 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_PIERCE_ARMOR:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_PIERCE_ARMOR, false);
 //                            events.ScheduleEvent(EVENT_PIERCE_ARMOR,       25000);
 //                            break;
 //                        case EVENT_SHOCK_AND_AWE:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_SHOCK_AND_AWE, false);
 //                            events.ScheduleEvent(EVENT_SHOCK_AND_AWE, 40000);
 //                            break;

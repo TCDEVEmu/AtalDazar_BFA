@@ -425,7 +425,7 @@
 //
 //                                    instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_MADDENING_SHOUT);
 //
-//                                    if (Unit* killer = spirit->AI()->SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                                    if (Unit* killer = spirit->AI()->SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                        killer->Kill(spirit);
 //                                }
 //                            }
@@ -1039,7 +1039,7 @@
 //                        // Qiang
 //                        case EVENT_MASSIVE_ATTACK:
 //                        {
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                                me->CastSpell(target, SPELL_MASSIVE_ATTACKS, false);
 //
 //                            events.ScheduleEvent(EVENT_MASSIVE_ATTACK, 5 * IN_MILLISECONDS);
@@ -1733,7 +1733,7 @@
 //                        caster->SetSpeed(MOVE_RUN, runSpeed, true);
 //                        caster->SetSpeed(MOVE_WALK, walkSpeed, true);
 //
-//                        if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_TOPAGGRO))
+//                        if (Unit* target = caster->GetAI()->SelectTarget(SELECT_TARGET_MAXTHREAT))
 //                        {
 //                            caster->SetTarget(target->GetGUID());
 //                            caster->GetAI()->AttackStart(target);

@@ -19,38 +19,48 @@
 #include "ScriptedCreature.h"
 #include "Conversation.h"
 #include "ObjectMgr.h"
+#include "PhasingHandler.h"
 
 enum OrgrimmarQuests
 {
     QUEST_MISSION_ORDERS                    = 51443,
-    QUEST_STORMWIND_EXTRACTION              = 50769,
-
-    OBJECTIVE_STORMWIND_EXTRACTION_POTION   = 333785,
-};
-
-enum OrgrimmarGameObjects
-{
-    GOB_BLIGHTCALLER_EASY_DEATH = 289645
+    QUEST_STORMWIND_EXTRACTION              = 50769
 };
 
 enum OrgrimmarQuestObjectives
 {
     OBJECTIVE_MISSION_ORDERS_TAlk_SYLVANAS  = 335883,
+    OBJECTIVE_STORMWIND_EXTRACTION_POTION   = 333785
 };
 
 enum OrgrimmarSpells
 {
-    SPELL_SCENE_SECRET_WEAPON   = 281294,
-    SPELL_TALK_TO_SYLVANAS_KC   = 265586,
-
-    // invisibility_detection_27 100616
-    SPELL_START_SE_SCENARIO     = 265595,
+    SPELL_SCENE_SECRET_WEAPON   = 281294
 };
 
 enum OrgrimmarConversations
 {
-    CONVERSATION_MISSION_STATEMENT_ALL_HERE     = 7170,
-    CONVERSATION_STORMWIND_EXTRACTION_LETS_MOVE = 8399,
+    CONVERSATION_MISSION_STATEMENT_ALL_HERE     = 7170
+};
+
+// Start Quest BfA
+class playerscript_orgrimmar_start_bfa : public PlayerScript
+{
+public:
+    playerscript_orgrimmar_start_bfa() : PlayerScript("playerscript_orgrimmar_start_bfa") { }
+
+    void OnUpdate(Player* player, uint32 diff) override
+    {
+        if (player->GetAreaId() == 5170 && player->GetQuestStatus(53372) == QUEST_STATUS_NONE && player->GetTeamId() == TEAM_HORDE && player->getLevel() >= 110)
+        {
+            Conversation::CreateConversation(8423, player, player->GetPosition(), { player->GetGUID() });
+
+            if (const Quest * quest = sObjectMgr->GetQuestTemplate(53372))
+                player->AddQuest(quest, nullptr);
+        }
+        else
+            return;
+    }
 };
 
  // 135201 - Talk to Sylvanas
@@ -68,18 +78,6 @@ struct npc_orgri_mission_orders_speak_sylvanas : public ScriptedAI
     }
 };
 
-// 2136
-class scene_orgri_secret_weapon : public SceneScript
-{
-public:
-    scene_orgri_secret_weapon() : SceneScript("scene_orgri_secret_weapon") { }
-
-    void OnSceneEnd(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-    {
-        player->CastSpell(player, SPELL_TALK_TO_SYLVANAS_KC, true);
-    }
-};
-
 // 134202 - Meet your team
 struct  npc_orgri_mission_orders_meet_team : public ScriptedAI
 {
@@ -87,26 +85,26 @@ struct  npc_orgri_mission_orders_meet_team : public ScriptedAI
 
     void MoveInLineOfSight(Unit* unit) override
     {
-        if (Player* player = unit->ToPlayer())
+        if (Player * player = unit->ToPlayer())
             if (player->GetQuestStatus(QUEST_MISSION_ORDERS) == QUEST_STATUS_INCOMPLETE)
                 if (player->GetQuestObjectiveCounter(OBJECTIVE_MISSION_ORDERS_TAlk_SYLVANAS) == 1)
-                    if (player->GetDistance(me) < 5.0f)
-                    {
-                        player->PlayConversation(CONVERSATION_MISSION_STATEMENT_ALL_HERE);
-                        KillCreditMe(player);
-                    }
-    }
-};
-
-// 135205 - Nathanos (At team meeting)
-struct  npc_nathanos_team_meeting : public ScriptedAI
-{
-    npc_nathanos_team_meeting(Creature* creature) : ScriptedAI(creature) { }
-
-    void QuestAccept(Player* player, Quest const* /*quest*/) override
-    {
-        Talk(0);
-        player->SummonGameObject(GOB_BLIGHTCALLER_EASY_DEATH, 1577.965f, -4455.622f, 16.55939f, 0.f, QuaternionData(0.f, 0.f, 0.f, 1.f), 0, true);
+                    if (player->GetQuestObjectiveCounter(10000001) == 0)
+                        if (player->GetDistance(me) < 1.0f)
+                        {
+                            Creature* creatureTarget1 = player->FindNearestCreature(139028, 2.0f);
+                            Creature* creatureTarget2 = player->FindNearestCreature(135213, 2.0f);
+                            if (creatureTarget1 && creatureTarget2)
+                            {
+                                creatureTarget1->HandleEmoteCommand(66);
+                                creatureTarget2->HandleEmoteCommand(66);
+                                KillCreditMe(player);
+                                player->SummonCreature(135205, Position(1569.87f, -4412.15f, 15.7906f, 4.9360237f), TEMPSUMMON_MANUAL_DESPAWN);
+                                player->PlayConversation(CONVERSATION_MISSION_STATEMENT_ALL_HERE);
+                                player->KilledMonsterCredit(10000001);
+                            }
+                            else
+                                return;
+                        }
     }
 };
 
@@ -115,92 +113,20 @@ struct quest_stormwind_extraction : public QuestScript
 {
     quest_stormwind_extraction() : QuestScript("quest_stormwind_extraction") { }
 
-    // Called when a quest objective data change
     void OnQuestObjectiveChange(Player* player, Quest const* /*quest*/, QuestObjective const& objective, int32 /*oldAmount*/, int32 /*newAmount*/) override
     {
         if (objective.ID == OBJECTIVE_STORMWIND_EXTRACTION_POTION)
-            player->PlayConversation(CONVERSATION_STORMWIND_EXTRACTION_LETS_MOVE);
-    }
-};
-
-// 135211 - Stormwind Extraction skyhorn eagle
-struct npc_skyhorn_eagle : public ScriptedAI
-{
-    npc_skyhorn_eagle(Creature* creature) : ScriptedAI(creature) { }
-
-    void OnSpellClick(Unit* clicker, bool& result) override
-    {
-        Player* player = clicker->ToPlayer();
-        if (!player || player->GetQuestStatus(QUEST_STORMWIND_EXTRACTION) != QUEST_STATUS_INCOMPLETE)
         {
-            result = false;
-            return;
-        }
-		
-		//2015	8.0 Zuldazar - Quest ("Welcome to Zuldazar", Intro Scene ) - ZTO
-        KillCreditMe(player);
-        player->CastSpell(player, 263950);
-        player->AddMovieDelayedAction(857, [player]
-        {
-            player->CastSpell(player, 263948, true);
-        });               
-    }
-};
-
-//zone orgrimmar 1637
-class zone_orgrimmar_start_bfa : public ZoneScript
-{
-public:
-    zone_orgrimmar_start_bfa() : ZoneScript("zone_orgrimmar_start_bfa") { }
-
-    void OnPlayerEnter(Player* player) override
-    {
-        if (player->GetQuestStatus(53372) == QUEST_STATUS_NONE)
-        {
-            Conversation::CreateConversation(8423, player, player->GetPosition(), { player->GetGUID() });
-
-            if (const Quest * quest = sObjectMgr->GetQuestTemplate(53372))
-                player->AddQuest(quest, nullptr);
-        }
-    }
-};
-
-//139093
-class npc_orgrimmar_isabella : public ScriptedAI
-{
-public:
-    npc_orgrimmar_isabella(Creature* creature) : ScriptedAI(creature) { }
-
-    enum Credits
-    {
-        Speak_with_Isabella      = 139178,
-        The_Battle_for_Lordaeron = 139094,
-    };
-
-    // prueba 
-    bool GossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/) override
-    {
-        player->KilledMonsterCredit(Credits::Speak_with_Isabella);
-        player->KilledMonsterCredit(Credits::The_Battle_for_Lordaeron);
-        return false;
-    }
-
-};
-
-//140176
-struct npc_nathanos_orgrimmar : public ScriptedAI
-{
-    npc_nathanos_orgrimmar(Creature* creature) : ScriptedAI(creature) { }
-
-    void QuestAccept(Player * player, Quest const* quest) override
-    {
-        if (quest->GetQuestId() == 51443)
-        {
-            player->PlayConversation(9570);
-        }
-        if (quest->GetQuestId() == 53028)
-        {
-            Conversation::CreateConversation(9316, player, player->GetPosition(), { player->GetGUID() });
+            if (player->GetQuestObjectiveCounter(OBJECTIVE_STORMWIND_EXTRACTION_POTION) == 0 && player->HasQuest(50769))
+            {
+                PhasingHandler::RemovePhase(player, 170, true);
+                PhasingHandler::RemovePhase(player, 171, true);
+                player->SummonCreature(135206, Position(1575.93f, -4457.36f, 15.821f, 1.15424f), TEMPSUMMON_MANUAL_DESPAWN);
+                player->SummonCreature(135207, Position(1580.41f, -4456.33f, 15.8224f, 2.4398f), TEMPSUMMON_MANUAL_DESPAWN);
+                player->SummonCreature(135205, Position(1577.17f, -4453.82f, 15.6648f, 5.01313f), TEMPSUMMON_MANUAL_DESPAWN);
+                //player->SummonCreature(139028, Position(1569.4132080078125f, -4435.03125f, 16.13552284240722656f, 1.800256252288818359f), TEMPSUMMON_MANUAL_DESPAWN);
+                //player->SummonCreature(135213, Position(1573.8072509765625f, -4433.2587890625f, 16.13552284240722656f, 2.0272674560546875f), TEMPSUMMON_MANUAL_DESPAWN);
+            }
         }
     }
 };
@@ -220,14 +146,9 @@ struct khadgars_upgraded_servant : public ScriptedAI
 
 void AddSC_orgrimmar()
 {
+    RegisterPlayerScript(playerscript_orgrimmar_start_bfa);
     RegisterCreatureAI(npc_orgri_mission_orders_speak_sylvanas);
-    RegisterSceneScript(scene_orgri_secret_weapon);
     RegisterCreatureAI(npc_orgri_mission_orders_meet_team);
-    RegisterCreatureAI(npc_nathanos_team_meeting);  
     RegisterQuestScript(quest_stormwind_extraction);
-    RegisterCreatureAI(npc_skyhorn_eagle);
-    RegisterCreatureAI(npc_orgrimmar_isabella);
-    new zone_orgrimmar_start_bfa();
-    RegisterCreatureAI(npc_nathanos_orgrimmar);
     RegisterCreatureAI(khadgars_upgraded_servant);
 }

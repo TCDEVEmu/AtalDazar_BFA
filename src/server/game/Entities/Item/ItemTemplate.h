@@ -312,11 +312,15 @@ enum CurrencyFlags
     CURRENCY_FLAG_ARCHAEOLOGY_FRAGMENT  = 0x20,
     // ...
     CURRENCY_FLAG_COUNT_SEASON_TOTAL    = 0x80,
+    
+    CURRENCY_FLAG_UNK               = 0x02000,
+    CURRENCY_FLAG_SEND_CAP          = 0x40000,
 };
 
 enum CurrencyCategory
 {
     // ...
+    CURRENCY_CATEGORY_ARCHAEOLOGY   = 82,
     CURRENCY_CATEGORY_META_CONQUEST = 89,
     // ...
 };

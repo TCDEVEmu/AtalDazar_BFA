@@ -601,7 +601,7 @@ enum PlayerSlots
 };
 
 #define INVENTORY_SLOT_BAG_0    255
-#define INVENTORY_DEFAULT_SIZE  16
+#define INVENTORY_DEFAULT_SIZE  20
 
 enum EquipmentSlots : uint8                                 // 19 slots
 {
@@ -1296,6 +1296,7 @@ class TC_GAME_API Player : public Unit, public GridObject<Player>
         void SetCreateCurrency(uint32 id, uint32 count, bool printLog = true);
         void ResetCurrencyWeekCap();
         uint32 CalculateCurrencyWeekCap(uint32 id) const;
+        void ModifyCurrencyFlag(uint32 id, uint8 flag);
 
         /**
           * @name   ModifyCurrency
