@@ -79,6 +79,12 @@ public:
         {
             PhasingHandler::OnAreaChange(player);
 
+            std::list<Creature*> creatures = player->FindAllCreaturesInRange(50.0f);
+            for (auto itr : creatures)
+            {
+                player->CanSeeOrDetect(itr);
+            }
+            
             checkTimer = 50;
         }
         else checkTimer -= diff;
