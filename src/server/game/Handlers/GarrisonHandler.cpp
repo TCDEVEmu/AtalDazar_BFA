@@ -132,80 +132,27 @@ void WorldSession::HandleGarrisonRequestScoutingMap(WorldPackets::Garrison::Garr
 
     switch (scoutingMap.ID)
     {
-    case 40: // Zuldazar
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 41:
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 42:
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 148:
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 149:
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 150:
-        if (_player->GetTeam() == HORDE)
-        {
-            active = true;
-        }
-        break;
-    case 43: // Tiragarde Sound
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    case 44:
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    case 45:
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    case 151:
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    case 152:
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    case 153:
-        if (_player->GetTeam() == ALLIANCE)
-        {
-            active = true;
-        }
-        break;
-    default:
-        break;
+        // Horde BFA Zone missions
+        case 40: // Zuldazar /Earn the trust of King Rastakhan and the Zanchuli Council.
+        case 41: // Nazmir /Journey with Princess Talanji to the dark swamps of Nazmir to put an end to the threat of the blood trolls.
+        case 42: // Vol'dun /General Jakra'zet's secrets lie somewhere in the sands. Head into the dunes and recover proof that will help remove him from power.
+        // Horde War Camaping
+        case 148: // Tiragarde Sound /Assist Shadow Hunter Ty'jin in Tiragarde Sound.
+        case 149: // Drustvar /Assist Gallywix and Eitrigg in Drustvar.
+        case 150: // Stormsong Valley Assist Rexxar in Stormsong Valley.
+        { _player->GetTeam() == HORDE ? active = true : active = false; break; }
+
+        // Alliance BFA Zone missions
+        case 43: // Tiragarde Sound /Expose the corruption in Boralus and earn Katherine Proudmoore's trust.
+        case 44: // Drustvar /Lord and Lady Waycrest are strong allies of the Proudmoores. Investigate their sudden absence and the troubling rumors from Drustvar.
+        case 45: // Stormsong Valley /The legendary Kul Tiran fleet has gone missing. Seek answers from the reclusive ocean mystics of House Stormsong.
+        // Alliance War Camaping
+        case 151: // Zuldazar /Assist Kelsey Steelspark in Zuldazar.
+        case 152: // Nazmir /Assist Brann Bronzebeard in Nazmir.
+        case 153: // Vol'dun /Assist Alliance forces in Vol'dun.
+        { _player->GetTeam() == ALLIANCE ? active = true : active = false; break; }
+        default:
+            break;
     }
 
     if (poiEntry->QuestID)
