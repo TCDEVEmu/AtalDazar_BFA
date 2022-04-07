@@ -156,14 +156,13 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (26, 173, 8666, 0, 0, 6, 0, 67, 0, 0, 0, 0, 0, '', 'Phase 173 if player horde');
 
 
-
-
 DELETE FROM `phase_area` WHERE `AreaId`=8670;
 INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
 (8670, 169, 'Dazar_alor Default Phase'),
 (8670, 174, 'Dazar_alor QH-46930'),
 (8670, 175, 'Dazar_alor QC-46930 / notQE 46931'),
-(8670, 176, 'Dazar_alor Q-46931 Zolani');
+(8670, 176, 'Dazar_alor Q-46931 Zolani'),
+(8670, 178, 'Dazar_alor QH-46930');
 
 update `creature` set `phaseid` = 174 where `guid` in (965532,967164);
 update `creature` set `phaseid` = 175 where `guid` in (965534);
@@ -172,7 +171,7 @@ update `creature` set `phaseid` = 176 where `guid` in (1057162);
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=174 AND `SourceEntry`=8670;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
 (26, 174, 8670, 0, 0, 9, 0, 46930, 0, 0, 0, 0, 0, '', 'Phase 174 if - has quest 46930'),
-(26, 174, 8670, 0, 0, 48, 0, 290542, 0, 0, 0, 0, 0, '', 'Phase 174 if - quest qbjective 290542');
+(26, 174, 8670, 0, 0, 48, 0, 290542, 0, 0, 1, 0, 0, '', 'Phase 174 if - quest qbjective 290542');
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=175 AND `SourceEntry`=8670;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
@@ -187,4 +186,39 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (26, 176, 8670, 0, 0, 48, 0, 10000006, 0, 0, 1, 0, 0, '', 'Phase 176 if - not qobjetive 10000006');
 
 
--- 965537
+
+DELETE FROM `phase_area` WHERE `AreaId`=9598;
+INSERT INTO `phase_area` (`AreaId`, `PhaseId`, `Comment`) VALUES 
+(9598, 169, 'Dazar_alor Default Phase'),
+(9598, 177, 'Dazar_alor QH-46930'),
+(9598, 178, 'Dazar_alor QH-46930');
+
+update `creature` set `phaseid` = 177 where `guid` in (965537);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=177 AND `SourceEntry`=9598;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(26, 177, 9598, 0, 0, 9, 0, 46931, 0, 0, 0, 0, 0, '', 'Phase 177 if - has quest 46931'),
+(26, 177, 9598, 0, 0, 48, 0, 10000006, 0, 0, 0, 0, 0, '', 'Phase 177 if - qobjetive 10000006'),
+(26, 177, 9598, 0, 0, 48, 0, 10000004, 0, 0, 1, 0, 0, '', 'Phase 177 if - not qobjetive 10000004');
+
+update `creature` set `phaseid` = 178 where `guid` in (965535);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=178 AND `SourceEntry`=9598;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(26, 178, 9598, 0, 0, 9, 0, 46931, 0, 0, 0, 0, 0, '', 'Phase 178 if - has quest 46931'),
+(26, 178, 9598, 0, 0, 48, 0, 10000005, 0, 0, 0, 0, 0, '', 'Phase 178 if - qobjetive 10000005'),
+(26, 178, 9598, 0, 0, 48, 0, 291969, 0, 0, 1, 0, 0, '', 'Phase 178 if -not qobjetive 291969');
+
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=26 AND `SourceGroup`=178 AND `SourceEntry`=8670;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
+(26, 178, 8670, 0, 0, 9, 0, 46931, 0, 0, 0, 0, 0, '', 'Phase 178 if - has quest 46931'),
+(26, 178, 8670, 0, 0, 48, 0, 10000005, 0, 0, 0, 0, 0, '', 'Phase 178 if - qobjetive 10000005'),
+(26, 178, 8670, 0, 0, 48, 0, 291969, 0, 0, 1, 0, 0, '', 'Phase 178 if -not qobjetive 291969');
+
+
+-- 8670
+
+
+
+--  

@@ -19,6 +19,7 @@ INSERT INTO `creature` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnDifficult
 (1057124, 135213, 1, 1637, 5170, '0', 170, 0, 0, 1, 1573.8072509765625, -4433.2587890625, 16.13552284240722656, 2.0272674560546875, 120, 0, 0, 114475, 0, 0, 0, 0, 0, 41359), -- 135213 (Area: 5170 - Difficulty: 0)
 (1057162, 135441, 1642, 8499, 8670, '0', 0, 0, 0, 0, -1100.6875, 817.93402099609375, 497.160064697265625, 6.062157630920410156, 120, 0, 0, 864600, 2951050, 0, 0, 0, 0, 27404); -- Zolani (Area: Dazar'alor - Difficulty: 0)
 
+DELETE FROM `spell_area` WHERE `spell`=274461;
 
 delete from `creature_addon` where `guid`in (1057121,1057122);
 INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `aiAnimKit`, `movementAnimKit`, `meleeAnimKit`, `auras`) VALUES
@@ -322,8 +323,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 DELETE FROM `smart_scripts` WHERE `entryorguid`=12154100 AND `source_type`=9;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (12154100, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 224, 50769, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'force_complete_quest'),
-(12154100, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 85, 243620, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'player cast spell'),
-(12154100, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 85, 280857, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'player cast spell');
+(12154100, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 0, '', 85, 243620, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'player cast spell');
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId`=22 AND `SourceGroup`=1 AND `SourceEntry`=121541 AND `SourceId`=0 AND `ElseGroup`=0;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
@@ -412,7 +412,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (135441, 0, 5, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - despawn'),
 (135441, 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 81, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - set npcflag 0');
 
-UPDATE `quest_template_addon` SET `ScriptName`= 'SmartQuest' WHERE `id`= 46931;
+UPDATE `quest_template_addon` SET `ScriptName`= 'quest_speaker_of_the_horde' WHERE `id`= 46931;
 
 
 DELETE FROM `creature_template` WHERE `entry`=10000006;
@@ -481,7 +481,7 @@ DELETE FROM `smart_scripts` WHERE `entryorguid`=133050 AND `source_type`=0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `event_param5`, `event_param_string`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (133050, 0, 0, 1, 54, 0, 100, 0, 0, 0, 0, 0, 0, '', 1, 0, 6000, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on justspawned - talk'),
 (133050, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 53, 0, 1330500, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - play wp'),
-(133050, 0, 2, 3, 40, 0, 100, 0, 999999, 0, 0, 0, 0, '', 33, 10000005, 0, 0, 0, 0, 0, 18, 30, 0, 0, 0, 0, 0, 0, 'on wp reached - XXXX - kc'),
+(133050, 0, 2, 3, 40, 0, 100, 0, 8, 0, 0, 0, 0, '', 33, 10000005, 0, 0, 0, 0, 0, 18, 30, 0, 0, 0, 0, 0, 0, 'on wp reached 8 - kc'),
 (133050, 0, 3, 0, 61, 0, 100, 0, 0, 0, 0, 0, 0, '', 41, 10, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 'on link - despawn'),
 (133050, 0, 4, 0, 19, 0, 100, 0, 52131, 0, 0, 0, 0, '', 85, 273387, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 'on quest accept 52131 - self castspell');
 
@@ -494,16 +494,15 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 
 
 
+DELETE FROM `waypoints` WHERE `entry`=1330500;
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 1, -1095.6212, 816.53827, 435.73135, '1 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 2, -1091.6104, 814.9749, 435.33496, '2 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 3, -1085.8342, 811.40594, 435.33496, '3 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 4, -1084.4579, 804.5621, 435.33496, '4 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 5, -1074.4935, 804.236, 435.33496, '5 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 6, -1062.1637, 804.4105, 435.63098, '6 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 7, -1062.16, 804.979, 435.63907, '7 wp');
+INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `position_z`, `point_comment`) VALUES (1330500, 8, -1057.6372, 807.5278, 435.73486, '8 wp');
 
-
-
-
-/*
-965535
-
-121000
-
-
-1894 
-1975 
-*/
+DELETE FROM `zone_scripts` WHERE `zoneId`=8499;
+INSERT INTO `zone_scripts` (`zoneId`, `scriptname`) VALUES (8499, 'zone_zuldazar_scene_disk_controller');
