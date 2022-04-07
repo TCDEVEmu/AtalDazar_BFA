@@ -4127,7 +4127,7 @@ public:
 
         if (player->HasAura(SPELL_HUNTER_NATURAL_MENDING)) {
 
-            if (player->GetSpecializationId() == (TALENT_SPEC_HUNTER_MARKSMAN || TALENT_SPEC_HUNTER_SURVIVAL)) {
+            if (player->GetSpecializationId() == TALENT_SPEC_HUNTER_MARKSMAN || TALENT_SPEC_HUNTER_SURVIVAL) {
                 if (focus >= 20) {
                     do {
                         player->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_EXHILARATION, -1000);
