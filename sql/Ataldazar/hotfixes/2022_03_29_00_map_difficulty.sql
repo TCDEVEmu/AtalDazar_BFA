@@ -1,0 +1,25 @@
+/*Table `creature` has creature has unsupported difficulty for map.*/
+DELETE FROM `map_difficulty` WHERE `ID` IN (33,999,1000,1005,1030,1031,1048,1050,1051,1095,1099,1102,1103,1104,1112,1126,1130,1131,1135,1144,1148,4031);
+INSERT INTO `map_difficulty`(`ID`, `Message`, `DifficultyID`, `LockID`, `ResetInterval`, `MaxPlayers`, `ItemContext`, `ItemContextPickerID`, `Flags`, `ContentTuningID`, `MapID`, `VerifiedBuild`) VALUES 
+(999, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 999, 34963),
+(1000, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1000, 34963),
+(1005, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1005, 34963),
+(1030, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1030, 34963),
+(1031, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1031, 34963),
+(1048, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1048, 34963),
+(1050, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1050, 34963),
+(1051, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1051, 34963),
+(1095, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1095, 34963),
+(1099, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1099, 34963),
+(1102, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1102, 34963),
+(1103, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1103, 34963),
+(1104, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1104, 34963),
+(1112, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1112, 34963),
+(1126, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1126, 34963),
+(1130, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1130, 34963),
+(1131, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1131, 34963),
+(1135, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1135, 34963),
+(1144, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1144, 34963),
+(1148, "You must be level 90 to enter.", 12, 0, 0, 5, 0, 0, 0, 0, 1148, 34963),
+(4031, '', 12, 0, 0, 5, 0, 0, 0, 0, 1906, 34963),
+(33, 'You must be level 10 to enter.', 1, 0, 0, 5, 0, 0, 0, 0, 389, 34963);
