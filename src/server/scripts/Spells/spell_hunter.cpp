@@ -177,6 +177,7 @@ enum HunterSpells
     SPELL_HUNTER_THRILL_OF_THE_HUNT_AURA            = 257946,
     SPELL_HUNTER_BARBED_SHOT                        = 217200,
     SPELL_HUNTER_FRENZY                             = 272790,
+    SPELL_HUNTER_CONCUSSIVE_SHOT                    = 5116,
 };
 
 enum AncientHysteriaSpells
@@ -3868,8 +3869,19 @@ class spell_Steady_Shot : public SpellScript
             caster->AddAura(SPELL_HUNTER_STEADY_FOCUS_PROC, caster);
         
     }
+
+    void HandleOnHit()
+    { 
+        if (GetHitUnit()->HasAura(SPELL_HUNTER_CONCUSSIVE_SHOT))
+        {
+            int32 rem = GetHitUnit()->GetOwnedAura(SPELL_HUNTER_CONCUSSIVE_SHOT)->GetDuration();
+            GetHitUnit()->GetOwnedAura(SPELL_HUNTER_CONCUSSIVE_SHOT)->SetDuration(rem + ((sSpellMgr->GetSpellInfo(SPELL_HUNTER_STEADY_SHOT)->GetEffect(EFFECT_2)->BasePoints / 10) * IN_MILLISECONDS));
+        }
+    }
+    
     void Register() override
     {
+        OnHit += SpellHitFn(spell_Steady_Shot::HandleOnHit);
         OnEffectHitTarget += SpellEffectFn(spell_Steady_Shot::HandleDummy, EFFECT_1, SPELL_EFFECT_DUMMY);
     }
 };
@@ -4110,22 +4122,33 @@ class PlayerScript_natural_mending : public PlayerScript {
 public:
     PlayerScript_natural_mending() : PlayerScript("PlayerScript_natural_mending") { }
 
-    int32 focus = 0;
-
     void OnSpellCast(Player* player, Spell* spell, bool /*skipCheck*/) {
-
-        if (focus >= 20) {
-            do {
-                player->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_EXHILARATION, -1000);
-                focus -= 20;
-            } while (focus >= 20);
-        }
+        int32 focus = 0;
 
         if (player->HasAura(SPELL_HUNTER_NATURAL_MENDING)) {
-            if (spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER) {
-                if (SpellPowerCost const* powerCost = spell->GetPowerCost(POWER_FOCUS))
-                    focus += powerCost->Amount;
+
+            if (player->GetSpecializationId() == (TALENT_SPEC_HUNTER_MARKSMAN || TALENT_SPEC_HUNTER_SURVIVAL)) {
+                if (focus >= 20) {
+                    do {
+                        player->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_EXHILARATION, -1000);
+                        focus -= 20;
+                    } while (focus >= 20);
+                }
             }
+            else if (player->GetSpecializationId() == TALENT_SPEC_HUNTER_BEASTMASTER) {
+                if (focus >= 30) {
+                    do {
+                        player->GetSpellHistory()->ModifyCooldown(SPELL_HUNTER_EXHILARATION, -1000);
+                        focus -= 30;
+                    } while (focus >= 30);
+                }
+            }
+
+        }
+
+        if (spell->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_HUNTER) {
+            if (SpellPowerCost const* powerCost = spell->GetPowerCost(POWER_FOCUS))
+                focus += powerCost->Amount;
         }
     }
 };
