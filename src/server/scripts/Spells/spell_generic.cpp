@@ -7540,6 +7540,39 @@ class spell_make_camp : public SpellScript
     }
 };
 
+// Rocket Barrage (Goblin Racial)
+class spell_gen_rocket_barrage : public SpellScript
+{
+    PrepareSpellScript(spell_gen_rocket_barrage);
+
+    void HandleDamage(SpellEffIndex /*effIndex*/)
+    {
+        if (Player * caster = GetCaster()->ToPlayer())
+        {
+            int32 range, melee, act = 0;
+
+            // Getting attack powers
+            melee = caster->GetTotalAttackPowerValue(BASE_ATTACK);
+            range = caster->GetTotalAttackPowerValue(RANGED_ATTACK);
+
+            // Checking what attack power to take
+            if (melee > range)
+                act = melee;
+
+            if (range > melee)
+                act = range;
+
+            // This is according to whether it's range or melee
+            SetHitDamage(1 + (0.25f * act) + (0.429f * caster->SpellBaseDamageBonusDone(SPELL_SCHOOL_MASK_FIRE)) + (caster->getLevel() * 2));
+        }
+    }
+
+    void Register()
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_rocket_barrage::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
 void AddSC_generic_spell_scripts()
 {
     new spell_gen_absorb0_hitlimit1();
@@ -7724,4 +7757,5 @@ void AddSC_generic_spell_scripts()
     RegisterSpellScript(spell_maghar_orc_racial_ancestors_call);
     RegisterSpellScript(spell_make_camp);
     RegisterSpellScript(spell_back_camp);
+    RegisterSpellScript(spell_gen_rocket_barrage);
 }
