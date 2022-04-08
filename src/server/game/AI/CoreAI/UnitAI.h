@@ -110,6 +110,61 @@ private:
     uint32 _spellId;
 };
 
+struct MeeleSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+    public:
+        MeeleSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+    
+        bool operator ()(WorldObject* target) const;
+    
+    private:
+        uint32 _spellId;
+};
+
+struct DpsSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+    public:
+        DpsSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+    
+        bool operator ()(WorldObject* target) const;
+    
+    private:
+        uint32 _spellId;
+};
+
+struct TankSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+    public:
+        TankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+    
+        bool operator ()(WorldObject* target) const;
+    
+    private:
+        uint32 _spellId;
+};
+
+struct HealerSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+    public:
+        HealerSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+    
+        bool operator ()(WorldObject* target) const;
+    
+    private:
+        uint32 _spellId;
+};
+
+struct NonTankSpecTargetSelector :public std::unary_function<uint32, bool>
+{
+    public:
+        NonTankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
+    
+        bool operator ()(WorldObject* target) const;
+    
+    private:
+        uint32 _spellId;
+};
+
 // Simple selector for units using mana
 struct TC_GAME_API PowerUsersSelector
 {

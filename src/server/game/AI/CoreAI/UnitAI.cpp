@@ -499,6 +499,111 @@ bool CasterSpecTargetSelector::operator()(WorldObject* target) const
     return false;
 }
 
+// Meele Group (caster in meele group shouldn`ve execute)
+bool MeeleSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    switch (target->ToPlayer()->getClass())
+    {
+        case CLASS_ROGUE:
+            return _spellId ? !target->ToPlayer()->HasAura(_spellId) : true;
+        case CLASS_WARRIOR:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() != TALENT_SPEC_WARRIOR_PROTECTION && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() != TALENT_SPEC_WARRIOR_PROTECTION;
+        case CLASS_PALADIN:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_PALADIN_RETRIBUTION && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_PALADIN_RETRIBUTION;
+            break;
+        case CLASS_MONK:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_MONK_BATTLEDANCER && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_MONK_BATTLEDANCER;
+        case CLASS_DRUID:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_CAT && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_DRUID_CAT;
+        case CLASS_SHAMAN:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_ENHANCEMENT && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() == TALENT_SPEC_SHAMAN_ENHANCEMENT;
+        case CLASS_DEATH_KNIGHT:
+            return _spellId ? target->ToPlayer()->GetPrimarySpecialization() != TALENT_SPEC_DEATHKNIGHT_BLOOD && !target->ToPlayer()->HasAura(_spellId)
+                : target->ToPlayer()->GetPrimarySpecialization() != TALENT_SPEC_DEATHKNIGHT_BLOOD;
+    }
+
+    return false;
+}
+
+bool DpsSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    return _spellId ? target->ToPlayer()->GetRoleForGroup() == ROLE_DAMAGE && !target->ToPlayer()->HasAura(_spellId)
+        : target->ToPlayer()->GetRoleForGroup() == ROLE_DAMAGE;
+}
+
+bool TankSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    return _spellId ? target->ToPlayer()->GetRoleForGroup() == ROLE_TANK && !target->ToPlayer()->HasAura(_spellId)
+        : target->ToPlayer()->GetRoleForGroup() == ROLE_TANK;
+}
+
+bool HealerSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    return _spellId ? target->ToPlayer()->GetRoleForGroup() == ROLE_HEALER && !target->ToPlayer()->HasAura(_spellId)
+        : target->ToPlayer()->GetRoleForGroup() == ROLE_HEALER;
+}
+
+bool NonTankSpecTargetSelector::operator()(WorldObject* target) const
+{
+    if (!target)
+        return false;
+
+    if (!target->ToPlayer())
+        return false;
+
+    // Prevent GM selection
+    if (target->ToPlayer()->IsGameMaster())
+        return false;
+
+    return _spellId ? target->ToPlayer()->GetRoleForGroup() != ROLE_TANK && !target->ToPlayer()->HasAura(_spellId)
+        : target->ToPlayer()->GetRoleForGroup() != ROLE_TANK;
+}
+
 bool BehindTargetSelector::operator()(Unit const* target) const
 {
     if (!me)
