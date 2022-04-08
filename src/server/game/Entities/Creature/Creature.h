@@ -171,7 +171,9 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
         void SetMeleeDamageSchool(SpellSchools school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
         // For spells with Cone targets
+        void PrepareChanneledCast(float facing, uint32 spellId = 0, bool triggered = false);
         void RemoveChanneledCast(ObjectGuid target);
+        void FixateOnTarget(ObjectGuid targetGUID, uint32 timer = 0);
 
         bool HasSpell(uint32 spellID) const override;
 

@@ -1243,22 +1243,6 @@ void Creature::InitializeReactState()
         SetReactState(REACT_AGGRESSIVE);
 }
 
-void Creature::RemoveChanneledCast(ObjectGuid target)
-{
-    SetReactState(REACT_AGGRESSIVE);
-
-    if (Unit * itr = ObjectAccessor::GetUnit(*this, target))
-    {
-        GetMotionMaster()->MoveChase(itr);
-        Attack(itr, true);
-    }
-    else if (Player * itr = FindNearestPlayer(100.0f))
-    {
-        GetMotionMaster()->MoveChase(itr);
-        Attack(itr, true);
-    }
-}
-
 bool Creature::isCanInteractWithBattleMaster(Player* player, bool msg) const
 {
     if (!IsBattleMaster())
@@ -2805,6 +2789,60 @@ void Creature::SetInCombatWithZone()
             if (player->IsAlive())
                 EngageWithTarget(player);
         }
+    }
+}
+
+void Creature::PrepareChanneledCast(float facing, uint32 spell_id, bool triggered)
+{
+    AttackStop();
+    SetReactState(REACT_PASSIVE);
+    SetFacingTo(facing);
+
+    if (spell_id)
+        CastSpell(this, spell_id, triggered);
+}
+
+void Creature::RemoveChanneledCast(ObjectGuid target)
+{
+    SetReactState(REACT_AGGRESSIVE);
+
+    if (Unit * itr = ObjectAccessor::GetUnit(*this, target))
+    {
+        GetMotionMaster()->MoveChase(itr);
+        Attack(itr, true);
+    }
+    else if (Player * itr = FindNearestPlayer(100.0f))
+    {
+        GetMotionMaster()->MoveChase(itr);
+        Attack(itr, true);
+    }
+}
+
+void Creature::FixateOnTarget(ObjectGuid targetGUID, uint32 timer)
+{
+    if (Unit* target = ObjectAccessor::GetUnit(*this, targetGUID))
+    {
+        GetThreatManager().clearReferences();
+        GetThreatManager().addThreat(target, std::numeric_limits<float>::max());
+
+        if (AI())
+            AI()->AttackStart(target);
+
+        TauntApply(target);
+
+        ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+        ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_THREAT, true);
+
+        // If timer not null then remove immune to taunt by value
+        if (timer)
+        {
+            GetScheduler().Schedule(Milliseconds(10), [this](TaskContext context)
+            {
+                ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
+                ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_THREAT, false);
+            });
+        }
+
     }
 }
 
