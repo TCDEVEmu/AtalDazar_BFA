@@ -1315,7 +1315,7 @@
 //                    if (HasInMazeOrSpectrumPhase(eventId))
 //                        break;
 //
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                    {
 //                        me->SetFacingTo(me->GetAngle(target));
 //                        DoCast(target, SPELL_FORCE_OF_WILL);
@@ -1342,7 +1342,7 @@
 //                    if (HasInMazeOrSpectrumPhase(eventId))
 //                        break;
 //
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                    {
 //                        me->SetFacingTo(me->GetAngle(target));
 //                        DoCast(target, SPELL_DRAIN_LIFE_CHANNEL);

@@ -28,11 +28,11 @@ class instance_mogu_shan_palace : public InstanceMapScript
 
             // Trial of the king.
             uint32 delay;
-            uint64 m_uiXinGuid;
-            uint64 m_uiKuaiGuid;
-            uint64 m_uiMingGuid;
-            uint64 m_uiHaiyanGuid;
-            uint64 m_uiBeaconGuid;
+            ObjectGuid m_uiXinGuid;
+            ObjectGuid m_uiKuaiGuid;
+            ObjectGuid m_uiMingGuid;
+            ObjectGuid m_uiHaiyanGuid;
+            ObjectGuid m_uiBeaconGuid;
             std::list<uint64> m_lScrapperList;
             std::list<uint64> m_lAdeptList;
             std::list<uint64> m_lGruntList;
@@ -41,18 +41,18 @@ class instance_mogu_shan_palace : public InstanceMapScript
             uint32 m_auiBossNumber[3];
 
             // m_uiGekkanGuid.
-            uint64 m_uiGekkanGuid;
-            uint64 m_uiAncientTreasureGuid;
+            ObjectGuid m_uiGekkanGuid;
+            ObjectGuid m_uiAncientTreasureGuid;
 
             // Xin the weaponmaster.
             std::list<uint64> m_lStaffList;
             std::list<uint64> m_lAxeList;
 
-            uint64 m_uiScoutGuid;
+            ObjectGuid m_uiScoutGuid;
 
             // Storage
-            uint64 m_auiGuids64[MAX_GUIDS];
-            std::unordered_map<uint32, uint64> m_mGoEntryGuidMap;
+            ObjectGuid m_auiGuids64[MAX_GUIDS];
+            std::unordered_map<uint32, ObjectGuid> m_mGoEntryGuidMap;
 
             void Initialize() override
             {
@@ -62,27 +62,18 @@ class instance_mogu_shan_palace : public InstanceMapScript
                 SetBossNumber(MAX_ENCOUNTER);
 
                 delay = 0;
-                m_uiXinGuid = 0;
-                m_uiKuaiGuid = 0;
-                m_uiMingGuid = 0;
-                m_uiHaiyanGuid = 0;
-                m_uiBeaconGuid = 0;
+                m_uiXinGuid.Clear();
+                m_uiKuaiGuid.Clear();
+                m_uiMingGuid.Clear();
+                m_uiHaiyanGuid.Clear();
+                m_uiBeaconGuid.Clear();
 
-                m_uiGekkanGuid = 0;
-                m_uiAncientTreasureGuid = 0;
+                m_uiGekkanGuid.Clear();
+                m_uiAncientTreasureGuid.Clear();
 
                 InitializeTrialOfKing();
 
-                m_uiScoutGuid = 0;
-
-                if (instance->IsChallengeDungeon())
-                    LoadScenarioInfo(scenarioBosses, CRITERIA_ENEMIES);
-            }
-
-            void OnPlayerEnter(Player* player) override
-            {
-                if (instance->IsChallengeDungeon())
-                    SendChallengeInfo(player, SCENARIO_ID);
+                m_uiScoutGuid.Clear();
             }
 
             void InitializeTrialOfKing()
@@ -145,9 +136,6 @@ class instance_mogu_shan_palace : public InstanceMapScript
                         // dont need to use memory space for this
                         go->SetFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND);
                         break;
-                    case GO_CHALLENGE_DOOR:
-                        SetChallengeDoorGuid(go->GetGUID());
-                        break;
                 }
             }
 
@@ -185,23 +173,6 @@ class instance_mogu_shan_palace : public InstanceMapScript
                     HandleGameObject(0, true, GetGameObjectFromStorage(GO_GEKKAN_TREASURE_DOOR));
                 }
 
-                if (instance->IsChallengeDungeon() && !IsChallengeModeCompleted())
-                {
-                    if (Creature* creature = unit->ToCreature())
-                    {
-                        switch (creature->GetEntry())
-                        {
-                            case CREATURE_GLINTROK_IRONHIDE:
-                            case CREATURE_GLINTROK_SKULKER:
-                            case CREATURE_GLINTROK_ORACLE:
-                            case CREATURE_GLINTROK_HEXXER:
-                                break;
-                            default:
-                                UpdateConditionInfo(creature, ENEMIES_COUNT);
-                                break;
-                        }
-                    }
-                }
             }
 
             void SetData(uint32 type, uint32 data) override
@@ -623,10 +594,6 @@ class instance_mogu_shan_palace : public InstanceMapScript
                         if (Creature* pBeacon = instance->GetCreature(m_uiBeaconGuid))
                             pBeacon->SetVisible(true);
 
-                        if (!instance->IsChallengeDungeon())
-                            for (auto&& itr : instance->GetPlayers())
-                                itr.GetSource()->ModifyCurrency(395, (instance->IsHeroic() ? 125 : 70) * CURRENCY_PRECISION);
-
                         HandleGameObject(0, true, GetGameObjectFromStorage(GO_DOOR_SECRET_STEPS));
                         m_mEvents.ScheduleEvent(1, 5 * IN_MILLISECONDS);
                         break;
@@ -705,10 +672,6 @@ class instance_mogu_shan_palace : public InstanceMapScript
                     }
                     break;
                 }
-
-                ScheduleBeginningTimeUpdate(diff);
-                ScheduleChallengeStartup(diff);
-                ScheduleChallengeTimeUpdate(diff);
             }
 
             void Load(const char* in) override

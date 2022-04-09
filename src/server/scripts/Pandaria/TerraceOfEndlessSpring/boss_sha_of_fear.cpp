@@ -368,7 +368,7 @@
 //                        // Always try to select healer in priority
 //                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, HealerSpecTargetSelector()))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);
-//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);
 //                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);
@@ -667,7 +667,7 @@
 //                        // Always try to select healer in priority
 //                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, HealerSpecTargetSelector()))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);
-//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);
 //                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                            target->CastSpell(target, SPELL_CHAMPION_OF_THE_LIGHT, true);

@@ -672,7 +672,7 @@
 //                        // Spear Phase
 //                        case EVENT_WILDFIRE_SPARK:
 //                        {
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            {
 //                                Talk(TALK_WILDFIRE_SPARK, target);
 //                                me->CastSpell(target, SPELL_WILDFIRE_SPARK, false);
@@ -704,7 +704,7 @@
 //                        }
 //                        case EVENT_ARCANE_RESONANCE:
 //                        {
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                target->AddAura(SPELL_ARCANE_RESONANCE, target);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                target->AddAura(SPELL_ARCANE_RESONANCE, target);

@@ -1330,7 +1330,7 @@
 //                    me->GetMotionMaster()->MoveChase(target);
 //                    targetGuid = target->GetGUID();
 //                }
-//                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                {
 //                    me->CastSpell(target, SPELL_FIXATE, true);
 //                    me->GetMotionMaster()->MoveChase(target);
@@ -1395,7 +1395,7 @@
 //                            targetGuid = target->GetGUID();
 //                            me->RemoveChanneledCast(targetGuid);
 //                        }
-//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        {
 //                            me->CastSpell(target, SPELL_FIXATE, true);
 //                            targetGuid = target->GetGUID();

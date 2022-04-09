@@ -680,7 +680,7 @@
 //
 //                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
 //                                me->PrepareChanneledCast(me->GetAngle(target), SPELL_LIGHTNING_WHIP_SELECTOR);
-//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                me->PrepareChanneledCast(me->GetAngle(target), SPELL_LIGHTNING_WHIP_SELECTOR);
 //                            else if (Unit* target = me->GetVictim())
 //                                me->PrepareChanneledCast(me->GetAngle(target), SPELL_LIGHTNING_WHIP_SELECTOR);
@@ -981,7 +981,7 @@
 //            .SetValidator([this] { return !me->HasUnitState(UNIT_STATE_CASTING); })
 //            .Schedule(Milliseconds(1500), [this](TaskContext context)
 //        {
-//            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                DoCast(target, SPELL_BALL_LIGHTNING_JUMP);
 //            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                DoCast(target, SPELL_BALL_LIGHTNING_JUMP);

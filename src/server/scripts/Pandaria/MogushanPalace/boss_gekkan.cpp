@@ -77,7 +77,6 @@ class boss_gekkan : public CreatureScript
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
                 me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
-               // me->RemoveNpcFlag( UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
             }
                       
             void InitializeGekkan()

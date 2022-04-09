@@ -119,8 +119,6 @@ enum ObjectsIds
     GO_WALL_B                   = 213199,
     GO_GREAT_DOOR_PHASE_1       = 211245,
     GO_GREAT_DOOR_PHASE_2       = 211246,
-
-    GO_CHALLENGE_DOOR           = 211989,
 };
 
 enum eSettingSun

@@ -785,7 +785,7 @@
 //
 //            void EnterCombat(Unit* /*who*/) override
 //            {
-//                me->HandleEmoteStateCommand(EMOTE_STATE_NONE);
+//                me->HandleEmoteCommand(EMOTE_STATE_NONE);
 //            }
 //
 //            void Reset() override
@@ -1012,7 +1012,7 @@
 //
 //            void EnterCombat(Unit* /*who*/) override
 //            {
-//                me->HandleEmoteStateCommand(EMOTE_STATE_NONE);
+//                me->HandleEmoteCommand(EMOTE_STATE_NONE);
 //            }
 //
 //            void Reset() override
@@ -1080,12 +1080,12 @@
 //};
 //
 //// War-God Dokah 70096 - Zandalari Warbringer 69769 69841 69842 - Zandalari Warscout 69768
-//struct npc_thunder_zandalaris : public customCreatureAI
+//struct npc_thunder_zandalaris : public ScriptedAI
 //{
-//    npc_thunder_zandalaris(Creature* creature) : customCreatureAI(creature) 
+//    npc_thunder_zandalaris(Creature* creature) : ScriptedAI(creature)
 //    { 
 //        eventsList = { 1, 2, 3, 4, 5 };
-//        Trinity::Containers::RandomResizeList(eventsList, 4);
+//        Trinity::Containers::RandomResize(eventsList, 4);
 //    }
 //
 //    std::list<uint32> eventsList;
@@ -1212,9 +1212,9 @@
 //};
 //
 //// Shan`ze Bloodseeker 69431
-//struct npc_shanze_bloodseeker : public customCreatureAI
+//struct npc_shanze_bloodseeker : public ScriptedAI
 //{
-//    npc_shanze_bloodseeker(Creature* creature) : customCreatureAI(creature) { }
+//    npc_shanze_bloodseeker(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1251,9 +1251,9 @@
 //};
 //
 //// Horgak the Enslaver 70176
-//struct npc_horgak_the_enslaver : public customCreatureAI
+//struct npc_horgak_the_enslaver : public ScriptedAI
 //{
-//    npc_horgak_the_enslaver(Creature* creature) : customCreatureAI(creature) { }
+//    npc_horgak_the_enslaver(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1292,9 +1292,9 @@
 //};
 //
 //// Animated Warrior 67473
-//struct npc_animated_warrior : public customCreatureAI
+//struct npc_animated_warrior : public ScriptedAI
 //{
-//    npc_animated_warrior(Creature* creature) : customCreatureAI(creature)
+//    npc_animated_warrior(Creature* creature) : ScriptedAI(creature)
 //    {
 //        ResetGuard();
 //    }
@@ -1315,7 +1315,7 @@
 //    void ActivateGuard(Unit* invoker)
 //    {
 //        me->RemoveAurasDueToSpell(SPELL_STATUE_FROZEN_SHEATH);
-//        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+//        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
 //        me->GetMotionMaster()->MoveRandom(10.0f);
 //
 //        if (invoker)
@@ -1325,13 +1325,13 @@
 //    void ResetGuard()
 //    {
 //        DoCast(me, SPELL_STATUE_FROZEN_SHEATH);
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE);
+//        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_NOT_SELECTABLE));
 //        me->GetMotionMaster()->MoveIdle();
 //    }
 //
 //    void MoveInLineOfSight(Unit* who) override
 //    {
-//        if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC))
+//        if (!me->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_PC))
 //            return;
 //        if (who->GetTypeId() != TYPEID_PLAYER)
 //            return;
@@ -1344,7 +1344,7 @@
 //
 //    void JustReachedHome() override
 //    {
-//        if (!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC))
+//        if (!me->HasUnitFlag(UNIT_FLAG_IMMUNE_TO_PC))
 //            me->GetMotionMaster()->MoveRandom(10.0f);
 //    }
 //
@@ -1380,13 +1380,13 @@
 //{
 //    npc_lightning_rod(Creature* creature) : ScriptedAI(creature) 
 //    {
-//        me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+//        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 //    }
 //
 //    void OnSpellClick(Unit* clicker, bool& /*result*/) override
 //    {
 //        clicker->RemoveAurasDueToSpell(SPELL_ELECTRIFIED);
-//        me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+//        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 //
 //        me->m_Events.Schedule(10000, 1, [this]()
 //        {
@@ -1398,9 +1398,9 @@
 //};
 //
 //// Electromancer Ju`le 69339
-//struct npc_electromancer_jule : public customCreatureAI
+//struct npc_electromancer_jule : public ScriptedAI
 //{
-//    npc_electromancer_jule(Creature* creature) : customCreatureAI(creature) { }
+//    npc_electromancer_jule(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1440,9 +1440,9 @@
 //};
 //
 //// Creeping Moor Beast 67772
-//struct npc_creeping_moor_beast : public customCreatureAI
+//struct npc_creeping_moor_beast : public ScriptedAI
 //{
-//    npc_creeping_moor_beast(Creature* creature) : customCreatureAI(creature) { }
+//    npc_creeping_moor_beast(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1475,9 +1475,9 @@
 //};
 //
 //// Slateshell Wanderer 67703
-//struct npc_slateshell_wanderer : public customCreatureAI
+//struct npc_slateshell_wanderer : public ScriptedAI
 //{
-//    npc_slateshell_wanderer(Creature* creature) : customCreatureAI(creature) { }
+//    npc_slateshell_wanderer(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1510,9 +1510,9 @@
 //};
 //
 //// Drakkari God-Hulk 69200
-//struct npc_drakkari_god_hulk : public customCreatureAI
+//struct npc_drakkari_god_hulk : public ScriptedAI
 //{
-//    npc_drakkari_god_hulk(Creature* creature) : customCreatureAI(creature) { }
+//    npc_drakkari_god_hulk(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1552,9 +1552,9 @@
 //};
 //
 //// Zandalari Colossus 69405
-//struct npc_zandalari_colossus : public customCreatureAI
+//struct npc_zandalari_colossus : public ScriptedAI
 //{
-//    npc_zandalari_colossus(Creature* creature) : customCreatureAI(creature) { }
+//    npc_zandalari_colossus(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1648,9 +1648,9 @@
 //};
 //
 //// Zandalari Stoneshield 69223
-//struct npc_zandalari_stoneshield : public customCreatureAI
+//struct npc_zandalari_stoneshield : public ScriptedAI
 //{
-//    npc_zandalari_stoneshield(Creature* creature) : customCreatureAI(creature) { }
+//    npc_zandalari_stoneshield(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1687,9 +1687,9 @@
 //};
 //
 //// Zandalari Beastcaller 69065
-//struct npc_zandalari_beastcaller : public customCreatureAI
+//struct npc_zandalari_beastcaller : public ScriptedAI
 //{
-//    npc_zandalari_beastcaller(Creature* creature) : customCreatureAI(creature) { }
+//    npc_zandalari_beastcaller(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1723,9 +1723,9 @@
 //};
 //
 //// Juvenile Skyscreamer 69162, 69411, 69156
-//struct npc_juvenile_skyscreamer : public customCreatureAI
+//struct npc_juvenile_skyscreamer : public ScriptedAI
 //{
-//    npc_juvenile_skyscreamer(Creature* creature) : customCreatureAI(creature) { }
+//    npc_juvenile_skyscreamer(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1758,9 +1758,9 @@
 //};
 //
 //// Zandalari Spiritbinder 69225
-//struct npc_zandalari_spiritbinder : public customCreatureAI
+//struct npc_zandalari_spiritbinder : public ScriptedAI
 //{
-//    npc_zandalari_spiritbinder(Creature* creature) : customCreatureAI(creature) 
+//    npc_zandalari_spiritbinder(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster = true;
 //    }
@@ -1815,9 +1815,9 @@
 //};
 //
 //// Zandalari Arcweaver 69224
-//struct npc_zandalari_arcweaver : public customCreatureAI
+//struct npc_zandalari_arcweaver : public ScriptedAI
 //{
-//    npc_zandalari_arcweaver(Creature* creature) : customCreatureAI(creature)
+//    npc_zandalari_arcweaver(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster = true;
 //        questCreatures = me->GetDBTableGUIDLow() == 535599 || me->GetDBTableGUIDLow() == 535757;
@@ -1926,9 +1926,9 @@
 //};
 //
 //// Zandalari Jaguar Warrior 69171
-//struct npc_zandalari_jaguar_warrior : public customCreatureAI
+//struct npc_zandalari_jaguar_warrior : public ScriptedAI
 //{
-//    npc_zandalari_jaguar_warrior(Creature* creature) : customCreatureAI(creature) { }
+//    npc_zandalari_jaguar_warrior(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1963,9 +1963,9 @@
 //};
 //
 //// Shan`ze Thundercaller 69264
-//struct npc_shanze_thundercaller : public customCreatureAI
+//struct npc_shanze_thundercaller : public ScriptedAI
 //{
-//    npc_shanze_thundercaller(Creature* creature) : customCreatureAI(creature)
+//    npc_shanze_thundercaller(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster    = true;
 //        questCreatures = me->GetDBTableGUIDLow() == 566259 || me->GetDBTableGUIDLow() == 566280 ||
@@ -2083,9 +2083,9 @@
 //};
 //
 //// Shan`ze Gravekeeper 69235
-//struct npc_shanze_gravekeeper : public customCreatureAI
+//struct npc_shanze_gravekeeper : public ScriptedAI
 //{
-//    npc_shanze_gravekeeper(Creature* creature) : customCreatureAI(creature) { }
+//    npc_shanze_gravekeeper(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2124,9 +2124,9 @@
 //};
 //
 //// Sparkmancer Vu 69961
-//struct npc_sparkmancer_vu : public customCreatureAI
+//struct npc_sparkmancer_vu : public ScriptedAI
 //{
-//    npc_sparkmancer_vu(Creature* creature) : customCreatureAI(creature)
+//    npc_sparkmancer_vu(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster = true;
 //    }
@@ -2179,9 +2179,9 @@
 //};
 //
 //// Shan`ze Soulripper 69236
-//struct npc_shanze_soulripper : public customCreatureAI
+//struct npc_shanze_soulripper : public ScriptedAI
 //{
-//    npc_shanze_soulripper(Creature* creature) : customCreatureAI(creature) { }
+//    npc_shanze_soulripper(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2236,9 +2236,9 @@
 //};
 //
 //// Ancient Stone Conqueror 69238
-//struct npc_ancient_stone_conqueror : public customCreatureAI
+//struct npc_ancient_stone_conqueror : public ScriptedAI
 //{
-//    npc_ancient_stone_conqueror(Creature* creature) : customCreatureAI(creature) { }
+//    npc_ancient_stone_conqueror(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2271,9 +2271,9 @@
 //};
 //
 //// Slateshell Ancient 67763
-//struct npc_slateshell_ancient : public customCreatureAI
+//struct npc_slateshell_ancient : public ScriptedAI
 //{
-//    npc_slateshell_ancient(Creature* creature) : customCreatureAI(creature) { }
+//    npc_slateshell_ancient(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2308,9 +2308,9 @@
 //};
 //
 //// Tamed Bladetalon 71297
-//struct npc_tamed_bladetalon : public customCreatureAI
+//struct npc_tamed_bladetalon : public ScriptedAI
 //{
-//    npc_tamed_bladetalon(Creature* creature) : customCreatureAI(creature) { }
+//    npc_tamed_bladetalon(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2345,9 +2345,9 @@
 //};
 //
 //// Zandalari Beastlord 71298
-//struct npc_zandalari_beastlord : public customCreatureAI
+//struct npc_zandalari_beastlord : public ScriptedAI
 //{
-//    npc_zandalari_beastlord(Creature* creature) : customCreatureAI(creature)
+//    npc_zandalari_beastlord(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster = true;
 //    }
@@ -2394,9 +2394,9 @@
 //};
 //
 //// Skumblade Skirmisher 70348, Skumblade Scavenger 69227
-//struct npc_skumblade_skirmisher : public customCreatureAI
+//struct npc_skumblade_skirmisher : public ScriptedAI
 //{
-//    npc_skumblade_skirmisher(Creature* creature) : customCreatureAI(creature) { }
+//    npc_skumblade_skirmisher(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2431,9 +2431,9 @@
 //};
 //
 //// Skumblade Brute 69338
-//struct npc_skumblade_brute : public customCreatureAI
+//struct npc_skumblade_brute : public ScriptedAI
 //{
-//    npc_skumblade_brute(Creature* creature) : customCreatureAI(creature) { }
+//    npc_skumblade_brute(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2468,9 +2468,9 @@
 //};
 //
 //// Skumblade Flithmonger 69228
-//struct npc_skumblade_flithmonger : public customCreatureAI
+//struct npc_skumblade_flithmonger : public ScriptedAI
 //{
-//    npc_skumblade_flithmonger(Creature* creature) : customCreatureAI(creature)
+//    npc_skumblade_flithmonger(Creature* creature) : ScriptedAI(creature)
 //    {
 //        isCaster = true;
 //    }
@@ -2523,9 +2523,9 @@
 //};
 //
 //// Skeletal Lasher 70534
-//struct npc_skeletal_lasher : public customCreatureAI
+//struct npc_skeletal_lasher : public ScriptedAI
 //{
-//    npc_skeletal_lasher(Creature* creature) : customCreatureAI(creature) { }
+//    npc_skeletal_lasher(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -2600,7 +2600,7 @@
 //        {
 //            npc_scout_captain_elsiaAI(Creature* creature) : ScriptedAI(creature) 
 //            {
-//                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC);
+//                me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC));
 //            }
 //
 //            void IsSummonedBy(Unit* summoner) override
@@ -2792,7 +2792,7 @@
 //{
 //    npc_silver_covenant_hippogryph(Creature* creature) : CreatureAI(creature) 
 //    {
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC);
+//        me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC));
 //    }
 //
 //    TaskScheduler scheduler;
@@ -2891,7 +2891,7 @@
 //    void IsSummonedBy(Unit* summoner) override
 //    {
 //        summonerGUID = summoner->GetGUID();
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+//        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 //        me->SetPhaseMask(4, true);
 //
 //        scheduler.Schedule(Seconds(2), [this](TaskContext context)
@@ -2982,7 +2982,7 @@
 //
 //    void IsSummonedBy(Unit* summoner) override
 //    {
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+//        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
 //        me->SetPhaseMask(4, true);
 //
 //        scheduler.Schedule(Seconds(2), [this](TaskContext context)
@@ -3114,7 +3114,7 @@
 //
 //        me->CastSpell(me, SPELL_STONE_SKIN);
 //        me->RemoveAura(SPELL_CONTROLL);
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+//        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC));
 //
 //        events.Reset();
 //        ooc_events.Reset();
@@ -3158,7 +3158,7 @@
 //                case EVENT_ACTIVATE:
 //                    if (Player* player = me->FindNearestPlayer(50.0f))
 //                        me->Attack(player, true);
-//                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC); // no need break
+//                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC)); // no need break
 //                    break;
 //                case EVENT_CHECK_BUFF:
 //                    if (!buff && me->HasAura(SPELL_CONTROLL))
@@ -3220,7 +3220,7 @@
 //        }
 //
 //        DoMeleeAttackIfReady();
-//        EnterEvadeIfOutOfCombatArea(diff, 50.0f);
+//        CheckHomeDistToEvade(diff, 50.0f);
 //    }
 //
 //private:
@@ -3229,9 +3229,9 @@
 //};
 //
 //// Master Caller 69286
-//struct npc_master_caller : public customCreatureAI
+//struct npc_master_caller : public ScriptedAI
 //{
-//    npc_master_caller(Creature* creature) : customCreatureAI(creature) { }
+//    npc_master_caller(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -3384,9 +3384,9 @@
 //};
 //
 //// Incompleted Drakari Colossus 69347
-//struct npc_incompleted_drakari_colossus : public customCreatureAI
+//struct npc_incompleted_drakari_colossus : public ScriptedAI
 //{
-//    npc_incompleted_drakari_colossus(Creature* creature) : customCreatureAI(creature) { }
+//    npc_incompleted_drakari_colossus(Creature* creature) : ScriptedAI(creature) { }
 //
 //    TaskScheduler scheduler;
 //
@@ -3476,9 +3476,9 @@
 //};
 //
 //// AStone Sentinel 70334
-//struct npc_iot_stone_sentinel : public customCreatureAI
+//struct npc_iot_stone_sentinel : public ScriptedAI
 //{
-//    npc_iot_stone_sentinel(Creature* creature) : customCreatureAI(creature) { }
+//    npc_iot_stone_sentinel(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -3516,9 +3516,9 @@
 //};
 //
 //// Essence of Storms 69739
-//struct npc_nalak_essence_of_storms : public customCreatureAI
+//struct npc_nalak_essence_of_storms : public ScriptedAI
 //{
-//    npc_nalak_essence_of_storms(Creature* creature) : customCreatureAI(creature) { }
+//    npc_nalak_essence_of_storms(Creature* creature) : ScriptedAI(creature) { }
 //
 //    uint64 ownerGUID;
 //    TaskScheduler scheduler;
@@ -3576,9 +3576,9 @@
 //};
 //
 //// Fleshcrafter Hoku 69435
-//struct npc_fleshcrafter_hoku : public customCreatureAI
+//struct npc_fleshcrafter_hoku : public ScriptedAI
 //{
-//    npc_fleshcrafter_hoku(Creature* creature) : customCreatureAI(creature) { }
+//    npc_fleshcrafter_hoku(Creature* creature) : ScriptedAI(creature) { }
 //
 //    TaskScheduler scheduler;
 //    bool achiev;
@@ -3650,9 +3650,9 @@
 //};
 //
 //// Metal Lord Meno-Han 69326
-//struct npc_metal_lord_meno_han : public customCreatureAI
+//struct npc_metal_lord_meno_han : public ScriptedAI
 //{
-//    npc_metal_lord_meno_han(Creature* creature) : customCreatureAI(creature) { }
+//    npc_metal_lord_meno_han(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -3762,7 +3762,7 @@
 //    void Reset() override
 //    {
 //        SetCombatMovement(false);
-//        me->setFaction(14);
+//        me->SetFaction(14);
 //        me->SetReactState(REACT_AGGRESSIVE);
 //    }
 //
@@ -3770,7 +3770,7 @@
 //    {
 //        if (who && who->ToPlayer())
 //        {
-//            me->setFaction(190); // won`t attack by default with 190, only assist
+//            me->SetFaction(190); // won`t attack by default with 190, only assist
 //            who->ToPlayer()->KilledMonsterCredit(me->GetEntry());
 //            me->Kill(me);
 //        }
@@ -4266,7 +4266,7 @@
 //    void SelectTarget(std::list<WorldObject*>& targets)
 //    {
 //        targets.remove_if([=](WorldObject* target) { return target->GetEntry() != 69217; });
-//        Trinity::Containers::RandomResizeList(targets, 1);
+//        Trinity::Containers::RandomResize(targets, 1);
 //    }
 //
 //    void Register() override

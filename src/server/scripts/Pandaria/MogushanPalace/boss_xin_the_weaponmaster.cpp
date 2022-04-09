@@ -94,7 +94,7 @@ class boss_xin_the_weaponmaster : public CreatureScript
 
             bool m_bHasYelled;
             std::list <Creature*> gems;
-            uint64 targetGUID;
+            ObjectGuid targetGUID;
 
             void InitializeAI() override
             {
@@ -104,7 +104,7 @@ class boss_xin_the_weaponmaster : public CreatureScript
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_PULL_TOWARDS, true);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_PULL_TOWARDS_DEST, true);
                 me->HandleEmoteCommand(EMOTE_STATE_SIT_CHAIR_HIGH);
-                targetGUID = 0;
+                targetGUID.Clear();
             }
 
             void InitializeGems()
@@ -130,7 +130,7 @@ class boss_xin_the_weaponmaster : public CreatureScript
                 _Reset();
                 events.Reset();
                 InitializeGems();
-                targetGUID = 0;
+                targetGUID.Clear();
 
                 if (instance)
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
@@ -356,11 +356,11 @@ class boss_xin_the_weaponmaster : public CreatureScript
                                 me->CastSpell(me->GetVictim(), SPELL_GROUND_SLAM);
                             }
 
-                            /*if (Unit* vict = me->GetVictim())
+                            if (Unit* vict = me->GetVictim())
                             {
                                 targetGUID = vict->GetGUID();
                                 me->CastSpell(me->GetAngle(vict), SPELL_GROUND_SLAM);
-                            }*/
+                            }
 
                             events.ScheduleEvent(EVENT_GROUND_SLAM_CANCEL, 3500);
                             events.ScheduleEvent(EVENT_GROUND_SLAM, urand(10000, 15000));
@@ -384,7 +384,7 @@ class boss_xin_the_weaponmaster : public CreatureScript
                                 events.ScheduleEvent(EVENT_CHECK_CROSSBOW, 1000);
                             break;
                         case EVENT_GROUND_SLAM_CANCEL:
-                            me->CastStop(targetGUID);
+                            //me->CastStop(targetGUID);
                             break;
                     }
                 }
@@ -569,7 +569,6 @@ class npc_fire_ring_trigger : public CreatureScript
             {
                 me->SetReactState(REACT_PASSIVE);
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED));
-            //    me->SetUnitFlags(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
                 me->GetMotionMaster()->Clear();
 
                 events.ScheduleEvent(EVENT_MOVE, 500);
@@ -745,10 +744,8 @@ class npc_faintly_glowing_gem : public CreatureScript
 
             void InitializeAI() override
             {
-                me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-               //me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                 me->SetDisplayId(35408);
 
                 if (me->HasAura(SPELL_GLOWING_GEM))
@@ -776,23 +773,18 @@ class npc_faintly_glowing_gem : public CreatureScript
                     if (!me->HasAura(SPELL_GLOWING_GEM))
                         me->AddAura(SPELL_GLOWING_GEM, me);
 
-                    me->AddUnitFlag(UnitFlags(UNIT_NPC_FLAG_SPELLCLICK));
-                 //   me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-                    me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-                  //  me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    //me->CastSpell(me, SPELL_BLADES_1, false);
-                    //RemoveBladesAura();
+                    me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                    me->RemoveUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
+                    me->CastSpell(me, SPELL_BLADES_1, false);
+                    RemoveBladesAura();
                     events.ScheduleEvent(EVENT_SPECIAL_BEAM, 6 * IN_MILLISECONDS);
                     break;
                 case ACTION_DEACTIVATE_BUTTON:
                     if (me->HasAura(SPELL_GLOWING_GEM))
                         me->RemoveAura(SPELL_GLOWING_GEM);
 
-                    me->RemoveUnitFlag(UnitFlags(UNIT_NPC_FLAG_SPELLCLICK));
-                   // me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-
-                    me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE));
-               //     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                    me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+                    me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                     break;
                 }
             }
@@ -931,7 +923,7 @@ class npc_mp_quilen_guardian : public CreatureScript
             return new npc_mp_quilen_guardianAI(creature);
         }
 };
-/*
+
 class OnlyTriggerInFrontPredicate
 {
     public:
@@ -945,7 +937,7 @@ class OnlyTriggerInFrontPredicate
     private:
         Unit* _caster;
 };
-*/
+
 struct CheckIfValidTarget
 {
     bool operator ()(WorldObject const* target) const
@@ -998,7 +990,7 @@ class spell_dart_damage : public SpellScriptLoader
                 std::list<WorldObject*> finalTargets;
                 GetCreatureListWithEntryInGrid(targets, GetCaster(), CREATURE_SWORD_LAUNCHER, 200.0f);
 
-                // targets.remove_if (OnlyTriggerInFrontPredicate(GetCaster()));
+                targets.remove_if (OnlyTriggerInFrontPredicate(GetCaster()));
 
                 for (auto&& target : targetList)
                 {
@@ -1058,7 +1050,7 @@ class spell_dart : public SpellScriptLoader
 
                 //Select the two targets.
                 std::list<WorldObject*> targets = targetList;
-                // targetList.remove_if (OnlyTriggerInFrontPredicate(GetCaster()));
+                targetList.remove_if (OnlyTriggerInFrontPredicate(GetCaster()));
                 targetList.remove_if (CheckIfValidTarget());
             }
 

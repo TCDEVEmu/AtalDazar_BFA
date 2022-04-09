@@ -866,7 +866,7 @@
 //                            events.ScheduleEvent(EVENT_PULSING_FLAMES, 14 * IN_MILLISECONDS);
 //                            break;
 //                        case EVENT_FLAMES_OF_GALAKROND:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            {
 //                                flamesTargetGUID = target->GetGUID();
 //                                DoCast(target, SPELL_FLAMES_OF_GALAKROND_ANN, true);
@@ -1564,7 +1564,7 @@
 //            switch (eventId)
 //            {
 //                case EVENT_TIDAL_WAVE:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_TIDAL_WAVE);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_TIDAL_WAVE);

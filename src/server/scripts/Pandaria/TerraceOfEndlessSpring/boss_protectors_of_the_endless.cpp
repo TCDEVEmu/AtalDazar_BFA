@@ -599,7 +599,7 @@
 //                                    DoStartNoMovement(vict);
 //                            }
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_LIGHTNING_BOLT);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 39.0f, true))
 //                                DoCast(target, SPELL_LIGHTNING_BOLT);
@@ -926,7 +926,7 @@
 //                                    DoStartNoMovement(vict);
 //                            }
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_WATER_BOLT);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 59.0f, true))
 //                                DoCast(target, SPELL_WATER_BOLT);
@@ -1247,7 +1247,7 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_TOUCH_OF_SHA:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_TOUCH_OF_SHA)))
 //                                DoCast(target, SPELL_TOUCH_OF_SHA);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true, -SPELL_TOUCH_OF_SHA))
 //                                DoCast(target, SPELL_TOUCH_OF_SHA);

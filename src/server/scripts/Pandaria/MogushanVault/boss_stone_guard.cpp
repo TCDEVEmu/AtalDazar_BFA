@@ -939,7 +939,7 @@
 //                                case NPC_COBALT:
 //                                case NPC_AMETHYST:
 //                                {
-//                                    if (Unit* victim = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                    if (Unit* victim = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                        me->CastSpell(victim, spellMainAttack, false);
 //
 //                                    events.ScheduleEvent(EVENT_MAIN_ATTACK, 10000);

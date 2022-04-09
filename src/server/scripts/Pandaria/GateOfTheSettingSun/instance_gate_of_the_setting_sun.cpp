@@ -55,24 +55,24 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                 braiserState          = NOT_STARTED;
                 fallEvent             = false;
                 playersInInstanceCnt  = 0;
-                kiptilakGuid          = 0;
-                gadokGuid             = 0;
-                rimokGuid             = 0;
-                raigonnGuid           = 0;
-                raigonWeakGuid        = 0;
-                explosionTarget1GUID  = 0;
-                explosionTarget2GUID  = 0;
-                explosionTarget3GUID  = 0;
-                firstDoorGuid         = 0;
-                wallCGuid             = 0;
-                wallAGUID             = 0;
-                wallBGUID             = 0;
-                defenderAGUID         = 0;
-                defenderBGUID         = 0;
-                traineeGUID           = 0;
-                fireSignalGuid        = 0;
-                greatDoorGUID         = 0;
-                greatDoor2GUID        = 0;
+                kiptilakGuid.Clear();
+                gadokGuid.Clear();
+                rimokGuid.Clear();
+                raigonnGuid.Clear();
+                raigonWeakGuid.Clear();
+                explosionTarget1GUID.Clear();
+                explosionTarget2GUID.Clear();
+                explosionTarget3GUID.Clear();
+                firstDoorGuid.Clear();
+                wallCGuid.Clear();
+                wallAGUID.Clear();
+                wallBGUID.Clear();
+                defenderAGUID.Clear();
+                defenderBGUID.Clear();
+                traineeGUID.Clear();
+                fireSignalGuid.Clear();
+                greatDoorGUID.Clear();
+                greatDoor2GUID.Clear();
 
                 bombarderGuids.clear();
                 fallDefendersGUIDS.clear();
@@ -83,23 +83,17 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                 artilleryToWallGUIDs.clear();
                 ropeGUIDs.clear();
                 spawnerTargetGUIDs.clear();
-
-                if (instance->IsChallengeDungeon())
-                    LoadScenarioInfo(scenarioBosses, CRITERIA_ENEMIES);
             }
 
             void OnPlayerEnter(Player* player) override
             {
-                if (instance->IsChallengeDungeon())
-                    SendChallengeInfo(player, SCENARIO_ID);
-
                 if (playersInInstanceCnt == 0)
                     events.ScheduleEvent(EVENT_ACTIVATE_SPAWNER, 1 * IN_MILLISECONDS);
 
                 ++playersInInstanceCnt;
             }
 
-            void OnPlayerLeave(Player* /*player)
+            void OnPlayerLeave(Player* player)
             {
                 if (--playersInInstanceCnt == 0)
                 {
@@ -120,17 +114,10 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                              if (!cSpawner->HasAura(SPELL_SPAWNER))
                                    cSpawner->CastSpell(cSpawner, SPELL_SPAWNER, false);
                 }
-
-                ScheduleBeginningTimeUpdate(diff);
-                ScheduleChallengeStartup(diff);
-                ScheduleChallengeTimeUpdate(diff);
             }
 
             void OnCreatureCreate(Creature* creature) override
             {
-                if (instance->IsChallengeDungeon() && creature->isDead())
-                    creature->Respawn();
-
                 switch (creature->GetEntry())
                 {
                     case NPC_EXPLOSION_TARGET_2:
@@ -255,9 +242,6 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                     case GO_GREAT_DOOR_PHASE_2:
                         greatDoor2GUID = go->GetGUID();
                         break;
-                    case GO_CHALLENGE_DOOR:
-                        SetChallengeDoorGuid(go->GetGUID());
-                        break;
                 }
             }
 
@@ -322,14 +306,6 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                 }
 
               return true;
-            }
-
-            void OnUnitDeath(Unit* unit) override
-            {
-                if (instance->IsChallengeDungeon() && !IsChallengeModeCompleted())
-                    if (Creature* creature = unit->ToCreature())
-                        if (creature->GetEntry() != NPC_KRITHIK_GLIDER && creature->GetEntry() != NPC_SERPENTS_SPINE_DEFENDER)
-                            UpdateConditionInfo(creature, ENEMIES_COUNT);
             }
 
             void SetData(uint32 type, uint32 data) override
@@ -402,7 +378,7 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
                                             defender->AI()->Talk(0);
 
                                         defender->GetMotionMaster()->MoveJump(848.846f, 2309.806f, 323.225f, 20.0f, 25.0f);
-                                        defender->DespawnOrUnsummon(defender->GetSplineDuration());
+                                        //defender->DespawnOrUnsummon(defender->GetSplineDuration());
                                     }
                                 }
 
@@ -631,35 +607,35 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
             uint32 cornerCstate;
             uint32 firstDoorstate;
             uint32 braiserState;
-            uint64 kiptilakGuid;
-            uint64 gadokGuid;
-            uint64 rimokGuid;
-            uint64 raigonnGuid;
-            uint64 raigonWeakGuid;
-            uint64 explosionTarget1GUID;
-            uint64 explosionTarget2GUID;
-            uint64 explosionTarget3GUID;
-            uint64 firstDoorGuid;
-            uint64 fireSignalGuid;
-            uint64 wallAGUID;
-            uint64 wallBGUID;
-            uint64 wallCGuid;
-            uint64 traineeGUID;
-            uint64 defenderAGUID;
-            uint64 defenderBGUID;
-            uint64 greatDoorGUID;
-            uint64 greatDoor2GUID;
-            uint64 elevatorGUID;
+            ObjectGuid kiptilakGuid;
+            ObjectGuid gadokGuid;
+            ObjectGuid rimokGuid;
+            ObjectGuid raigonnGuid;
+            ObjectGuid raigonWeakGuid;
+            ObjectGuid explosionTarget1GUID;
+            ObjectGuid explosionTarget2GUID;
+            ObjectGuid explosionTarget3GUID;
+            ObjectGuid firstDoorGuid;
+            ObjectGuid fireSignalGuid;
+            ObjectGuid wallAGUID;
+            ObjectGuid wallBGUID;
+            ObjectGuid wallCGuid;
+            ObjectGuid traineeGUID;
+            ObjectGuid defenderAGUID;
+            ObjectGuid defenderBGUID;
+            ObjectGuid greatDoorGUID;
+            ObjectGuid greatDoor2GUID;
+            ObjectGuid elevatorGUID;
             uint32 dataStorage[MAX_DATA];
-            std::list<uint64> bombarderGuids;
-            std::list<uint64> fallDefendersGUIDS;
-            std::list<uint64> bombStalkerGuids;
-            std::list<uint64> mantidBombsGUIDs;
-            std::list<uint64> rimokAddGenetarorsGUIDs;
-            std::list<uint64> artilleryGUIDs;
-            std::list<uint64> artilleryToWallGUIDs;
-            std::list<uint64> ropeGUIDs;
-            std::list<uint64> spawnerTargetGUIDs;
+            std::list<ObjectGuid> bombarderGuids;
+            std::list<ObjectGuid> fallDefendersGUIDS;
+            std::list<ObjectGuid> bombStalkerGuids;
+            std::list<ObjectGuid> mantidBombsGUIDs;
+            std::list<ObjectGuid> rimokAddGenetarorsGUIDs;
+            std::list<ObjectGuid> artilleryGUIDs;
+            std::list<ObjectGuid> artilleryToWallGUIDs;
+            std::list<ObjectGuid> ropeGUIDs;
+            std::list<ObjectGuid> spawnerTargetGUIDs;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

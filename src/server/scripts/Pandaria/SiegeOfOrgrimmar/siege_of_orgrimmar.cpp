@@ -2500,7 +2500,7 @@
 //            {
 //                if (!me->GetVictim() || me->GetVictim() && me->GetExactDist2d(me->GetVictim()) > 4.72f) // spell range
 //                {
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_HURL_BOULDER);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_HURL_BOULDER);

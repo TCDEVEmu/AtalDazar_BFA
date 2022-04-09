@@ -718,7 +718,7 @@
 //
 //                                DoCast(target, SPELL_CHARGE);
 //                            }
-//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            {
 //                                hasInCharge = true;
 //                                Talk(EMOTE_CHARGE, target);
@@ -1383,9 +1383,9 @@
 //                    }
 //                    break;
 //                case EVENT_BLAZING_LIGHT:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_BLAZING_SUNLIGHT)))
 //                        DoCast(target, SPELL_BLAZING_SUNLIGHT);
-//                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_BLAZING_SUNLIGHT);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_BLAZING_SUNLIGHT);
@@ -1393,7 +1393,7 @@
 //                    events.ScheduleEvent(EVENT_BLAZING_LIGHT, 10 * IN_MILLISECONDS);
 //                    break;
 //                case EVENT_SUMMON_SAND_TRAP:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_SUMMON_SAND_TRAP);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_SUMMON_SAND_TRAP);
@@ -1402,7 +1402,7 @@
 //                    break;
 //                    // Gurubashi
 //                case EVENT_RENDING_CHARGE:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                    {
 //                        pRendingChargeTarget = target;
 //                        DoCast(target, SPELL_RENDING_CHARGE);
@@ -1425,7 +1425,7 @@
 //                    break;
 //                    // Drakkari
 //                case EVENT_SWITCH_TARGET:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                    {
 //                        DoResetThreat();
 //                        me->AddThreat(target, 100000.0f);
@@ -1452,7 +1452,7 @@
 //                    break;
 //                    // Amani
 //                case EVENT_FIREBALL:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_FIREBALL);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_FIREBALL);
@@ -1464,7 +1464,7 @@
 //                    events.ScheduleEvent(EVENT_SWIPE, 10 * IN_MILLISECONDS);
 //                    break;
 //                case EVENT_CHAIN_LIGHTNING:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_CHAIN_LIGHTNING);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_CHAIN_LIGHTNING);
@@ -1472,7 +1472,7 @@
 //                    events.ScheduleEvent(EVENT_CHAIN_LIGHTNING, 10 * IN_MILLISECONDS);
 //                    break;
 //                case EVENT_HEX_OF_CONFUSION:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_HEX_OF_CONFUSION)))
 //                        DoCast(target, SPELL_HEX_OF_CONFUSION);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true, -SPELL_HEX_OF_CONFUSION))
 //                        DoCast(target, SPELL_HEX_OF_CONFUSION);
@@ -1913,7 +1913,7 @@
 //
 //                    if (Creature* pHorridon = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(DATA_HORRIDON):0))
 //                    {
-//                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        {
 //                            AttackStart(target);
 //

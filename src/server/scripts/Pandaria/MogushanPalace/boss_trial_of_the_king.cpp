@@ -407,8 +407,7 @@ class boss_ming_the_cunning : public CreatureScript
             {
                 me->RemoveAllAuras();
                 me->SetReactState(REACT_PASSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
-               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetHomePosition(pTrialHomePositions[TYPE_MING]);
                 me->GetMotionMaster()->MoveTargetedHome();
                 me->AttackStop();
@@ -616,8 +615,7 @@ class npc_adepts : public CreatureScript
                 status = STATUS_ATTACK_PLAYER;
                 m_uiKickCooldownTimer = 0;
                 me->SetReactState(REACT_AGGRESSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
-               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 DoCast(auiGruntScaleSpells[urand(0, 2)]);
                 events.ScheduleEvent(EVENT_CHECK_MOVE, 2500);
                 instance = me->GetInstanceScript();
@@ -686,8 +684,7 @@ class npc_adepts : public CreatureScript
                     {
                         me->CombatStop();
                         status = STATUS_ATTACK_GRUNTS;
-                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
-                      // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED);
+                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED));
 
                         float x, y;
                         GetPositionWithDistInOrientation(me, 30.0f, me->GetOrientation(), x, y);
@@ -918,8 +915,7 @@ class boss_kuai_the_brute : public CreatureScript
             {
                 me->RemoveAllAuras();
                 me->SetReactState(REACT_PASSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
-              //  me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->SetHomePosition(pTrialHomePositions[TYPE_KUAI]);
                 me->CastStop();
                 me->ClearUnitState(UNIT_STATE_CANNOT_TURN);
@@ -1014,8 +1010,7 @@ class npc_mu_shiba : public CreatureScript
             npc_mu_shiba_AI(Creature* creature) : ScriptedAI(creature)
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
-              //  me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
             }
 
             EventMap events;
@@ -1047,8 +1042,7 @@ class npc_mu_shiba : public CreatureScript
                 {
                     case ACTION_ATTACK:
                         me->SetReactState(REACT_AGGRESSIVE);
-                        me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
-                       // me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         DoZoneInCombat();
 
                         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
@@ -1058,8 +1052,7 @@ class npc_mu_shiba : public CreatureScript
                         events.Reset();
                         me->AttackStop();
                         me->SetReactState(REACT_PASSIVE);
-                        me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC));
-                      //  me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                        me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                         break;
                 }
             }
@@ -1218,8 +1211,7 @@ class boss_haiyan_the_unstoppable : public CreatureScript
             {
                 me->RemoveAllAuras();
                 me->SetReactState(REACT_PASSIVE);
-              //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC ));
+                me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                 me->CastStop();
                 me->SetHomePosition(pTrialHomePositions[TYPE_HAIYAN]);
                 me->GetMotionMaster()->MoveTargetedHome();
@@ -1338,8 +1330,7 @@ class npc_glintrok_scout : public CreatureScript
             void InitializeAI() override
             {
                 me->SetReactState(REACT_PASSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE));
-             // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
 
                 instance = me->GetInstanceScript();
             }
@@ -2173,9 +2164,9 @@ class spell_saurok_help_call : public SpellScriptLoader
                     targets.resize(3);
                 }
             }
-            /*
+            
             void HandleSpellcast()
-            {
+            {/*
                 if (GetHitUnit())
                 {
                     float x, y;
@@ -2186,13 +2177,13 @@ class spell_saurok_help_call : public SpellScriptLoader
                         GetHitUnit()->CastSpell(GetHitUnit(), SPELL_IRON_PROTECTOR, false);
 
                     GetHitUnit()->CastSpell(GetHitUnit(), SPELL_REPLACE_STAND_READY1H, true);
-                }
-            } */
+                }*/
+            } 
 
             void Register() override
             {
                 OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_saurok_help_call_SpellScript::SelectTarget, EFFECT_1, TARGET_UNIT_SRC_AREA_ENTRY);
-                // AfterHit += SpellHitFn(spell_saurok_help_call_SpellScript::HandleSpellcast);
+                AfterHit += SpellHitFn(spell_saurok_help_call_SpellScript::HandleSpellcast);
             }
 
         };

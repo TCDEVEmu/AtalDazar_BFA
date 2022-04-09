@@ -186,7 +186,7 @@ class boss_oondasta : public CreatureScript
                         case EVENT_SPIRITFIRE_BEAM:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
@@ -200,7 +200,7 @@ class boss_oondasta : public CreatureScript
                         case EVENT_SPIRITFIRE_BEAM_2:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);

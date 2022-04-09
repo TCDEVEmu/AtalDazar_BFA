@@ -444,7 +444,7 @@
 //                        case EVENT_THROW_SPEAR:
 //                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
 //                                DoCast(target, SPELL_THROW_SPEAR);
-//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_THROW_SPEAR);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                                DoCast(target, SPELL_THROW_SPEAR);

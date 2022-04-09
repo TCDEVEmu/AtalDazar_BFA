@@ -450,7 +450,7 @@
 //                            events.ScheduleEvent(EVENT_GAS_BLADDER, (12000 + rand() % 5000) * GetEventTimer());
 //                            break;
 //                        case EVENT_PATHOGEN_GLANDS:
-//                            if (Unit* unit = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* unit = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_VOLATILE_PATHOGEN)))
 //                                DoCast(unit, SPELL_VOLATILE_PATHOGEN);
 //                            else if (Unit* unit = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.f, true))
 //                                DoCast(unit, SPELL_VOLATILE_PATHOGEN);

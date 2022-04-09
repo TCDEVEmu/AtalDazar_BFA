@@ -2280,7 +2280,7 @@
 //            
 //            if (caster->ToCreature())
 //            {
-//                if (Unit* fixateTarget = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                if (Unit* fixateTarget = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                    caster->CastSpell(fixateTarget, SPELL_HE_FIXATE, true);
 //                else if (Unit* fixateTarget = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true, -SPELL_HE_GOUGE_DMG_STUN))
 //                    caster->CastSpell(fixateTarget, SPELL_HE_FIXATE, true);

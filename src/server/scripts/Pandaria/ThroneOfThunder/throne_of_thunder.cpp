@@ -330,7 +330,7 @@
 //                            events.ScheduleEvent(EVENT_ZERK, 8000 + rand() % 5000);
 //                            break;
 //                        case EVENT_SPEAR_THROW:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_THROW_SPEAR);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 44.0f, true))
 //                                DoCast(target, SPELL_THROW_SPEAR);
@@ -615,7 +615,7 @@
 //                                DoStartNoMovement(vict);
 //                        }
 //
-//                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                            DoCast(target, SPELL_FROST_BOLT);
 //                        else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 44.0f, true))
 //                            DoCast(target, SPELL_FROST_BOLT);
@@ -741,7 +741,7 @@
 //                    switch (eventId)
 //                    {
 //                        case EVENT_FROST_BOLT:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_FROST_BOLT);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 44.0f, true))
 //                                DoCast(target, SPELL_FROST_BOLT);
@@ -1048,7 +1048,7 @@
 //                            events.ScheduleEvent(EVENT_STORMCLOUD, urand(15 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
 //                            break;
 //                        case EVENT_CHAIN_LIGHTNING:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_CHAIN_LIGHTNING);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                DoCast(target, SPELL_CHAIN_LIGHTNING);
@@ -1192,7 +1192,7 @@
 //                                    DoStartNoMovement(vict);
 //                            }
 //                        
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_ERUPTION_2);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
 //                                DoCast(target, SPELL_ERUPTION_2);
@@ -1362,7 +1362,7 @@
 //                            events.ScheduleEvent(EVENT_SAND_BOLT, 2.5 * IN_MILLISECONDS);
 //                            break;
 //                        case EVENT_CHOKING_SANDS:
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, SPELL_CHOKING_SANDS);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
 //                                DoCast(target, SPELL_CHOKING_SANDS);
@@ -1558,7 +1558,7 @@
 //                        case EVENT_MARK_OF_THE_PROPHET:
 //                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector(SPELL_MARK_OF_THE_PROPHET)))
 //                                DoCast(target, SPELL_MARK_OF_THE_PROPHET);
-//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_MARK_OF_THE_PROPHET)))
 //                                DoCast(target, SPELL_MARK_OF_THE_PROPHET);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true, -SPELL_MARK_OF_THE_PROPHET))
 //                                DoCast(target, SPELL_MARK_OF_THE_PROPHET);

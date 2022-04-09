@@ -943,7 +943,7 @@
 //                                // Find boss and check for melee distance to victim + unscheduled boss action.
 //                                if (Unit* vict = me->GetVictim())
 //                                    if (!me->IsWithinMeleeRange(vict))
-//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                            DoCast(target, SPELL_MEGAERAS_RAGE_FIRE);
 //                            }
 //                            events.ScheduleEvent(EVENT_CHECK_MEGAERAS_RAGE, 4000);
@@ -974,7 +974,7 @@
 //                            if (!inRampage)
 //                                break;
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
@@ -1038,7 +1038,7 @@
 //                                // Find boss and check for melee distance to victim + unscheduled boss action.
 //                                if (Unit* vict = me->GetVictim())
 //                                    if (!me->IsWithinMeleeRange(vict))
-//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                            DoCast(target, SPELL_MEGAERAS_RAGE_FROST);
 //                            }
 //                            events.ScheduleEvent(EVENT_CHECK_MEGAERAS_RAGE, 4000);
@@ -1056,7 +1056,7 @@
 //                                    if (Creature* torrent = me->SummonCreature(NPC_TORRENT_OF_ICE, *target, TEMPSUMMON_TIMED_DESPAWN, 180000))
 //                                        torrent->AI()->SetGUID(target->GetGUID());
 //                                }
-//                                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_TORRENT_OF_ICE_TARGET)))
 //                                {
 //                                    me->AddAura(SPELL_TORRENT_OF_ICE_TARGET, target);
 //
@@ -1086,7 +1086,7 @@
 //                            if (!inRampage)
 //                                break;
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
@@ -1149,7 +1149,7 @@
 //                                // Find boss and check for melee distance to victim + unscheduled boss action.
 //                                if (Unit* vict = me->GetVictim())
 //                                    if (!me->IsWithinMeleeRange(vict))
-//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                            DoCast(target, SPELL_MEGAERAS_RAGE_POISON);
 //                            }
 //                            events.ScheduleEvent(EVENT_CHECK_MEGAERAS_RAGE, 4000);
@@ -1177,7 +1177,7 @@
 //                            if (!inRampage)
 //                                break;
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
@@ -1243,7 +1243,7 @@
 //                                // Find boss and check for melee distance to victim + unscheduled boss action.
 //                                if (Unit* vict = me->GetVictim())
 //                                    if (!me->IsWithinMeleeRange(vict))
-//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                            DoCast(target, SPELL_MEGAERAS_RAGE_ARCANE);
 //                            }
 //                            events.ScheduleEvent(EVENT_CHECK_MEGAERAS_RAGE, 4000);
@@ -1271,7 +1271,7 @@
 //                            if (!inRampage)
 //                                break;
 //
-//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
 //                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 150.0f, true))
 //                                DoCast(target, invRampageType.find(me->GetEntry())->second, true);
@@ -1415,7 +1415,7 @@
 //                    else if (Creature* owner = ObjectAccessor::GetCreature(*me, summonerGUID))
 //                    {
 //                        // Select new target by owner
-//                        if (Unit* newTarget = owner->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                        if (Unit* newTarget = owner->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_TORRENT_OF_ICE_TARGET)))
 //                            me->RemoveChanneledCast(newTarget->GetGUID());
 //                    }
 //                }
@@ -1469,7 +1469,7 @@
 //            switch (eventId)
 //            {
 //                case EVENT_NETHER_SPIKE:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_NETHER_SPIKE);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_NETHER_SPIKE);
@@ -1478,7 +1478,7 @@
 //                    break;
 //                
 //                case EVENT_SUPPRESSION:
-//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+//                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
 //                        DoCast(target, SPELL_SUPPRESSION);
 //                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
 //                        DoCast(target, SPELL_NETHER_SPIKE);
