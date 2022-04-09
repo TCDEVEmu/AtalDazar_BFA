@@ -512,6 +512,8 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         float GetSightRange(WorldObject const* target = nullptr) const;
         bool CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth = false, bool distanceCheck = false, bool checkAlert = false) const;
 
+        void SetExplicitSeerGuid(ObjectGuid guid) { m_explicitSeerGuid = guid; }
+
         FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> m_stealth;
         FlaggedValuesArray32<int32, uint32, StealthType, TOTAL_STEALTH_TYPES> m_stealthDetect;
 
@@ -680,6 +682,8 @@ class TC_GAME_API WorldObject : public Object, public WorldLocation
         bool CanDetect(WorldObject const* obj, bool ignoreStealth, bool checkAlert = false) const;
         bool CanDetectInvisibilityOf(WorldObject const* obj) const;
         bool CanDetectStealthOf(WorldObject const* obj, bool checkAlert = false) const;
+
+        ObjectGuid m_explicitSeerGuid;
 };
 
 namespace Trinity

@@ -850,7 +850,7 @@ void MovementInfo::OutDebug()
 WorldObject::WorldObject(bool isWorldObject) : WorldLocation(), LastUsedScriptID(0),
 m_name(""), m_isActive(false), m_isWorldObject(isWorldObject), m_zoneScript(nullptr),
 m_transport(nullptr), m_staticFloorZ(VMAP_INVALID_HEIGHT), m_currMap(nullptr), m_InstanceId(0),
-_dbPhase(0), m_visibleBySummonerOnly(false), m_notifyflags(0)
+_dbPhase(0), m_visibleBySummonerOnly(false), m_notifyflags(0), m_explicitSeerGuid()
 {
     m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GHOST, GHOST_VISIBILITY_ALIVE | GHOST_VISIBILITY_GHOST);
     m_serverSideVisibilityDetect.SetValue(SERVERSIDE_VISIBILITY_GHOST, GHOST_VISIBILITY_ALIVE);
@@ -1606,7 +1606,14 @@ bool WorldObject::CanSeeOrDetect(WorldObject const* obj, bool ignoreStealth, boo
 
 bool WorldObject::CanNeverSee(WorldObject const* obj) const
 {
-    return GetMap() != obj->GetMap() || !IsInPhase(obj);
+    if (GetMap() != obj->GetMap() || !IsInPhase(obj))
+        return true;
+
+    if (obj->m_explicitSeerGuid == GetGUID())
+        return false;
+
+    // if this and obj do not have common seer, they should not see each other
+    return m_explicitSeerGuid != obj->m_explicitSeerGuid;
 }
 
 bool WorldObject::CanDetect(WorldObject const* obj, bool ignoreStealth, bool checkAlert) const
