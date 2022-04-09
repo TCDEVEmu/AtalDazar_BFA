@@ -107,7 +107,28 @@ class quest_cleanse_the_mind : public SpellScript
 	}
 };
 
+// 48988 Memory Breach
+struct quest_memory_breach : public QuestScript
+{
+    quest_memory_breach() : QuestScript("quest_memory_breach") { }
+
+    void OnQuestObjectiveChange(Player * player, Quest const* /*quest*/, QuestObjective const& objective, int32 /*oldAmount*/, int32 /*newAmount*/) override
+    {
+        if (player->HasQuest(QUEST_MEMORY_BREACH))
+            if (objective.ID == QUEST_OBJECTIVE_MEMORY_SEARCHED)
+                switch (player->GetQuestObjectiveCounter(QUEST_OBJECTIVE_MEMORY_SEARCHED))
+                {
+                case 0: player->GetSceneMgr().PlaySceneByPackageId(2189); break;
+                case 2: player->GetSceneMgr().PlaySceneByPackageId(2193); break;
+                case 5: player->GetSceneMgr().PlaySceneByPackageId(2194); break;
+                case 7: player->GetSceneMgr().PlaySceneByPackageId(2199); break;
+                }
+
+    }
+};
+
 void AddSC_zone_voldun()
 {
     RegisterSpellScript(quest_cleanse_the_mind);
+    RegisterQuestScript(quest_memory_breach);
 }
