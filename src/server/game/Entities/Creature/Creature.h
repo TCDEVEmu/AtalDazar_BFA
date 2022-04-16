@@ -388,6 +388,13 @@ class TC_GAME_API Creature : public Unit, public GridObject<Creature>, public Ma
 
         bool disableAffix;
         bool IsAffixDisabled() const { return disableAffix; }
+
+        // Used to control the movement, if is true the npc can move, if is false the npc can't move.
+        // You can use this method in any moment and the creature can enter/out of combat in this state, keep attacking or casting spells.
+        // The timer is for clear in the time especificated the state added.
+        // The timer must be in ms.
+        void SetInMovement(bool toSet = true, uint32 timer = 0);
+
     protected:
         bool CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data = nullptr, uint32 vehId = 0);
         bool InitEntry(uint32 entry, CreatureData const* data = nullptr);

@@ -2125,12 +2125,6 @@ class TC_GAME_API Unit : public WorldObject
 
         void DestroyForPlayer(Player* target) const override;
 
-        // Used to control the movement, if is true the npc can move, if is false the npc can't move.
-        // You can use this method in any moment and the creature can enter/out of combat in this state, keep attacking or casting spells.
-        // The timer is for clear in the time especificated the state added.
-        // The timer must be in ms.
-        void SetInMovement(bool toSet = true, uint32 timer = 0);
-
         // Pet Battle
         void SetCurrentPetBattle(uint32 petBattleId) { m_currentPetBattleId = petBattleId; }
         uint32 GetCurrentPetBattle() const { return m_currentPetBattleId; }
