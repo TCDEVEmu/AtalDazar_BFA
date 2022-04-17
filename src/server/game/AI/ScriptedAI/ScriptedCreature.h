@@ -445,4 +445,6 @@ TC_GAME_API void GetRandPosFromCenterInDist(Position* centerPos, float dist, Pos
 
 TC_GAME_API void GetPositionWithDistInFront(Position* centerPos, float dist, Position& movePosition);
 
+Player* GetFarthestPlayerInArea(WorldObject* owner, float range);
+
 #endif // SCRIPTEDCREATURE_H_

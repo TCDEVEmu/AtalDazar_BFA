@@ -828,3 +828,25 @@ void GetPositionWithDistInFront(Position* centerPos, float dist, Position& moveP
 {
     GetPositionWithDistInOrientation(centerPos, dist, centerPos->GetOrientation(), movePosition);
 }
+
+Player* GetFarthestPlayerInArea(WorldObject* owner, float range)
+{
+    Player* farth = nullptr;
+    float dist = 0.0f;
+    std::list<Player*> PlayersInArea;
+    GetPlayerListInGrid(PlayersInArea, owner, range);
+
+    for (auto&& itr : PlayersInArea)
+    {
+        if (itr->IsGameMaster())
+            continue;
+
+        if (itr->GetDistance2d(owner) > dist)
+        {
+            dist = itr->GetDistance2d(owner);
+            farth = itr;
+        }
+    }
+
+    return farth;
+}
