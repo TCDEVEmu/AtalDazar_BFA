@@ -170,13 +170,24 @@ public:
     }
 };
 
-class player_level_rewards : public PlayerScript
+enum Create_Garrison
+{
+    SPELL_CREATE_WAR_CAMPAIGN_H = 273381,
+    SPELL_CREATE_WAR_CAMPAIGN_A = 273382
+};
+
+class Player_Change_Level : public PlayerScript
 {
 public:
-    player_level_rewards() : PlayerScript("player_level_rewards") {}
+    Player_Change_Level() : PlayerScript("Player_Change_Level") {}
 
     void OnLevelChanged(Player* player, uint8 oldLevel) override
     {
+        if (oldLevel <= 110 && player->getLevel() >= 111) // Create WarCampaing
+        {
+           player->GetTeam() == ALLIANCE ? player->CastSpell(player, SPELL_CREATE_WAR_CAMPAIGN_A, false) : player->CastSpell(player, SPELL_CREATE_WAR_CAMPAIGN_H, false);
+        }
+
         if (oldLevel <= 119 && player->getLevel() >= 120)
         { 
             switch (player->getRace()) // Heritage Armor
@@ -305,7 +316,7 @@ void AddSC_custom_player_script()
     new ps_spell_azerite_residue();
     new PlayerScript_Hack_Phase_Update();
     new PlayerScript_Weekly_Quests();
-    RegisterPlayerScript(player_level_rewards);
+    RegisterPlayerScript(Player_Change_Level);
     new npc_rate_xp_modifier();
     new heirloom_mount_tempfix();
 }
