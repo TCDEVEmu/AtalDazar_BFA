@@ -2,6 +2,8 @@
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
 #include "ScriptedEscortAI.h"
+#include "GameObject.h"
+#include "SpellAuraEffects.h"
 
 enum eSpells
 {
@@ -2045,6 +2047,7 @@ struct npc_shekzeer_clutch_keeper : public ScriptedAI
                     events.ScheduleEvent(EVENT_SHA_BLAST, urand(6 * IN_MILLISECONDS, 12.5 * IN_MILLISECONDS));
                     break;
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -2057,14 +2060,14 @@ struct npc_mistblade_reapper : public ScriptedAI
     npc_mistblade_reapper(Creature* creature) : ScriptedAI(creature) { }
 
     EventMap events;
-    uint64 targetGUID;
+    ObjectGuid targetGUID;
     uint32 delay;
 
     void Reset() override
     {
         events.Reset();
         delay      = 0;
-        targetGUID = 0;
+        targetGUID.Clear();
     }
 
     void EnterCombat(Unit* /*who*/) override
@@ -2084,19 +2087,18 @@ struct npc_mistblade_reapper : public ScriptedAI
         {
             switch (eventId)
             {
-                case EVENT_SHADOWSTEP: /*
-                    if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
+                case EVENT_SHADOWSTEP: 
+                    if (Unit* target = SelectTarget(SELECT_TARGET_MAXDISTANCE))
                     {
                         targetGUID = target->GetGUID();
                         DoCast(target, SPELL_SHADOWSTEP);
                         
-                        delay = 0;
-                        me->m_Events.Schedule(delay += 500, 3, [this]()
+                        AddTimedDelayedOperation(500, [this]() -> void
                         {
                             if (Unit* target = ObjectAccessor::GetUnit(*me, targetGUID))
                                 DoCast(target, SPELL_UNSTABLE_SERUM);
                         }); 
-                    } */
+                    } 
 
                     events.ScheduleEvent(EVENT_SHADOWSTEP, urand(8 * IN_MILLISECONDS, 21 * IN_MILLISECONDS));
                     break;
@@ -2106,7 +2108,9 @@ struct npc_mistblade_reapper : public ScriptedAI
 
                     events.ScheduleEvent(EVENT_SLOWING_POISON, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
                     break;
+
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -2171,6 +2175,7 @@ struct npc_coldbite_matriarch : public ScriptedAI
                     events.ScheduleEvent(EVENT_SUMMON_HATCHLING, 25 * IN_MILLISECONDS);
                     break;
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -2373,1050 +2378,1065 @@ class spell_zet_uk_sha_eruption : public SpellScriptLoader
         }
 };
 
-//// Sha Eruption Periodic trigger - 130063
-//class spell_zet_uk_sha_eruption_periodic_summon : public SpellScriptLoader
-//{
-//    public:
-//        spell_zet_uk_sha_eruption_periodic_summon() : SpellScriptLoader("spell_zet_uk_sha_eruption_periodic_summon") { }
-//
-//        class spell_zet_uk_sha_eruption_periodic_summon_AuraScript : public AuraScript
-//        {
-//            PrepareAuraScript(spell_zet_uk_sha_eruption_periodic_summon_AuraScript);
-//
-//            void HandleEffectPeriodic(AuraEffect const* aurEff)
-//            {
-//                Unit*  caster = GetCaster();
-//                if (!caster)
-//                    return;
-//
-//                float dist = (float)aurEff->GetTickNumber() * 6.0f; // radius of damage spell * 2
-//                Position pos;
-//                caster->GetNearPosition(pos, dist, 0.0f);
-//                if (Creature* summon = caster->SummonCreature(NPC_SHA_ERUPTION_FIRE, pos, TEMPSUMMON_TIMED_DESPAWN, 20000)) // Summon spell target type NYI (138)
-//                    summon->CastSpell(summon, SPELL_SHA_ERUPTION_DAMAGE, true);
-//            }
-//
-//            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-//            {
-//                if (!GetCaster())
-//                    return;
-//
-//                if (TempSummon * casterTrigger = GetCaster()->ToTempSummon())
-//                    casterTrigger->DespawnOrUnsummon(0);
-//            }
-//
-//            void Register() override
-//            {
-//                OnEffectPeriodic += AuraEffectPeriodicFn(spell_zet_uk_sha_eruption_periodic_summon_AuraScript::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-//                AfterEffectRemove += AuraEffectRemoveFn(spell_zet_uk_sha_eruption_periodic_summon_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-//            }
-//        };
-//
-//        AuraScript* GetAuraScript() const override
-//        {
-//            return new spell_zet_uk_sha_eruption_periodic_summon_AuraScript();
-//        }
-//};
-//
-//class AreaTrigger_at_q_wood_and_shade : public AreaTriggerScript
-//{
-//    public:
-//        AreaTrigger_at_q_wood_and_shade() : AreaTriggerScript("at_q_wood_and_shade") { }
-//
-//        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
-//        {
-//            if (trigger->id == 8124)
-//                player->KilledMonsterCredit(62955);
-//            else
-//                player->KilledMonsterCredit(62956);
-//            return true;
-//        }
-//};
-//
-//// On the Crab quest
-//class go_full_crab_pot : public GameObjectScript
-//{
-//    public:
-//        go_full_crab_pot() : GameObjectScript("go_full_crab_pot") { }
-//
-//        bool OnGossipHello(Player* player, GameObject* go) override
-//        {
-//            if (player->GetQuestStatus(31187) == QUEST_STATUS_INCOMPLETE)
-//            {
-//                /*player->CastSpell(player, 89404, true);
-//                player->TeleportTo(player->GetMapId(), -9207.99f, -1560.32f, 65.46f, 0.82f);*/
-//                player->KilledMonsterCredit(64006);
-//                Position pos;
-//                go->GetPosition(&pos);
-//                if (auto crabTrap = player->SummonCreature(64009, pos, TEMPSUMMON_TIMED_DESPAWN, 10000))
-//                {
-//                    crabTrap->CastSpell(crabTrap, 124959, true);
-//                    pos.m_positionZ = pos.m_positionZ + 20;
-//                    crabTrap->GetMotionMaster()->MovePoint(1, pos);
-//                }
-//                go->SetRespawnTime(60);
-//            }
-//            return false;
-//        }
-//};
-//
-//// Living Amber quest
-//class spell_item_living_amber : public SpellScriptLoader
-//{
-//    public:
-//        spell_item_living_amber() : SpellScriptLoader("spell_item_living_amber") { }
-//
-//        class spell_item_living_amber_SpellScript : public SpellScript
-//        {
-//            PrepareSpellScript(spell_item_living_amber_SpellScript);
-//
-//            void HandleDummy(SpellEffIndex /*effIndex*/)
-//            {
-//                auto target = GetHitUnit();
-//                if (!target || target->GetTypeId() != TYPEID_UNIT || GetCaster()->GetTypeId() != TYPEID_PLAYER)
-//                    return;
-//
-//                auto player = GetCaster()->ToPlayer();
-//                if (player->GetQuestStatus(31021) == QUEST_STATUS_INCOMPLETE)
-//                {
-//                    uint16 questProgress = player->GetQuestSlotCounter(player->FindQuestSlot(31021), 0);
-//                    target->ToCreature()->AI()->Talk(questProgress);
-//                    player->KilledMonsterCredit(63204);
-//                }
-//            }
-//
-//            void Register() override
-//            {
-//                OnEffectHitTarget += SpellEffectFn(spell_item_living_amber_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-//            }
-//        };
-//
-//        SpellScript* GetSpellScript() const override
-//        {
-//            return new spell_item_living_amber_SpellScript();
-//        }
-//};
-//
-//class npc_hisek_the_swarmkeeper : public CreatureScript
-//{
-//    public:
-//        npc_hisek_the_swarmkeeper() : CreatureScript("npc_hisek_the_swarmkeeper") { }
-//
-//        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
-//        {
-//            if (quest->GetQuestId() == 31441)
-//            {
-//                Position pos;
-//                creature->GetPosition(&pos);
-//                uint64 playerGUID = player->GetGUID();
-//                if (auto qgiver = creature->SummonCreature(64705, pos))
-//                {
-//                    qgiver->SetExplicitSeerGuid(playerGUID);
-//                    qgiver->AI()->SetGUID(playerGUID);
-//                }
-//            }
-//
-//            return true;
-//        }
-//};
-//
-//class npc_hisek_the_swarmkeeper_summon : public CreatureScript
-//{
-//    public:
-//        npc_hisek_the_swarmkeeper_summon() : CreatureScript("npc_hisek_the_swarmkeeper_summon") { }
-//
-//        struct npc_hisek_the_swarmkeeper_summonAI : public ScriptedAI
-//        {
-//            npc_hisek_the_swarmkeeper_summonAI(Creature* creature) : ScriptedAI(creature) { }
-//
-//            uint8 phase;
-//            uint32 phaseTimer;
-//            uint64 playerGUID;
-//            uint64 traitorGUID;
-//
-//            void Reset() override
-//            {
-//                phase = 0;
-//                phaseTimer = 500;
-//                traitorGUID = 0;
-//                playerGUID = 0;
-//            }
-//
-//            void SetGUID(uint64 guid, int32 /*type*/) override
-//            {
-//                playerGUID = guid;
-//            }
-//
-//            void UpdateAI(uint32 diff) override
-//            {
-//                if (playerGUID && phaseTimer <= diff)
-//                {
-//                    if (phase == 0)
-//                    {
-//                        Talk(0);
-//                        phaseTimer = 2000;
-//                    }
-//                    else if (phase == 1)
-//                    {
-//                        if (auto traitor = me->SummonCreature(64813, -572.95f, 3015.31f, 181.15f, 2.17f))
-//                        {
-//                            traitorGUID = traitor->GetGUID();
-//                            me->GetMotionMaster()->MovePoint(1, -577.2f, 3021.62f, 183.7f);
-//                            traitor->SetExplicitSeerGuid(playerGUID);
-//                            traitor->AI()->Talk(0);
-//                        }
-//                        phaseTimer = 4000;
-//                    }
-//                    else if (phase == 2)
-//                    {
-//                        Talk(1);
-//                        phaseTimer = 5000;
-//                    }
-//                    else if (phase == 3 || phase == 4)
-//                    {
-//                        if (auto traitor = me->GetCreature(*me, traitorGUID))
-//                            traitor->AI()->Talk(phase == 3 ? 1 : 2);
-//                        phaseTimer = 6000;
-//                    }
-//                    else if (phase == 5 || phase == 6)
-//                    {
-//                        Talk(phase == 5 ? 2 : 3);
-//                        phaseTimer = 6000;
-//                    }
-//                    else if (phase == 7)
-//                    {
-//                        if (auto traitor = me->GetCreature(*me, traitorGUID))
-//                            traitor->AI()->Talk(3);
-//                        phaseTimer = 4000;
-//                    }
-//                    else if (phase == 8)
-//                    {
-//                        if (auto traitor = me->GetCreature(*me, traitorGUID))
-//                        {
-//                            traitor->AI()->Talk(4);
-//                            traitor->UpdateEntry(64583);
-//                            AttackStart(traitor);
-//                            playerGUID = 0;
-//                        }
-//                    }
-//
-//                    phase++;
-//                }
-//                else
-//                    phaseTimer -= diff;
-//
-//                if (me->GetVictim())
-//                    DoMeleeAttackIfReady();
-//            }
-//        };
-//
-//        CreatureAI* GetAI(Creature* creature) const override
-//        {
-//            return new npc_hisek_the_swarmkeeper_summonAI(creature);
-//        }
-//};
-//
-//// Klaxxi`va Ik 65767
-//class npc_klaxxiva_ik : public CreatureScript
-//{
-//    public:
-//        npc_klaxxiva_ik() : CreatureScript("npc_klaxxiva_ik") { }
-//
-//        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
-//        {
-//            if (quest->GetQuestId() == QUEST_OVERTHRONE)
-//                player->CastSpell(player, SPELL_KLAXXI_SCENE_SHEKZEER, true);
-//
-//            return false;
-//        }
-//
-//        struct npc_klaxxiva_ikAI : public ScriptedAI
-//        {
-//            npc_klaxxiva_ikAI(Creature* creature) : ScriptedAI(creature) { }
-//
-//            void InitializeAI() override
-//            {
-//                uint32 delay = 0;
-//                me->m_Events.Schedule(delay += 1000, 1, [this]()
-//                {
-//                    DoCast(me, SPELL_KLAXXI_RESONANCE);
-//                });
-//            }
-//        };
-//
-//        CreatureAI* GetAI(Creature* creature) const override
-//        {
-//            return new npc_klaxxiva_ikAI(creature);
-//        }
-//};
-//
-//enum q31185
-//{
-//    QUEST_WALKING_DOG       = 31185,
-//
-//    AT_SILT_VENS            = 8169,
-//    AT_MIST_HOPPER          = 8230,
-//    AT_WHALE_CORPSE         = 8231,
-//
-//    NPC_CREDIT_SILT_VENS    = 63879,
-//    NPC_CREDIT_MIST_HOPPER  = 63880,
-//    NPC_CREDIT_WHALE_CORPSE = 63881,
-//
-//    NPC_DOG                 = 63955,
-//
-//    OBJ_CREDIT_SILT_VENS    = 268448,
-//    OBJ_CREDIT_MIST_HOPPER  = 268449,
-//    OBJ_CREDIT_WHALE_CORPSE = 268450,
-//};
-//
-//class AreaTrigger_q31185 : public AreaTriggerScript
-//{
-//    public:
-//        AreaTrigger_q31185() : AreaTriggerScript("AreaTrigger_q31185") { }
-//
-//        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
-//        {
-//            if (player->GetQuestStatus(QUEST_WALKING_DOG) != QUEST_STATUS_INCOMPLETE)
-//                return true;
-//
-//            std::list<TempSummon*> summons;
-//            player->GetSummons(summons, NPC_DOG);
-//
-//            if (summons.empty())
-//                return true;
-//
-//            Creature* dog = summons.back();
-//
-//            if (player->GetDistance(dog) > 10.0f)
-//                return true;
-//
-//            switch (trigger->id)
-//            {
-//                case AT_SILT_VENS:
-//                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_SILT_VENS))
-//                    {
-//                        player->KilledMonsterCredit(NPC_CREDIT_SILT_VENS);
-//                        dog->AI()->Talk(0);
-//                    }
-//                    break;
-//                case AT_MIST_HOPPER:
-//                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_MIST_HOPPER))
-//                    {
-//                        player->KilledMonsterCredit(NPC_CREDIT_MIST_HOPPER);
-//                        dog->AI()->Talk(1);
-//                    }
-//                    break;
-//                case AT_WHALE_CORPSE:
-//                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_WHALE_CORPSE))
-//                    {
-//                        player->KilledMonsterCredit(NPC_CREDIT_WHALE_CORPSE);
-//                        dog->AI()->Talk(2);
-//                    }
-//                    break;
-//            }
-//
-//            return true;
-//        }
-//};
-//
-//enum q31182
-//{
-//    NPC_COLDWHISKER_OTTER = 63376,
-//    SPELL_FED             = 123803,
-//};
-//
-//class spell_q31182 : public SpellScript
-//{
-//    PrepareSpellScript(spell_q31182);
-//
-//    SpellCastResult CheckTarget()
-//    {
-//        if (!GetExplTargetUnit())
-//            return SPELL_FAILED_BAD_TARGETS;
-//
-//        if (GetExplTargetUnit()->GetEntry() != NPC_COLDWHISKER_OTTER || GetExplTargetUnit()->HasAura(SPELL_FED))
-//            return SPELL_FAILED_BAD_TARGETS;
-//
-//        return SPELL_CAST_OK;
-//    }
-//
-//    void Register() override
-//    {
-//        OnCheckCast += SpellCheckCastFn(spell_q31182::CheckTarget);
-//    }
-//};
-//
-//enum q31487
-//{
-//    NPC_DREAD_KUNCHONG = 64717,
-//};
-//
-//class spell_q31487 : public SpellScript
-//{
-//    PrepareSpellScript(spell_q31487);
-//
-//    void FilterTargets(std::list<WorldObject*>& targets)
-//    {
-//        targets.remove_if([=](WorldObject* obj) { return obj->GetEntry() != NPC_DREAD_KUNCHONG; });
-//    }
-//
-//    void Register() override
-//    {
-//        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_q31487::FilterTargets, EFFECT_ALL, TARGET_UNIT_DEST_AREA_ENTRY);
-//    }
-//};
-//
-//enum q31233
-//{
-//    SPELL_SAP_EXTRACTOR      = 124354, // visual npc model
-//    SPELL_AMBER_STREAM       = 124348, // visual spell
-//    SPELL_SUMMON_AMBER_POT   = 124364,
-//    SPELL_SUMMON_AMBER_POT_2 = 124344,
-//
-//    OBJECT_AMBER_POT         = 213326,
-//};
-//
-//struct npc_amber_tap : public ScriptedAI
-//{
-//    npc_amber_tap(Creature* creature) : ScriptedAI(creature) { }
-//
-//    void Reset() override
-//    {
-//        me->CastSpell(me, SPELL_SAP_EXTRACTOR);
-//        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
-//    }
-//
-//    void OnSpellClick(Unit* clicker, bool& /*result*/) override
-//    {
-//        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
-//        me->CastSpell(me, SPELL_AMBER_STREAM);
-//        me->DespawnOrUnsummon(5000);
-//
-//        uint32 delay = 0;
-//        me->m_Events.Schedule(delay += 4000, [this]() { me->CastSpell(me, SPELL_SUMMON_AMBER_POT_2); });
-//    }
-//};
-//
-//// Kilruk Wind-Reaver 62538
-//class npc_kilruk_wind_reaver : public CreatureScript
-//{
-//    public:
-//        npc_kilruk_wind_reaver() : CreatureScript("npc_kilruk_wind_reaver") { }
-//
-//        bool OnGossipHello(Player* player, Creature* creature) override
-//        {
-//            if (creature->IsQuestGiver())
-//                player->PrepareQuestMenu(creature->GetGUID());
-//
-//            // Missed Gossip ID
-//            if (player->GetQuestStatus(QUEST_SHADOW_OF_EMPIRE) == QUEST_STATUS_INCOMPLETE)
-//                player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-//
-//            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-//
-//            return true;
-//        }
-//
-//        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-//        {
-//            player->PlayerTalkClass->ClearMenus();
-//
-//            if (action == GOSSIP_ACTION_INFO_DEF + 1)
-//            {
-//                player->SetPhaseMask(3, true);
-//
-//                if (Creature* Kilruk_reaver = player->SummonCreature(NPC_KILRUK_QUEST, *creature, TEMPSUMMON_TIMED_DESPAWN, 300 * IN_MILLISECONDS))
-//                    Kilruk_reaver->SetPhaseMask(2, true);
-//            }
-//
-//            player->CLOSE_GOSSIP_MENU();
-//
-//            return true;
-//        }
-//};
-//
-//// kil`ruk wind-reaver quest shadow of empire 66800
-//class npc_kilruk_quest_shadow_of_empire : public CreatureScript
-//{
-//    public:
-//        npc_kilruk_quest_shadow_of_empire() : CreatureScript("npc_kilruk_quest_shadow_of_empire") { }
-//
-//        struct npc_kilruk_quest_shadow_of_empireAI : public ScriptedAI
-//        {
-//            npc_kilruk_quest_shadow_of_empireAI(Creature* creature) : ScriptedAI(creature) { }
-//
-//            uint64 summonerGUID;
-//            uint32 delay;
-//
-//            void IsSummonedBy(Unit* summoner) override
-//            {
-//                summonerGUID = summoner->GetGUID();
-//                me->SetSpeed(MOVE_WALK, 1.15f);
-//                delay = 0;
-//                me->m_Events.Schedule(delay += 1500, 1, [this]()
-//                {
-//                    Talk(SAY_INTRO);
-//                });
-//
-//                me->m_Events.Schedule(delay += 7200, 2, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_1);
-//
-//                    delay = 0;
-//                    me->m_Events.Schedule(delay += 1000, 3, [this]()
-//                    {
-//                        Movement::MoveSplineInit init(me);
-//                        for (auto itr : KilrukChamberPath)
-//                            init.Path().push_back(G3D::Vector3(itr.GetPositionX(), itr.GetPositionY(), itr.GetPositionZ()));
-//
-//                        init.SetWalk(true);
-//                        init.Launch();
-//
-//                        me->m_Events.Schedule(delay += me->GetSplineDuration(), 17, [this]()
-//                        {
-//                            if (Player* itr = ObjectAccessor::GetPlayer(*me, summonerGUID))
-//                            {
-//                                itr->KilledMonsterCredit(NPC_KILRUK_QUEST);
-//
-//                                delay = 0;
-//                                me->m_Events.Schedule(delay += 5000, 20, [this, itr]()
-//                                {
-//                                    itr->SetPhaseMask(1, true);
-//                                    me->DespawnOrUnsummon();
-//                                });
-//                            }
-//                        });
-//
-//                        delay = 0;
-//                        me->m_Events.Schedule(delay += 10200, 4, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_2);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 10000, 5, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_3);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 9000, 6, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_4);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 11100, 7, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_5);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 12000, 8, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_6);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 8000, 9, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_7);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 13000, 10, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_8);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 8000, 11, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_9);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 13400, 12, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_10);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 6000, 13, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_11);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 6000, 14, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_12);
-//                        });
-//
-//                        me->m_Events.Schedule(delay += 8000, 15, [this]()
-//                        {
-//                            Talk(SAY_SPECIAL_13);
-//                        });
-//                    });
-//                });
-//            }
-//        };
-//
-//        CreatureAI* GetAI(Creature* creature) const override
-//        {
-//            return new npc_kilruk_quest_shadow_of_empireAI(creature);
-//        }
-//};
-//
-//// Malik the Unscathed 66776
-//class npc_malik_the_unscathed_quest_empress_gambit : public CreatureScript
-//{
-//    public:
-//        npc_malik_the_unscathed_quest_empress_gambit() : CreatureScript("npc_malik_the_unscathed_quest_empress_gambit") { }
-//
-//        bool OnGossipHello(Player* player, Creature* creature) override
-//        {
-//            if (creature->IsQuestGiver())
-//                player->PrepareQuestMenu(creature->GetGUID());
-//
-//            // Missed Gossip ID
-//            if (player->GetQuestStatus(QUEST_EMPRESS_GAMBIT) == QUEST_STATUS_INCOMPLETE)
-//                player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-//
-//            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
-//
-//            return true;
-//        }
-//
-//        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-//        {
-//            player->PlayerTalkClass->ClearMenus();
-//
-//            if (action == GOSSIP_ACTION_INFO_DEF + 1)
-//                player->CastSpell(player, SPELL_KLAXXI_EMPRESS_GAMBIT, true);
-//
-//            player->CLOSE_GOSSIP_MENU();
-//
-//            return true;
-//        }
-//};
-//
-//// Malik Unscathed Trigger 66797
-//class npc_malik_the_unscathed_quest_empress_gambit_trigger : public CreatureScript
-//{
-//    public:
-//        npc_malik_the_unscathed_quest_empress_gambit_trigger() : CreatureScript("npc_malik_the_unscathed_quest_empress_gambit_trigger") { }
-//
-//        struct npc_malik_the_unscathed_quest_empress_gambit_triggerAI : public ScriptedAI
-//        {
-//            npc_malik_the_unscathed_quest_empress_gambit_triggerAI(Creature* creature) : ScriptedAI(creature) { }
-//
-//            uint64 summonerGUID;
-//            uint32 delay;
-//            float x, y;
-//
-//            void IsSummonedBy(Unit* summoner) override
-//            {
-//                summonerGUID = summoner->GetGUID();
-//                me->SetPhaseMask(2, true);
-//                delay = 0;
-//                me->m_Events.Schedule(delay += 1000, 1, [this]()
-//                {
-//                    Talk(SAY_INTRO);
-//                });
-//
-//                me->m_Events.Schedule(delay += 14000, 2, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_1);
-//                });
-//
-//                me->m_Events.Schedule(delay += 12000, 3, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_2);
-//
-//                    Movement::MoveSplineInit init(me);
-//                    for (auto itr : MalikStairsPath)
-//                        init.Path().push_back(G3D::Vector3(itr.GetPositionX(), itr.GetPositionY(), itr.GetPositionZ()));
-//
-//                    init.SetWalk(true);
-//                    init.Launch();
-//                });
-//
-//                me->m_Events.Schedule(delay += 17000, 4, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_3);
-//
-//                    me->OverrideInhabitType(INHABIT_AIR);
-//                    me->UpdateMovementFlags();
-//                    me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 17.0f, me->GetOrientation());
-//                });
-//            }
-//        };
-//
-//        CreatureAI* GetAI(Creature* creature) const override
-//        {
-//            return new npc_malik_the_unscathed_quest_empress_gambit_triggerAI(creature);
-//        }
-//};
-//
-//// Grand Vizier Zorlok 66791
-//class npc_grand_vizier_zorlok_quest_empress_gambit : public CreatureScript
-//{
-//    public:
-//        npc_grand_vizier_zorlok_quest_empress_gambit() : CreatureScript("npc_grand_vizier_zorlok_quest_empress_gambit") { }
-//
-//        struct npc_grand_vizier_zorlok_quest_empress_gambitAI : public ScriptedAI
-//        {
-//            npc_grand_vizier_zorlok_quest_empress_gambitAI(Creature* creature) : ScriptedAI(creature) { }
-//
-//            uint64 summonerGUID;
-//            uint32 delay;
-//            float x, y;
-//
-//            void IsSummonedBy(Unit* summoner) override
-//            {
-//                summonerGUID = summoner->GetGUID();
-//                me->SetPhaseMask(2, true);
-//                delay = 0;
-//                x = 0.0f; y = 0.0f;
-//                me->m_Events.Schedule(delay += 1000, 1, [this]()
-//                {
-//                    GetPositionWithDistInOrientation(me, 30.0f, me->GetOrientation(), x, y);
-//                    me->GetMotionMaster()->MovePoint(0, x, y, me->GetPositionZ(), me->GetOrientation());
-//                });
-//
-//                me->m_Events.Schedule(delay += 6500, 2, [this]()
-//                {
-//                    Talk(SAY_INTRO);
-//                });
-//
-//                me->m_Events.Schedule(delay += 15000, 3, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_1);
-//                });
-//
-//                me->m_Events.Schedule(delay += 16000, 4, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_2);
-//                });
-//
-//                me->m_Events.Schedule(delay += 9800, 5, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_3);
-//                });
-//
-//                me->m_Events.Schedule(delay += 8700, 6, [this]()
-//                {
-//                    DoCast(me, SPELL_ZORLOK_SHOUT);
-//                });
-//
-//                me->m_Events.Schedule(delay += 8300, 7, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_4);
-//                });
-//
-//                me->m_Events.Schedule(delay += 6200, 8, [this]()
-//                {
-//                    Talk(SAY_SPECIAL_5);
-//
-//                    if (Player* itr = ObjectAccessor::GetPlayer(*me, summonerGUID))
-//                        itr->KilledMonsterCredit(NPC_MALIC_QUEST);
-//                });
-//
-//                me->m_Events.Schedule(delay += 8400, 9, [this]()
-//                {
-//                    Movement::MoveSplineInit init(me);
-//                    init.MoveTo(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY(), me->GetHomePosition().GetPositionZ());
-//
-//                    init.SetWalk(true);
-//                    init.Launch();
-//                    me->DespawnOrUnsummon(me->GetSplineDuration());
-//                });
-//            }
-//        };
-//
-//        CreatureAI* GetAI(Creature* creature) const override
-//        {
-//            return new npc_grand_vizier_zorlok_quest_empress_gambitAI(creature);
-//        }
-//};
-//
-//class spell_q31233 : public SpellScript
-//{
-//    PrepareSpellScript(spell_q31233);
-//
-//    void ChangeSummonPos(SpellEffIndex /*effIndex*/)
-//    {
-//        WorldLocation summonPos = *GetExplTargetDest();
-//        summonPos.RelocateOffset(0.0f, 1.5f, -3.0f);
-//        SetExplTargetDest(summonPos);
-//        GetHitDest()->RelocateOffset(0.0f, 1.5f, -3.0f);
-//    }
-//
-//    void Register() override
-//    {
-//        OnEffectHit += SpellEffectFn(spell_q31233::ChangeSummonPos, EFFECT_0, SPELL_EFFECT_SUMMON_OBJECT_WILD);
-//    }
-//};
-//
-//// Empress Gambit Quest 131196
-//class spell_empress_gambit_quest : public AuraScript
-//{
-//    PrepareAuraScript(spell_empress_gambit_quest);
-//
-//    void Remove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-//    {
-//        if (Player* pCaster = GetCaster()->ToPlayer())
-//            pCaster->SetPhaseMask(1, true);
-//    }
-//
-//    void Apply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-//    {
-//        if (Player* pCaster = GetCaster()->ToPlayer())
-//            pCaster->SetPhaseMask(3, true);
-//    }
-//
-//    void Register() override
-//    {
-//        OnEffectRemove += AuraEffectRemoveFn(spell_empress_gambit_quest::Remove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-//        OnEffectApply += AuraEffectApplyFn(spell_empress_gambit_quest::Apply, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-//    }
-//};
-//
-//// Zorlok Shout 131201 
-//class spell_zorlok_shout : public SpellScript
-//{
-//    PrepareSpellScript(spell_zorlok_shout);
-//
-//    void FilterTargets(std::list<WorldObject*>& targets)
-//    {
-//        targets.remove_if([=](WorldObject* target) { return target->GetEntry() != NPC_MALIC_QUEST_1; });
-//    }
-//
-//    void HandleOnHit()
-//    {
-//        if (Unit* caster = GetCaster())
-//            if (Unit* target = GetHitUnit())
-//                caster->Kill(target);
-//    }
-//
-//    void Register() override
-//    {
-//        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_zorlok_shout::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENTRY);
-//        OnHit += SpellHitFn(spell_zorlok_shout::HandleOnHit);
-//    }
-//};
-//
-//// Scene 72 (Package 212)
-//class scene_klaxxi_head_explosion : public SceneScript
-//{
-//    public:
-//        scene_klaxxi_head_explosion() : SceneScript("scene_klaxxi_head_explosion") { }
-//
-//        void OnSceneStart(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-//        {
-//            player->SetPhaseMask(2, true);
-//        }
-//
-//        void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-//        {
-//            CreditScene(player);
-//        }
-//
-//        void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-//        {
-//            CreditScene(player);
-//        }
-//
-//        void CreditScene(Player* player)
-//        {
-//            player->SetPhaseMask(1, true);
-//            player->KilledMonsterCredit(65772);
-//        }
-//};
-//
-//Position eventPos[5] =
-//{
-//    { -435.141f, 3614.94f, 61.9383f, 1.02147f }, // 65486
-//    { -421.821f, 3628.65f, 61.8022f, 3.91377f }, // 65486
-//    { -396.978f, 3595.15f, 47.5945f, 2.49012f }, // 65486
-//    { -354.528f, 3564.46f, 39.9380f, 2.43198f }, // 65475
-//    { -359.121f, 3565.36f, 39.9380f, 6.11604f }, // 65478
-//};
-//
-//class AreaTrigger_q31087 : public AreaTriggerScript
-//{
-//    public:
-//        AreaTrigger_q31087() : AreaTriggerScript("AreaTrigger_q31087") { }
-//
-//        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
-//        {
-//            if (player->GetQuestStatus(31087) != QUEST_STATUS_INCOMPLETE)
-//                return true;
-//
-//            player->KilledMonsterCredit(65328);
-//
-//            if (player->FindNearestCreature(65478, 100.0f) || player->FindNearestCreature(65486, 100.0f) || player->FindNearestCreature(65475, 100.0f))
-//                return true;
-//
-//            for (uint32 i = 0; i < 3; i++)
-//                player->SummonCreature(65486, eventPos[i], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
-//
-//            player->m_Events.Schedule(10000, [=]()
-//            {
-//                if (Creature* korik = player->SummonCreature(65475, eventPos[3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 66000))
-//                    korik->HandleEmoteCommand(EMOTE_STATE_STRANGULATE);
-//                if (Creature* adjunct = player->SummonCreature(65478, eventPos[4], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 66000))
-//                    adjunct->AI()->Talk(0);
-//            });
-//
-//            return true;
-//        }
-//};
-//
-//class go_silent_beacon : public GameObjectScript
-//{
-//    public:
-//        go_silent_beacon() : GameObjectScript("go_silent_beacon") { }
-//
-//        bool OnReportUse(Player* player, GameObject* go) override
-//        {
-//            if (Creature* korik = go->FindNearestCreature(65475, 50.0f))
-//                korik->AI()->Talk(0);
-//
-//            return true;
-//        }
-//};
-//
-//enum BoundWithShadesType
-//{
-//    SPELL_DREAD_CLAW_2      = 128026,
-//    SPELL_SHADOW_CLAW       = 128059,
-//    SPELL_GATHER_SHADE_10   = 122723,
-//    SPELL_GATHER_SHADE_2    = 122721,
-//
-//    EVENT_DREAD_CLAW_2 = 1,
-//    EVENT_SHADOW_CLAW,
-//
-//    QUEST_BOUND_WITH_SHADES = 31069,
-//
-//    NPC_SHADE_CREDIT        = 62817,
-//};
-//
-//// Dread Lurker 62751
-//struct npc_dread_waster_dread_lurker : public customCreatureAI
-//{
-//    npc_dread_waster_dread_lurker(Creature* creature) : customCreatureAI(creature) { }
-//
-//    void Reset() override
-//    {
-//        events.Reset();
-//    }
-//
-//    void EnterCombat(Unit* /*who*/) override
-//    {
-//        events.ScheduleEvent(EVENT_DREAD_CLAW_2, 4 * IN_MILLISECONDS);
-//    }
-//
-//    void JustDied(Unit* killer) override 
-//    {
-//        if (killer->ToPlayer())
-//            killer->ToPlayer()->CastSpell(killer->ToPlayer(), SPELL_GATHER_SHADE_10, true);
-//    }
-//
-//    void UpdateAI(uint32 diff) override
-//    {
-//        if (!UpdateVictim())
-//            return;
-//
-//        events.Update(diff);
-//
-//        if (me->HasUnitState(UNIT_STATE_CASTING))
-//            return;
-//
-//        while (uint32 eventId = events.ExecuteEvent())
-//        {
-//            ExecuteTargetEvent(SPELL_DREAD_CLAW_2, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS), EVENT_DREAD_CLAW_2, eventId, PRIORITY_CHANNELED);
-//            break;
-//        }
-//
-//        DoMeleeAttackIfReady();
-//    }
-//};
-//
-//// Nagging Dreadling 65996
-//struct npc_dread_waster_nagging_dreadling : public customCreatureAI
-//{
-//    npc_dread_waster_nagging_dreadling(Creature* creature) : customCreatureAI(creature) { }
-//
-//    void Reset() override
-//    {
-//        events.Reset();
-//    }
-//
-//    void EnterCombat(Unit* /*who*/) override
-//    {
-//        events.ScheduleEvent(EVENT_SHADOW_CLAW, urand(3 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
-//    }
-//
-//    void JustDied(Unit* killer) override
-//    {
-//        if (killer->ToPlayer())
-//            killer->ToPlayer()->CastSpell(killer->ToPlayer(), SPELL_GATHER_SHADE_2, true);
-//    }
-//
-//    void UpdateAI(uint32 diff) override
-//    {
-//        if (!UpdateVictim())
-//            return;
-//
-//        events.Update(diff);
-//
-//        if (me->HasUnitState(UNIT_STATE_CASTING))
-//            return;
-//
-//        while (uint32 eventId = events.ExecuteEvent())
-//        {
-//            ExecuteTargetEvent(SPELL_SHADOW_CLAW, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS), EVENT_SHADOW_CLAW, eventId);
-//            break;
-//        }
-//
-//        DoMeleeAttackIfReady();
-//    }
-//};
-//
-//// Gather Shade 122721, 122723
-//class spell_dread_waster_gather_shade : public SpellScript
-//{
-//    PrepareSpellScript(spell_dread_waster_gather_shade);
-//
-//    void HandleHit(SpellEffIndex effIndex)
-//    {
-//        if (Player* target = GetHitPlayer())
-//            if (target->GetQuestStatus(QUEST_BOUND_WITH_SHADES) == QUEST_STATUS_INCOMPLETE)
-//                target->KilledMonsterCredit(NPC_SHADE_CREDIT, 0, GetSpellInfo()->Effects[effIndex].BasePoints);
-//    }
-//
-//    void Register() override
-//    {
-//        OnEffectHitTarget += SpellEffectFn(spell_dread_waster_gather_shade::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
-//    }
-//};
-//
-//// Sonic Emission 124729
-//class spell_dread_waster_sonic_emission : public SpellScript
-//{
-//    PrepareSpellScript(spell_dread_waster_sonic_emission);
-//
-//    void HandleHit(SpellEffIndex effIndex)
-//    {
-//        if (Creature* target = GetHitCreature())
-//        {
-//            if (target->GetEntry() == NPC_IK_THIK_AMBERSTINGER)
-//            {
-//                target->CastSpell(target, SPELL_SONIC_SHOCK, true);
-//
-//                // no info how it should work, but debuf only visual (model scale), just set default hp value for 90 lvl creature on apply
-//                target->SetMaxHealth(393900);
-//            }
-//        }
-//    }
-//
-//    void Register() override
-//    {
-//        OnEffectHitTarget += SpellEffectFn(spell_dread_waster_sonic_emission::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
-//    }
-//};
+// Sha Eruption Periodic trigger - 130063
+class spell_zet_uk_sha_eruption_periodic_summon : public SpellScriptLoader
+{
+    public:
+        spell_zet_uk_sha_eruption_periodic_summon() : SpellScriptLoader("spell_zet_uk_sha_eruption_periodic_summon") { }
+
+        class spell_zet_uk_sha_eruption_periodic_summon_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_zet_uk_sha_eruption_periodic_summon_AuraScript);
+
+            void HandleEffectPeriodic(AuraEffect const* aurEff)
+            {
+                Unit*  caster = GetCaster();
+                if (!caster)
+                    return;
+                
+                float dist = aurEff->GetTickNumber() * 6.0f; // radius of damage spell * 2
+                Position pos;
+                caster->GetNearPosition(dist, 0.0f);
+                if (Creature* summon = caster->SummonCreature(NPC_SHA_ERUPTION_FIRE, pos, TEMPSUMMON_TIMED_DESPAWN, 20000)) // Summon spell target type NYI (138)
+                    summon->CastSpell(summon, SPELL_SHA_ERUPTION_DAMAGE, true);
+            }
+
+            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (!GetCaster())
+                    return;
+
+                if (TempSummon * casterTrigger = GetCaster()->ToTempSummon())
+                    casterTrigger->DespawnOrUnsummon(0);
+            }
+
+            void Register() override
+            {
+                OnEffectPeriodic += AuraEffectPeriodicFn(spell_zet_uk_sha_eruption_periodic_summon_AuraScript::HandleEffectPeriodic, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+                AfterEffectRemove += AuraEffectRemoveFn(spell_zet_uk_sha_eruption_periodic_summon_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_zet_uk_sha_eruption_periodic_summon_AuraScript();
+        }
+};
+/*
+class AreaTrigger_at_q_wood_and_shade : public AreaTriggerScript
+{
+    public:
+        AreaTrigger_at_q_wood_and_shade() : AreaTriggerScript("at_q_wood_and_shade") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        {
+            if (trigger->id == 8124)
+                player->KilledMonsterCredit(62955);
+            else
+                player->KilledMonsterCredit(62956);
+            return true;
+        }
+};
+*/
+// On the Crab quest
+class go_full_crab_pot : public GameObjectScript
+{
+    public:
+        go_full_crab_pot() : GameObjectScript("go_full_crab_pot") { }
+
+        bool OnGossipHello(Player* player, GameObject* go) override
+        {
+            if (player->GetQuestStatus(31187) == QUEST_STATUS_INCOMPLETE)
+            {
+                /*player->CastSpell(player, 89404, true);
+                player->TeleportTo(player->GetMapId(), -9207.99f, -1560.32f, 65.46f, 0.82f);*/
+                player->KilledMonsterCredit(64006);
+                Position pos = {go->GetPositionX(), go->GetPositionY(), go->GetPositionZ(), go->GetOrientation()};
+                if (auto crabTrap = player->SummonCreature(64009, pos, TEMPSUMMON_TIMED_DESPAWN, 10000))
+                {
+                    crabTrap->CastSpell(crabTrap, 124959, true);
+                    pos.m_positionZ = pos.m_positionZ + 20;
+                    crabTrap->GetMotionMaster()->MovePoint(1, pos);
+                }
+                go->SetRespawnTime(60);
+            }
+            return false;
+        }
+};
+
+// Living Amber quest
+class spell_item_living_amber : public SpellScriptLoader
+{
+    public:
+        spell_item_living_amber() : SpellScriptLoader("spell_item_living_amber") { }
+
+        class spell_item_living_amber_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_item_living_amber_SpellScript);
+
+            void HandleDummy(SpellEffIndex /*effIndex*/)
+            {
+                auto target = GetHitUnit();
+                if (!target || target->GetTypeId() != TYPEID_UNIT || GetCaster()->GetTypeId() != TYPEID_PLAYER)
+                    return;
+
+                auto player = GetCaster()->ToPlayer();
+                if (player->GetQuestStatus(31021) == QUEST_STATUS_INCOMPLETE)
+                {
+                    uint16 questProgress = player->GetQuestSlotCounter(player->FindQuestSlot(31021), 0);
+                    target->ToCreature()->AI()->Talk(questProgress);
+                    player->KilledMonsterCredit(63204);
+                }
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_item_living_amber_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_item_living_amber_SpellScript();
+        }
+};
+
+class npc_hisek_the_swarmkeeper : public CreatureScript
+{
+    public:
+        npc_hisek_the_swarmkeeper() : CreatureScript("npc_hisek_the_swarmkeeper") { }
+
+        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == 31441)
+            {
+                Position pos = { creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation() };
+                ObjectGuid playerGUID = player->GetGUID();
+                if (auto qgiver = creature->SummonCreature(64705, pos))
+                {
+                    qgiver->SetExplicitSeerGuid(playerGUID);
+                    qgiver->AI()->SetGUID(playerGUID);
+                }
+            }
+
+            return true;
+        }
+};
+
+class npc_hisek_the_swarmkeeper_summon : public CreatureScript
+{
+    public:
+        npc_hisek_the_swarmkeeper_summon() : CreatureScript("npc_hisek_the_swarmkeeper_summon") { }
+
+        struct npc_hisek_the_swarmkeeper_summonAI : public ScriptedAI
+        {
+            npc_hisek_the_swarmkeeper_summonAI(Creature* creature) : ScriptedAI(creature) { }
+
+            uint8 phase;
+            uint32 phaseTimer;
+            ObjectGuid playerGUID;
+            ObjectGuid traitorGUID;
+
+            void Reset() override
+            {
+                phase = 0;
+                phaseTimer = 500;
+                traitorGUID.Clear();
+                playerGUID.Clear();
+            }
+
+            void SetGUID(ObjectGuid guid, int32 /*type*/) override
+            {
+                playerGUID = guid;
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!playerGUID)
+                    return;
+
+                if (phaseTimer <= diff)
+                {
+                    if (phase == 0)
+                    {
+                        Talk(0);
+                        phaseTimer = 2000;
+                    }
+                    else if (phase == 1)
+                    {
+                        if (auto traitor = me->SummonCreature(64813, -572.95f, 3015.31f, 181.15f, 2.17f))
+                        {
+                            traitorGUID = traitor->GetGUID();
+                            me->GetMotionMaster()->MovePoint(1, -577.2f, 3021.62f, 183.7f);
+                            traitor->SetExplicitSeerGuid(playerGUID);
+                            traitor->AI()->Talk(0);
+                        }
+                        phaseTimer = 4000;
+                    }
+                    else if (phase == 2)
+                    {
+                        Talk(1);
+                        phaseTimer = 5000;
+                    }
+                    else if (phase == 3 || phase == 4)
+                    {
+                        if (auto traitor = ObjectAccessor::GetCreature(*me, traitorGUID))
+                            traitor->AI()->Talk(phase == 3 ? 1 : 2);
+                        phaseTimer = 6000;
+                    }
+                    else if (phase == 5 || phase == 6)
+                    {
+                        Talk(phase == 5 ? 2 : 3);
+                        phaseTimer = 6000;
+                    }
+                    else if (phase == 7)
+                    {
+                        if (auto traitor = ObjectAccessor::GetCreature(*me, traitorGUID))
+                            traitor->AI()->Talk(3);
+                        phaseTimer = 4000;
+                    }
+                    else if (phase == 8)
+                    {
+                        if (auto traitor = ObjectAccessor::GetCreature(*me, traitorGUID))
+                        {
+                            traitor->AI()->Talk(4);
+                            traitor->UpdateEntry(64583);
+                            AttackStart(traitor);
+                            playerGUID.Clear();
+                        }
+                    }
+
+                    phase++;
+                }
+                else
+                    phaseTimer -= diff;
+
+                if (me->GetVictim())
+                    DoMeleeAttackIfReady();
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_hisek_the_swarmkeeper_summonAI(creature);
+        }
+};
+
+// Klaxxi`va Ik 65767
+class npc_klaxxiva_ik : public CreatureScript
+{
+    public:
+        npc_klaxxiva_ik() : CreatureScript("npc_klaxxiva_ik") { }
+
+        bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+        {
+            if (quest->GetQuestId() == QUEST_OVERTHRONE)
+                player->CastSpell(player, SPELL_KLAXXI_SCENE_SHEKZEER, true);
+
+            return false;
+        }
+
+        struct npc_klaxxiva_ikAI : public ScriptedAI
+        {
+            npc_klaxxiva_ikAI(Creature* creature) : ScriptedAI(creature) { }
+
+            void InitializeAI() override
+            {
+                AddTimedDelayedOperation(1000, [this]() -> void
+                {
+                    DoCast(me, SPELL_KLAXXI_RESONANCE);
+                });
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_klaxxiva_ikAI(creature);
+        }
+};
+
+enum q31185
+{
+    QUEST_WALKING_DOG       = 31185,
+
+    AT_SILT_VENS            = 8169,
+    AT_MIST_HOPPER          = 8230,
+    AT_WHALE_CORPSE         = 8231,
+
+    NPC_CREDIT_SILT_VENS    = 63879,
+    NPC_CREDIT_MIST_HOPPER  = 63880,
+    NPC_CREDIT_WHALE_CORPSE = 63881,
+
+    NPC_DOG                 = 63955,
+
+    OBJ_CREDIT_SILT_VENS    = 268448,
+    OBJ_CREDIT_MIST_HOPPER  = 268449,
+    OBJ_CREDIT_WHALE_CORPSE = 268450,
+};
+/*
+class AreaTrigger_q31185 : public AreaTriggerScript
+{
+    public:
+        AreaTrigger_q31185() : AreaTriggerScript("AreaTrigger_q31185") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        {
+            if (player->GetQuestStatus(QUEST_WALKING_DOG) != QUEST_STATUS_INCOMPLETE)
+                return true;
+
+            std::list<TempSummon*> summons;
+            player->GetSummons(summons, NPC_DOG);
+
+            if (summons.empty())
+                return true;
+
+            Creature* dog = summons.back();
+
+            if (player->GetDistance(dog) > 10.0f)
+                return true;
+
+            switch (trigger->id)
+            {
+                case AT_SILT_VENS:
+                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_SILT_VENS))
+                    {
+                        player->KilledMonsterCredit(NPC_CREDIT_SILT_VENS);
+                        dog->AI()->Talk(0);
+                    }
+                    break;
+                case AT_MIST_HOPPER:
+                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_MIST_HOPPER))
+                    {
+                        player->KilledMonsterCredit(NPC_CREDIT_MIST_HOPPER);
+                        dog->AI()->Talk(1);
+                    }
+                    break;
+                case AT_WHALE_CORPSE:
+                    if (!player->GetQuestObjectiveCounter(OBJ_CREDIT_WHALE_CORPSE))
+                    {
+                        player->KilledMonsterCredit(NPC_CREDIT_WHALE_CORPSE);
+                        dog->AI()->Talk(2);
+                    }
+                    break;
+            }
+
+            return true;
+        }
+};
+*/
+enum q31182
+{
+    NPC_COLDWHISKER_OTTER = 63376,
+    SPELL_FED             = 123803,
+};
+
+class spell_q31182 : public SpellScript
+{
+    PrepareSpellScript(spell_q31182);
+
+    SpellCastResult CheckTarget()
+    {
+        if (!GetExplTargetUnit())
+            return SPELL_FAILED_BAD_TARGETS;
+
+        if (GetExplTargetUnit()->GetEntry() != NPC_COLDWHISKER_OTTER || GetExplTargetUnit()->HasAura(SPELL_FED))
+            return SPELL_FAILED_BAD_TARGETS;
+
+        return SPELL_CAST_OK;
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_q31182::CheckTarget);
+    }
+};
+
+enum q31487
+{
+    NPC_DREAD_KUNCHONG = 64717,
+};
+
+class spell_q31487 : public SpellScript
+{
+    PrepareSpellScript(spell_q31487);
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if([=](WorldObject* obj) { return obj->GetEntry() != NPC_DREAD_KUNCHONG; });
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_q31487::FilterTargets, EFFECT_ALL, TARGET_UNIT_DEST_AREA_ENTRY);
+    }
+};
+
+enum q31233
+{
+    SPELL_SAP_EXTRACTOR      = 124354, // visual npc model
+    SPELL_AMBER_STREAM       = 124348, // visual spell
+    SPELL_SUMMON_AMBER_POT   = 124364,
+    SPELL_SUMMON_AMBER_POT_2 = 124344,
+
+    OBJECT_AMBER_POT         = 213326,
+};
+
+struct npc_amber_tap : public ScriptedAI
+{
+    npc_amber_tap(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
+    {
+        me->CastSpell(me, SPELL_SAP_EXTRACTOR);
+        me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+    }
+
+    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    {
+        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
+        me->CastSpell(me, SPELL_AMBER_STREAM);
+        me->DespawnOrUnsummon(5000);
+
+        AddTimedDelayedOperation(4000, [this]() -> void
+            {
+                me->CastSpell(me, SPELL_SUMMON_AMBER_POT_2);
+            });
+    }
+};
+
+// Kilruk Wind-Reaver 62538
+class npc_kilruk_wind_reaver : public CreatureScript
+{
+    public:
+        npc_kilruk_wind_reaver() : CreatureScript("npc_kilruk_wind_reaver") { }
+
+        bool OnGossipHello(Player* player, Creature* creature) override
+        {
+            if (creature->IsQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            // Missed Gossip ID
+            if (player->GetQuestStatus(QUEST_SHADOW_OF_EMPIRE) == QUEST_STATUS_INCOMPLETE)
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, player->GetDefaultGossipMenuForSource(creature), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+        {
+            player->PlayerTalkClass->ClearMenus();
+
+            if (action == GOSSIP_ACTION_INFO_DEF + 1)
+            {
+                // player->SetPhaseMask(3, true);
+
+                if (Creature* Kilruk_reaver = player->SummonCreature(NPC_KILRUK_QUEST, *creature, TEMPSUMMON_TIMED_DESPAWN, 300 * IN_MILLISECONDS))
+                    ;
+                    // Kilruk_reaver->SetPhaseMask(2, true);
+            }
+
+            CloseGossipMenuFor(player);
+
+            return true;
+        }
+};
+
+// kil`ruk wind-reaver quest shadow of empire 66800
+class npc_kilruk_quest_shadow_of_empire : public CreatureScript
+{
+    public:
+        npc_kilruk_quest_shadow_of_empire() : CreatureScript("npc_kilruk_quest_shadow_of_empire") { }
+
+        struct npc_kilruk_quest_shadow_of_empireAI : public ScriptedAI
+        {
+            npc_kilruk_quest_shadow_of_empireAI(Creature* creature) : ScriptedAI(creature) { }
+
+            ObjectGuid summonerGUID;
+            uint32 delay;
+
+            void IsSummonedBy(Unit* summoner) override
+            {
+                summonerGUID = summoner->GetGUID();
+                me->SetSpeed(MOVE_WALK, 1.15f);
+                AddTimedDelayedOperation(1500, [this]() -> void
+                {
+                    Talk(SAY_INTRO);
+                });
+
+                AddTimedDelayedOperation(7200, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_1);
+                    AddTimedDelayedOperation(1000, [this]() -> void
+                    {/*
+                        Movement::MoveSplineInit init(me);
+                        for (auto itr : KilrukChamberPath)
+                            init.Path().push_back(G3D::Vector3(itr.GetPositionX(), itr.GetPositionY(), itr.GetPositionZ()));
+
+                        init.SetWalk(true);
+                        init.Launch();
+                        
+                        AddTimedDelayedOperation(me->GetSplineDuration(), [this]() -> void
+                        {
+                            if (Player* itr = ObjectAccessor::GetPlayer(*me, summonerGUID))
+                            {
+                                itr->KilledMonsterCredit(NPC_KILRUK_QUEST);
+
+                                AddTimedDelayedOperation(5000, [this]() -> void
+                                {
+                                    //itr->SetPhaseMask(1, true);
+                                    me->DespawnOrUnsummon();
+                                });
+                            }
+                        }); */
+
+                        AddTimedDelayedOperation(10200, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_2);
+                        });
+
+                        AddTimedDelayedOperation(10000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_3);
+                        });
+
+                        AddTimedDelayedOperation(9000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_4);
+                        });
+
+                        AddTimedDelayedOperation(11100, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_5);
+                        });
+
+                        AddTimedDelayedOperation(12000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_6);
+                        });
+
+                        AddTimedDelayedOperation(8000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_7);
+                        });
+
+                        AddTimedDelayedOperation(13000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_8);
+                        });
+
+                        AddTimedDelayedOperation(8000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_9);
+                        });
+
+                        AddTimedDelayedOperation(13400, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_10);
+                        });
+
+                        AddTimedDelayedOperation(6000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_11);
+                        });
+
+                        AddTimedDelayedOperation(6000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_12);
+                        });
+
+                        AddTimedDelayedOperation(8000, [this]() -> void
+                        {
+                            Talk(SAY_SPECIAL_13);
+                        });
+                    });
+                });
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_kilruk_quest_shadow_of_empireAI(creature);
+        }
+};
+
+// Malik the Unscathed 66776
+class npc_malik_the_unscathed_quest_empress_gambit : public CreatureScript
+{
+    public:
+        npc_malik_the_unscathed_quest_empress_gambit() : CreatureScript("npc_malik_the_unscathed_quest_empress_gambit") { }
+
+        bool OnGossipHello(Player* player, Creature* creature) override
+        {
+            if (creature->IsQuestGiver())
+                player->PrepareQuestMenu(creature->GetGUID());
+
+            // Missed Gossip ID
+            if (player->GetQuestStatus(QUEST_EMPRESS_GAMBIT) == QUEST_STATUS_INCOMPLETE)
+                AddGossipItemFor(player, GOSSIP_ICON_CHAT, player->GetDefaultGossipMenuForSource(creature), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+
+            return true;
+        }
+
+        bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+        {
+            player->PlayerTalkClass->ClearMenus();
+
+            if (action == GOSSIP_ACTION_INFO_DEF + 1)
+                player->CastSpell(player, SPELL_KLAXXI_EMPRESS_GAMBIT, true);
+
+            CloseGossipMenuFor(player);
+
+            return true;
+        }
+};
+
+// Malik Unscathed Trigger 66797
+class npc_malik_the_unscathed_quest_empress_gambit_trigger : public CreatureScript
+{
+    public:
+        npc_malik_the_unscathed_quest_empress_gambit_trigger() : CreatureScript("npc_malik_the_unscathed_quest_empress_gambit_trigger") { }
+
+        struct npc_malik_the_unscathed_quest_empress_gambit_triggerAI : public ScriptedAI
+        {
+            npc_malik_the_unscathed_quest_empress_gambit_triggerAI(Creature* creature) : ScriptedAI(creature) { }
+
+            ObjectGuid summonerGUID;
+            uint32 delay;
+            float x, y;
+
+            void IsSummonedBy(Unit* summoner) override
+            {
+                summonerGUID = summoner->GetGUID();
+                // me->SetPhaseMask(2, true);
+                AddTimedDelayedOperation(1000, [this]() -> void
+                {
+                    Talk(SAY_INTRO);
+                });
+
+                AddTimedDelayedOperation(14000, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_1);
+                });
+
+                AddTimedDelayedOperation(12000, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_2);
+                    /*
+                    Movement::MoveSplineInit init(me);
+                    for (auto itr : MalikStairsPath)
+                        init.Path().push_back(G3D::Vector3(itr.GetPositionX(), itr.GetPositionY(), itr.GetPositionZ()));
+
+                    init.SetWalk(true);
+                    init.Launch(); */
+                });
+
+                AddTimedDelayedOperation(17000, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_3);
+
+                    me->OverrideInhabitType(INHABIT_AIR);
+                    me->UpdateMovementFlags();
+                    me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 17.0f, me->GetOrientation());
+                });
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_malik_the_unscathed_quest_empress_gambit_triggerAI(creature);
+        }
+};
+
+// Grand Vizier Zorlok 66791
+class npc_grand_vizier_zorlok_quest_empress_gambit : public CreatureScript
+{
+    public:
+        npc_grand_vizier_zorlok_quest_empress_gambit() : CreatureScript("npc_grand_vizier_zorlok_quest_empress_gambit") { }
+
+        struct npc_grand_vizier_zorlok_quest_empress_gambitAI : public ScriptedAI
+        {
+            npc_grand_vizier_zorlok_quest_empress_gambitAI(Creature* creature) : ScriptedAI(creature) { }
+
+            ObjectGuid summonerGUID;
+            uint32 delay;
+            float x, y;
+
+            void IsSummonedBy(Unit* summoner) override
+            {
+                summonerGUID = summoner->GetGUID();
+                // me->SetPhaseMask(2, true);
+                x = 0.0f; y = 0.0f;
+                AddTimedDelayedOperation(1000, [this]() -> void
+                {
+                    GetPositionWithDistInOrientation(me, 30.0f, me->GetOrientation(), x, y);
+                    me->GetMotionMaster()->MovePoint(0, x, y, me->GetPositionZ(), me->GetOrientation());
+                });
+
+                AddTimedDelayedOperation(6500, [this]() -> void
+                {
+                    Talk(SAY_INTRO);
+                });
+
+                AddTimedDelayedOperation(15000, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_1);
+                });
+
+                AddTimedDelayedOperation(16000, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_2);
+                });
+
+                AddTimedDelayedOperation(9800, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_3);
+                });
+
+                AddTimedDelayedOperation(8700, [this]() -> void
+                {
+                    DoCast(me, SPELL_ZORLOK_SHOUT);
+                });
+
+                AddTimedDelayedOperation(8300, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_4);
+                });
+
+                AddTimedDelayedOperation(6200, [this]() -> void
+                {
+                    Talk(SAY_SPECIAL_5);
+
+                    if (Player* itr = ObjectAccessor::GetPlayer(*me, summonerGUID))
+                        itr->KilledMonsterCredit(NPC_MALIC_QUEST);
+                });
+
+                AddTimedDelayedOperation(8400, [this]() -> void
+                {
+                        /*
+                    Movement::MoveSplineInit init(me);
+                    init.MoveTo(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY(), me->GetHomePosition().GetPositionZ());
+
+                    init.SetWalk(true);
+                    init.Launch();
+                    me->DespawnOrUnsummon(me->GetSplineDuration()); */
+                });
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new npc_grand_vizier_zorlok_quest_empress_gambitAI(creature);
+        }
+};
+
+class spell_q31233 : public SpellScript
+{
+    PrepareSpellScript(spell_q31233);
+
+    void ChangeSummonPos(SpellEffIndex /*effIndex*/)
+    {
+        WorldLocation summonPos = *GetExplTargetDest();
+        //summonPos.RelocateOffset(0.0f, 1.5f, -3.0f);
+        SetExplTargetDest(summonPos);
+        //GetHitDest()->RelocateOffset(0.0f, 1.5f, -3.0f);
+    }
+
+    void Register() override
+    {
+        OnEffectHit += SpellEffectFn(spell_q31233::ChangeSummonPos, EFFECT_0, SPELL_EFFECT_SUMMON_OBJECT_WILD);
+    }
+};
+
+// Empress Gambit Quest 131196
+class spell_empress_gambit_quest : public AuraScript
+{
+    PrepareAuraScript(spell_empress_gambit_quest);
+
+    void Remove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* pCaster = GetCaster()->ToPlayer())
+            ;
+            // pCaster->SetPhaseMask(1, true);
+    }
+
+    void Apply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Player* pCaster = GetCaster()->ToPlayer())
+            ;
+            //pCaster->SetPhaseMask(3, true);
+    }
+
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(spell_empress_gambit_quest::Remove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+        OnEffectApply += AuraEffectApplyFn(spell_empress_gambit_quest::Apply, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// Zorlok Shout 131201 
+class spell_zorlok_shout : public SpellScript
+{
+    PrepareSpellScript(spell_zorlok_shout);
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if([=](WorldObject* target) { return target->GetEntry() != NPC_MALIC_QUEST_1; });
+    }
+
+    void HandleOnHit()
+    {
+        if (Unit* caster = GetCaster())
+            if (Unit* target = GetHitUnit())
+                caster->Kill(target);
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_zorlok_shout::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENTRY);
+        OnHit += SpellHitFn(spell_zorlok_shout::HandleOnHit);
+    }
+};
+
+// Scene 72 (Package 212)
+class scene_klaxxi_head_explosion : public SceneScript
+{
+    public:
+        scene_klaxxi_head_explosion() : SceneScript("scene_klaxxi_head_explosion") { }
+
+        void OnSceneStart(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+        {
+            // player->SetPhaseMask(2, true);
+        }
+
+        void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+        {
+            CreditScene(player);
+        }
+
+        void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+        {
+            CreditScene(player);
+        }
+
+        void CreditScene(Player* player)
+        {
+            // player->SetPhaseMask(1, true);
+            player->KilledMonsterCredit(65772);
+        }
+};
+
+Position eventPos[5] =
+{
+    { -435.141f, 3614.94f, 61.9383f, 1.02147f }, // 65486
+    { -421.821f, 3628.65f, 61.8022f, 3.91377f }, // 65486
+    { -396.978f, 3595.15f, 47.5945f, 2.49012f }, // 65486
+    { -354.528f, 3564.46f, 39.9380f, 2.43198f }, // 65475
+    { -359.121f, 3565.36f, 39.9380f, 6.11604f }, // 65478
+};
+/*
+class AreaTrigger_q31087 : public AreaTriggerScript
+{
+    public:
+        AreaTrigger_q31087() : AreaTriggerScript("AreaTrigger_q31087") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        {
+            if (player->GetQuestStatus(31087) != QUEST_STATUS_INCOMPLETE)
+                return true;
+
+            player->KilledMonsterCredit(65328);
+
+            if (player->FindNearestCreature(65478, 100.0f) || player->FindNearestCreature(65486, 100.0f) || player->FindNearestCreature(65475, 100.0f))
+                return true;
+
+            for (uint32 i = 0; i < 3; i++)
+                player->SummonCreature(65486, eventPos[i], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000);
+
+            player->m_Events.Schedule(10000, [=]()
+            {
+                if (Creature* korik = player->SummonCreature(65475, eventPos[3], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 66000))
+                    korik->HandleEmoteCommand(EMOTE_STATE_STRANGULATE);
+                if (Creature* adjunct = player->SummonCreature(65478, eventPos[4], TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 66000))
+                    adjunct->AI()->Talk(0);
+            });
+
+            return true;
+        }
+};
+
+class go_silent_beacon : public GameObjectScript
+{
+    public:
+        go_silent_beacon() : GameObjectScript("go_silent_beacon") { }
+
+        bool OnReportUse(Player* player, GameObject* go) override
+        {
+            if (Creature* korik = go->FindNearestCreature(65475, 50.0f))
+                korik->AI()->Talk(0);
+
+            return true;
+        }
+};
+*/
+enum BoundWithShadesType
+{
+    SPELL_DREAD_CLAW_2      = 128026,
+    SPELL_SHADOW_CLAW       = 128059,
+    SPELL_GATHER_SHADE_10   = 122723,
+    SPELL_GATHER_SHADE_2    = 122721,
+
+    EVENT_DREAD_CLAW_2 = 1,
+    EVENT_SHADOW_CLAW,
+
+    QUEST_BOUND_WITH_SHADES = 31069,
+
+    NPC_SHADE_CREDIT        = 62817,
+};
+
+// Dread Lurker 62751
+struct npc_dread_waster_dread_lurker : public ScriptedAI
+{
+    npc_dread_waster_dread_lurker(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
+    {
+        events.Reset();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        events.ScheduleEvent(EVENT_DREAD_CLAW_2, 4 * IN_MILLISECONDS);
+    }
+
+    void JustDied(Unit* killer) override 
+    {
+        if (killer->ToPlayer())
+            killer->ToPlayer()->CastSpell(killer->ToPlayer(), SPELL_GATHER_SHADE_10, true);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_DREAD_CLAW_2:
+                if (Unit * target = me->GetVictim())
+                    DoCast(target, SPELL_DREAD_CLAW_2);
+
+                events.ScheduleEvent(EVENT_DREAD_CLAW_2, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS));
+                break;
+            }
+            break;
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+// Nagging Dreadling 65996
+struct npc_dread_waster_nagging_dreadling : public ScriptedAI
+{
+    npc_dread_waster_nagging_dreadling(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
+    {
+        events.Reset();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        events.ScheduleEvent(EVENT_SHADOW_CLAW, urand(3 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
+    }
+
+    void JustDied(Unit* killer) override
+    {
+        if (killer->ToPlayer())
+            killer->ToPlayer()->CastSpell(killer->ToPlayer(), SPELL_GATHER_SHADE_2, true);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_SHADOW_CLAW:
+                if (Unit * target = me->GetVictim())
+                    DoCast(target, SPELL_SHADOW_CLAW);
+
+                events.ScheduleEvent(EVENT_SHADOW_CLAW, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS));
+                break;
+            }
+            break;
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+// Gather Shade 122721, 122723
+class spell_dread_waster_gather_shade : public SpellScript
+{
+    PrepareSpellScript(spell_dread_waster_gather_shade);
+
+    void HandleHit(SpellEffIndex effIndex)
+    {
+        if (Player* target = GetHitPlayer())
+            if (target->GetQuestStatus(QUEST_BOUND_WITH_SHADES) == QUEST_STATUS_INCOMPLETE)
+                target->KilledMonsterCredit(NPC_SHADE_CREDIT);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dread_waster_gather_shade::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
+
+// Sonic Emission 124729
+class spell_dread_waster_sonic_emission : public SpellScript
+{
+    PrepareSpellScript(spell_dread_waster_sonic_emission);
+
+    void HandleHit(SpellEffIndex effIndex)
+    {
+        if (Creature* target = GetHitCreature())
+        {
+            if (target->GetEntry() == NPC_IK_THIK_AMBERSTINGER)
+            {
+                target->CastSpell(target, SPELL_SONIC_SHOCK, true);
+
+                // no info how it should work, but debuf only visual (model scale), just set default hp value for 90 lvl creature on apply
+                // target->SetMaxHealth(393900);
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_dread_waster_sonic_emission::HandleHit, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
+};
 
 void AddSC_dread_wastes()
 {
@@ -3457,32 +3477,37 @@ void AddSC_dread_wastes()
     // Extending the Vocerage
     new spell_zet_uk_sha_eruption();
 
-    //new spell_zet_uk_sha_eruption_periodic_summon();
+    new spell_zet_uk_sha_eruption_periodic_summon();
 
     // Quest scripts
     //new AreaTrigger_at_q_wood_and_shade();
-    //new go_full_crab_pot();
-    //new spell_item_living_amber();
-    //new npc_hisek_the_swarmkeeper();
-    //new npc_hisek_the_swarmkeeper_summon();
-    //new npc_klaxxiva_ik();
     //new AreaTrigger_q31185;
-    //new spell_script<spell_q31182>("spell_q31182");
-    //new spell_script<spell_q31487>("spell_q31487");
-    //new creature_script<npc_amber_tap>("npc_amber_tap");
-    //new npc_kilruk_wind_reaver();
-    //new npc_kilruk_quest_shadow_of_empire();
-    //new npc_malik_the_unscathed_quest_empress_gambit();
-    //new npc_malik_the_unscathed_quest_empress_gambit_trigger();
-    //new npc_grand_vizier_zorlok_quest_empress_gambit();
-    //new spell_script<spell_q31233>("spell_q31233");
-    //new aura_script<spell_empress_gambit_quest>("spell_empress_gambit_quest");
-    //new spell_script<spell_zorlok_shout>("spell_zorlok_shoutspell_zorlok_shout");
-    //new scene_klaxxi_head_explosion();
     //new AreaTrigger_q31087();
+
+    new npc_hisek_the_swarmkeeper();
+    new npc_hisek_the_swarmkeeper_summon();
+    new npc_klaxxiva_ik();
+    RegisterCreatureAI(npc_amber_tap);
+    new npc_kilruk_wind_reaver();
+    new npc_kilruk_quest_shadow_of_empire();
+    new npc_malik_the_unscathed_quest_empress_gambit();
+    new npc_malik_the_unscathed_quest_empress_gambit_trigger();
+    new npc_grand_vizier_zorlok_quest_empress_gambit();
+    RegisterCreatureAI(npc_dread_waster_dread_lurker);
+    RegisterCreatureAI(npc_dread_waster_nagging_dreadling);
+
     //new go_silent_beacon();
-    //new creature_script<npc_dread_waster_dread_lurker>("npc_dread_waster_dread_lurker");
-    //new creature_script<npc_dread_waster_nagging_dreadling>("npc_dread_waster_nagging_dreadling");
-    //new spell_script<spell_dread_waster_gather_shade>("spell_dread_waster_gather_shade");
-    //new spell_script<spell_dread_waster_sonic_emission>("spell_dread_waster_sonic_emission");
+    new go_full_crab_pot();
+
+    new spell_item_living_amber();
+    RegisterSpellScript(spell_q31182);
+    RegisterSpellScript(spell_q31487);
+    RegisterSpellScript(spell_q31233);
+    RegisterAuraScript(spell_empress_gambit_quest);
+    RegisterSpellScript(spell_zorlok_shout);
+    RegisterSpellScript(spell_dread_waster_gather_shade);
+    RegisterSpellScript(spell_dread_waster_sonic_emission);
+
+    new scene_klaxxi_head_explosion();
+    
 }

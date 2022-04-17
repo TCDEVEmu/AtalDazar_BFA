@@ -1,3 +1,4 @@
+//#include "ObjectMgr.h"
 //#include "ScriptMgr.h"
 //#include "SpellScript.h"
 //#include "SpellAuraEffects.h"
@@ -8,6 +9,7 @@
 //#include "Transport.h"
 //#include "Group.h"
 //#include "Player.h"
+//#include "UnitAI.h"
 //
 //enum Spells
 //{
@@ -1128,11 +1130,39 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_HORRIFIC_VISAGE, 30 * IN_MILLISECONDS, EVENT_HORRIFIC_VISAGE, eventId, PRIORITY_NOT_VICTIM);
-//            ExecuteTargetEvent(SPELL_METEOR_SHOWER_2, 30 * IN_MILLISECONDS, EVENT_METEOR_SHOWER, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_SCARAB_SWARM, 45 * IN_MILLISECONDS, EVENT_SCARAB_SWARM, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_VENGEFUL_SPIRIT_2, 45 * IN_MILLISECONDS, EVENT_VENGEFUL_SPIRIT, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_THUNDER_CRUSH, 15 * IN_MILLISECONDS, EVENT_THUNDER_CRUSH, eventId, PRIORITY_CHANNELED);
+//            switch (eventId)
+//            {
+//                case EVENT_HORRIFIC_VISAGE:
+//                {
+//                    me->CastSpell(me->GetVictim(), SPELL_HORRIFIC_VISAGE, true);
+//                    events.ScheduleEvent(EVENT_HORRIFIC_VISAGE, 30 * IN_MILLISECONDS);
+//                    break;
+//                }
+//                case EVENT_METEOR_SHOWER:
+//                {
+//                    me->CastSpell(me, SPELL_METEOR_SHOWER_2, true);
+//                    events.ScheduleEvent(EVENT_METEOR_SHOWER, 30 * IN_MILLISECONDS);
+//                    break;
+//                }
+//                case EVENT_SCARAB_SWARM:
+//                {
+//                    me->CastSpell(me, SPELL_SCARAB_SWARM, true);
+//                    events.ScheduleEvent(EVENT_SCARAB_SWARM, 45 * IN_MILLISECONDS);
+//                    break;
+//                }
+//                case EVENT_VENGEFUL_SPIRIT:
+//                {
+//                    me->CastSpell(me, SPELL_VENGEFUL_SPIRIT_2, true);
+//                    events.ScheduleEvent(EVENT_VENGEFUL_SPIRIT, 45 * IN_MILLISECONDS);
+//                    break;
+//                }
+//                case EVENT_THUNDER_CRUSH:
+//                {
+//                    me->CastSpell(me->GetVictim(), SPELL_THUNDER_CRUSH, true);
+//                    events.ScheduleEvent(EVENT_THUNDER_CRUSH, 15 * IN_MILLISECONDS);
+//                    break;
+//                }
+//            }
 //            break;
 //        }
 //
@@ -1240,9 +1270,9 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_SINISTER_STRIKE, urand(8.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_SINISTER_STRIKE, eventId);
-//            ExecuteTargetEvent(SPELL_SUNDER_ARMOR, 12 * IN_MILLISECONDS, EVENT_SUNDER_ARMOR, eventId);
-//            ExecuteTargetEvent(SPELL_DEVASTATE, 10 * IN_MILLISECONDS, EVENT_DEVASTATE, eventId);
+//            //ExecuteTargetEvent(SPELL_SINISTER_STRIKE, urand(8.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_SINISTER_STRIKE, eventId);
+//            //ExecuteTargetEvent(SPELL_SUNDER_ARMOR, 12 * IN_MILLISECONDS, EVENT_SUNDER_ARMOR, eventId);
+//            //ExecuteTargetEvent(SPELL_DEVASTATE, 10 * IN_MILLISECONDS, EVENT_DEVASTATE, eventId);
 //            break;
 //        }
 //
@@ -1258,14 +1288,14 @@
 //    void Reset() override
 //    {
 //        events.Reset();
-//        me->m_Events.KillEventsByGroup(SPELL_THERMODINAMYCS);
+//        //me->m_Events.KillEventsByGroup(SPELL_THERMODINAMYCS);
 //    }
 //
 //    void EnterCombat(Unit* /*who*/) override
 //    {
 //        events.ScheduleEvent(EVENT_THERMAL_STRIKE, 7.5 * IN_MILLISECONDS);
 //
-//        me->m_Events.Schedule(5000, SPELL_THERMODINAMYCS, [this]()
+//        AddTimedDelayedOperation(5000, [this]() -> void
 //        {
 //            DoCast(me, SPELL_THERMODINAMYCS);
 //        });
@@ -1283,7 +1313,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_THERMAL_STRIKE, urand(8.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_THERMAL_STRIKE, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_THERMAL_STRIKE, urand(8.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_THERMAL_STRIKE, eventId, PRIORITY_NOT_VICTIM);
 //            break;
 //        }
 //
@@ -1366,8 +1396,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_CURSE_OF_STONE, urand(10.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_CURSE_OF_STONE, eventId);
-//            ExecuteTargetEvent(urand(0, 1) ? SPELL_BODY_SLAM_25Y : SPELL_BODY_SLAM_5Y, 6 * IN_MILLISECONDS, EVENT_BODY_SLAM, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_CURSE_OF_STONE, urand(10.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_CURSE_OF_STONE, eventId);
+//            //ExecuteTargetEvent(urand(0, 1) ? SPELL_BODY_SLAM_25Y : SPELL_BODY_SLAM_5Y, 6 * IN_MILLISECONDS, EVENT_BODY_SLAM, eventId, PRIORITY_CHANNELED);
 //            break;
 //        }
 //
@@ -1388,9 +1418,9 @@
 //        clicker->RemoveAurasDueToSpell(SPELL_ELECTRIFIED);
 //        me->RemoveNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 //
-//        me->m_Events.Schedule(10000, 1, [this]()
+//        AddTimedDelayedOperation(10000, [this]() -> void
 //        {
-//            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+//            me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
 //        });
 //    }
 //
@@ -1430,8 +1460,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING, urand(10 * IN_MILLISECONDS, 18 * IN_MILLISECONDS), EVENT_CHAIN_LIGHTNING, eventId);
-//            ExecuteTargetEvent(SPELL_LIGHTNING_FIELD, 15 * IN_MILLISECONDS, EVENT_LIGHTNING_FIELD, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING, urand(10 * IN_MILLISECONDS, 18 * IN_MILLISECONDS), EVENT_CHAIN_LIGHTNING, eventId);
+//            //ExecuteTargetEvent(SPELL_LIGHTNING_FIELD, 15 * IN_MILLISECONDS, EVENT_LIGHTNING_FIELD, eventId, PRIORITY_NOT_VICTIM);
 //            break;
 //        }
 //
@@ -1466,7 +1496,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_GASEOUS_ERRUPTION, urand(15 * IN_MILLISECONDS, 30 * IN_MILLISECONDS), EVENT_GASEOUS_ERRUPTION, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_GASEOUS_ERRUPTION, urand(15 * IN_MILLISECONDS, 30 * IN_MILLISECONDS), EVENT_GASEOUS_ERRUPTION, eventId, PRIORITY_CHANNELED);
 //            break;
 //        }
 //
@@ -1501,7 +1531,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_VALOROUS_SPIN, urand(11 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_VALOROUS_SPIN, eventId);
+//            //ExecuteTargetEvent(SPELL_VALOROUS_SPIN, urand(11 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_VALOROUS_SPIN, eventId);
 //            break;
 //        }
 //
@@ -1542,8 +1572,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_MIGHTY_STOMP, urand(14 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_MIGHTY_STOMP, eventId);
-//            ExecuteTargetEvent(SPELL_MIGHTY_CRUSH, 12.5 * IN_MILLISECONDS, EVENT_MIGHTY_CRUSH, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_MIGHTY_STOMP, urand(14 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_MIGHTY_STOMP, eventId);
+//            //ExecuteTargetEvent(SPELL_MIGHTY_CRUSH, 12.5 * IN_MILLISECONDS, EVENT_MIGHTY_CRUSH, eventId, PRIORITY_CHANNELED);
 //            break;
 //        }
 //
@@ -1596,9 +1626,9 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_REVERBERATING_SMASH, urand(15 * IN_MILLISECONDS, 26.5 * IN_MILLISECONDS), EVENT_REVEBRATING_SMASH, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_WAVE_OF_MIGHT, 14.5 * IN_MILLISECONDS, EVENT_WAVE_OF_MIGHT, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_LIGHTNING_CRACK, 9 * IN_MILLISECONDS, EVENT_LIGHTNING_CRACK, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_REVERBERATING_SMASH, urand(15 * IN_MILLISECONDS, 26.5 * IN_MILLISECONDS), EVENT_REVEBRATING_SMASH, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_WAVE_OF_MIGHT, 14.5 * IN_MILLISECONDS, EVENT_WAVE_OF_MIGHT, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_LIGHTNING_CRACK, 9 * IN_MILLISECONDS, EVENT_LIGHTNING_CRACK, eventId, PRIORITY_NOT_VICTIM);
 //            break;
 //        }
 //
@@ -1620,11 +1650,11 @@
 //
 //        x = 0.0f; y = 0.0f;
 //        GetPositionWithDistInOrientation(me, 20.0f, me->GetOrientation(), x, y);
-//
+//        /*
 //        Movement::MoveSplineInit init(me);
 //        init.MoveTo(x, y, me->GetPositionZ());
 //        init.Launch();
-//        me->DespawnOrUnsummon(me->GetSplineDuration());
+//        me->DespawnOrUnsummon(me->GetSplineDuration()); */
 //
 //        scheduler
 //            .Schedule(Milliseconds(500), [this](TaskContext context)
@@ -1676,9 +1706,9 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_THUNDERCLEAVE, urand(6 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_THUNDER_CLEAVE, eventId);
-//            ExecuteTargetEvent(SPELL_SERRATED_SLASH, 7.5 * IN_MILLISECONDS, EVENT_SERRATED_SLASH, eventId);
-//            ExecuteTargetEvent(SPELL_SHIELD_BASH, 10 * IN_MILLISECONDS, EVENT_SHIELD_BASH, eventId);
+//            //ExecuteTargetEvent(SPELL_THUNDERCLEAVE, urand(6 * IN_MILLISECONDS, 12 * IN_MILLISECONDS), EVENT_THUNDER_CLEAVE, eventId);
+//            //ExecuteTargetEvent(SPELL_SERRATED_SLASH, 7.5 * IN_MILLISECONDS, EVENT_SERRATED_SLASH, eventId);
+//            //ExecuteTargetEvent(SPELL_SHIELD_BASH, 10 * IN_MILLISECONDS, EVENT_SHIELD_BASH, eventId);
 //            break;
 //        }
 //
@@ -1714,7 +1744,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_AXE_BLOW, 8 * IN_MILLISECONDS, EVENT_AXE_BLOW, eventId);
+//            //ExecuteTargetEvent(SPELL_AXE_BLOW, 8 * IN_MILLISECONDS, EVENT_AXE_BLOW, eventId);
 //            break;
 //        }
 //
@@ -1749,7 +1779,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(me->GetEntry() == NPC_JUVENILE_SKYSCREAMER ? SPELL_PIERCING_CRY : SPELL_PIERCING_CRY_2, 9.5 * IN_MILLISECONDS, EVENT_PIERCING_CRY, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(me->GetEntry() == NPC_JUVENILE_SKYSCREAMER ? SPELL_PIERCING_CRY : SPELL_PIERCING_CRY_2, 9.5 * IN_MILLISECONDS, EVENT_PIERCING_CRY, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -1760,10 +1790,7 @@
 //// Zandalari Spiritbinder 69225
 //struct npc_zandalari_spiritbinder : public ScriptedAI
 //{
-//    npc_zandalari_spiritbinder(Creature* creature) : ScriptedAI(creature)
-//    {
-//        isCaster = true;
-//    }
+//    npc_zandalari_spiritbinder(Creature* creature) : ScriptedAI(creature) { }
 //
 //    void Reset() override
 //    {
@@ -1785,7 +1812,7 @@
 //            DoStartNoMovement(target);
 //    }
 //
-//    void CastInterrupted(SpellInfo const* spell) override
+//    void OnSpellCastInterrupt(SpellInfo const* spell) override
 //    {
 //        events.RescheduleEvent(EVENT_SHADOW_BOLT, 6 * IN_MILLISECONDS);
 //
@@ -1805,8 +1832,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_SHADOW_BOLT, 3.5 * IN_MILLISECONDS, EVENT_SHADOW_BOLT, eventId);
-//            ExecuteTargetEvent(SPELL_SHADOW_NOVA, 11.5 * IN_MILLISECONDS, EVENT_SHADOW_NOVA, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_SHADOW_BOLT, 3.5 * IN_MILLISECONDS, EVENT_SHADOW_BOLT, eventId);
+//            //ExecuteTargetEvent(SPELL_SHADOW_NOVA, 11.5 * IN_MILLISECONDS, EVENT_SHADOW_NOVA, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -1819,8 +1846,7 @@
 //{
 //    npc_zandalari_arcweaver(Creature* creature) : ScriptedAI(creature)
 //    {
-//        isCaster = true;
-//        questCreatures = me->GetDBTableGUIDLow() == 535599 || me->GetDBTableGUIDLow() == 535757;
+//        //questCreatures = me->GetDBTableGUIDLow() == 503973 || me->GetDBTableGUIDLow() == 504126;
 //    }
 //
 //    bool questCreatures;
@@ -1896,7 +1922,7 @@
 //            DoStartNoMovement(target);
 //    }
 //
-//    void CastInterrupted(SpellInfo const* spell) override
+//    void OnSpellCastInterrupt(SpellInfo const* spell) override
 //    {
 //        events.RescheduleEvent(EVENT_ARCANE_BOLT, 6 * IN_MILLISECONDS);
 //
@@ -1916,8 +1942,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_ARCANE_BOLT, 1.5 * IN_MILLISECONDS, EVENT_ARCANE_BOLT, eventId);
-//            ExecuteTargetEvent(SPELL_ARCANE_EXPLOSION, 11.5 * IN_MILLISECONDS, EVENT_ARCANE_EXPLOSION, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_ARCANE_BOLT, 1.5 * IN_MILLISECONDS, EVENT_ARCANE_BOLT, eventId);
+//            //ExecuteTargetEvent(SPELL_ARCANE_EXPLOSION, 11.5 * IN_MILLISECONDS, EVENT_ARCANE_EXPLOSION, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -1953,8 +1979,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(Trinity::Containers::SelectRandomContainerElement(mainAttackList), 4.5 * IN_MILLISECONDS, EVENT_MAIN_ATTACK, eventId);
-//            ExecuteTargetEvent(SPELL_ZANDALARI_POTION, 15 * IN_MILLISECONDS, EVENT_ZANDALARI_POTION, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(Trinity::Containers::SelectRandomContainerElement(mainAttackList), 4.5 * IN_MILLISECONDS, EVENT_MAIN_ATTACK, eventId);
+//            //ExecuteTargetEvent(SPELL_ZANDALARI_POTION, 15 * IN_MILLISECONDS, EVENT_ZANDALARI_POTION, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -1966,10 +1992,9 @@
 //struct npc_shanze_thundercaller : public ScriptedAI
 //{
 //    npc_shanze_thundercaller(Creature* creature) : ScriptedAI(creature)
-//    {
-//        isCaster    = true;
-//        questCreatures = me->GetDBTableGUIDLow() == 566259 || me->GetDBTableGUIDLow() == 566280 ||
-//            me->GetDBTableGUIDLow() == 565999 || me->GetDBTableGUIDLow() == 565963;
+//    {/*
+//        questCreatures = me->GetDBTableGUIDLow() == 519786 || me->GetDBTableGUIDLow() == 519791 ||
+//            me->GetDBTableGUIDLow() == 519704 || me->GetDBTableGUIDLow() == 519682; */
 //    }
 //
 //    bool hasTriggered;
@@ -2053,7 +2078,7 @@
 //        }
 //    }
 //
-//    void CastInterrupted(SpellInfo const* spell) override
+//    void OnSpellCastInterrupt(SpellInfo const* spell) override
 //    {
 //        events.RescheduleEvent(EVENT_LIGHTNING_BOLT, 6 * IN_MILLISECONDS);
 //
@@ -2073,8 +2098,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_LIGHTNING_BOLT_2, 3.5 * IN_MILLISECONDS, EVENT_LIGHTNING_BOLT, eventId);
-//            ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING_2, 11.5 * IN_MILLISECONDS, EVENT_CHAIN_LIGHTNING, eventId);
+//            //ExecuteTargetEvent(SPELL_LIGHTNING_BOLT_2, 3.5 * IN_MILLISECONDS, EVENT_LIGHTNING_BOLT, eventId);
+//            //ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING_2, 11.5 * IN_MILLISECONDS, EVENT_CHAIN_LIGHTNING, eventId);
 //            break;
 //        }
 //
@@ -2112,10 +2137,10 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_SUNDER_ARMOR, urand(12 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_SUNDER_ARMOR, eventId);
-//            ExecuteTargetEvent(SPELL_SLAM, 9.5 * IN_MILLISECONDS, EVENT_SLAM, eventId);
-//            ExecuteTargetEvent(SPELL_THUNDER_CLAP, 10 * IN_MILLISECONDS, EVENT_THUNDER_CLAP, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_RUNE_OF_THE_STORM, 25 * IN_MILLISECONDS, EVENT_RUNE_OF_THE_STORM, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_SUNDER_ARMOR, urand(12 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_SUNDER_ARMOR, eventId);
+//            //ExecuteTargetEvent(SPELL_SLAM, 9.5 * IN_MILLISECONDS, EVENT_SLAM, eventId);
+//            //ExecuteTargetEvent(SPELL_THUNDER_CLAP, 10 * IN_MILLISECONDS, EVENT_THUNDER_CLAP, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_RUNE_OF_THE_STORM, 25 * IN_MILLISECONDS, EVENT_RUNE_OF_THE_STORM, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -2128,7 +2153,6 @@
 //{
 //    npc_sparkmancer_vu(Creature* creature) : ScriptedAI(creature)
 //    {
-//        isCaster = true;
 //    }
 //
 //    void Reset() override
@@ -2150,7 +2174,7 @@
 //            DoStartNoMovement(target);
 //    }
 //
-//    void CastInterrupted(SpellInfo const* spell) override
+//    void OnSpellCastInterrupt(SpellInfo const* spell) override
 //    {
 //        events.RescheduleEvent(EVENT_CHAIN_LIGHTNING, 6 * IN_MILLISECONDS);
 //
@@ -2170,7 +2194,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING_3, 3.5 * IN_MILLISECONDS, EVENT_CHAIN_LIGHTNING, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_CHAIN_LIGHTNING_3, 3.5 * IN_MILLISECONDS, EVENT_CHAIN_LIGHTNING, eventId, PRIORITY_NOT_VICTIM);
 //            break;
 //        }
 //
@@ -2193,8 +2217,8 @@
 //        events.ScheduleEvent(EVENT_LIGHTNING_BOLT, 6 * IN_MILLISECONDS);
 //        events.ScheduleEvent(EVENT_STORM_SHIELD, 8.5 * IN_MILLISECONDS);
 //    }
-//
-//    uint64 GetLowestFriendGUID() override
+//    /*
+//    ObjectGuid GetLowestFriendGUID() override
 //    {
 //        std::list<Creature*> tmpTargets;
 //
@@ -2212,7 +2236,7 @@
 //            return lowestTarget->GetGUID();
 //
 //        return 0;
-//    }
+//    } */
 //
 //    void UpdateAI(uint32 diff) override
 //    {
@@ -2226,8 +2250,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_LIGHTNING_BOLT_2, urand(8 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_LIGHTNING_BOLT, eventId);
-//            ExecuteTargetEvent(SPELL_STORM_SHIELD, 12.5 * IN_MILLISECONDS, EVENT_STORM_SHIELD, eventId, PRIORITY_ALLY);
+//            //ExecuteTargetEvent(SPELL_LIGHTNING_BOLT_2, urand(8 * IN_MILLISECONDS, 16 * IN_MILLISECONDS), EVENT_LIGHTNING_BOLT, eventId);
+//            //ExecuteTargetEvent(SPELL_STORM_SHIELD, 12.5 * IN_MILLISECONDS, EVENT_STORM_SHIELD, eventId, PRIORITY_ALLY);
 //            break;
 //        }
 //
@@ -2262,7 +2286,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_PETRIFYING_GAZE, urand(10 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_PETRIFYING_GAZE, eventId);
+//            //ExecuteTargetEvent(SPELL_PETRIFYING_GAZE, urand(10 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_PETRIFYING_GAZE, eventId);
 //            break;
 //        }
 //
@@ -2298,8 +2322,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_BITE, urand(6.5 * IN_MILLISECONDS, 11 * IN_MILLISECONDS), EVENT_BITE, eventId);
-//            ExecuteTargetEvent(SPELL_SHELLWIND, urand(12.5 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_SHELLWIND, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_BITE, urand(6.5 * IN_MILLISECONDS, 11 * IN_MILLISECONDS), EVENT_BITE, eventId);
+//            //ExecuteTargetEvent(SPELL_SHELLWIND, urand(12.5 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS), EVENT_SHELLWIND, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -2335,8 +2359,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_REND, urand(10 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_REND, eventId);
-//            ExecuteTargetEvent(SPELL_POUNCE_JUMP, urand(14 * IN_MILLISECONDS, 22 * IN_MILLISECONDS), EVENT_POUNCE, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_REND, urand(10 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_REND, eventId);
+//            //ExecuteTargetEvent(SPELL_POUNCE_JUMP, urand(14 * IN_MILLISECONDS, 22 * IN_MILLISECONDS), EVENT_POUNCE, eventId, PRIORITY_NOT_VICTIM);
 //            break;
 //        }
 //
@@ -2349,7 +2373,6 @@
 //{
 //    npc_zandalari_beastlord(Creature* creature) : ScriptedAI(creature)
 //    {
-//        isCaster = true;
 //    }
 //
 //    void Reset() override
@@ -2384,8 +2407,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_THROW_AXE, 3 * IN_MILLISECONDS, EVENT_THROW_AXE, eventId);
-//            ExecuteTargetEvent(SPELL_HUNTERS_MARK, urand(12 * IN_MILLISECONDS, 20 * IN_MILLISECONDS), EVENT_HUNTERS_MARK, eventId);
+//            //ExecuteTargetEvent(SPELL_THROW_AXE, 3 * IN_MILLISECONDS, EVENT_THROW_AXE, eventId);
+//            //ExecuteTargetEvent(SPELL_HUNTERS_MARK, urand(12 * IN_MILLISECONDS, 20 * IN_MILLISECONDS), EVENT_HUNTERS_MARK, eventId);
 //            break;
 //        }
 //
@@ -2421,8 +2444,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_CHARGE_EFF, urand(12 * IN_MILLISECONDS, 17 * IN_MILLISECONDS), EVENT_CHARGE_EFF, eventId, PRIORITY_NOT_VICTIM);
-//            ExecuteTargetEvent(SPELL_BESTIAL_ROAR, urand(12 * IN_MILLISECONDS, 22 * IN_MILLISECONDS), EVENT_BESTIAL_ROAR, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_CHARGE_EFF, urand(12 * IN_MILLISECONDS, 17 * IN_MILLISECONDS), EVENT_CHARGE_EFF, eventId, PRIORITY_NOT_VICTIM);
+//            //ExecuteTargetEvent(SPELL_BESTIAL_ROAR, urand(12 * IN_MILLISECONDS, 22 * IN_MILLISECONDS), EVENT_BESTIAL_ROAR, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -2458,8 +2481,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_BRUTE_SLAM, urand(9 * IN_MILLISECONDS, 15.5 * IN_MILLISECONDS), EVENT_BRUTE_SLAM, eventId, PRIORITY_CHANNELED);
-//            ExecuteTargetEvent(SPELL_CONFIDENCE_OF_KROS, urand(22 * IN_MILLISECONDS, 29 * IN_MILLISECONDS), EVENT_CONFIDENCE_OF_KROS, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_BRUTE_SLAM, urand(9 * IN_MILLISECONDS, 15.5 * IN_MILLISECONDS), EVENT_BRUTE_SLAM, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_CONFIDENCE_OF_KROS, urand(22 * IN_MILLISECONDS, 29 * IN_MILLISECONDS), EVENT_CONFIDENCE_OF_KROS, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -2472,7 +2495,6 @@
 //{
 //    npc_skumblade_flithmonger(Creature* creature) : ScriptedAI(creature)
 //    {
-//        isCaster = true;
 //    }
 //
 //    void Reset() override
@@ -2494,7 +2516,7 @@
 //            DoStartNoMovement(target);
 //    }
 //
-//    void CastInterrupted(SpellInfo const* spell) override
+//    void OnSpellCastInterrupt(SpellInfo const* spell) override
 //    {
 //        events.RescheduleEvent(EVENT_FLING_FILTH, 6 * IN_MILLISECONDS);
 //
@@ -2514,7 +2536,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_FLING_FILTH, 2.5 * IN_MILLISECONDS, EVENT_FLING_FILTH, eventId);
+//            //ExecuteTargetEvent(SPELL_FLING_FILTH, 2.5 * IN_MILLISECONDS, EVENT_FLING_FILTH, eventId);
 //            break;
 //        }
 //
@@ -2549,7 +2571,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_REND_2, urand(10 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_REND, eventId);
+//            //ExecuteTargetEvent(SPELL_REND_2, urand(10 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_REND, eventId);
 //            break;
 //        }
 //
@@ -2579,9 +2601,9 @@
 //            if (player->GetQuestStatus(QUEST_THE_STORM_GATHERS_H) != QUEST_STATUS_INCOMPLETE)
 //                return false;
 //
-//            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+//            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 //
-//            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+//            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 //            return true;
 //        }
 //
@@ -2592,7 +2614,7 @@
 //            if (action == GOSSIP_ACTION_INFO_DEF + 1)
 //                player->CastSpell(player, SPELL_SUMMON_PLAYER_MOUNT_H, true);
 //
-//            player->CLOSE_GOSSIP_MENU();
+//            CloseGossipMenuFor(player);
 //            return true;
 //        }
 //
@@ -2605,15 +2627,15 @@
 //
 //            void IsSummonedBy(Unit* summoner) override
 //            {
-//                me->m_Events.Schedule(2650, [this]()
+//                AddTimedDelayedOperation(2650, [this]() -> void
 //                {
 //                    Talk(TALK_INTRO);
 //                });
-//                me->m_Events.Schedule(12100, [this]()
+//                AddTimedDelayedOperation(12100, [this]() -> void
 //                {
 //                    Talk(TALK_SPECIAL_1);
 //                });
-//                me->m_Events.Schedule(22100, [this]()
+//                AddTimedDelayedOperation(22100, [this]() -> void
 //                {
 //                    Talk(TALK_SPECIAL_2);
 //                });
@@ -2633,23 +2655,23 @@
 //{
 //    npc_sunreaver_bloodhawk(Creature* creature) : CreatureAI(creature) 
 //    {
-//        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC);
+//        me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC));
 //    }
 //
 //    TaskScheduler scheduler;
-//    uint64 summonerGUID;
+//    ObjectGuid summonerGUID;
 //
 //    void IsSummonedBy(Unit* summoner) override
 //    {
 //        summonerGUID = summoner->GetGUID();
 //        me->SetSpeed(MOVE_RUN, 2.85f);
-//
+//        /*
 //        if (me->GetMap()->GetZoneId(me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()) == 6507)
 //            return;
-//
+//            */
 //        if (me->GetEntry() == NPC_ELSIA_BLOODHAWK)
 //            DoCast(me, SPELL_SUMMON_ELSIA_TOWNLONG, true);
-//
+//        /*
 //        scheduler.Schedule(Milliseconds(1500), [this](TaskContext context)
 //        {
 //            if (Unit* owner = ObjectAccessor::GetUnit(*me, summonerGUID))
@@ -2681,13 +2703,13 @@
 //                    }
 //                }
 //            });
-//        });
+//        }); */
 //    }
 //
 //    void DoAction(int32 actionId) override
 //    {
 //        if (actionId == ACTION_INTRO)
-//        {
+//        {/*
 //            scheduler.Schedule(Milliseconds(1500), [this](TaskContext context) // delay for init or vehicle entrance will drop...
 //            {
 //                Movement::MoveSplineInit init(me);
@@ -2706,7 +2728,7 @@
 //                        me->DespawnOrUnsummon();
 //                    }
 //                });
-//            });
+//            }); */
 //        }
 //    }
 //
@@ -2735,9 +2757,9 @@
 //            if (player->GetQuestStatus(QUEST_THE_STORM_GATHERS_A) != QUEST_STATUS_INCOMPLETE)
 //                return false;
 //
-//            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+//            AddGossipItemFor(player, GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 //
-//            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+//            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 //            return true;
 //        }
 //
@@ -2748,7 +2770,7 @@
 //            if (action == GOSSIP_ACTION_INFO_DEF + 1)
 //                player->CastSpell(player, SPELL_SUMMON_PLAYER_MOUNT_A, true);
 //
-//            player->CLOSE_GOSSIP_MENU();
+//            CloseGossipMenuFor(player);
 //
 //            return true;
 //        }
@@ -2757,22 +2779,22 @@
 //        {
 //            npc_vereesa_windrunnerAI(Creature* creature) : ScriptedAI(creature) 
 //            {
-//                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC);
+//                me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_IMMUNE_TO_NPC));
 //            }
 //
 //            void IsSummonedBy(Unit* summoner) override
 //            {
-//                me->m_Events.Schedule(2650, [this]()
+//                AddTimedDelayedOperation(2650, [this]() -> void
 //                {
 //                    Talk(TALK_INTRO);
 //                });
 //
-//                me->m_Events.Schedule(12100, [this]()
+//                AddTimedDelayedOperation(12100, [this]() -> void
 //                {
 //                    Talk(TALK_SPECIAL_1);
 //                });
 //
-//                me->m_Events.Schedule(22100, [this]()
+//                AddTimedDelayedOperation(22100, [this]() -> void
 //                {
 //                    Talk(TALK_SPECIAL_2);
 //                });
@@ -2796,8 +2818,8 @@
 //    }
 //
 //    TaskScheduler scheduler;
-//    uint64 summonerGUID;
-//
+//    ObjectGuid summonerGUID;
+//    /*
 //    void IsSummonedBy(Unit* summoner) override
 //    {
 //        summonerGUID = summoner->GetGUID();
@@ -2840,7 +2862,7 @@
 //                    }
 //                }
 //            });
-//        });
+//        }); 
 //    }
 //
 //    void DoAction(int32 actionId) override
@@ -2867,7 +2889,7 @@
 //                });
 //            });
 //        }
-//    }
+//    }*/
 //
 //    void JustSummoned(Creature* summon) override
 //    {
@@ -2886,13 +2908,13 @@
 //    npc_lorthemar_theron_isle_intro(Creature* creature) : ScriptedAI(creature) { }
 //
 //    TaskScheduler scheduler;
-//    uint64 summonerGUID;
+//    ObjectGuid summonerGUID;
 //
 //    void IsSummonedBy(Unit* summoner) override
 //    {
 //        summonerGUID = summoner->GetGUID();
 //        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-//        me->SetPhaseMask(4, true);
+//        //me->SetPhaseMask(4, true);
 //
 //        scheduler.Schedule(Seconds(2), [this](TaskContext context)
 //        {
@@ -2905,7 +2927,7 @@
 //            me->SetFacingTo(Position::NormalizeOrientation(me->GetOrientation() - M_PI / 2));
 //            Talk(TALK_SPECIAL_1);
 //        });
-//
+//        /*
 //        scheduler.Schedule(Milliseconds(15250), [this](TaskContext context)
 //        {
 //            Movement::MoveSplineInit init(me);
@@ -2964,7 +2986,7 @@
 //                    me->DespawnOrUnsummon();
 //                });
 //            });
-//        });
+//        }); */
 //    }
 //
 //    void UpdateAI(uint32 diff) override 
@@ -2983,7 +3005,7 @@
 //    void IsSummonedBy(Unit* summoner) override
 //    {
 //        me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
-//        me->SetPhaseMask(4, true);
+//        //me->SetPhaseMask(4, true);
 //
 //        scheduler.Schedule(Seconds(2), [this](TaskContext context)
 //        {
@@ -3009,12 +3031,12 @@
 //    npc_stone_ritual_bunny_controller(Creature* creature) : ScriptedAI(creature) { }
 //
 //    TaskScheduler scheduler;
-//    uint64 conquerorGUID;
+//    ObjectGuid conquerorGUID;
 //
 //    void Reset() override
 //    {
 //        scheduler.CancelAll();
-//        conquerorGUID = 0;
+//        conquerorGUID.Clear();
 //
 //        if (Creature* stoneConqueror = me->SummonCreature(NPC_ANCIENT_STONE_CONQUEROR, *me, TEMPSUMMON_MANUAL_DESPAWN))
 //            conquerorGUID = stoneConqueror->GetGUID();
@@ -3237,7 +3259,7 @@
 //    {
 //        events.Reset();
 //
-//        me->m_Events.Schedule(1000, [this]()
+//        AddTimedDelayedOperation(1000, [this]() -> void
 //        {
 //            Creature* dino = me->FindNearestCreature(69277, 50.0f);
 //            if (!dino)
@@ -3296,8 +3318,8 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(140411, 5  * IN_MILLISECONDS, 1, eventId);
-//            ExecuteTargetEvent(140409, 15 * IN_MILLISECONDS, 2, eventId);
+//            //ExecuteTargetEvent(140411, 5  * IN_MILLISECONDS, 1, eventId);
+//            //ExecuteTargetEvent(140409, 15 * IN_MILLISECONDS, 2, eventId);
 //            break;
 //        }
 //
@@ -3311,9 +3333,9 @@
 //    npc_puzzle_controller_bunny(Creature* creature) : ScriptedAI(creature) { }
 //
 //    TaskScheduler scheduler;
-//    std::list<uint64> puzzleSequenceGUIDs;
-//    std::list<uint64> puzzleList;
-//    std::list<uint64> copyPuzzleList;
+//    std::list<ObjectGuid> puzzleSequenceGUIDs;
+//    std::list<ObjectGuid> puzzleList;
+//    std::list<ObjectGuid> copyPuzzleList;
 //
 //    void Reset() override
 //    {
@@ -3411,7 +3433,7 @@
 //            .SetValidator([this] { return me->IsInCombat(); })
 //            .Schedule(Seconds(1), [this](TaskContext context)
 //        {
-//            if (me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim(), 6.5f))
+//            if (me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim()))
 //                DoCast(me->GetVictim(), SPELL_DEATH_STARE);
 //
 //            context.Repeat(Seconds(1));
@@ -3431,12 +3453,12 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(urand(0, 1) ? SPELL_GROUND_SLAM : SPELL_SHOCKWAVE, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS), EVENT_GROUND_SLAM, eventId, PRIORITY_CHANNELED);
-//            ExecuteTargetEvent(SPELL_FLAMETHROWER, 12.5 * IN_MILLISECONDS, EVENT_FLAMETHOWER, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(urand(0, 1) ? SPELL_GROUND_SLAM : SPELL_SHOCKWAVE, urand(8 * IN_MILLISECONDS, 10 * IN_MILLISECONDS), EVENT_GROUND_SLAM, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_FLAMETHROWER, 12.5 * IN_MILLISECONDS, EVENT_FLAMETHOWER, eventId, PRIORITY_CHANNELED);
 //            break;
 //        }
 //
-//        DoMeleeAttackIfReady(true);
+//        DoMeleeAttackIfReady();
 //    }
 //};
 //
@@ -3455,8 +3477,7 @@
 //                QuestObjective const* obj1 = sObjectMgr->GetQuestObjective(270185);
 //                QuestObjective const* obj2 = sObjectMgr->GetQuestObjective(270186);
 //                QuestObjective const* obj3 = sObjectMgr->GetQuestObjective(270187);
-//                Quest const* qInfo = sObjectMgr->GetQuestTemplate(32640);
-//                if (player->IsQuestObjectiveComplete(qInfo, *obj1) && player->IsQuestObjectiveComplete(qInfo, *obj2) && player->IsQuestObjectiveComplete(qInfo, *obj3))
+//                if (player->IsQuestObjectiveComplete(*obj1) && player->IsQuestObjectiveComplete(*obj2) && player->IsQuestObjectiveComplete(*obj3))
 //                    player->CompleteQuest(32640);
 //            }
 //
@@ -3465,12 +3486,11 @@
 //                QuestObjective const* obj1 = sObjectMgr->GetQuestObjective(270188);
 //                QuestObjective const* obj2 = sObjectMgr->GetQuestObjective(270189);
 //                QuestObjective const* obj3 = sObjectMgr->GetQuestObjective(270190);
-//                Quest const* qInfo = sObjectMgr->GetQuestTemplate(32641);
-//                if (player->IsQuestObjectiveComplete(qInfo, *obj1) && player->IsQuestObjectiveComplete(qInfo, *obj2) && player->IsQuestObjectiveComplete(qInfo, *obj3))
+//                if (player->IsQuestObjectiveComplete(*obj1) && player->IsQuestObjectiveComplete(*obj2) && player->IsQuestObjectiveComplete(*obj3))
 //                    player->CompleteQuest(32641);
 //            }
 //
-//            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+//            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 //            return true;
 //        }
 //};
@@ -3509,7 +3529,7 @@
 //    
 //        bool OnGossipHello(Player* player, Creature* creature) override
 //        {
-//            player->CLOSE_GOSSIP_MENU();
+//            CloseGossipMenuFor(player);
 //            creature->HandleSpellClick(player);
 //            return true;
 //        }
@@ -3520,7 +3540,7 @@
 //{
 //    npc_nalak_essence_of_storms(Creature* creature) : ScriptedAI(creature) { }
 //
-//    uint64 ownerGUID;
+//    ObjectGuid ownerGUID;
 //    TaskScheduler scheduler;
 //    bool canAttack;
 //
@@ -3542,7 +3562,7 @@
 //    }
 //
 //
-//    void EnterEvadeMode() override
+//    void EnterEvadeMode(EvadeReason why) override
 //    {
 //        ScriptedAI::EnterEvadeMode();
 //        me->DisappearAndDie();
@@ -3596,7 +3616,7 @@
 //        events.ScheduleEvent(EVENT_EXSANGUINATION, 15 * IN_MILLISECONDS);
 //    }
 //
-//    void EnterEvadeMode() override
+//    void EnterEvadeMode(EvadeReason why) override
 //    {
 //        summons.DespawnAll();
 //        ScriptedAI::EnterEvadeMode();
@@ -3621,7 +3641,8 @@
 //            std::list<Player*> players;
 //            me->GetPlayerListInGrid(players, 50.0f);
 //            for (auto&& player : players)
-//                player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_YOU_MADE_ME_BLEED_ACHIEV);
+//                ;
+//                //player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_YOU_MADE_ME_BLEED_ACHIEV);
 //        }
 //    }
 //
@@ -3639,9 +3660,9 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_BLOOD_BOLT, urand(3.5 * IN_MILLISECONDS, 4 * IN_MILLISECONDS), EVENT_BLOOD_BOLT, eventId);
-//            ExecuteTargetEvent(SPELL_EXSANGUINATION, 20 * IN_MILLISECONDS, EVENT_EXSANGUINATION, eventId, PRIORITY_SELF);
-//            ExecuteTargetEvent(SPELL_RIVERS_OF_BLOOD, 12 * IN_MILLISECONDS, EVENT_RIVERS_OF_BLOOD, eventId, PRIORITY_CHANNELED);
+//            //ExecuteTargetEvent(SPELL_BLOOD_BOLT, urand(3.5 * IN_MILLISECONDS, 4 * IN_MILLISECONDS), EVENT_BLOOD_BOLT, eventId);
+//            //ExecuteTargetEvent(SPELL_EXSANGUINATION, 20 * IN_MILLISECONDS, EVENT_EXSANGUINATION, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_RIVERS_OF_BLOOD, 12 * IN_MILLISECONDS, EVENT_RIVERS_OF_BLOOD, eventId, PRIORITY_CHANNELED);
 //            break;
 //        }
 //
@@ -3664,7 +3685,7 @@
 //        events.ScheduleEvent(EVENT_TOSS_ENERGIZED_METAL, 6.5 * IN_MILLISECONDS);
 //    }
 //
-//    void EnterEvadeMode() override
+//    void EnterEvadeMode(EvadeReason why) override
 //    {
 //        summons.DespawnAll();
 //        ScriptedAI::EnterEvadeMode();
@@ -3686,7 +3707,8 @@
 //        for (auto&& player : players)
 //            if (Aura* surge = player->GetAura(SPELL_POWER_SURGE_ACHIEV))
 //                if (surge->GetStackAmount() > 9)
-//                    player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_SPEED_METAL_ACHIEV);
+//                    ;
+//                    //player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_SPEED_METAL_ACHIEV);
 //    }
 //
 //    void UpdateAI(uint32 diff) override
@@ -3701,7 +3723,7 @@
 //
 //        while (uint32 eventId = events.ExecuteEvent())
 //        {
-//            ExecuteTargetEvent(SPELL_TOSS_ENERGIZED_METAL_TAR, 12 * IN_MILLISECONDS, EVENT_TOSS_ENERGIZED_METAL, eventId, PRIORITY_SELF);
+//            //ExecuteTargetEvent(SPELL_TOSS_ENERGIZED_METAL_TAR, 12 * IN_MILLISECONDS, EVENT_TOSS_ENERGIZED_METAL, eventId, PRIORITY_SELF);
 //            break;
 //        }
 //
@@ -3749,7 +3771,8 @@
 //            if (me->GetEntry() == 69128)
 //                player->KilledMonsterCredit(69128);
 //            else
-//                player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 139283);
+//                //player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, 139283);
+//                ;
 //        }
 //    }
 //};
@@ -3779,7 +3802,8 @@
 //    void JustDied(Unit* killer) override
 //    {
 //        if (killer && killer->ToPlayer())
-//            killer->ToPlayer()->StartCriteria(CRITERIA_START_TYPE_CREATURE, me->GetEntry());
+//            ;
+//            //killer->ToPlayer()->StartCriteria(CRITERIA_START_TYPE_CREATURE, me->GetEntry());
 //    }
 //};
 //
@@ -3795,7 +3819,8 @@
 //            me->ExitVehicle();
 //
 //            if (attacker && attacker->ToPlayer())
-//                attacker->ToPlayer()->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_BOOP_ACHIEV);
+//                ;
+//                //attacker->ToPlayer()->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_BE_SPELL_TARGET, SPELL_BOOP_ACHIEV);
 //        }
 //    }
 //};
@@ -3846,23 +3871,23 @@
 //    {
 //        if (Unit* caster = GetCaster())
 //        {
-//            uint64 casterGUID = caster->GetGUID();
+//            ObjectGuid casterGUID = caster->GetGUID();
 //            float x = caster->GetPositionX();
 //            float y = caster->GetPositionY();
 //            float z = caster->GetPositionZ();
 //
 //            caster->CastSpell(x, y, z, SPELL_REVERBERATING_SMASH_RING, true);
 //
-//            caster->m_Events.Schedule(500, [casterGUID, x, y, z]()
-//            {
+//            caster->GetScheduler().Schedule(500ms, [this, casterGUID, x, y, z](TaskContext /*context*/)
+//            {/*
 //                if (Unit* m_caster = ObjectAccessor::FindUnit(casterGUID))
-//                    m_caster->CastSpell(x, y, z, SPELL_REVERBERATING_SMASH_INNER, true);
+//                    m_caster->CastSpell(x, y, z, SPELL_REVERBERATING_SMASH_INNER, true); */
 //            });
-//            caster->m_Events.Schedule(1000, [casterGUID, x, y, z]()
-//            {
+//            caster->GetScheduler().Schedule(Seconds(1), [this, casterGUID, x, y, z](TaskContext /*context*/)
+//            {/*
 //                if (Unit* m_caster = ObjectAccessor::FindUnit(casterGUID))
-//                    m_caster->CastSpell(x, y, z, SPELL_REVERBERATING_SMASH_OUT, true);
-//            });
+//                    m_caster->CastSpell(x, y, z, SPELL_REVERBERATING_SMASH_OUT, true); */
+//            }); 
 //        }
 //    }
 //
@@ -4065,9 +4090,9 @@
 //    PrepareAuraScript(spell_teleport_to_thunder_isle_horde);
 //
 //    void OnUpdate(uint32 diff)
-//    {
+//    {/*
 //        if (GetUnitOwner() && GetUnitOwner()->GetMap()->GetZoneId(GetUnitOwner()->GetPositionX(), GetUnitOwner()->GetPositionY(), GetUnitOwner()->GetPositionZ()) == 6507)
-//            GetUnitOwner()->RemoveAurasDueToSpell(SPELL_TELEPORT_THUNDER_ISLE_H);
+//            GetUnitOwner()->RemoveAurasDueToSpell(SPELL_TELEPORT_THUNDER_ISLE_H); */
 //    }
 //
 //    void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
@@ -4095,9 +4120,9 @@
 //    PrepareAuraScript(spell_teleport_to_thunder_isle_alliance);
 //
 //    void OnUpdate(uint32 diff)
-//    {
+//    {/*
 //        if (GetUnitOwner() && GetUnitOwner()->GetMap()->GetZoneId(GetUnitOwner()->GetPositionX(), GetUnitOwner()->GetPositionY(), GetUnitOwner()->GetPositionZ()) == 6507)
-//            GetUnitOwner()->RemoveAurasDueToSpell(SPELL_TELEPORT_THUNDER_ISLE_A);
+//            GetUnitOwner()->RemoveAurasDueToSpell(SPELL_TELEPORT_THUNDER_ISLE_A); */
 //    }
 //
 //    void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
@@ -4127,13 +4152,15 @@
 //    void OnAuraEffectApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
 //    {
 //        if (Unit* owner = GetUnitOwner())
-//            owner->SetPhaseMask(4, true);
+//            ;
+//            //owner->SetPhaseMask(4, true);
 //    }
 //
 //    void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
 //    {
 //        if (Unit* owner = GetUnitOwner())
-//            owner->SetPhaseMask(2, true);
+//            ;
+//            //owner->SetPhaseMask(2, true);
 //    }
 //
 //    void Register() override
@@ -4318,9 +4345,10 @@
 //
 //    void SelectTargets(SpellDestination& dest)
 //    {
-//        if (Unit* caster = GetCaster())
-//            if (Creature* nalak = caster->FindNearestCreature(BOSS_NALAK, 100.0f, true))
-//                dest.Relocate(*nalak);
+//        if (Unit * caster = GetCaster())
+//            if (Creature * nalak = caster->FindNearestCreature(BOSS_NALAK, 100.0f, true))
+//                //dest.Relocate(*nalak);
+//                ;
 //    }
 //
 //    void Register() override
@@ -4373,7 +4401,7 @@
 //    {
 //        if (Unit* caster = GetCaster())
 //            if (Unit* target = GetHitUnit())
-//                caster->CastSpell(target, GetSpellInfo()->Effects[effIndex].BasePoints, true);
+//                caster->CastSpell(target, GetSpellInfo()->GetEffect(EFFECT_0)->BasePoints, true);
 //    }
 //
 //    void Register()
@@ -4411,7 +4439,7 @@
 //        OnEffectPeriodic += AuraEffectPeriodicFn(spell_power_surge_achiev::HandleTick, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
 //    }
 //};
-//
+///*
 //// 855, 862. Summoned by 139917 - Thermal Expansion
 //class sat_thermal_expansion : public IAreaTriggerAura
 //{
@@ -4620,7 +4648,7 @@
 //            itr->RemoveAurasDueToSpell(136676);
 //    }
 //};
-//
+//*/
 //class go_thunder_isle_altar : public GameObjectScript
 //{
 //    public:
@@ -4638,7 +4666,7 @@
 //    public:
 //        transport_zandalari_ship() : TransportScript("transport_zandalari_ship") { }
 //
-//        void OnCreate(Transport* transport) override
+//        void OnCreate(Transport* transport)
 //        {
 //            transport->EnableMovement(false);
 //        }
@@ -4648,7 +4676,6 @@ void AddSC_isle_of_thunder()
 {
 //    new npc_sunreaver_construct();
 //    new npc_mumta();
-//    new creature_script<npc_thunder_pterodactyls>("npc_thunder_pterodactyls");
 //    new npc_progenitus();
 //    new npc_goda();
 //    new npc_godhulk_ramuk();
@@ -4657,89 +4684,95 @@ void AddSC_isle_of_thunder()
 //    new npc_luban();
 //    new npc_molthor();
 //    new npc_rasha();
-//    new creature_script<npc_thunder_zandalaris>("npc_thunder_zandalaris");
 //    new npc_spirit_of_warlord_teng();
-//    new creature_script<npc_shanze_bloodseeker>("npc_shanze_bloodseeker");
-//    new creature_script<npc_horgak_the_enslaver>("npc_horgak_the_enslaver");
-//    new creature_script<npc_animated_warrior>("npc_animated_warrior");
-//    new creature_script<npc_lightning_rod>("npc_lightning_rod");
-//    new creature_script<npc_electromancer_jule>("npc_electromancer_jule");
-//    new creature_script<npc_creeping_moor_beast>("npc_creeping_moor_beast");
-//    new creature_script<npc_slateshell_wanderer>("npc_slateshell_wanderer");
-//    new creature_script<npc_drakkari_god_hulk>("npc_drakkari_god_hulk");
-//    new creature_script<npc_zandalari_colossus>("npc_zandalari_colossus");
-//    new creature_script<npc_wave_of_might>("npc_wave_of_might");
-//    new creature_script<npc_zandalari_stoneshield>("npc_zandalari_stoneshield");
-//    new creature_script<npc_zandalari_beastcaller>("npc_zandalari_beastcaller");
-//    new creature_script<npc_juvenile_skyscreamer>("npc_juvenile_skyscreamer");
-//    new creature_script<npc_zandalari_spiritbinder>("npc_zandalari_spiritbinder");
-//    new creature_script<npc_zandalari_arcweaver>("npc_zandalari_arcweaver");
-//    new creature_script<npc_zandalari_jaguar_warrior>("npc_zandalari_jaguar_warrior");
-//    new creature_script<npc_shanze_thundercaller>("npc_shanze_thundercaller");
-//    new creature_script<npc_shanze_gravekeeper>("npc_shanze_gravekeeper");
-//    new creature_script<npc_sparkmancer_vu>("npc_sparkmancer_vu");
-//    new creature_script<npc_shanze_soulripper>("npc_shanze_soulripper");
-//    new creature_script<npc_ancient_stone_conqueror>("npc_ancient_stone_conqueror");
-//    new creature_script<npc_slateshell_ancient>("npc_slateshell_ancient");
-//    new creature_script<npc_tamed_bladetalon>("npc_tamed_bladetalon");
-//    new creature_script<npc_zandalari_beastlord>("npc_zandalari_beastlord");
-//    new creature_script<npc_skumblade_skirmisher>("npc_skumblade_skirmisher");
-//    new creature_script<npc_skumblade_brute>("npc_skumblade_brute");
-//    new creature_script<npc_skumblade_flithmonger>("npc_skumblade_flithmonger");
-//    new creature_script<npc_skeletal_lasher>("npc_skeletal_lasher");
 //    new npc_scout_captain_elsia();
-//    new creature_script<npc_sunreaver_bloodhawk>("npc_sunreaver_bloodhawk");
 //    new npc_vereesa_windrunner();
-//    new creature_script<npc_silver_covenant_hippogryph>("npc_silver_covenant_hippogryph");
-//    new creature_script<npc_lorthemar_theron_isle_intro>("npc_lorthemar_theron_isle_intro");
-//    new creature_script<npc_aethas_isle_intro>("npc_aethas_isle_intro");
-//    new creature_script<npc_stone_ritual_bunny_controller>("npc_stone_ritual_bunny_controller");
-//    new creature_script<npc_guardian_taku>("npc_guardian_taku");
-//    new creature_script<npc_master_caller>("npc_master_caller");
-//    new creature_script<npc_puzzle_controller_bunny>("npc_puzzle_controller_bunny");
-//    new creature_script<npc_incompleted_drakari_colossus>("npc_incompleted_drakari_colossus");
 //    new npc_iot_taran_zhu();
-//    new creature_script<npc_iot_stone_sentinel>("npc_iot_stone_sentinel");
 //    new npc_assigment_map();
-//    new creature_script<npc_nalak_essence_of_storms>("npc_nalak_essence_of_storms");
-//    new creature_script<npc_fleshcrafter_hoku>("npc_fleshcrafter_hoku");
-//    new creature_script<npc_metal_lord_meno_han>("npc_metal_lord_meno_han");
-//    new creature_script<npc_hatchling_skyscreamer>("npc_hatchling_skyscreamer");
-//    new creature_script<npc_ingaluk_roach>("npc_ingaluk_roach");
-//    new creature_script<npc_zandalari_beastcaller_passenger>("npc_zandalari_beastcaller_passenger");
+//
+//    RegisterCreatureAI(npc_thunder_pterodactyls);
+//    RegisterCreatureAI(npc_thunder_zandalaris);
+//    RegisterCreatureAI(npc_shanze_bloodseeker);
+//    RegisterCreatureAI(npc_horgak_the_enslaver);
+//    RegisterCreatureAI(npc_animated_warrior);
+//    RegisterCreatureAI(npc_lightning_rod);
+//    RegisterCreatureAI(npc_electromancer_jule);
+//    RegisterCreatureAI(npc_creeping_moor_beast);
+//    RegisterCreatureAI(npc_slateshell_wanderer);
+//    RegisterCreatureAI(npc_drakkari_god_hulk);
+//    RegisterCreatureAI(npc_zandalari_colossus);
+//    RegisterCreatureAI(npc_wave_of_might);
+//    RegisterCreatureAI(npc_zandalari_stoneshield);
+//    RegisterCreatureAI(npc_zandalari_beastcaller);
+//    RegisterCreatureAI(npc_juvenile_skyscreamer);
+//    RegisterCreatureAI(npc_zandalari_spiritbinder);
+//    RegisterCreatureAI(npc_zandalari_arcweaver);
+//    RegisterCreatureAI(npc_zandalari_jaguar_warrior);
+//    RegisterCreatureAI(npc_shanze_thundercaller);
+//    RegisterCreatureAI(npc_shanze_gravekeeper);
+//    RegisterCreatureAI(npc_sparkmancer_vu);
+//    RegisterCreatureAI(npc_shanze_soulripper);
+//    RegisterCreatureAI(npc_ancient_stone_conqueror);
+//    RegisterCreatureAI(npc_slateshell_ancient);
+//    RegisterCreatureAI(npc_tamed_bladetalon);
+//    RegisterCreatureAI(npc_zandalari_beastlord);
+//    RegisterCreatureAI(npc_skumblade_skirmisher);
+//    RegisterCreatureAI(npc_skumblade_brute);
+//    RegisterCreatureAI(npc_skumblade_flithmonger);
+//    RegisterCreatureAI(npc_skeletal_lasher);
+//    RegisterCreatureAI(npc_sunreaver_bloodhawk);
+//    RegisterCreatureAI(npc_silver_covenant_hippogryph);
+//    RegisterCreatureAI(npc_lorthemar_theron_isle_intro);
+//    RegisterCreatureAI(npc_aethas_isle_intro);
+//    RegisterCreatureAI(npc_stone_ritual_bunny_controller);
+//    RegisterCreatureAI(npc_guardian_taku);
+//    RegisterCreatureAI(npc_master_caller);
+//    RegisterCreatureAI(npc_puzzle_controller_bunny);
+//    RegisterCreatureAI(npc_incompleted_drakari_colossus);
+//    RegisterCreatureAI(npc_iot_stone_sentinel);
+//    RegisterCreatureAI(npc_nalak_essence_of_storms);
+//    RegisterCreatureAI(npc_fleshcrafter_hoku);
+//    RegisterCreatureAI(npc_metal_lord_meno_han);
+//    RegisterCreatureAI(npc_hatchling_skyscreamer);
+//    RegisterCreatureAI(npc_ingaluk_roach);
+//    RegisterCreatureAI(npc_zandalari_beastcaller_passenger);
+//
+//    new go_thunder_isle_altar();
 //
 //    new spell_incantation_of_gura();
-//    new spell_script<spell_reverberating_smash>("spell_reverberating_smash");
-//    new spell_script<spell_reverberating_smash_wave>("spell_reverberating_smash_wave");
-//    new spell_script<spell_lightning_crack>("spell_lightning_crack");
-//    new aura_script<spell_lightning_crack_visual>("spell_lightning_crack_visual");
-//    new aura_script<spell_alert_drumbs>("spell_alert_drumbs");
-//    new spell_script<spell_zandalari_potion>("spell_zandalari_potion");
-//    new aura_script<spell_shellwind>("spell_shellwind");
-//    new spell_script<spell_pounce_jump>("spell_pounce_jump");
-//    new spell_script<spell_preform_ritual>("spell_preform_ritual");
-//    new aura_script<spell_teleport_to_thunder_isle_horde>("spell_teleport_to_thunder_isle_horde");
-//    new aura_script<spell_teleport_to_thunder_isle_alliance>("spell_teleport_to_thunder_isle_alliance");
-//    new aura_script<spell_summon_lorthemar_isle_intro>("spell_summon_lorthemar_isle_intro");
-//    new spell_script<spell_plant_mogu_weapon>("spell_plant_mogu_weapon");
-//    new spell_script<spell_mummy_burn_corpse>("spell_mummy_burn_corpse");
-//    new aura_script<spell_resonanse_siphon>("spell_resonanse_siphon");
-//    new spell_script<spell_mogu_manipulation>("spell_mogu_manipulation");
-//    new spell_script<spell_mogu_manipulation_cancel>("spell_mogu_manipulation_cancel");
-//    new spell_script<spell_iot_lightning_charge>("spell_iot_lightning_charge");
-//    new aura_script<spell_embedded_spear>("spell_embedded_spear");
-//    new spell_script<spell_nalak_throw_spear>("spell_nalak_throw_spear");
-//    new spell_script<spell_summon_essence_of_storm>("spell_summon_essence_of_storm");
-//    new spell_script<spell_nalak_empower_lightning_lance>("spell_nalak_empower_lightning_lance");
-//    new spell_script<spell_hoku_exsanguination>("spell_hoku_exsanguination");
-//    new spell_script<spell_mono_han_toss_energized_metal_targeting>("spell_mono_han_toss_energized_metal_targeting");
-//    new aura_script<spell_power_surge_achiev>("spell_power_surge_achiev");
-//    new atrigger_script<sat_thermal_expansion>("sat_thermal_expansion");
-//    new atrigger_script<sat_thermal_collapse>("sat_thermal_collapse");
-//    new atrigger_script<sat_lightning_field>("sat_lightning_field");
-//    new atrigger_script<sat_rune_of_the_storm>("sat_rune_of_the_storm");
-//    new atrigger_script<sat_wrath_of_the_direhorn>("sat_wrath_of_the_direhorn");
-//    new atrigger_script<sat_spirital_guide>("sat_spirital_guide");
-//    new go_thunder_isle_altar();
+//    RegisterSpellScript(spell_reverberating_smash);
+//    RegisterSpellScript(spell_reverberating_smash_wave);
+//    RegisterSpellScript(spell_lightning_crack);
+//    RegisterSpellScript(spell_zandalari_potion);
+//    RegisterSpellScript(spell_pounce_jump);
+//    RegisterSpellScript(spell_preform_ritual);
+//    RegisterSpellScript(spell_plant_mogu_weapon);
+//    RegisterSpellScript(spell_mummy_burn_corpse);
+//    RegisterSpellScript(spell_mogu_manipulation);
+//    RegisterSpellScript(spell_mogu_manipulation_cancel);
+//    RegisterSpellScript(spell_iot_lightning_charge);
+//    RegisterSpellScript(spell_nalak_throw_spear);
+//    RegisterSpellScript(spell_summon_essence_of_storm);
+//    RegisterSpellScript(spell_nalak_empower_lightning_lance);
+//    RegisterSpellScript(spell_hoku_exsanguination);
+//    RegisterSpellScript(spell_mono_han_toss_energized_metal_targeting);
+//
+//    RegisterAuraScript(spell_lightning_crack_visual);
+//    RegisterAuraScript(spell_alert_drumbs);
+//    RegisterAuraScript(spell_shellwind);
+//    RegisterAuraScript(spell_teleport_to_thunder_isle_horde);
+//    RegisterAuraScript(spell_teleport_to_thunder_isle_alliance);
+//    RegisterAuraScript(spell_summon_lorthemar_isle_intro);
+//    RegisterAuraScript(spell_resonanse_siphon);
+//    RegisterAuraScript(spell_embedded_spear);
+//    RegisterAuraScript(spell_power_surge_achiev);
+//
+//    //new atrigger_script<sat_thermal_expansion>("sat_thermal_expansion");
+//    //new atrigger_script<sat_thermal_collapse>("sat_thermal_collapse");
+//    //new atrigger_script<sat_lightning_field>("sat_lightning_field");
+//    //new atrigger_script<sat_rune_of_the_storm>("sat_rune_of_the_storm");
+//    //new atrigger_script<sat_wrath_of_the_direhorn>("sat_wrath_of_the_direhorn");
+//    //new atrigger_script<sat_spirital_guide>("sat_spirital_guide");
+//
 //    new transport_zandalari_ship();
 }

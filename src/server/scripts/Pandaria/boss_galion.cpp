@@ -125,7 +125,7 @@ class boss_galion : public CreatureScript
                         {
                             for (uint32 i = 1; i < 3; i++)
                             {
-                              //  m_bp = m_spell->GetEffects[EFFECT_0].BasePoints + (int32)i;
+                                m_bp = m_spell->GetEffect(EFFECT_0)->BasePoints + (int32)i;
 
                                 if (Creature* cannon = me->SummonCreature(NPC_GALLEON_CANNON, *me, TEMPSUMMON_MANUAL_DESPAWN))
                                 {
@@ -136,13 +136,13 @@ class boss_galion : public CreatureScript
 
                             for (uint32 i = 3; i < 7; i++)
                             {
-                             //   m_bp = m_spell->GetEffects[EFFECT_0].BasePoints + (int32)i;
+                                m_bp = m_spell->GetEffect(EFFECT_0)->BasePoints + (int32)i;
 
                                 if (Creature* skirmisher = me->SummonCreature(NPC_SALYIN_SKRIMISHER, *me, TEMPSUMMON_MANUAL_DESPAWN))
                                     skirmisher->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
                             }
 
-                           // m_bp = m_spell->GetEffects[EFFECT_0].BasePoints + 7;
+                            m_bp = m_spell->GetEffect(EFFECT_0)->BasePoints + 7;
 
                             if (Creature* chief = me->SummonCreature(NPC_CHIEF_SALYIS, *me, TEMPSUMMON_MANUAL_DESPAWN))
                                 chief->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
@@ -200,7 +200,7 @@ class boss_galion : public CreatureScript
                 }
 
                 DoMeleeAttackIfReady();
-               // EnterEvadeIfOutOfCombatArea(diff, 125.0f);
+                CheckHomeDistToEvade(diff, 125.0f);
             }
         };
 
@@ -270,10 +270,10 @@ class npc_salyin_warmonger : public CreatureScript
 
             EventMap events;
 
-            /*void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(Unit* summoner) override
             {
-                HandleInitCombat(me->GetGUID());
-            }*/
+                //HandleInitCombat(me->GetGUID());
+            }
            
             void Reset() override
             {

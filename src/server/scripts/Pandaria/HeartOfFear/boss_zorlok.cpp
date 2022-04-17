@@ -2,6 +2,7 @@
 #include "ScriptedCreature.h"
 #include "heart_of_fear.h"
 #include "PassiveAI.h"
+#include "SpellAuras.h"
 
 enum Spells
 {
@@ -496,13 +497,13 @@ class boss_zorlok : public CreatureScript
                 _DespawnAtEvade();
                 me->GetMap()->CreatureRelocation(me, ZorlokWaypoints[3].GetPositionX(), ZorlokWaypoints[3].GetPositionY(), ZorlokWaypoints[3].GetPositionZ(), Position::NormalizeOrientation(ZorlokWaypoints[3].GetOrientation() + M_PI));
 
-                // DespawnZealousBugs();
+                DespawnZealousBugs();
             }
 
             void JustDied(Unit* /*killer*/) override
             {
                 // HandleAchievementOverzealous();
-                // DespawnZealousBugs();
+                 DespawnZealousBugs();
 
                 events.Reset();
                 summons.DespawnAll();
@@ -1516,14 +1517,14 @@ class npc_zorlok_echo_of_power : public CreatureScript
 };
 
 // Inhale - 122852
-class spell_inhale : public SpellScriptLoader
+class spell_inhale_zorlok : public SpellScriptLoader
 {
     public:
-        spell_inhale() : SpellScriptLoader("spell_inhale") { }
+        spell_inhale_zorlok() : SpellScriptLoader("spell_inhale_zorlok") { }
 
-        class spell_inhale_SpellScript : public SpellScript
+        class spell_inhale_zorlok_SpellScript : public SpellScript
         {
-            PrepareSpellScript(spell_inhale_SpellScript);
+            PrepareSpellScript(spell_inhale_zorlok_SpellScript);
 
             void HandleScriptEffect(SpellEffIndex effIndex)
             {
@@ -1533,13 +1534,13 @@ class spell_inhale : public SpellScriptLoader
 
             void Register() override
             {
-                OnEffectLaunch += SpellEffectFn(spell_inhale_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+                OnEffectLaunch += SpellEffectFn(spell_inhale_zorlok_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
             }
         };
 
         SpellScript* GetSpellScript() const override
         {
-            return new spell_inhale_SpellScript();
+            return new spell_inhale_zorlok_SpellScript();
         }
 };
     
@@ -1878,7 +1879,7 @@ class spell_zorlok_exhale_damage : public SpellScriptLoader
             }
 
             void HandleScript(SpellEffIndex /*effIndex*/)
-            {/*
+            {
                 Unit* Caster = GetCaster();
                 Unit* Target = GetHitUnit();
 
@@ -1889,7 +1890,7 @@ class spell_zorlok_exhale_damage : public SpellScriptLoader
                     SetHitDamage(0);
                 else
                     if (Aura* inhale = Caster->GetAura(SPELL_INHALE))
-                        SetHitDamage(uint32(GetHitDamage() * (inhale->GetStackAmount() * 0.5f))); */
+                        SetHitDamage(uint32(GetHitDamage() * (inhale->GetStackAmount() * 0.5f)));
             }
 
             bool HasAnyBetweenCasterAndTarget()
@@ -2077,7 +2078,7 @@ void AddSC_boss_zorlok()
     new boss_zorlok();
     new npc_sonic_ring();
     new npc_zorlok_echo_of_power();     // 65173, 65174 - Echo of Power
-    new spell_inhale();                 // 122852 - Inhale
+    new spell_inhale_zorlok();          // 122852 - Inhale
     new spell_attenuation();            // 122440 - Attenuation
     new spell_force_verve();            // 122718 - Force and verve
     new spell_sonic_ring();             // 122336 - Sonic Ring

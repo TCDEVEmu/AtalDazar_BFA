@@ -1,5 +1,9 @@
 #include "Group.h"
 #include "Guild.h"
+#include "Gameobject.h"
+
+#ifndef TIMELESS_ISLE_H_
+#define TIMELESS_ISLE_H_
 
 #define CELESTIAL_COURT_BOSS_INTRO_TIMER_1 1000
 #define CELESTIAL_COURT_BOSS_INTRO_TIMER_2 15000
@@ -68,7 +72,6 @@ enum TimelessCreatures
 
 enum Factions
 {
-    FACTION_FRIENDLY                      = 35,
     FACTION_HOSTILE_NEUTRAL               = 31,
 };
 
@@ -455,7 +458,7 @@ static void RewardPlayers(Creature* me)
 {
     std::set<uint32> rewardedGuilds;
 
-    for (auto&& itr : me->getThreatManager().getThreatList())
+    for (auto&& itr : me->GetThreatManager().getThreatList())
     {
         if (Player* target = ObjectAccessor::GetPlayer(*me, itr->getUnitGuid()))
         {
@@ -464,20 +467,20 @@ static void RewardPlayers(Creature* me)
             {
                 if (rewardedGuilds.find(guild->GetId()) == rewardedGuilds.end())
                 {
-                    guild->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, me->GetEntry(), 1, 0, me, target);
+                    //guild->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, me->GetEntry(), 1, 0, me, target);
                     rewardedGuilds.insert(guild->GetId());
                 }
             }
         }
     }
-
+    /*
     if (auto group = me->GetLootRecipientGroup())
     {
         if (group->GetFirstMember())
             group->GetFirstMember()->GetSource()->RewardPersonalLootAndCurrency(me, 71953);
     }
     else if (auto player = me->GetLootRecipient())
-        player->RewardPersonalLootAndCurrency(me, 71953);
+        player->RewardPersonalLootAndCurrency(me, 71953); */
 }
 
 static void HandleDoor(Creature* me, uint32 go, bool open)
@@ -491,19 +494,31 @@ static void HandleDoor(Creature* me, uint32 go, bool open)
 static void UpdateHealth(Creature* me)
 {
     uint8 count = 0;
-    for (auto&& threat : me->getThreatManager().getThreatList())
-        if (Player* player = Unit::GetPlayer(*me, threat->getUnitGuid()))
+    for (auto&& threat : me->GetThreatManager().getThreatList())
+        if (Player* player = ObjectAccessor::GetPlayer(*me, threat->getUnitGuid()))
             if (player->IsWithinDist(me, 100.0f))
                 count++;
 
     if (count > 35)
         count = 35;
-
+    /*
     auto info = sObjectMgr->GetCreatureScalingData(me->GetEntry(), count);
     if (!info)
         return;
-
-    me->RecalculateDynamicHealth(info->Health);
+        */
+    //me->RecalculateDynamicHealth(info->Health);
 }
 
 #define MIDDLE_FACING_ANGLE 1.573f
+enum Lang
+{
+    // Timeless Isle
+    LANG_SHRINE_BLESSING_OF_NIUZAO          = 12501,
+    LANG_SHRINE_BLESSING_OF_YULON           = 12502,
+    LANG_SHRINE_BLESSING_OF_CHI_JI          = 12503,
+    LANG_SHRINE_BLESSING_OF_XUEN            = 12504,
+    LANG_SHRINE_CORRUPTED_BY_ORDOS          = 12505,
+    LANG_ORDOS_SANCTUARY_RESTRICTED         = 12506,
+};
+
+#endif // TIMELESS_ISLE_H_

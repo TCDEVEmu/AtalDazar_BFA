@@ -256,8 +256,7 @@ class npc_sha_of_anger_bunny : public CreatureScript
         {
             npc_sha_of_anger_bunnyAI(Creature* creature) : ScriptedAI(creature)
             {
-                creature->RemoveUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL));
-               // creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                creature->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
                 creature->GetMotionMaster()->Clear();
             }
 
@@ -265,8 +264,7 @@ class npc_sha_of_anger_bunny : public CreatureScript
             {
                 me->GetMotionMaster()->Clear();
                 me->SetReactState(REACT_PASSIVE);
-                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL));
-               // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+                me->AddUnitFlag(UNIT_FLAG_REMOVE_CLIENT_CONTROL);
 
                 if (me->AI())
                     me->AI()->SetCanSeeEvenInPassiveMode(true);
@@ -331,8 +329,7 @@ class spell_sha_of_anger_aggressive_behaviour : public SpellScriptLoader
 
                     target->SetPvP(true);
                     target->SetFaction(16);
-                    target->AddUnitFlag(UnitFlags(UNIT_FLAG_PLAYER_CONTROLLED));
-                  //  target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+                    target->AddUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
                 }
 
             }
@@ -342,8 +339,7 @@ class spell_sha_of_anger_aggressive_behaviour : public SpellScriptLoader
                 if (Unit* target = GetTarget())
                 {
                     target->RestoreFaction();
-                    target->RemoveUnitFlag(UnitFlags(UNIT_FLAG_PLAYER_CONTROLLED));
-                    //target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+                    target->RemoveUnitFlag(UNIT_FLAG_PLAYER_CONTROLLED);
                 }
             }
 

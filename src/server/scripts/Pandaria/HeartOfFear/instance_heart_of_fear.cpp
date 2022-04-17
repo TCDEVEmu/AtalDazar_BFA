@@ -3,6 +3,8 @@
 #include "CreatureTextMgr.h"
 #include "heart_of_fear.h"
 #include "LFGMgr.h"
+#include "WorldSession.h"
+#include "Gameobject.h"
 /*
 static std::vector<DoorData> const doorData =
 {
@@ -162,10 +164,10 @@ class instance_heart_of_fear : public InstanceMapScript
                         ShekzeerGUID = creature->GetGUID();
                         break;
                     case NPC_SPEARED_KLAXXI:
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         break;
                     case NPC_MANTID_SPEAR:
-                        creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                        creature->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
                         if (Creature* SpearedKlaxxi = creature->SummonCreature(NPC_SPEARED_KLAXXI, creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN))
                             SpearedKlaxxi->CastSpell(creature, SPELL_RIDE_VEHICLE_HARDCODED, true);
                         break;

@@ -74,7 +74,6 @@ class boss_oondasta : public CreatureScript
                 {
 
                     me->RemoveUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE));
-                 // me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
                     me->SummonCreature(NPC_DOHAMAN_THE_BEAST_LORD, DohamanSummPos, TEMPSUMMON_MANUAL_DESPAWN);
                 });
             }
@@ -124,7 +123,6 @@ class boss_oondasta : public CreatureScript
             {
                 ScriptedAI::EnterEvadeMode();
                 me->AddUnitFlag(UnitFlags(UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE));
-              //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
                 summons.DespawnAll();
 
                 uint32 corpseDelay = me->GetCorpseDelay();
@@ -172,10 +170,10 @@ class boss_oondasta : public CreatureScript
                                     me->RemoveChanneledCast(targetGUID);
                                 });
                            
-                            /*me->m_Events.GetScheduler(2500, [this]()
+                            AddTimedDelayedOperation(2500, [this]() -> void
                             {
                                 me->RemoveChanneledCast(targetGUID);
-                            });*/
+                            });
                         
                             events.ScheduleEvent(EVENT_FRILL_BLAST, urand(25 * IN_MILLISECONDS, 30 * IN_MILLISECONDS));
                             break;
@@ -231,7 +229,7 @@ class spell_alpha_male_eff : public SpellScript
 
     void HandleSelectTargets(std::list<WorldObject*>& targets)
     {
-        // targets.remove_if(NonTankSpecTargetSelector());
+        targets.remove_if(NonTankSpecTargetSelector());
     }
 
     void Register() override

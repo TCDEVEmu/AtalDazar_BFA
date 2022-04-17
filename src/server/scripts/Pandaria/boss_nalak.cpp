@@ -130,7 +130,7 @@ class boss_nalak : public CreatureScript
 };
 
 //// Lightning Tether 136339
-/*class spell_nalak_lightning_tether : public SpellScript
+class spell_nalak_lightning_tether : public SpellScript
 {
     PrepareSpellScript(spell_nalak_lightning_tether);
 
@@ -154,7 +154,7 @@ class boss_nalak : public CreatureScript
                     targets.push_back(itr);
 
                 if (pList.size() > 5)
-                    Trinity::Containers::RandomResizeList(targets, 5);
+                    Trinity::Containers::RandomResize(targets, 5);
 
                 return;
             }
@@ -163,7 +163,7 @@ class boss_nalak : public CreatureScript
             targets.remove_if([=](WorldObject* target) { return target && target->ToUnit() && target->ToUnit()->HasAura(SPELL_LIGHTNING_TETHER); });
 
             if (targets.size() > 5)
-                Trinity::Containers::RandomResizeList(targets, 5);
+                Trinity::Containers::RandomResize(targets, 5);
         }
     }
 
@@ -172,7 +172,7 @@ class boss_nalak : public CreatureScript
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_nalak_lightning_tether::SelectTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
     }
 };
-*/
+
 //// Lightning Tether Eff 136350
 class spell_nalak_lightning_tether_eff : public SpellScript
 {
@@ -216,9 +216,9 @@ class spell_nalak_lightning_teather_hit_eff : public SpellScript
         OnEffectHitTarget += SpellEffectFn(spell_nalak_lightning_teather_hit_eff::HandleEffectHitTarget, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
     }
 };
-//
-//// Storm Cloud 136340
-/*class spell_nalak_storm_cloud : public SpellScript
+
+// Storm Cloud 136340
+class spell_nalak_storm_cloud : public SpellScript
 {
     PrepareSpellScript(spell_nalak_storm_cloud);
 
@@ -243,7 +243,7 @@ class spell_nalak_lightning_teather_hit_eff : public SpellScript
                     targets.push_back(itr);
 
                 if (pList.size() > 3)
-                    Trinity::Containers::RandomResizeList(targets, 3);
+                    Trinity::Containers::RandomResize(targets, 3);
 
                 return;
             }
@@ -252,7 +252,7 @@ class spell_nalak_lightning_teather_hit_eff : public SpellScript
             targets.remove_if([=](WorldObject* target) { return target && target->ToUnit() && target->ToUnit()->HasAura(SPELL_STORM_CLOUD); });
 
             if (targets.size() > 3)
-                Trinity::Containers::RandomResizeList(targets, 3);
+                Trinity::Containers::RandomResize(targets, 3);
         }
     }
 
@@ -261,12 +261,12 @@ class spell_nalak_lightning_teather_hit_eff : public SpellScript
         OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_nalak_storm_cloud::SelectTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
     }
 };
-*/
+
 void AddSC_boss_nalak()
 {
     new boss_nalak();
-  //new spell_nalak_lightning_tether();
+    new spell_nalak_lightning_tether();
     new spell_nalak_lightning_tether_eff();
     new spell_nalak_lightning_teather_hit_eff();
-  //new spell_script<spell_nalak_storm_cloud();
+    RegisterSpellScript(spell_nalak_storm_cloud);
 }

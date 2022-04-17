@@ -423,13 +423,13 @@ class spell_kiptilak_sabotage : public SpellScriptLoader
             return new spell_kiptilak_sabotage_AuraScript();
         }
 };
-
+/*
 // 8359
 class AreaTrigger_at_first_door : public AreaTriggerScript
 {
     public:
         AreaTrigger_at_first_door() : AreaTriggerScript("at_first_door") { }
-        /*
+        
         bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
@@ -443,9 +443,9 @@ class AreaTrigger_at_first_door : public AreaTriggerScript
             }
 
             return false;
-        } */
+        }
 };
-
+ */
 class achievement_bomberman_gss : public AchievementCriteriaScript
 {
     public:
@@ -466,6 +466,6 @@ void AddSC_boss_saboteur_kiptilak()
     new npc_munition_explosion_bunny();
     new spell_kiptilak_munitions_explosion();
     new spell_kiptilak_sabotage();
-    new AreaTrigger_at_first_door();
+    //new AreaTrigger_at_first_door();
     new achievement_bomberman_gss();
 }

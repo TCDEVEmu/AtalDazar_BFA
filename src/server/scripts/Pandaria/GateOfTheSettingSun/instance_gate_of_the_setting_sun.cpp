@@ -2,6 +2,9 @@
 #include "InstanceScript.h"
 #include "ScriptedCreature.h"
 #include "gate_of_the_setting_sun.h"
+#include "GameObjectAI.h"
+#include "GameObject.h"
+#include "SpellAuraEffects.h"
 /*
 static std::vector<DoorData> const doorData =
 {
@@ -197,7 +200,7 @@ class instance_gate_of_the_setting_sun : public InstanceMapScript
             {
                 if (creature->GetEntry() == NPC_KRITHUK_BOMBARDER)
                 {
-                    for (std::list<uint64>::iterator it = bombarderGuids.begin(); it != bombarderGuids.end(); ++it)
+                    for (std::list<ObjectGuid>::iterator it = bombarderGuids.begin(); it != bombarderGuids.end(); ++it)
                     {
                         if (*it == creature->GetGUID())
                         {

@@ -5729,46 +5729,6 @@ public:
     }
 };
 
-// spell 147655 - ?????? ??????? ???????
-class spell_gulp_frog_toxin : public SpellScriptLoader
-{
-public:
-    spell_gulp_frog_toxin() : SpellScriptLoader("spell_gulp_frog_toxin") { }
-
-    class spell_gulp_frog_toxinAuraScript : public AuraScript
-    {
-        PrepareAuraScript(spell_gulp_frog_toxinAuraScript);
-
-        uint32 lastStack;
-
-        bool Load() override
-        {
-            lastStack = 0;
-            return true;
-        }
-
-        void OnStackChange(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-        {
-            if (Unit * target = GetTarget())
-                if (lastStack == 10)
-                    target->CastSpell(target, 147656, false);
-
-            lastStack = GetStackAmount();
-        }
-
-        void Register() override
-        {
-            OnEffectApply += AuraEffectApplyFn(spell_gulp_frog_toxinAuraScript::OnStackChange, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE, AURA_EFFECT_HANDLE_REAL_OR_REAPPLY_MASK);
-        }
-    };
-
-    // function which creates AuraScript
-    AuraScript* GetAuraScript() const override
-    {
-        return new spell_gulp_frog_toxinAuraScript();
-    }
-};
-
 class spell_gen_leviroth_self_impale : public SpellScriptLoader
 {
 public:
@@ -7712,7 +7672,6 @@ void AddSC_generic_spell_scripts()
     new spell_gen_dampening();
     new spell_gen_brutal_assault();
     new spell_time_lost_wisdom();
-    new spell_gulp_frog_toxin();
     new spell_gen_leviroth_self_impale();
     new spell_gen_gobelin_gumbo();
     new spell_gen_mount("spell_magic_broom", 0, SPELL_MAGIC_BROOM_60, SPELL_MAGIC_BROOM_100, SPELL_MAGIC_BROOM_150, SPELL_MAGIC_BROOM_280);

@@ -1586,11 +1586,11 @@ class spell_xin_mogu_jump_targeting : public SpellScriptLoader
         }
 };
 
-// struct SpellForTicks
-// {
-//     uint32 m_uiTicks;
-//     uint32 m_uiSpell;
-// };
+struct SpellForTicks
+{
+    uint32 m_uiTicks;
+    uint32 m_uiSpell;
+};
 
 class PlayerCheck
 {
@@ -1601,12 +1601,12 @@ class PlayerCheck
         }
 };
 
-// static const SpellForTicks MagneticField[3] =
-// {
-//     { 3, SPELL_MAGNETIC_FIELD_10 },
-//     { 5, SPELL_MAGNETIC_FIELD_20 },
-//     { 8, SPELL_MAGNETIC_FIELD_40 }
-// };
+static const SpellForTicks MagneticField[3] =
+{
+    { 3, SPELL_MAGNETIC_FIELD_10 },
+    { 5, SPELL_MAGNETIC_FIELD_20 },
+    { 8, SPELL_MAGNETIC_FIELD_40 }
+};
 
 class spell_magnetic_field : public SpellScriptLoader
 {

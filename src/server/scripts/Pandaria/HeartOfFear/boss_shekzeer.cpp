@@ -2,6 +2,8 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "heart_of_fear.h"
+#include "SpellAuras.h"
+#include "Gameobject.h"
 
 enum Spells
 {
@@ -169,9 +171,9 @@ class boss_grand_empress_shekzeer : public CreatureScript
                 Talk(SAY_RESET);
                 HandleRemoveTraps();
                 HandleRemoveCharmedPlayers();
-                /*
+                
                 if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                    Crysalis->ResetDoorOrButton(); */
+                    Crysalis->ResetDoorOrButton();
 
                 me->RemoveAurasDueToSpell(SPELL_RETREAT);
                 me->RemoveAurasDueToSpell(SPELL_NON_REGENERATE_POWER);
@@ -277,7 +279,7 @@ class boss_grand_empress_shekzeer : public CreatureScript
                 {
                     case 0:
                         if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                            // Crysalis->ResetDoorOrButton();
+                            Crysalis->ResetDoorOrButton();
 
                         events.ScheduleEvent(EVENT_LEAVE_CHRYSALIS, 2 * MINUTE * IN_MILLISECONDS + 45 * IN_MILLISECONDS); // right timing
                         guardianDied = 0;
@@ -285,7 +287,7 @@ class boss_grand_empress_shekzeer : public CreatureScript
                         break;
                     case 1:
                         if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                            // Crysalis->ResetDoorOrButton();
+                            Crysalis->ResetDoorOrButton();
 
                         introWp++;
                         nonCombatEvents.ScheduleEvent(EVENT_INTRO, 3000);
@@ -320,13 +322,13 @@ class boss_grand_empress_shekzeer : public CreatureScript
                             init.Launch(); 
 
                             if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                                // Crysalis->ResetDoorOrButton();
+                                Crysalis->ResetDoorOrButton();
                                 
                             delay = 0;
                             me->m_Events.Schedule(delay += me->GetSplineDuration(), 11, [this]()
                             {
                                 if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                                    // Crysalis->ResetDoorOrButton();
+                                    Crysalis->ResetDoorOrButton();
 
                                 me->StopMoving();
                                 nonCombatEvents.ScheduleEvent(EVENT_INTRO, 3000);
@@ -378,7 +380,7 @@ class boss_grand_empress_shekzeer : public CreatureScript
                     // instance->DoRemoveBloodLustDebuffSpellOnPlayers();
                 }
                 if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                    // Crysalis->ResetDoorOrButton();
+                    Crysalis->ResetDoorOrButton();
 
                 if (Creature* Sha = me->SummonCreature(NPC_SHA_OF_FEAR, ShaWaypoints[0], TEMPSUMMON_MANUAL_DESPAWN))
                     Sha->AI()->DoAction(ACTION_EMPRESS_DEFEAT);
@@ -398,7 +400,7 @@ class boss_grand_empress_shekzeer : public CreatureScript
                         if (!HasAnyGuardianInRange())
                         {
                             if (GameObject * Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                                // Crysalis->ResetDoorOrButton();
+                                Crysalis->ResetDoorOrButton();
                                 /*
                             Movement::MoveSplineInit init(me);
                             init.MoveTo(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY(), me->GetHomePosition().GetPositionZ());
@@ -453,11 +455,11 @@ class boss_grand_empress_shekzeer : public CreatureScript
                         case EVENT_CRY_OF_TERROR:
                             Talk(SAY_CRY_OF_TERROR); 
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
-                                target->AddAura(SPELL_CRY_OF_TERROR, target); /*
+                                target->AddAura(SPELL_CRY_OF_TERROR, target);
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, MeeleSpecTargetSelector()))
                                 target->AddAura(SPELL_CRY_OF_TERROR, target);
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, TankSpecTargetSelector()))
-                                target->AddAura(SPELL_CRY_OF_TERROR, target); */
+                                target->AddAura(SPELL_CRY_OF_TERROR, target);
 
                             events.ScheduleEvent(EVENT_CRY_OF_TERROR, urand(19000, 29000));
                             break;
@@ -520,7 +522,7 @@ class boss_grand_empress_shekzeer : public CreatureScript
                         {
                             std::list<Player*> PlayersInArea;
                             GetPlayerListInGrid(PlayersInArea, me, VISIBLE_RANGE);
-                            // PlayersInArea.remove_if(TankSpecTargetSelector());
+                            PlayersInArea.remove_if(TankSpecTargetSelector());
 
                             if (!PlayersInArea.empty())
                             {
@@ -594,9 +596,9 @@ class boss_grand_empress_shekzeer : public CreatureScript
 
                 if (me->HasAura(SPELL_NON_REGENERATE_POWER))
                     me->RemoveAura(SPELL_NON_REGENERATE_POWER);
-                /*
+                
                 if (GameObject* Crysalis = GetClosestGameObjectWithEntry(me, GO_EMPRESS_CHRYSALIS, 150.0f))
-                     Crysalis->UseDoorOrButton(); */
+                     Crysalis->UseDoorOrButton();
 
             }
 
@@ -1052,7 +1054,7 @@ class npc_sha_of_fear_shekzeer : public CreatureScript
                     {
                         Talk(SAY_DEFEAT_S_2);
                         if (GameObject* Top = GetClosestGameObjectWithEntry(me, GO_TOP_HEART_OF_FEAR, 200.0f))
-                            // Top->UseDoorOrButton();
+                            Top->UseDoorOrButton();
 
                         me->GetMotionMaster()->MovePoint(0, ShaWaypoints[1]);
                     }
@@ -1555,7 +1557,7 @@ class spell_large_resin_combine : public SpellScriptLoader
                             m_caster->CastSpell(m_caster, SPELL_STICKY_RESIN_TRANSFORM_AURA, false);
 
                             if (Aura* m_aResin = m_caster->GetAura(SPELL_STICKY_RESIN_TRANSFORM_AURA))
-                            { /*
+                            {
                                 // Transform to Amber Trap if more or equal 6 stucks
                                 if (m_aResin->GetStackAmount() >= 5)
                                 {
@@ -1563,7 +1565,7 @@ class spell_large_resin_combine : public SpellScriptLoader
                                     m_caster->RemoveAurasDueToSpell(SPELL_BUBBLING_AMBER);
                                     m_caster->CastSpell(m_caster, SPELL_AMBER_TRAP, false);
                                     m_caster->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
-                                } */
+                                }
                             }
                         }
                     }
@@ -1677,11 +1679,11 @@ class spell_eyes_of_the_empress : public SpellScript
     PrepareSpellScript(spell_eyes_of_the_empress);
 
     void HandleEffectHit(SpellEffIndex /*effIndex*/)
-    { /*
+    {
         if (Unit* target = GetHitUnit())
             if (Aura* eyesAura = target->GetAura(SPELL_EYES_OF_THE_EMPRESS))
                 if (eyesAura->GetStackAmount() > 4)
-                    target->CastSpell(target, SPELL_SERVANT_OF_THE_EMPRESS, true); */
+                    target->CastSpell(target, SPELL_SERVANT_OF_THE_EMPRESS, true);
     }
 
     void Register() override
@@ -1769,7 +1771,7 @@ class spell_heart_of_fear_selector : public SpellScript
         {
             std::list<Player*> pList;
             GetPlayerListInGrid(pList, caster, 200.0f);
-            /*
+            
             // Remove tanks
             pList.remove_if(TankSpecTargetSelector());
 
@@ -1777,7 +1779,7 @@ class spell_heart_of_fear_selector : public SpellScript
             if (pList.empty())
             {
                 if (targets.size() > 1)
-                    Trinity::Containers::RandomResizeList(targets, 1);
+                    Trinity::Containers::RandomResize(targets, 1);
 
                 return;
             } 
@@ -1789,7 +1791,7 @@ class spell_heart_of_fear_selector : public SpellScript
                 targets.push_back(itr);
 
             if (targets.size() > 1)
-                Trinity::Containers::RandomResizeList(targets, 1); */
+                Trinity::Containers::RandomResize(targets, 1);
         }
     }
 
@@ -1830,7 +1832,7 @@ class spell_windblade_fixate : public SpellScript
     }
 
     void FilterTargets(std::list<WorldObject*>& targets)
-    { /*
+    {
         if (Unit* caster = GetCaster())
         {
             std::list<Player*> pList;
@@ -1843,7 +1845,7 @@ class spell_windblade_fixate : public SpellScript
             if (pList.empty())
             {
                 if (targets.size() > 1)
-                    Trinity::Containers::RandomResizeList(targets, 1);
+                    Trinity::Containers::RandomResize(targets, 1);
 
                 return;
             }
@@ -1854,8 +1856,8 @@ class spell_windblade_fixate : public SpellScript
                 targets.push_back(itr);
 
             if (targets.size() > 1)
-                Trinity::Containers::RandomResizeList(targets, 1);
-        } */
+                Trinity::Containers::RandomResize(targets, 1);
+        }
     }
 
     void Register() override

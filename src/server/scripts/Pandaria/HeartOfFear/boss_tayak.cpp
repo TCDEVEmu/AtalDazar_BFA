@@ -15,6 +15,7 @@
 #include "CreatureTextMgr.h"
 #include "MoveSplineInit.h"
 #include "Weather.h"
+#include "SpellMgr.h"
 #include "heart_of_fear.h"
 
 enum Yells
@@ -151,9 +152,8 @@ class boss_tayak : public CreatureScript
                 Reset();
                 me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
                 me->SetReactState(REACT_PASSIVE);
-                /*
-                delay = 0;
-                me->m_Events.Schedule(delay += 2500, 20, [this]()
+                
+                me->GetScheduler().Schedule(2500ms, [this](TaskContext context)
                 {
                     // If pre event has Done
                     if (instance->GetData(DATA_TAYAK) > DONE && me->IsAlive())
@@ -161,7 +161,7 @@ class boss_tayak : public CreatureScript
                         me->AI()->DoAction(ACTION_TAYAK_PREEVENT_DONE);
                         me->GetMotionMaster()->MoveTargetedHome();
                     }
-                }); */
+                });
             }
 
             void Reset() override
@@ -489,10 +489,10 @@ class boss_tayak : public CreatureScript
                     ActivateGaleWinds(ACTION_STOP_WIND);
                     // EnterEvadeMode();
                 }
-                /*
+                
                 if (entranceDone && !introDone && CheckTrash())
                     if (me->FindNearestPlayer(100.0f))
-                        me->AI()->DoAction(ACTION_TAYAK_PREEVENT_DONE); */
+                        me->AI()->DoAction(ACTION_TAYAK_PREEVENT_DONE);
 
                 if ((!UpdateVictim() && !unseenReturn) || me->HasUnitState(UNIT_STATE_CASTING))
                     return;
@@ -502,7 +502,7 @@ class boss_tayak : public CreatureScript
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
-                    { /*
+                    { 
                         case EVENT_TEMPEST_SLASH:
                         {
                             if (HandleRescheduleEventsIfCastAny(eventId))
@@ -517,8 +517,7 @@ class boss_tayak : public CreatureScript
 
                                 me->PrepareChanneledCast(me->GetAngle(TargetCaster), SPELL_TEMP_SLASH_SUMM_V);
 
-                                delay = 0;
-                                me->m_Events.Schedule(delay += 2100, 20, [this]()
+                                me->GetScheduler().Schedule(2100ms, [this](TaskContext context)
                                 {
                                     me->RemoveChanneledCast(targetGUID);
                                 });
@@ -532,8 +531,7 @@ class boss_tayak : public CreatureScript
 
                                 me->PrepareChanneledCast(me->GetAngle(TargetCaster), SPELL_TEMP_SLASH_SUMM_V);
 
-                                delay = 0;
-                                me->m_Events.Schedule(delay += 2100, 20, [this]()
+                                me->GetScheduler().Schedule(2100ms, [this](TaskContext context)
                                 {
                                     me->RemoveChanneledCast(targetGUID);
                                 });
@@ -547,7 +545,7 @@ class boss_tayak : public CreatureScript
                                 break;
 
                             // Blizzard pls don`t make anymore these spells with cone proc
-                            unseenTank = me->GetVictim() ? me->GetVictim()->GetGUID() : 0;
+                            //unseenTank = me->GetVictim() ? me->GetVictim()->GetGUID() : 0;
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
                             {
                                 Talk(ANN_UNSEEN, target);
@@ -621,7 +619,7 @@ class boss_tayak : public CreatureScript
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 200.0f, true))
                                 DoCast(target, SPELL_WIND_STEP_TP_BACK);
                             break;
-                        } */
+                        } 
                         case EVENT_OVERWHELMING_ASS:
                         {
                             if (HandleRescheduleEventsIfCastAny(eventId))
@@ -876,7 +874,7 @@ class npc_storm_unleashed_tornado : public CreatureScript
         {
             npc_storm_unleashed_tornadoAI(Creature* creature) : ScriptedAI(creature), vehicle(creature->GetVehicleKit())
             {
-                //ASSERT(vehicle);
+                ASSERT(vehicle);
                 instance = creature->GetInstanceScript();
             }
 
@@ -888,9 +886,9 @@ class npc_storm_unleashed_tornado : public CreatureScript
             uint32 m_passenger;
 
             void IsSummonedBy(Unit* summoner) override
-            { /*
+            {
                 if (summoner)
-                    m_ownerGUID = summoner->GetGUID(); */
+                    m_ownerGUID = summoner->GetGUID();
             }
 
             void Reset() override
@@ -923,7 +921,7 @@ class npc_storm_unleashed_tornado : public CreatureScript
                         ExPos.m_positionX = me->GetPositionX() + ExAngle;
                         ExPos.m_positionY = me->GetPositionY() + frand(-4.0f, 4.0f);
                         ExPos.m_positionZ = me->GetPositionZ();
-                        // ExPos.m_orientation = me->GetOrientation();
+                        //ExPos.m_orientation = me->GetOrientation();
                         passenger->ExitVehicle(&ExPos);
                     }
                 }
@@ -1060,7 +1058,7 @@ class npc_gale_winds_stalker : public CreatureScript
                         break;
                 }
             }
-
+            
             void UpdateAI(uint32 diff) override
             {
                 // Check force
@@ -1205,17 +1203,16 @@ class spell_tayak_wind_step : public SpellScriptLoader
             PrepareSpellScript(spell_tayak_wind_stepSpellScript);
 
             void HandleTeleportEffect(SpellEffIndex effIndex)
-            { /*
+            { 
                 if (Unit* caster = GetCaster())
                 {
                     ObjectGuid casterGUID = caster->GetGUID();
-                    uint32 delay = 0;
-                    caster->m_Events.Schedule(delay += 200, 20, [this, casterGUID]()
-                    {
+                    caster->GetScheduler().Schedule(200ms, [this, casterGUID](TaskContext context)
+                    {/*
                         if (Unit* m_caster = ObjectAccessor::FindUnit(casterGUID))
-                            m_caster->CastSpell(m_caster, SPELL_WIND_STEP_EFF, false);
+                            m_caster->CastSpell(m_caster, SPELL_WIND_STEP_EFF, false); */
                     });
-                } */
+                }
             }
 
             void Register() override
@@ -1590,8 +1587,8 @@ class spell_blade_templest_jump : public SpellScriptLoader
 
             bool Validate(SpellInfo const* /*spellInfo*/) override
             { 
-                //if (!sSpellMgr->GetSpellInfo(SPELL_BLADE_TEMPEST_PULL))
-                //    return false;
+                if (!sSpellMgr->GetSpellInfo(SPELL_BLADE_TEMPEST_PULL))
+                    return false;
                 return true; 
             }
 

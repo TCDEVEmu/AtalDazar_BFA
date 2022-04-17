@@ -2,6 +2,7 @@
 #include "ScriptedCreature.h"
 #include "heart_of_fear.h"
 #include "Vehicle.h"
+#include "SpellAuras.h"
 
 enum Events
 {
@@ -125,7 +126,7 @@ class boss_garalon : public CreatureScript
                 : BossAI(creature, DATA_GARALON) { }
 
             bool damagedHeroic, castingCrush;
-            std::deque<uint64> legsToRestore;
+            std::deque<ObjectGuid> legsToRestore;
 
             void SummonAndAddLegs()
             {
@@ -157,17 +158,16 @@ class boss_garalon : public CreatureScript
             }
 
             void ScheduleTasks() override
-            { /*
-                scheduler
-                    .Schedule(Seconds(8), [this](TaskContext context)
+            {
+                me->GetScheduler().Schedule(Seconds(8), [this](TaskContext context)
                     {
-                        uint32 targetGUID = 0;
+                        ObjectGuid targetGUID;
                         if (Unit* target = me->GetVictim())
                             targetGUID = target->GetGUID();
 
                         me->PrepareChanneledCast(me->GetOrientation(), SPELL_FURIOUS_SWIPE);
 
-                        scheduler.Schedule(Milliseconds(2600), [=](TaskContext)
+                        me->GetScheduler().Schedule(2600ms, [=](TaskContext context)
                         {
                             me->RemoveChanneledCast(targetGUID);
                         });
@@ -182,14 +182,14 @@ class boss_garalon : public CreatureScript
                     });
 
                 if (me->GetMap()->IsHeroic())
-                    scheduler.Schedule(Seconds(35), [this](TaskContext context)
+                    me->GetScheduler().Schedule(Seconds(35), [this](TaskContext context)
                     {
                         if (!me->HasAura(SPELL_DAMAGED))
                         {
                             DoCast(me, SPELL_CRUSH);
                             context.Repeat();
                         }
-                    }); */
+                    });
             }
 
             void DespawnCreatures(uint32 entry)
@@ -279,7 +279,7 @@ class boss_garalon : public CreatureScript
                     // Okay, if you fucking want teleport ONLY ONE player, let's do it
                     who->NearTeleportTo(EncountersEntrance[0].GetPositionX(), EncountersEntrance[0].GetPositionY(), EncountersEntrance[0].GetPositionZ(), EncountersEntrance[0].GetOrientation());
                     return;
-                }
+                } */
 
                 SummonAndAddLegs();
 
@@ -287,10 +287,10 @@ class boss_garalon : public CreatureScript
                 DoCast(me, SPELL_PHER_INIT_CAST);       // 2s cast time
 
                 // This need only in combat initialize cuz rogue/hunter/elf issue
-                scheduler.Schedule(Seconds(4), [this](TaskContext)
+                me->GetScheduler().Schedule(Seconds(4), [this](TaskContext context)
                 {
                     DoCast(me, SPELL_PHER_INIT_CAST);
-                }); */
+                });
 
                 if (instance)
                 {
@@ -308,12 +308,12 @@ class boss_garalon : public CreatureScript
                 switch (pointId)
                 {
                     case POINT_PARABOLIC_START:
-                    { /*
+                    { 
                         if (type == POINT_MOTION_TYPE)
-                            me->m_Events.Schedule(500, [=]
+                            me->GetScheduler().Schedule(500ms, [this](TaskContext context)
                         {
                             me->GetMotionMaster()->MoveJump(PositionParabolicEnd, 15.00194f, 27.7746045783614f, POINT_PARABOLIC_END);
-                        }); */
+                        });
                         break;
                     }
                     case POINT_PARABOLIC_END:
@@ -354,10 +354,10 @@ class boss_garalon : public CreatureScript
                     case ACTION_PHEROMONES_JUMP_OR_PLAYERS_UNDERNEATH:
                         if (IsHeroic())
                             break;
-                        /*
+                        
                         if (!castingCrush && !me->HasAura(SPELL_DAMAGED))
                         {
-                            scheduler.Schedule(Seconds(3), [this](TaskContext)
+                            me->GetScheduler().Schedule(Seconds(3), [this](TaskContext context)
                             {
                                 if (!me->HasAura(SPELL_DAMAGED))
                                     DoCast(me, SPELL_CRUSH);
@@ -369,11 +369,11 @@ class boss_garalon : public CreatureScript
                     case ACTION_GARALON_INITIALIZE:
                         me->SetVisible(true);
                         me->SetCanFly(true);
-                        me->m_Events.Schedule(1000, [=]
+                        me->GetScheduler().Schedule(1000ms, [=](TaskContext context)
                         {
                             me->GetMotionMaster()->MovePoint(POINT_PARABOLIC_START, PositionParabolicStrat);
                         });
-                        break; */
+                        break;
                     default:
                         break;
                 }
@@ -436,13 +436,13 @@ class boss_garalon : public CreatureScript
 
                 CheckHomeDistToEvade(diff);
             }
-            /*
+            
             void SpellHit(Unit* caster, SpellInfo const* spell) override
             {
                 if (spell->Id == SPELL_BROKEN_LEG)
                 {
                     legsToRestore.push_back(caster->GetGUID());
-                    scheduler.Schedule(Seconds(30), [this](TaskContext)
+                    me->GetScheduler().Schedule(Seconds(30), [this](TaskContext context)
                     {
                         DoCast(me, SPELL_MEND_LEG);
                     });
@@ -457,7 +457,7 @@ class boss_garalon : public CreatureScript
                 legsToRestore.pop_front();
                 return leg;
             }
-
+            /*
             void GetPassengerEnterPosition(Unit*, int8 seat, Position& pos) override
             {
                 static std::vector<Position> const offsets =
@@ -596,15 +596,15 @@ class npc_pheromone_trail : public CreatureScript
                 pheromonesDelay = 0;
                 me->SetDisplayId(11686); // invisible
                 me->SetInCombatWithZone();
-                // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->SetReactState(REACT_PASSIVE);
 
                 me->AddAura(SPELL_PHER_TRAIL_DMG_A, me); // Damage aura.
-                /*
-                me->m_Events.Schedule(1500, [this]()
+                
+                me->GetScheduler().Schedule(1500ms, [this](TaskContext context)
                 {
                     pheromonesDelay = 1;
-                }); */
+                });
             }
 
             uint32 GetData(uint32 type) const override
@@ -681,11 +681,11 @@ class spell_garalon_mend_leg_trigger : public SpellScript
     PrepareSpellScript(spell_garalon_mend_leg_trigger);
 
     void FilterTargets(std::list<WorldObject*>& targets)
-    { /*
+    {
         Creature* leg = nullptr;
         if (auto script = dynamic_cast<boss_garalon::boss_garalonAI*>(GetCaster()->GetAI()))
             leg = script->GetBrokenLeg();
-        targets.remove_if([=](WorldObject const* target) { return target != leg; }); */
+        targets.remove_if([=](WorldObject const* target) { return target != leg; });
     }
 
     void RemoveTarget(WorldObject*& target)
@@ -714,9 +714,9 @@ class spell_garalon_mend_leg : public SpellScript
     PrepareSpellScript(spell_garalon_mend_leg);
 
     void HandleHit()
-    { /*
+    {
         if (Aura* brokenLegAura = GetHitUnit()->GetAura(SPELL_BROKEN_LEG))
-            brokenLegAura->ModStackAmount(-1); */
+            brokenLegAura->ModStackAmount(-1);
     }
 
     void Register() override
@@ -799,9 +799,9 @@ class spell_garalon_pheromones_trail_dmg : public SpellScript
     PrepareSpellScript(spell_garalon_pheromones_trail_dmg);
 
     void HandleOnHit()
-    {/*
+    {
         if (Aura* aur = GetHitUnit()->GetAura(SPELL_PUNGENCY))
-            SetHitDamage(int32(GetHitDamage() * (1.0f + float(aur->GetStackAmount() / 10.0f)))); */
+            SetHitDamage(int32(GetHitDamage() * (1.0f + float(aur->GetStackAmount() / 10.0f))));
     }
 
     // Delay in 1.5s after spawn
@@ -875,10 +875,10 @@ class spell_garalon_pheromones_damage_eff : public SpellScript
     PrepareSpellScript(spell_garalon_pheromones_damage_eff);
 
     void HandleOnHit()
-    { /*
+    { 
         if (Unit* caster = GetCaster())
             if (Aura* aur = caster->GetAura(SPELL_PUNGENCY))
-                SetHitDamage(int32(GetHitDamage() * (1.0f + float(aur->GetStackAmount() / 10.0f)))); */
+                SetHitDamage(int32(GetHitDamage() * (1.0f + float(aur->GetStackAmount() / 10.0f))));
     }
 
     void Register() override

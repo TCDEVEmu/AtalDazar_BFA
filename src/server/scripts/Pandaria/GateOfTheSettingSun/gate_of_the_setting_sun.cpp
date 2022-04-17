@@ -4,7 +4,10 @@
 #include "Vehicle.h"
 #include "MoveSplineInit.h"
 #include "GameObjectAI.h"
-#include "CombatAI.h" 
+#include "CombatAI.h"
+#include "GameObject.h"
+#include "SpellAuraEffects.h"
+
 
 enum spells
 {
@@ -1498,7 +1501,7 @@ class AreaTrigger_at_intro_gadok : public AreaTriggerScript
             return false;
         }
 };
-
+*/
 class go_gss_generic : public GameObjectScript
 {
     public:
@@ -1551,7 +1554,7 @@ class go_gss_generic : public GameObjectScript
             return new go_gss_genericAI(go);
         }
 };
-*/
+
 // 109986 
 class spell_gss_volatile_explosion : public SpellScriptLoader
 {
@@ -1635,8 +1638,8 @@ class spell_gss_pick_a_player : public SpellScriptLoader
                 if (!owner || !caster)
                     return;
 
-                // caster->CastSpell(owner, aurEff->GetSpellInfo()->GetEffect[EFFECT_0]->BasePoints, false);
-                // caster->CastSpell(owner, aurEff->GetSpellInfo()->GetEffect[EFFECT_1]->BasePoints, false);
+                caster->CastSpell(owner, 107119, false);
+                caster->CastSpell(owner, 131030, false);
             }
 
             void Register() override
@@ -1709,7 +1712,7 @@ class spell_gss_sabotage_explosion : public SpellScriptLoader
                 if (!owner || !caster)
                     return;
 
-                // caster->CastSpell(owner, aurEff->GetSpellInfo()->GetEffect[EFFECT_0]->BasePoints, false);
+                caster->CastSpell(owner, 107093, false);
 
                 if (caster->IsOnVehicle())
                     caster->ExitVehicle();
@@ -1726,7 +1729,7 @@ class spell_gss_sabotage_explosion : public SpellScriptLoader
             return new spell_gss_sabotage_explosion_AuraScript();
         }
 };
-/*
+
 // Resin Residue 118795
 class spell_gss_resin_residue : public AuraScript
 {
@@ -1743,7 +1746,7 @@ class spell_gss_resin_residue : public AuraScript
         OnEffectApply += AuraEffectApplyFn(spell_gss_resin_residue::HandleAuraEffectApply, EFFECT_0, SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT, AURA_EFFECT_HANDLE_REAPPLY);
     }
 };
-*/
+
 void AddSC_gate_of_the_setting_sun()
 {
     new npc_kirkthik_demolisher();
@@ -1763,7 +1766,7 @@ void AddSC_gate_of_the_setting_sun()
     new npc_gss_pandaren_cannoneer();
 
     new go_setting_sun_brasier();
-    // new go_gss_generic();
+    new go_gss_generic();
     new vehicle_artillery_to_wall();
     // new AreaTrigger_at_destroy_corner_a();
     // new AreaTrigger_at_destroy_corner_b();
@@ -1774,5 +1777,5 @@ void AddSC_gate_of_the_setting_sun()
     new spell_gss_pick_a_player();
     new spell_gss_sabotage_vehicle();
     new spell_gss_sabotage_explosion();
-    // new aura_script<spell_gss_resin_residue>("spell_gss_resin_residue");
+    RegisterAuraScript(spell_gss_resin_residue);
 }

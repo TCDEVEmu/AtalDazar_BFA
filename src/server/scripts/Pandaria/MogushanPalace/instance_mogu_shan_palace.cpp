@@ -4,6 +4,7 @@
 #include "mogu_shan_palace.h"
 #include "Log.h"
 #include "Containers.h"
+#include "Gameobject.h"
 
 #include <numeric>
 /*
@@ -33,9 +34,9 @@ class instance_mogu_shan_palace : public InstanceMapScript
             ObjectGuid m_uiMingGuid;
             ObjectGuid m_uiHaiyanGuid;
             ObjectGuid m_uiBeaconGuid;
-            std::list<uint64> m_lScrapperList;
-            std::list<uint64> m_lAdeptList;
-            std::list<uint64> m_lGruntList;
+            std::list<ObjectGuid> m_lScrapperList;
+            std::list<ObjectGuid> m_lAdeptList;
+            std::list<ObjectGuid> m_lGruntList;
 
             uint32 m_uiBossCount;
             uint32 m_auiBossNumber[3];
@@ -45,8 +46,8 @@ class instance_mogu_shan_palace : public InstanceMapScript
             ObjectGuid m_uiAncientTreasureGuid;
 
             // Xin the weaponmaster.
-            std::list<uint64> m_lStaffList;
-            std::list<uint64> m_lAxeList;
+            std::list<ObjectGuid> m_lStaffList;
+            std::list<ObjectGuid> m_lAxeList;
 
             ObjectGuid m_uiScoutGuid;
 
@@ -106,7 +107,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                     case DATA_GEKKAN:
                         HandleGameObject(0, state == DONE, GetGameObjectFromStorage(GO_DOOR_AFTER_TRIAL));
                         if (GameObject* pTreasure = instance->GetGameObject(m_uiAncientTreasureGuid))
-                            pTreasure->RemoveFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND);
+                            pTreasure->RemoveFlag(GO_FLAG_INTERACT_COND);
                         break;
                 }
 
@@ -130,11 +131,11 @@ class instance_mogu_shan_palace : public InstanceMapScript
                     case GO_ANCIENT_MOGU_TREASURE:
                     case GO_ANCIENT_MOGU_TREASURE_HC:
                         m_mGoEntryGuidMap.insert(std::make_pair(go->GetEntry(), go->GetGUID()));
-                        go->SetFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND);
+                        go->AddFlag(GO_FLAG_INTERACT_COND);
                         break;
                     case GO_USELESS_DOOR:
                         // dont need to use memory space for this
-                        go->SetFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND);
+                        go->AddFlag(GO_FLAG_INTERACT_COND);
                         break;
                 }
             }
@@ -168,7 +169,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                     SetBossState(DATA_GEKKAN, DONE);
 
                     if (GameObject* go = GetGameObjectFromStorage(instance->GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC ? GO_ANCIENT_MOGU_TREASURE_HC : GO_ANCIENT_MOGU_TREASURE))
-                        go->RemoveFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND | GO_FLAG_NOT_SELECTABLE);
+                        go->RemoveFlag(GO_FLAG_INTERACT_COND | GO_FLAG_NOT_SELECTABLE);
 
                     HandleGameObject(0, true, GetGameObjectFromStorage(GO_GEKKAN_TREASURE_DOOR));
                 }
@@ -408,7 +409,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                             if (Creature* Kuai = instance->GetCreature(tempGUID))
                             {
                                 Kuai->StopMoving();
-                                Kuai->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                                Kuai->RemoveUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 Kuai->SetReactState(REACT_AGGRESSIVE);
                                 Kuai->SetInCombatWithZone();
                             }
@@ -445,7 +446,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                             if (Creature* Haiyan = instance->GetCreature(tempGUID))
                             {
                                 Haiyan->StopMoving();
-                                Haiyan->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
+                                Haiyan->RemoveUniFlag(UNIT_FLAG_IMMUNE_TO_PC);
                                 Haiyan->SetReactState(REACT_AGGRESSIVE);
                                 Haiyan->SetInCombatWithZone();
                             }
@@ -465,7 +466,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                             if (creature && creature->GetAI())
                                 creature->GetAI()->DoAction(2); //ACTION_ATTACK
 
-                            std::list<uint64>::iterator itr = m_lGruntList.begin();
+                            std::list<ObjectGuid>::iterator itr = m_lGruntList.begin();
                             std::advance(itr, urand(0, m_lGruntList.size() - 1));
 
                             Creature* pGrunt = instance->GetCreature(*itr);
@@ -483,7 +484,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                             if (creature && creature->GetAI())
                                 creature->GetAI()->DoAction(2); //ACTION_ATTACK
 
-                            std::list<uint64>::iterator itr = m_lScrapperList.begin();
+                            std::list<ObjectGuid>::iterator itr = m_lScrapperList.begin();
                             std::advance(itr, urand(0, m_lScrapperList.size() - 1));
 
                             Creature* pScrapper = instance->GetCreature(*itr);
@@ -501,7 +502,7 @@ class instance_mogu_shan_palace : public InstanceMapScript
                             if (creature && creature->GetAI())
                                 creature->GetAI()->DoAction(2); //ACTION_ATTACK
 
-                            std::list<uint64>::iterator itr = m_lAdeptList.begin();
+                            std::list<ObjectGuid>::iterator itr = m_lAdeptList.begin();
                             std::advance(itr, urand(0, m_lAdeptList.size() - 1));
 
                             Creature* pAdept = instance->GetCreature(*itr);
@@ -514,13 +515,13 @@ class instance_mogu_shan_palace : public InstanceMapScript
                         }
 
                         if (Creature* pKuai = instance->GetCreature(m_uiKuaiGuid))
-                            pKuai->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED);
+                            pKuai->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED));
 
                         if (Creature* pHaiyan = instance->GetCreature(m_uiHaiyanGuid))
-                            pHaiyan->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED);
+                            pHaiyan->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED));
 
                         if (Creature* pMing = instance->GetCreature(m_uiMingGuid))
-                            pMing->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED);
+                            pMing->AddUnitFlag(UnitFlags(UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_PACIFIED));
                         break;
                     }
                     case TYPE_MING_RETIRED:

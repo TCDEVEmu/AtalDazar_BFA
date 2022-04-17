@@ -1,6 +1,9 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "heart_of_fear.h"
+#include "SpellAuras.h"
+#include "Gameobject.h"
+
 
 enum Yells
 {
@@ -130,7 +133,7 @@ enum Misc
     WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE = 12003,
 };
 
-void SetEncounterUnitForEachGroup(uint64 ownerGUID, InstanceScript* _instance, uint32 type, uint32 diffType = 0)
+void SetEncounterUnitForEachGroup(ObjectGuid ownerGUID, InstanceScript* _instance, uint32 type, uint32 diffType = 0)
 {/*
     Unit* owner = ObjectAccessor::FindUnit(ownerGUID);
 
@@ -196,7 +199,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                 if (instance)
                 {
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-                    // SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
+                    SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
                     // instance->DoRemoveBloodLustDebuffSpellOnPlayers();
                 }
                 WindBomb            = false;
@@ -233,7 +236,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                 _EnterEvadeMode(why);
                 BossAI::EnterEvadeMode(why);
 
-                // SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
+                SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
                 HandleResetSpears();
                 RemoveTraps();
 
@@ -285,7 +288,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                 {
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
                     instance->SetBossState(DATA_MELJARAK, IN_PROGRESS);
-                    // SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_ENGAGE);
+                    SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_ENGAGE);
                 }
                 Talk(SAY_AGGRO);
                 events.ScheduleEvent(EVENT_WHIRLING_BLADE, 18000);
@@ -390,7 +393,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                 if (instance)
                 {
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-                    // SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
+                    SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
                     instance->SetBossState(DATA_MELJARAK, DONE);
                     instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_IMP_SPEAR_ABIL);
                     instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_CORROSIVE_RESIN);
@@ -453,15 +456,14 @@ class boss_wind_lord_meljarak : public CreatureScript
                             Talk(ANN_RAIN_OF_BLADES);
 
                             if (Unit* target = me->GetVictim())
-                            { /*
+                            {
                                 targetGUID = target->GetGUID();
                                 me->PrepareChanneledCast(me->GetOrientation(), SPELL_RAIN_OF_BLADES);
 
-                                delay = 0;
-                                me->m_Events.Schedule(delay += 6500, 20, [this]()
+                                me->GetScheduler().Schedule(6500ms, [this](TaskContext context)
                                 {
                                     me->RemoveChanneledCast(targetGUID);
-                                }); */
+                                });
                             }
                             events.ScheduleEvent(EVENT_RAIN_OF_BLADES, urand(48000, 64000));
                             break;
@@ -1003,7 +1005,7 @@ class npc_wind_bomb_meljarak : public CreatureScript
             {
                 me->SetDisplayId(45684);
                 me->SetInCombatWithZone();
-                // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
                 me->SetReactState(REACT_PASSIVE);
 
                 DoCast(me, SPELL_WIND_BOMB_THR_DMG);
@@ -1089,18 +1091,18 @@ class npc_amber_prison : public CreatureScript
         {
             npc_amber_prisonAI(Creature* creature) : ScriptedAI(creature) { }
             EventMap events;
-            uint64 ownerGUID;
+            ObjectGuid ownerGUID;
 
             void IsSummonedBy(Unit* summoner) override
             {
                 me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
-                // me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE);
+                me->AddUnitFlag(UnitFlags(UNIT_FLAG_REMOVE_CLIENT_CONTROL | UNIT_FLAG_NON_ATTACKABLE));
                 summoner->CastSpell(summoner, SPELL_AMBER_PRISON_AURA, true);
-                // ownerGUID = summoner->GetGUID();
+                ownerGUID = summoner->GetGUID();
             }
 
             void OnSpellClick(Unit* clicker, bool& /*result*/) override
-            { /*
+            {
                 if (clicker->HasAura(SPELL_RESIDUE) || clicker->HasAura(SPELL_AMBER_PRISON_AURA) || clicker->GetGUID() == ownerGUID)
                     return;
 
@@ -1109,7 +1111,7 @@ class npc_amber_prison : public CreatureScript
                     owner->RemoveAurasDueToSpell(SPELL_AMBER_PRISON_AURA);
                     clicker->CastSpell(clicker, SPELL_RESIDUE, false);
                     me->DespawnOrUnsummon();
-                } */
+                }
             }
         };
 
@@ -1227,7 +1229,7 @@ class go_mantid_weapon_rack : public GameObjectScript
         go_mantid_weapon_rack() : GameObjectScript("go_mantid_weapon_rack") { }
 
         bool OnGossipHello(Player* player, GameObject* go) override
-        { /*
+        {
             InstanceScript* instance = go->GetInstanceScript();
 
             if (instance && player)
@@ -1237,7 +1239,7 @@ class go_mantid_weapon_rack : public GameObjectScript
 
                 player->AddAura(SPELL_IMP_SPEAR_ABIL, player);
                 return true;
-            } */
+            }
 
             return false;
         }
@@ -1251,7 +1253,7 @@ class spell_whirling_blade : public SpellScript
     void HandleAfterCast()
     {
         if (Creature* caster = GetCaster()->ToCreature())
-        { /*
+        {
             if (Player* itr = GetFarthestPlayerInArea(GetCaster(), 150.0f))
             {
                 if (Creature* Whirlingblade = caster->SummonCreature(NPC_WHIRLING_BLADE, caster->GetPositionX(), caster->GetPositionY(), caster->GetPositionZ(), caster->GetAngle(itr), TEMPSUMMON_MANUAL_DESPAWN))
@@ -1260,7 +1262,7 @@ class spell_whirling_blade : public SpellScript
                     caster->CastSpell(itr->GetPositionX(), itr->GetPositionY(), itr->GetPositionZ() + 2.0f, SPELL_WHIRLING_BLADE_DUMMY, false);
                     caster->CastSpell(itr->GetPositionX(), itr->GetPositionY(), itr->GetPositionZ() + 2.0f, SPELL_WHIRLING_BLADE_DUMMY_AURA, false);
                 }
-            } */
+            }
 
             caster->RemoveAurasDueToSpell(SPELL_WHIRLING_BLADE);
         }
@@ -1288,12 +1290,12 @@ class spell_meljarak_corrosive_resin_aura : public AuraScript
         {
             // Check the aura.
             if (Aura* resinAura = owner->GetAura(SPELL_CORROSIVE_RESIN))
-            { /*
+            { 
                 // Remove the stacks.
                 if (resinAura->GetStackAmount() > 1)
                     resinAura->SetStackAmount(resinAura->GetStackAmount() - 1);
                 else
-                    owner->RemoveAurasDueToSpell(SPELL_CORROSIVE_RESIN); */
+                    owner->RemoveAurasDueToSpell(SPELL_CORROSIVE_RESIN);
 
                 // Summon the pool.
                 owner->SummonCreature(NPC_CORROSIVE_RESIN_POOL, owner->GetPositionX(), owner->GetPositionY(), owner->GetPositionZ(), owner->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
@@ -1307,9 +1309,9 @@ class spell_meljarak_corrosive_resin_aura : public AuraScript
 
         if (!owner)
             return;
-        /*
+        
         if (Aura* resinAura = owner->GetAura(SPELL_CORROSIVE_RESIN))
-            resinAura->SetStackAmount(5); */
+            resinAura->SetStackAmount(5);
     }
 
     void Register() override
@@ -1334,7 +1336,7 @@ class spell_meljarak_corrosive_resin : public SpellScript
             GetPlayerListInGrid(pList, caster, 200.0f);
 
             // Remove whole exclude casters
-            // pList.remove_if(TankSpecTargetSelector());
+            pList.remove_if(TankSpecTargetSelector());
             pList.remove_if([=](Player* target) { return target->HasAura(SPELL_CORROSIVE_RESIN); });
 
             // If we not found any dps then try select anyone without same aura
@@ -1380,7 +1382,7 @@ class spell_amber_prison_selector : public SpellScript
             GetPlayerListInGrid(pList, caster, 200.0f);
 
             // Remove whole exclude casters
-            // pList.remove_if(TankSpecTargetSelector());
+            pList.remove_if(TankSpecTargetSelector());
             pList.remove_if([=](Player* target) { return target->HasAura(SPELL_AMBER_PRISON_AURA); });
 
             // If we not found any dps then try select anyone without same aura
@@ -1575,8 +1577,8 @@ class spell_meljarak_wind_bomb : public SpellScript
             GetPlayerListInGrid(pList, caster, 200.0f);
 
             // Remove whole exclude casters
-            // pList.remove_if(MeeleSpecTargetSelector());
-            // pList.remove_if(TankSpecTargetSelector());
+            pList.remove_if(MeeleSpecTargetSelector());
+            pList.remove_if(TankSpecTargetSelector());
 
             // If we not found any casters (rdps/healer) then prevent it
             if (pList.empty())
@@ -1603,15 +1605,15 @@ class WhirlingBladePredicate : public std::unary_function<Creature*, bool>
         WhirlingBladePredicate(Creature* const m_caster) : _caster(m_caster) { }
 
         bool operator()(WorldObject* object)
-        { /*
+        {
             if (object && object->ToPlayer())
-            {
+            {/*
                 if (_caster->AI()->GetData(object->ToPlayer()->GetGUIDLow()))
                     return true;
 
                 _caster->AI()->SetData(TYPE_WHIRLING_BLADE, object->ToPlayer()->GetGUIDLow());
-                return false;
-            } */
+                return false; */
+            }
 
             return false;
         }

@@ -123,7 +123,7 @@ class boss_amber_shaper_unsok : public CreatureScript
             boss_amber_shaper_unsokAI(Creature* creature) : BossAI(creature, DATA_UNSOK) { }
 
             std::list<Creature*> LivingAmber;
-            std::list<uint64> protList;
+            std::list<ObjectGuid> protList;
             uint32 _phase, delay;
             ObjectGuid targetGUID;
             bool IntroDone, IsFirstReshape, InShift;
@@ -250,7 +250,7 @@ class boss_amber_shaper_unsok : public CreatureScript
                         Talk(SAY_PHASE_3);
                         _phase = PHASE_3;
                         events.CancelEvent(EVENT_AMBER_SCALPEL);
-                        /*
+                        
                         if (Unit* victim = me->GetVictim())
                         {
                             me->PrepareChanneledCast(me->GetAngle(victim));
@@ -258,7 +258,7 @@ class boss_amber_shaper_unsok : public CreatureScript
                         }
                         me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
                         me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
-
+                        /*
                         Movement::MoveSplineInit init(me);
                         init.MoveTo(UnsokUnleashed.GetPositionX(), UnsokUnleashed.GetPositionY(), UnsokUnleashed.GetPositionZ());
                         init.Launch();
@@ -392,13 +392,13 @@ class boss_amber_shaper_unsok : public CreatureScript
                             }
 
                             switch (_phase)
-                            { /*
-                                case PHASE_1:
+                            {
+                                case PHASE_1:/*
                                     if (Unit* pTank = ObjectAccessor::GetUnit(*me, GetReshapeLifeTarget()))
                                         DoCast(pTank, SPELL_RESHAPE_LIFE_CHANNELED);
                                     else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_RESHAPE_LIFE)))
-                                        DoCast(target, SPELL_RESHAPE_LIFE_CHANNELED);
-                                    break; */
+                                        DoCast(target, SPELL_RESHAPE_LIFE_CHANNELED); */
+                                    break; 
                                 case PHASE_2:
                                 case PHASE_3:
                                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector(SPELL_RESHAPE_LIFE)))
@@ -455,7 +455,7 @@ class boss_amber_shaper_unsok : public CreatureScript
                     private:
                         Creature const* _me;
                 };
-                /*
+                
                 // At first phase encounter using Reshape only for players with prot spec.
                 // It makes sequence, that will loop till phase two.
                 void InitializeTanksSequence()
@@ -470,12 +470,12 @@ class boss_amber_shaper_unsok : public CreatureScript
                     if (Unit* vict = me->GetVictim())
                         protList.push_back(vict->GetGUID());
                 }
-
-                uint64 GetReshapeLifeTarget()
+                /*
+                ObjectGuid GetReshapeLifeTarget()
                 {
                     for (auto it = protList.begin(); it != protList.end(); ++it)
                     {
-                        uint64 guid = *it;
+                        ObjectGuid guid = *it;
                         if (Unit* target = ObjectAccessor::GetUnit(*me, guid))
                         {
                             if (target->IsAlive())
@@ -488,7 +488,7 @@ class boss_amber_shaper_unsok : public CreatureScript
                     }
 
                     return 0;
-                } */
+                }*/
 
                 void DoMeleeAttackIfReady()
                 {
@@ -657,13 +657,13 @@ class npc_burning_amber_stalker : public CreatureScript
             void DoAction(int32 actionId) override 
             {
                 switch (actionId)
-                { /*
-                    case ACTION_LIVING_AMBER:
+                { 
+                    case ACTION_LIVING_AMBER: /*
                         if (Creature* unsok = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(DATA_UNSOK) : 0))
                             unsok->SummonCreature(NPC_LIVING_AMBER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN);
-
+                            */
                         me->DespawnOrUnsummon();
-                        break; */
+                        break; 
                     case ACTION_CONSUME_AMBER:
                         me->DespawnOrUnsummon();
                         break;
@@ -709,7 +709,7 @@ class npc_mutated_construct_p : public CreatureScript
             // Why? Cuz Reshape spell haven`t any periodic or proc effects, but we need smth trigger amber explosion
             void IsSummonedBy(Unit* summoner) override
             {
-                // ownerGUID = summoner->GetGUID();
+                ownerGUID = summoner->GetGUID();
                 Apply = false;
                 events.ScheduleEvent(EVENT_AMBER_EXPLOSION_P, 13 * IN_MILLISECONDS);
                 events.ScheduleEvent(EVENT_DESTROY_WILL, 1 * IN_MILLISECONDS);
@@ -811,9 +811,9 @@ class npc_amber_scalpel : public CreatureScript
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     if (eventId == EVENT_RISE_AMBER)
-                    {
+                    {/*
                         if (Creature* aStalker = ObjectAccessor::GetCreature(*me, SelectLivingAmberGUID()))
-                            aStalker->AI()->DoAction(ACTION_LIVING_AMBER);
+                            aStalker->AI()->DoAction(ACTION_LIVING_AMBER); */
 
                         events.ScheduleEvent(EVENT_RISE_AMBER, 2.5 * IN_MILLISECONDS);
                     }
@@ -821,7 +821,7 @@ class npc_amber_scalpel : public CreatureScript
                 }
             }
 
-            private:
+            private:/*
                 ObjectGuid SelectLivingAmberGUID()
                 {
                     std::list<Creature*> AmberStalkers;
@@ -830,8 +830,8 @@ class npc_amber_scalpel : public CreatureScript
                     if (!AmberStalkers.empty())
                         return Trinity::Containers::SelectRandomContainerElement(AmberStalkers)->GetGUID();
 
-                    //return 0; // AmberStalkers.Clear() ?
-                } 
+                    return 0;
+                } */
         };
 
         CreatureAI* GetAI(Creature* creature) const override
@@ -930,8 +930,8 @@ class npc_amber_pool_stalker : public CreatureScript
                         break;
                     case ACTION_AMBER_GLOBULE:
                         nonCombatEvents.ScheduleEvent(EVENT_AMBER_GLOBULE, urand(10, 29)*IN_MILLISECONDS);
-                        break; /*
-                    case ACTION_DRAW_POWER:
+                        break; 
+                    case ACTION_DRAW_POWER: /*
                         if (Creature* Unsok = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(DATA_UNSOK) : 0))
                             me->CastSpell(Unsok, SPELL_GROWTH_DUMMY, false); */
                         break;
@@ -1621,7 +1621,7 @@ class spell_unsok_burning_amber_triggering : public AuraScript
     void OnTrigger(AuraEffect const* /*aurEff*/)
     {
         if (Unit* owner = GetOwner()->ToUnit()) // so, targeting possessed not implemented - we can check near pools by this way
-        {/*
+        {
             if (owner->GetMap()->GetWorldState(WORLDSTATE_I_HEARD_YOU_LIKE_AMBER) == 1)
                 return;
 
@@ -1632,7 +1632,7 @@ class spell_unsok_burning_amber_triggering : public AuraScript
 
             // required 8 pools for achiev allowing
             if (livingAmbers.size() > 6 && owner->GetMap()->GetWorldState(WORLDSTATE_I_HEARD_YOU_LIKE_AMBER) != 1)
-                owner->GetMap()->SetWorldState(WORLDSTATE_I_HEARD_YOU_LIKE_AMBER, 1); */
+                owner->GetMap()->SetWorldState(WORLDSTATE_I_HEARD_YOU_LIKE_AMBER, 1);
         }
     }
 

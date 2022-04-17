@@ -61,6 +61,7 @@ struct npc_young_primal_devilsaur : public ScriptedAI
                     break;
                 }
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -105,6 +106,7 @@ struct npc_pterrorwing_skyscreamer : public ScriptedAI
                     break;
                 }
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -162,6 +164,7 @@ struct npc_zandalari_dinomancer_2 : public ScriptedAI
                     break;
                 }
             }
+            break;
         }
 
         DoMeleeAttackIfReady();
@@ -272,6 +275,7 @@ struct npc_primal_direhorn : public ScriptedAI
                     break;
                 }
             }
+            break;
         }
 
         DoMeleeAttackIfReady();

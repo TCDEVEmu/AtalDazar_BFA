@@ -7,6 +7,7 @@
 #include "MoveSplineInit.h"
 #include "InstanceSaveMgr.h"
 #include "Config.h"
+#include "SpellMgr.h"
 
 enum eTalk
 {
@@ -241,15 +242,15 @@ class npc_wind_lord_meljarak_intro : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void GetNewPositionMove(uint64 owner, uint32 point = 1, float range = 50.0f)
-            {/*
+            void GetNewPositionMove(ObjectGuid owner, uint32 point = 1, float range = 50.0f)
+            {
                 float x = 0, y = 0;
                 if (Unit* MeljarakSwarm = ObjectAccessor::GetUnit(*me, owner))
                 {
                     GetPositionWithDistInOrientation(MeljarakSwarm, 50.0f, me->GetOrientation(), x, y);
 
                     MeljarakSwarm->GetMotionMaster()->MoveCharge(x, y, MeljarakSwarm->GetPositionZ(), range, point);
-                } */
+                }
             }
 
             void MovementInform(uint32 type, uint32 pointId) override
@@ -385,19 +386,19 @@ class npc_kor_thik_slicer : public CreatureScript
                 while (uint32 eventid = events.ExecuteEvent())
                 {
                     switch (eventid)
-                    {   /*
+                    {   
                         case EVENT_ARTERIAL_SPIRIT:
                             if (Unit* target = me->GetVictim())
                             {
                                 if (const SpellInfo* sInfo = sSpellMgr->GetSpellInfo(SPELL_ARTERIAL_SPIRIT))
                                 {
-                                    int32 m_bp = sInfo->GetEffect[EFFECT_0]->BasePoints * me->GetInt32Value(UNIT_FIELD_ATTACK_POWER) / 3;
+                                    int32 m_bp = 9 * me->GetTotalAttackPowerValue(BASE_ATTACK) / 3;
                                     me->CastCustomSpell(target, SPELL_ARTERIAL_SPIRIT, &m_bp, 0, 0, true);
                                 }
                             }
 
                             events.ScheduleEvent(EVENT_ARTERIAL_SPIRIT, 20000);
-                            break; */
+                            break;
                         case EVENT_GOUGE_THROAT:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
                                 me->CastSpell(target, SPELL_GOUGE_THROAT, true);
@@ -1324,10 +1325,10 @@ class npc_instructor_maltik : public CreatureScript
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
-                    { /*
+                    {
                         case EVENT_UNSEEN_STRIKE:
                         {
-                            unseenTank = me->GetVictim() ? me->GetVictim()->GetGUID() : 0;
+                            //unseenTank = me->GetVictim() ? me->GetVictim()->GetGUID() : 0;
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
                             {
                                 me->CastSpell(target, SPELL_UNSEEN_STRIKE_TR, true);
@@ -1349,7 +1350,7 @@ class npc_instructor_maltik : public CreatureScript
                             events.ScheduleEvent(EVENT_UNSEEN_STRIKE_RETURN, 5500);
                             events.ScheduleEvent(EVENT_UNSEEN_STRIKE, urand(53000, 61000));
                             break;
-                        }*/
+                        }
                         case EVENT_UNSEEN_STRIKE_CHASE:
                         {
                             if (Unit* target = ObjectAccessor::GetUnit(*me, unseenTarget))
@@ -1701,7 +1702,7 @@ class npc_heart_of_fear_kazrik : public CreatureScript
                     creature->GetInstanceScript()->DoRemoveDampeningFromCreatures();*/
             }
     
-            // player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -2022,13 +2023,12 @@ class npc_srathik_pool_tender : public CreatureScript
             }
 
             void Reset() override
-            {/*
-                uint32 delay = 0;
-                me->m_Events.Schedule(delay += 2000, 20, [this]()
+            {
+                me->GetScheduler().Schedule(2000ms, [this](TaskContext /*context*/)
                 {
                     if (Creature* AmberPool = GetClosestCreatureWithEntry(me, NPC_AMBER_POOL_STALKER, 50.0f))
                         me->CastSpell(AmberPool, SPELL_AGITATE_POOL, false);
-                }); */
+                }); 
             }
 
             void EnterCombat(Unit* who) override
@@ -2082,12 +2082,12 @@ class npc_amber_ridden_mushan : public CreatureScript
             npc_amber_ridden_mushanAI(Creature* creature) : ScriptedAI(creature) { }
 
             EventMap events;
-            std::list<uint64> amber;
+            std::list<ObjectGuid> amber;
             uint32 VehPos;
 
             void Reset() override
             {
-                // RemoveAmberGrowth();
+                RemoveAmberGrowth();
                 VehPos = 0;
             }
 
@@ -2095,7 +2095,7 @@ class npc_amber_ridden_mushan : public CreatureScript
             {
                 VehPos = 0;
             }
-            /*
+            
             void RemoveAmberGrowth()
             {
                 for (auto&& itr : amber)
@@ -2113,13 +2113,11 @@ class npc_amber_ridden_mushan : public CreatureScript
                             return true;
 
                 return false;
-            } */
-            /*
-            void EnterCombat(Unit* /*who) override
+            } 
+            
+            void EnterCombat(Unit* /*who*/) override
             {
-                Position pos;
-
-                me->GetRandomNearPosition(pos, 4.0f);
+                Position pos = me->GetRandomNearPosition(4.0f);
 
                 for (uint8 i = 0; i < 4; i++)
                 {
@@ -2138,7 +2136,7 @@ class npc_amber_ridden_mushan : public CreatureScript
                 events.ScheduleEvent(EVENT_AMBER_SPEW, urand(6 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
             }
 
-            void JustDied(Unit* /*killer) override
+            void JustDied(Unit* /*killer*/) override
             {
                 RemoveAmberGrowth();
             }
@@ -2173,7 +2171,7 @@ class npc_amber_ridden_mushan : public CreatureScript
                 }
 
                 DoMeleeAttackIfReady();
-            } */
+            }
         };
 
         CreatureAI* GetAI(Creature* creature) const override
