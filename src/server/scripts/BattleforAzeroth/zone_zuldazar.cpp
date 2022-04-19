@@ -123,24 +123,6 @@ struct npc_telemancer_oculeth_zuldazar : public ScriptedAI
     }
 };
 
-class zone_zuldazar_scene_disk_controller : public ZoneScript
-{
-public:
-    zone_zuldazar_scene_disk_controller() : ZoneScript("zone_zuldazar_scene_disk_controller") { }
-
-    void OnPlayerEnter(Player* player) override
-    {
-        // need conditional
-        player->CastSpell(player, SPELL_DAZAR_ALOR_DISK_SCENE);
-    }
-
-    void OnPlayerExit(Player* player) override
-    {
-        // need conditional
-        player->RemoveAurasDueToSpell(SPELL_DAZAR_ALOR_DISK_SCENE);
-    }
-};
-
 // 47433
 struct quest_forbidden_practices : public QuestScript
 {
@@ -158,6 +140,22 @@ struct quest_forbidden_practices : public QuestScript
     }    
 };
 
+//49489 49490
+struct quest_Needs_a_Little_Body__The_Urn_of_Voices : public QuestScript
+{
+    quest_Needs_a_Little_Body__The_Urn_of_Voices() : QuestScript("quest_Needs_a_Little_Body__The_Urn_of_Voices") { }
+
+    void OnQuestStatusChange(Player* player, Quest const* /*quest*/, QuestStatus oldStatus, QuestStatus /*newStatus*/) override
+    {
+        if (oldStatus == QUEST_STATUS_NONE)
+        {
+            if (player->GetQuestStatus(49489) != QUEST_STATUS_NONE && player->GetQuestStatus(49490) != QUEST_STATUS_NONE)
+            {
+                player->SummonCreature(129907, Position(-457.821f, 392.892f, 177.829f, 5.50005f), TEMPSUMMON_MANUAL_DESPAWN, 0, 0, true);
+            }
+        }
+    }
+};
 
 void AddSC_zone_zuldazar()
 {
@@ -168,6 +166,5 @@ void AddSC_zone_zuldazar()
 
     RegisterQuestScript(quest_speaker_of_the_horde);
     RegisterQuestScript(quest_forbidden_practices);
-
-    new zone_zuldazar_scene_disk_controller();
+    RegisterQuestScript(quest_Needs_a_Little_Body__The_Urn_of_Voices);
 }
