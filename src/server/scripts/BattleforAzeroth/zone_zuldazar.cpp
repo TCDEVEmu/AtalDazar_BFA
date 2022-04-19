@@ -141,6 +141,24 @@ public:
     }
 };
 
+// 47433
+struct quest_forbidden_practices : public QuestScript
+{
+    quest_forbidden_practices() : QuestScript("quest_forbidden_practices") { }
+
+    void OnQuestObjectiveChange(Player* player, Quest const* /*quest*/, QuestObjective const& objective, int32 /*oldAmount*/, int32 /*newAmount*/) override
+    {
+        if (objective.ID == 292610)
+        {
+            if (player->GetQuestObjectiveCounter(292610) == 0 && player->HasQuest(47433))
+            {
+                 player->SummonCreature(126564, Position(-485.618f, 749.658f, 293.962f, 1.62767f), TEMPSUMMON_MANUAL_DESPAWN, 0, 0, true);
+            }
+        }
+    }    
+};
+
+
 void AddSC_zone_zuldazar()
 {
     RegisterCreatureAI(npc_enforcer_pterrordax);
@@ -149,6 +167,7 @@ void AddSC_zone_zuldazar()
     RegisterCreatureAI(npc_telemancer_oculeth_zuldazar);
 
     RegisterQuestScript(quest_speaker_of_the_horde);
+    RegisterQuestScript(quest_forbidden_practices);
 
     new zone_zuldazar_scene_disk_controller();
 }
