@@ -17,16 +17,16 @@
 enum KraggSpells
 {
     ///Rider SkyCap Kragg (Before Fight with Boss)
-    VileBombadment = 256005,
-    VileCoating    = 256016,
+    VileBombadment         = 256005,
+    VileCoating            = 256016,
     ///Boss SkyCap Kragg
-    Charrrrrge     = 255952, /// With Mount 
-    PistolShot     = 255966, /// With Mount 
-    AzeritePowderShot = 256106, /// Without Mount 
+    Charrrrrge             = 255952, /// With Mount 
+    PistolShot             = 255966, /// With Mount 
+    AzeritePowderShot      = 256106, /// Without Mount 
     RevitalizingBrewSkyCap = 256060, /// Without Mount
     RevitalizingBrewPlayer = 263297,
     ///Heroic
-    DiveBomb = 272046  ///Sharkbait will then charge across the arena in a straight line, dealing damage and knocking back all players in the path
+    Spell_DiveBomb         = 272046  ///Sharkbait will then charge across the arena in a straight line, dealing damage and knocking back all players in the path
 };
 
 enum KraggEvents
@@ -59,7 +59,8 @@ enum KraggMovementPoint
     MovementPointEndPos2,
     FlyP0 = 3, FlyP1, FlyP2, FlyP3, FlyP4, FlyP5, FlyP6, FlyP7, FlyP8, FlyP9, FlyP10, FlyP11, FlyP12, FlyP13, FlyP14, FlyP15,
     MovementPointDiveBomb,
-    MovementPointDiveBombCasted
+    MovementPointDiveBombCasted,
+    MovementPointReset
 };
 
 
@@ -86,9 +87,10 @@ enum action
     sharkbaitendcombat
 };
 
-Position const MiddlePos = { -1768.29f, -1009.25f, 110.0f, 0.418879f };
-Position const EndPos1 = { -1763.66f,   -1011.15f,  89.43428f, 0.0f };
-Position const EndPos2 = { -1865.8f,  -829.222f,  133.511f, 0.0f };
+Position const ResetPos  = { -1778.22f, -994.856f,    88.48f, 5.69468f };
+Position const MiddlePos = { -1768.29f, -1009.25f,    110.0f, 0.418879f };
+Position const EndPos1   = { -1763.66f, -1011.15f, 89.43428f, 0.0f };
+Position const EndPos2   = { -1865.8f,  -829.222f,  133.511f, 0.0f };
 
 Position const CombatPos[16] =
 {
@@ -131,10 +133,7 @@ struct boss_skycap_kragg : public BossAI
     void Reset() override
     {
         mountGUID.Clear();
-        checkTimer = 1000;
-        fightStarted = false;
         charge = false;
-        resetFight = true;
         phase = PhaseMount;
         me->ResetLootMode();
         events.Reset();
@@ -150,7 +149,7 @@ struct boss_skycap_kragg : public BossAI
 
         if (!me->IsOnVehicle())
         {
-            if (Creature * mount = me->SummonCreature(NpcSharkBaitBoss, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN))
+            if (Creature* mount = me->SummonCreature(NpcSharkBaitBoss, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN))
             {
                 mountGUID = mount->GetGUID();
                 me->EnterVehicle(mount);
@@ -160,19 +159,28 @@ struct boss_skycap_kragg : public BossAI
         }
     }
 
+    void JustSummoned(Creature* summon) override
+    {
+        summons.Summon(summon);
+
+        if (summon->GetEntry() == 126841)
+        {
+            summon->GetMotionMaster()->MovePoint(MovementPointReset, ResetPos);
+            summon->SetReactState(REACT_PASSIVE);
+            me->SetReactState(REACT_PASSIVE);
+        }
+
+    }
+
     void EnterEvadeMode(EvadeReason /*why*/) override
     {
-        if (fightStarted)
-        {
-            fightStarted = false;
-            me->InterruptNonMeleeSpells(true);
-            me->SetReactState(REACT_PASSIVE);
-            me->GetThreatManager().ClearAllThreat();
-            me->CombatStop();
-            me->CastStop();
-            me->GetMotionMaster()->Clear();
-            me->GetMotionMaster()->MoveTargetedHome();
-        }
+        me->InterruptNonMeleeSpells(true);
+        me->SetReactState(REACT_PASSIVE);
+        me->GetThreatManager().ClearAllThreat();
+        me->CombatStop();
+        me->CastStop();
+        me->GetMotionMaster()->Clear();
+        me->GetMotionMaster()->MoveTargetedHome();
     }
 
     void JustReachedHome() override
@@ -185,29 +193,22 @@ struct boss_skycap_kragg : public BossAI
     void EnterCombat(Unit* /*who*/) override
     {
         Talk(Aggro);
-
+        
         if (instance)
         {
-            // bosses do not respawn, check only on enter combat
-            if (!instance->CheckRequiredBosses(me->GetEntry()))
-            {
-                EnterEvadeMode(EVADE_REASON_SEQUENCE_BREAK);
-                return;
-            }
             instance->SetBossState(DataSkycapKragg, IN_PROGRESS);
             instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me, 1);
-        }
-        
+        } 
+
         me->SetReactState(REACT_AGGRESSIVE);
         phase = PhaseMount;
         me->setActive(true);
         DoZoneInCombat();
-        fightStarted = true;
-        if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+        if (Creature* mount = ObjectAccessor::GetCreature(*me, mountGUID))
             mount->AI()->SetData(DataMountInCombat, true);
 
         events.ScheduleEvent(EventPistolShot, urand(3000, 5000));
-        events.ScheduleEvent(EventChaaarrge, 8000);
+        events.ScheduleEvent(EventChaaarrge, 4700);
     }
 
     void OnSpellCastInterrupt(SpellInfo const* spell)
@@ -239,7 +240,10 @@ struct boss_skycap_kragg : public BossAI
         me->RemoveAllAreaTriggers();
         Talk(Dead);
         if (instance)
+        {
+            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
             instance->SetBossState(DataSkycapKragg, DONE);
+        }
 
         // not send doaction :(
         if (Creature* mount = ObjectAccessor::GetCreature(*me, mountGUID))
@@ -256,7 +260,7 @@ struct boss_skycap_kragg : public BossAI
             Talk(Hp75);
             me->ExitVehicle();
 
-            if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+            if (Creature* mount = ObjectAccessor::GetCreature(*me, mountGUID))
             {
                 mount->SetReactState(REACT_PASSIVE);
                 mount->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
@@ -267,8 +271,8 @@ struct boss_skycap_kragg : public BossAI
             events.CancelEvent(EventPistolShot);
             events.CancelEvent(EventChaaarrge);
 
-            events.ScheduleEvent(EventAzeritePowderShot, 2000);
-            events.ScheduleEvent(EventRevitalizingBrew, 15000);
+            events.ScheduleEvent(EventAzeritePowderShot, 7300);
+            events.ScheduleEvent(EventRevitalizingBrew, 20600);
         }
     }
 
@@ -280,109 +284,77 @@ struct boss_skycap_kragg : public BossAI
 
     void UpdateAI(uint32 diff) override
     {
-        if (fightStarted)
-        {
-            if (checkTimer <= diff)
-            {
-                // Retrieving targets
-                Map::PlayerList const& PlayerList = me->GetMap()->GetPlayers();
-                if (!PlayerList.isEmpty())
-                {
-                    for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-                    {
-                        Player* player = i->GetSource();
-                        if (player->IsAlive())
-                        {
-                            resetFight = false;
-                            break;
-                        }
-                        else
-                            resetFight = true;
-                    }
-                }
-
-                if (resetFight)
-                    EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
-
-                checkTimer = 1000;
-            }
-            else
-                checkTimer -= diff;
-        }
-
-        if (!UpdateVictim() && fightStarted)
+        if (!UpdateVictim())
             return;
-
-        events.Update(diff);
 
         if (me->HasUnitState(UNIT_STATE_CASTING))
             return;
+
+        events.Update(diff);
 
         while (uint32 eventId = events.ExecuteEvent())
         {
             switch (eventId)
             {
-            case EventChaaarrge:
-            {
-                if (Creature * mount = ObjectAccessor::GetCreature(*me, mountGUID))
+                case EventChaaarrge:
                 {
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                    if (Creature* mount = ObjectAccessor::GetCreature(*me, mountGUID))
                     {
-                        Talk(Charge);
-                        charge = true;
-                        mount->StopMoving();
-                        mount->SetReactState(REACT_PASSIVE);
-                        mount->CastSpell(target, Charrrrrge, false);
+                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 50.0f, true))
+                        {
+                            Talk(Charge);
+                            charge = true;
+                            mount->StopMoving();
+                            mount->SetReactState(REACT_PASSIVE);
+                            mount->CastSpell(target, Charrrrrge, false);
+                        }
                     }
+                
+                    events.Repeat(8400); 
+                    break;
                 }
-
-                events.Repeat(8000);
-                break;
-            }
-            case EventPistolShot:
-            {
-                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
-                    me->CastSpell(target, PistolShot, false);
-
-                events.Repeat(2000);
-                break;
-            }
-            case EventAzeritePowderShot:
-            {
-                if (urand(0, 1) == 1)
-                    Talk(Azeriteshot1);
-                else
-                    Talk(Azeriteshot2);
-
-                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
-                    me->CastSpell(target, AzeritePowderShot, false);
-
-                events.Repeat(11000);
-                break;
-            }
-            case EventRevitalizingBrew:
-            {
-                me->SetReactState(REACT_PASSIVE);
-                me->StopMoving();
-                me->CastSpell(me, RevitalizingBrewSkyCap, false);
-
-                events.Repeat(20000);
-                break;
-            }
+                case EventPistolShot:
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                        me->CastSpell(target, PistolShot, false);
+                
+                    events.Repeat(urand(3000, 5000));
+                    break;
+                }
+                case EventAzeritePowderShot:
+                {
+                    if (urand(0, 1) == 1)
+                        Talk(Azeriteshot1);
+                    else
+                        Talk(Azeriteshot2);
+                
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
+                        me->CastSpell(target, AzeritePowderShot, false);
+                
+                    events.Repeat(10800);
+                    break;
+                }
+                case EventRevitalizingBrew:
+                {
+                    me->SetReactState(REACT_PASSIVE);
+                    me->StopMoving();
+                    me->CastSpell(me, RevitalizingBrewSkyCap, false);
+                
+                    events.Repeat(20600); 
+                    break;
+                }
             }
         }
 
         DoMeleeAttackIfReady();
+        CheckHomeDistToEvade(diff, 40.0f);
 
     }
 
 private:
     ObjectGuid mountGUID;
     KraggPhases phase;
-    bool fightStarted;
-    bool resetFight;
     bool charge;
-    uint32 checkTimer;
 
     void DespawnRevitalizingBrew()
     {
@@ -411,13 +383,10 @@ struct npc_sharkbait : public ScriptedAI
 
     void JustReachedHome() override
     {
-        if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
-        {
-            kragg->ExitVehicle();
-            kragg->AI()->EnterEvadeMode(EVADE_REASON_NO_HOSTILES);
-        }
-
-        me->DespawnOrUnsummon();
+        me->GetMotionMaster()->MovePoint(MovementPointReset, ResetPos);
+        me->SetReactState(REACT_PASSIVE);
+        if (Creature* kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(NpcSkycapKragg)))
+            kragg->SetReactState(REACT_PASSIVE);
     }
 
     void SetData(uint32 id, uint32 value)
@@ -431,9 +400,11 @@ struct npc_sharkbait : public ScriptedAI
         if (sharkbaitendcombat)
         {
             fly = false;
+            me->GetThreatManager().ClearAllThreat();
+            me->CombatStop();
+            me->SetReactState(REACT_PASSIVE);
             me->GetMotionMaster()->MovePoint(MovementPointEndPos1, EndPos1);
         }
-
     }
     
     void MovementInform(uint32 type, uint32 pointId) override
@@ -443,117 +414,121 @@ struct npc_sharkbait : public ScriptedAI
 
         switch (pointId)
         {
-        case MovementPointMiddle:
-        {
-            if (!me->IsInCombat())
-                me->SetInCombatWithZone();
+            case MovementPointMiddle:
+            {
+                if (!me->IsInCombat())
+                    me->SetInCombatWithZone();
 
-            events.Reset();
-            me->GetMotionMaster()->MovePoint(FlyP0, CombatPos[0]);
-            fly = true;
-            events.ScheduleEvent(EventVileBombadment, 5000);
-            if (IsHeroic())
-                events.ScheduleEvent(EventDiveBombs, 17000);
-            break;
-        }
-        case FlyP0:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP1, CombatPos[1]);
-            break;
-        case FlyP1:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP2, CombatPos[2]);
-            break;
-        case FlyP2:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP3, CombatPos[3]);
-            break;
-        case FlyP3:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP4, CombatPos[4]);
-            break;
-        case FlyP4:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP5, CombatPos[5]);
-            break;
-        case FlyP5:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP6, CombatPos[6]);
-            break;
-        case FlyP6:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP7, CombatPos[7]);
-            break;
-        case FlyP7:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP8, CombatPos[8]);
-            break;
-        case FlyP8:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP9, CombatPos[9]);
-            break;
-        case FlyP9:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP10, CombatPos[10]);
-            break;
-        case FlyP10:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP11, CombatPos[11]);
-            break;
-        case FlyP11:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP12, CombatPos[12]);
-            break;
-        case FlyP12:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP13, CombatPos[13]);
-            break;
-        case FlyP13:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP14, CombatPos[14]);
-            break;
-        case FlyP14:
-            if (fly == true)
-                me->GetMotionMaster()->MovePoint(FlyP15, CombatPos[15]);
-            break;
-        case FlyP15:
-            if (fly == true)
+                events.Reset();
                 me->GetMotionMaster()->MovePoint(FlyP0, CombatPos[0]);
-            break;
-        case MovementPointEndPos1:
-        {
-            events.Reset();
-
-            m_Instance->DoPlayConversation(6422);
-
-            AddTimedDelayedOperation(8000, [this]() -> void
-                {
-                    me->GetMotionMaster()->MovePoint(MovementPointEndPos2, EndPos2);
-
-                });
-            break;
-        }
-        case MovementPointEndPos2:
-        { me->DespawnOrUnsummon(1); }
-
-
-        case MovementPointDiveBomb:
-        {
-            DiveBomb = true;
-            me->CastSpell(me, DiveBomb, false);
-            break;
-        }
-        case MovementPointDiveBombCasted:
-        {
-            events.Reset();
-            DiveBomb = false;
-            me->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
-            break;
-        }
-        case EVENT_JUMP:
-            me->SetReactState(REACT_AGGRESSIVE);
-            if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
-                kragg->AI()->SetData(DataCharge, false);
+                fly = true;
+                events.ScheduleEvent(EventVileBombadment, 6200);
+                if (IsHeroic())
+                    events.ScheduleEvent(EventDiveBombs, 17700);
+                break;
+            }
+            case FlyP0:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP1, CombatPos[1]);
+                break;
+            case FlyP1:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP2, CombatPos[2]);
+                break;
+            case FlyP2:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP3, CombatPos[3]);
+                break;
+            case FlyP3:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP4, CombatPos[4]);
+                break;
+            case FlyP4:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP5, CombatPos[5]);
+                break;
+            case FlyP5:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP6, CombatPos[6]);
+                break;
+            case FlyP6:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP7, CombatPos[7]);
+                break;
+            case FlyP7:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP8, CombatPos[8]);
+                break;
+            case FlyP8:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP9, CombatPos[9]);
+                break;
+            case FlyP9:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP10, CombatPos[10]);
+                break;
+            case FlyP10:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP11, CombatPos[11]);
+                break;
+            case FlyP11:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP12, CombatPos[12]);
+                break;
+            case FlyP12:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP13, CombatPos[13]);
+                break;
+            case FlyP13:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP14, CombatPos[14]);
+                break;
+            case FlyP14:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP15, CombatPos[15]);
+                break;
+            case FlyP15:
+                if (fly == true)
+                    me->GetMotionMaster()->MovePoint(FlyP0, CombatPos[0]);
+                break;
+            case MovementPointEndPos1:
+            {
+                events.Reset();
+            
+                m_Instance->DoPlayConversation(6422);
+            
+                AddTimedDelayedOperation(8000, [this]() -> void
+                    {
+                        me->GetMotionMaster()->MovePoint(MovementPointEndPos2, EndPos2);
+            
+                    });
+                break;
+            }
+            case MovementPointEndPos2:
+            {
+                me->DespawnOrUnsummon(1);
+            }
+            
+            
+            case MovementPointDiveBomb:
+            {
+                DiveBomb = true;
+                me->CastSpell(me, Spell_DiveBomb, false);
+                break;
+            }
+            case MovementPointDiveBombCasted:
+            {
+                events.Reset();
+                DiveBomb = false;
+                me->GetMotionMaster()->MovePoint(MovementPointMiddle, MiddlePos);
+                break;
+            }
+            case MovementPointReset:
+            {
+                me->SetReactState(REACT_AGGRESSIVE);
+                me->SetFacingTo(5.69468f);
+                break;
+            }
         }
     }
 
@@ -571,23 +546,25 @@ struct npc_sharkbait : public ScriptedAI
         {
             switch (eventId)
             {
-            case EventVileBombadment:
-            {
-                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
-                    me->CastSpell(target, VileBombadment, false);
-
-                events.Repeat(5000);
-                break;
-            }
-            case EventDiveBombs:
-            {
-                if (Creature * kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(FreeholdCreature::NpcSkycapKragg)))
-                    //kragg->AI()->Talk(TalkDiveBomb);
-
-                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
-                    me->GetMotionMaster()->MovePoint(MovementPointDiveBomb, GetRandomPositionAround(target, 10.0f, 15.0f));
-                break;
-            }
+                case EventVileBombadment:
+                {
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                        me->CastSpell(target, VileBombadment, false);
+                
+                    events.Repeat(5900);
+                    break;
+                }
+                case EventDiveBombs:
+                {
+                    if (Creature* kragg = m_Instance->instance->GetCreature(m_Instance->GetGuidData(NpcSkycapKragg)))
+                        //kragg->AI()->Talk(TalkDiveBomb);
+                
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                        me->GetMotionMaster()->MovePoint(MovementPointDiveBomb, GetRandomPositionAround(target, 10.0f, 15.0f));
+                
+                    events.Repeat(17000);
+                    break;
+                }
             }
         }
     }
@@ -623,7 +600,7 @@ struct at_vile_bombardment : AreaTriggerAI
                 player->CastSpell(player, VileCoating, true);
     }
 
-    void OnUnitExit(Unit * unit)
+    void OnUnitExit(Unit* unit)
     {
         unit->RemoveAurasDueToSpell(VileCoating);
     }
@@ -636,15 +613,15 @@ class spell_dive_bomb : public SpellScript
 
     void HandleOnCast()
     {
-        if (Unit * caster = GetCaster())
+        if (Unit* caster = GetCaster())
         {
             if (caster->IsCreature())
             {
-                if (Unit * target = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
+                if (Unit* target = caster->ToCreature()->AI()->SelectTarget(SELECT_TARGET_RANDOM, 0.0, 0.0f, true))
                 {
                     Position ChargePosition;
                     GetPositionWithDistInOrientation(target, 10.0f, caster->GetAngle(target), ChargePosition);
-                    caster->GetMotionMaster()->MoveCharge(ChargePosition.GetPositionX(), ChargePosition.GetPositionY(), ChargePosition.GetPositionZ(), 20.0f, KraggMovementPoint::MovementPointDiveBombCasted);
+                    caster->GetMotionMaster()->MoveCharge(ChargePosition.GetPositionX(), ChargePosition.GetPositionY(), ChargePosition.GetPositionZ(), 20.0f, MovementPointDiveBombCasted);
                 }
             }
         }
