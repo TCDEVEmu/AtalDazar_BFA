@@ -55,15 +55,20 @@ enum Spells
 
     SPELL_AZERITE_HEARTSEEKER_CAST = 262515,
     SPELL_AZERITE_HEARTSEEKER_DAMAGE = 262516,
+
+    SPELL_BUSTER_SHOT = 260372,
+    SPELL_JUMP_YET = 262436,
+
+    SPELL_CONFIGURATION_COMBAT = 260190,
 };
 
-enum Evets
+enum Events
 {
     EVENT_ALPHA_CANNON = 1,
     EVENT_HOMING_MISSILE,
     EVENT_GATLING_GUN,
 
-    EVENT_DRILL,
+    EVENT_DRILL_SMASH,
     EVENT_SUMMON_BIG_RED_ROCKET,
 
     EVENT_MICRO_MISSILE,
@@ -74,6 +79,11 @@ enum Evets
 
     EVENT_CONCUSSION_CHARGE,
     EVENT_AZERITE_HEARTSEEKER,
+    EVENT_BUSTER_SHOT,
+    EVENT_JUMP_YET,
+
+    EVENT_BOOMBA,
+    EVENT_PHASE_2,
 };
 
 enum Timers
@@ -81,12 +91,16 @@ enum Timers
     TIMER_MICRO_MISSILE = 15 * IN_MILLISECONDS,
     TIMER_CONCUSSION_CHARGE = 10 * IN_MILLISECONDS,
     TIMER_AZERITE_HEARTSEEKER = 17 * IN_MILLISECONDS,
+    TIMER_BUSTER_SHOT = 2000,
+    TIMER_JUMP_YET = 30000,
 
-    TIMER_BIG_RED_ROCKET = 15 * IN_MILLISECONDS,
+    TIMER_BIG_RED_ROCKET = 13000,
 
     TIMER_ALPHA_CANNON = 3 * IN_MILLISECONDS,
-    TIMER_GATLING_GUN = 28 * IN_MILLISECONDS,
-    TIMER_HOMING_MISSILE = 10 * IN_MILLISECONDS,
+    TIMER_GATLING_GUN = 20100,
+    TIMER_HOMING_MISSILE = 22000,
+
+    TIMER_BOOMBA = 99000,
 };
 
 enum Creatures
@@ -97,6 +111,24 @@ enum Creatures
     NPC_VENTURE_SKYSCORCHER = 133436,
     NPC_MISSILE_TARGET = 132271,
     NPC_BOOMBA = 141303,
+    NPC_CENTER_STALKER = 132258,
+    NPC_MICRO_MISSILE_TARGET_STALKER = 132271,
+    NPC_DRILL_SMASH_TARGET_STALKER = 137513,
+};
+
+enum Texts
+{
+    SAY_AT_SEE = 0,             // 0 Do you bums realize how much property damage you\'ve done!?
+    SAY_AGGRO,                  // 1 Right where you belong--under my heel!
+    SAY_GATLING_GUN,            // 2 Taste some high-caliber carnage!
+    SAY_GATLING_GUN_2,          // 3 Get a load of 300 rounds per minute!
+    SAY_PHASE_2,                // 4 What am I payin\' you fools for?! Get out here and fix this!
+    SAY_DRILL_SMASH,            // 5 Pulverize!
+    SAY_HOMING_MISSILE,         // 6 |TINTERFACE\\ICONS\\ABILITY_SIEGE_ENGINEER_SOCKWAVE_MISSILE.BLP:20|t You have been targeted by |cFFFF0000|Hspell:260838|h[Drill Smash]|h|r!
+    SAY_PHASE_2_2,              // 7 Doh! My insurance premiums!
+    SAY_DRILL_SMASH_2,          // 8 Crush!
+    SAY_DRILL_SMASH_3,          // 9 Smash!
+    SAY_DEAD                    // 10 You\'ll pay for that!
 };
 
 enum Actions
@@ -104,662 +136,531 @@ enum Actions
     ACTION_ENGAGE_MISSILE = 1,
 };
 
-enum Points
-{
-    POINT_SPELLS = 1,
-};
-
 const Position centerPos = { 1101.65f, -3918.86f, 79.52f }; //40
 
-#define INTRO_TEXT "Do you bums realize how much property damage you've done !?"
-#define AGGRO_TEXT "Right where you belong--under my heel!"
-#define GATLING_GUN "Taste some high-caliber carnage!"
-#define DRILL_TEXT "Crush!"
-#define PHASE2_TEXT "What am I payin' you fools for?! Get out here and fix this!"
-
 // 129232
-class bfa_boss_mogul_razdunk : public CreatureScript
+
+struct bfa_boss_mogul_razdunk : public BossAI
 {
-public:
-    bfa_boss_mogul_razdunk() : CreatureScript("bfa_boss_mogul_razdunk")
+    bfa_boss_mogul_razdunk(Creature* creature) : BossAI(creature, DATA_MOGUL_RAZDUNK), summons(me)
     {
+        instance = me->GetInstanceScript();
     }
-    struct bfa_boss_mogul_razdunk_AI : public BossAI
+
+    SummonList summons;
+    EventMap events;
+    InstanceScript* instance;
+    bool talk = true;
+    bool phase_2 = false;
+
+    void EnterCombat(Unit*) /*override*/
     {
-        bfa_boss_mogul_razdunk_AI(Creature* creature) : BossAI(creature, DATA_MOGUL_RAZDUNK), summons(me)
+        Talk(SAY_AGGRO);
+        instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
+        Phase_1(0);
+    }
+
+    void Phase_1(uint8 why)
+    {
+        if (me->GetMap()->IsMythic() || me->GetMap()->IsHeroic())
+            events.ScheduleEvent(EVENT_BOOMBA, TIMER_BOOMBA);
+
+        if (why == 0)
         {
-            instance = me->GetInstanceScript();
-        }
-
-        SummonList summons;
-        EventMap events;
-        InstanceScript* instance;
-        bool phase2;
-        bool introText;
-
-        void Reset() override
-        {
-            introText = false;
-            summons.DespawnAll();
-            phase2 = false;
-            events.Reset();
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-        }
-
-        void SelectSoundAndText(Creature* me, uint32  selectedTextSound = 0)
-        {
-            if (!me)
-                return;
-
-            if (me)
-            {
-                switch (selectedTextSound)
-                {
-                case 1:
-                    me->Yell(AGGRO_TEXT, LANG_UNIVERSAL, NULL);
-                    break;
-                case 2:
-                    me->Yell(INTRO_TEXT, LANG_UNIVERSAL, NULL);
-                    break;
-                case 3:
-                    me->Yell(DRILL_TEXT, LANG_UNIVERSAL, NULL);
-                    break;
-                case 4:
-                    me->Yell(PHASE2_TEXT, LANG_UNIVERSAL, NULL);
-                    break;
-                case 5:
-                    me->Yell(GATLING_GUN, LANG_UNIVERSAL, NULL);
-                    break;
-                }
-            }
-        }
-
-        void JustDied(Unit*) override
-        {
-            summons.DespawnAll();
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-        }
-
-        void MoveInLineOfSight(Unit* who) override
-        {
-            if (!introText)
-            {
-                Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-                for (Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-                    if (Player * pPlayer = itr->GetSource())
-                        if (pPlayer->IsAlive() && pPlayer->IsWithinDist(me, 50.f))
-                        {
-                            SelectSoundAndText(me, 2);
-                            introText = true;
-                            return;
-                        }
-            }
-        }
-
-        void JustSummoned(Creature* summon) override
-        {
-            summons.Summon(summon);
-
-            switch (summon->GetEntry())
-            {
-            case NPC_BIG_RED_ROCKET:
-                summon->SetUnitFlags(UNIT_FLAG_NON_ATTACKABLE);
-                summon->SetUnitFlags(UNIT_FLAG_NOT_SELECTABLE);
-                summon->CastSpell(summon, SPELL_BIG_RED_ROCKET_VISUAL, true);
-                break;
-            case NPC_VENTURE_SKYSCORCHER:
-                summon->SetInCombatWithZone();
-                break;
-            }
-        }
-
-        void EnterEvadeMode(EvadeReason w) override
-        {
-            _DespawnAtEvade(15);
-        }
-
-        void DamageTaken(Unit* at, uint32& damage) override
-        {
-            if (me->HealthBelowPct(50) && !phase2)
-            {
-                phase2 = true;
-                SummonVenture();
-                HandlePhase2();
-            }
-        }
-
-        void HandlePhase1()
-        {
-            events.Reset();
-            SummonBoomba();
-            me->GetMotionMaster()->Clear();
-            events.ScheduleEvent(EVENT_ALPHA_CANNON, TIMER_ALPHA_CANNON);
+            events.ScheduleEvent(EVENT_HOMING_MISSILE, 4900);
             events.ScheduleEvent(EVENT_GATLING_GUN, TIMER_GATLING_GUN);
-            events.ScheduleEvent(EVENT_HOMING_MISSILE, TIMER_HOMING_MISSILE);
         }
 
-        void HandlePhase2()
+        if (why == 1)
         {
+            me->SetCanFly(false);
+            me->GetMotionMaster()->Clear();
+            me->AddAura(SPELL_CONFIGURATION_COMBAT);
             events.Reset();
-            SelectSoundAndText(me, 4);
-            summons.DespawnEntry(NPC_BOOMBA);
-            for (uint8 i = 0; i < 3; ++i)
-                me->CastSpell(me, SPELL_CONFIGURATION_DRILL, true);
-            me->SetCanFly(true);
-            me->AddUnitState(UNIT_STATE_ROOT);
-            me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 3.0f, false);
-            events.ScheduleEvent(EVENT_SUMMON_BIG_RED_ROCKET, TIMER_BIG_RED_ROCKET);
+            events.ScheduleEvent(EVENT_HOMING_MISSILE, 7000);
+            events.ScheduleEvent(EVENT_GATLING_GUN, 17000);
         }
 
-        void EnterCombat(Unit*)// override
+        events.ScheduleEvent(EVENT_ALPHA_CANNON, TIMER_ALPHA_CANNON);
+    }
+
+    void Phase_2()
+    {
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        if (me->HasAura(SPELL_CONFIGURATION_COMBAT))
+            me->RemoveAura(SPELL_CONFIGURATION_COMBAT);
+
+        for (uint8 i = 0; i < 3; ++i)
+            me->CastSpell(me, SPELL_CONFIGURATION_DRILL);
+
+        me->SetCanFly(true);
+        events.Reset();
+        events.ScheduleEvent(EVENT_SUMMON_BIG_RED_ROCKET, TIMER_BIG_RED_ROCKET);
+        me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 3.0f, false);
+    }
+
+    void EnterEvadeMode(EvadeReason /*why*/)
+    {
+        BossAI::EnterEvadeMode();
+        me->GetMotionMaster()->MoveTargetedHome();
+        Reset();
+    }
+
+    void Reset() override
+    {
+        BossAI::Reset();
+        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+        events.Reset();
+        summons.DespawnAll();
+        phase_2 = false;
+    }
+
+    void JustDied(Unit*) override
+    {
+        instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+        summons.DespawnAll();
+        Talk(SAY_DEAD);
+    }
+
+    void MoveInLineOfSight(Unit * who) override
+    {
+        if (!talk)
+            return;
+
+        if (who->IsPlayer() && who->IsAlive())
         {
-            SelectSoundAndText(me, 1);
-            instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
-            HandlePhase1();
+            Talk(SAY_AT_SEE);
+            talk = false;
+        }
+    }
+
+    void JustSummoned(Creature * summon) override
+    {
+        summons.Summon(summon);
+
+        switch (summon->GetEntry())
+        {
+        case NPC_BIG_RED_ROCKET:
+            summon->SetUnitFlags(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
+            summon->CastSpell(summon, SPELL_BIG_RED_ROCKET_VISUAL, true);
+            break;
+        case NPC_VENTURE_SKYSCORCHER:
+            summon->SetInCombatWithZone();
+            break;
+        }
+    }
+
+    void Says(uint8 eventId)
+    {
+        uint8 randm = urand(0, 1);
+
+        switch (eventId)
+        {
+        case EVENT_GATLING_GUN:
+        {
+            randm == 0 ? Talk(SAY_GATLING_GUN) : Talk(SAY_GATLING_GUN_2);
+            break;
         }
 
-        void SummonVenture()
+        case EVENT_DRILL_SMASH:
         {
-            me->SummonCreature(NPC_VENTURE_SKYSCORCHER, 1136.92f, -3900.25f, 79.71f, TEMPSUMMON_MANUAL_DESPAWN);
-            me->SummonCreature(NPC_VENTURE_SKYSCORCHER, 1104.74f, -3956.37f, 79.72f, TEMPSUMMON_CORPSE_DESPAWN);
+            randm = urand(0, 2);
+
+            if (randm == 0)
+                Talk(SAY_DRILL_SMASH);
+
+            if (randm == 1)
+                Talk(SAY_DRILL_SMASH_2);
+
+            if (randm == 2)
+                Talk(SAY_DRILL_SMASH_3);
+            break;
         }
 
-        void SummonBoomba()
+        case EVENT_PHASE_2:
         {
-            if (me->GetMap()->IsHeroic() || me->GetMap()->IsMythic())
+            (me->GetHealthPct() >= 50) ? Talk(SAY_PHASE_2) : Talk(SAY_PHASE_2_2);
+            break;
+        }
+        }
+    }
+
+    void DamageTaken(Unit* /*unit*/, uint32& /*damage*/) override
+    {
+        if (me->HealthBelowPct(50) && !phase_2)
+        {
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            if (me->HasAura(SPELL_GATLING_GUN_CAST))
+                return;
+
+            SummonSkyscorcher();
+            Phase_2();
+            phase_2 = true;
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        if (!UpdateVictim())
+            return;
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        if (CheckHomeDistToEvade(diff, 45.0f))
+        {
+            Reset();
+            return;
+        }
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
             {
-                if (Creature * boomba1 = me->SummonCreature(NPC_BOOMBA, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN))
-                    boomba1->GetMotionMaster()->MovePoint(POINT_SPELLS, 1135.90f, -3886.88f, 94.96f, false);
+            case EVENT_ALPHA_CANNON:
+            {
+                if (me->IsWithinMeleeRange(me->GetVictim()))
+                    me->CastSpell(me->GetVictim(), SPELL_ALPHA_CANNON_MISSILE);
 
-                if (Creature * boomba2 = me->SummonCreature(NPC_BOOMBA, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN))
-                    boomba2->GetMotionMaster()->MovePoint(POINT_SPELLS, 1111.04f, -3873.78f, 94.18f, false);
+                events.ScheduleEvent(EVENT_ALPHA_CANNON, TIMER_ALPHA_CANNON);
+                break;
+            }
+            case EVENT_HOMING_MISSILE:
+            {
+                me->CastSpell(me, SPELL_HOMING_MISSILE_CAST);
+
+                events.ScheduleEvent(EVENT_HOMING_MISSILE, TIMER_HOMING_MISSILE);
+                break;
+            }
+
+            case EVENT_GATLING_GUN:
+            {
+                Says(EVENT_GATLING_GUN);
+                me->CastSpell(me, SPELL_GATLING_GUN_CAST);
+
+                events.ScheduleEvent(EVENT_GATLING_GUN, TIMER_GATLING_GUN);
+                break;
+            }
+            case EVENT_SUMMON_BIG_RED_ROCKET:
+            {
+                std::list<Creature*> victim = me->FindNearestCreatures(NPC_MISSILE_TARGET, 100.0f);
+
+                if (!victim.empty())
+                {
+                    Creature* target = Trinity::Containers::SelectRandomContainerElement(victim);
+                    me->CastSpell(target, SPELL_BIG_RED_ROCKET_MISSILE);
+                }
+
+                events.ScheduleEvent(EVENT_DRILL_SMASH, frand(8.4f, 9.9f) * IN_MILLISECONDS);
+                break;
+            }
+            case EVENT_DRILL_SMASH:
+            {
+                me->GetMotionMaster()->Clear();
+                Player* victim = me->SelectRandomPlayerInRange(90.0f, true);
+                me->CastSpell(victim, SPELL_DRILL_SMASH_CAST);
+
+                events.ScheduleEvent(EVENT_SUMMON_BIG_RED_ROCKET, TIMER_BIG_RED_ROCKET);
+                break;
+            }
+            case EVENT_BOOMBA:
+            {
+                // Hero/Mythic
+                break;
+            }
+
+            default:
+                break;
             }
         }
+        // No melee attack.
+    }
 
-        void OnSpellFinished(SpellInfo const* spellInfo) //override
+    void OnSpellFinished(SpellInfo const* spellInfo) //override
+    {
+        switch (spellInfo->Id)
         {
-            switch (spellInfo->Id)
-            {
-            case SPELL_HOMING_MISSILE_CAST:
-                if (Creature * missile = me->SummonCreature(NPC_HOMING_MISSILE, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN))
-                    missile->AI()->DoAction(ACTION_ENGAGE_MISSILE);
-                break;
-            case SPELL_DRILL_SMASH_CAST:
-            {
-                if (Unit * target = me->GetVictim())
-                    me->GetMotionMaster()->MoveCharge(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 30.0f);
+        case SPELL_HOMING_MISSILE_CAST:
+        {
+            if (Creature * missile = me->SummonCreature(NPC_HOMING_MISSILE, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN))
+                missile->AI()->DoAction(ACTION_ENGAGE_MISSILE);
 
-                me->GetScheduler().Schedule(2s, [this](TaskContext /*context*/)
+            break;
+        }
+        case SPELL_DRILL_SMASH_CAST:
+        {
+            if (Unit * target = me->GetVictim())
+                me->GetMotionMaster()->MoveCharge(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 30.0f);
+
+            me->GetScheduler().Schedule(5s, [this](TaskContext /*context*/) {
+                me->CastSpell(me, SPELL_DRILL_SMASH_CAST_DAMAGE);
+
+                me->GetAI()->AddTimedDelayedOperation(1500, [this]() -> void {
+                    if (Creature * dummy = me->FindNearestCreature(NPC_BIG_RED_ROCKET, 8.0f, true))
                     {
-                        me->CastSpell(me, SPELL_DRILL_SMASH_CAST_DAMAGE, true);
-                        if (me->FindNearestCreature(NPC_BIG_RED_ROCKET, 5.0f, true))
+                        if (!dummy)
+                            return;
+
+                        if (Aura * conf = me->GetAura(SPELL_CONFIGURATION_DRILL))
                         {
-                            if (Aura * tmp = me->GetAura(SPELL_CONFIGURATION_DRILL))
+                            if (conf->GetStackAmount() <= 1)
                             {
-                                if (tmp->GetStackAmount() <= 1)
-                                {
-                                    me->RemoveAura(SPELL_CONFIGURATION_DRILL);
-                                    HandlePhase1();
-                                }
-                                else if (tmp->GetStackAmount() > 1)
-                                    tmp->SetStackAmount(tmp->GetStackAmount() - 1);
+                                me->RemoveAura(SPELL_CONFIGURATION_DRILL);
+                                Phase_1(1);
                             }
+                            else if (conf->GetStackAmount() > 1)
+                                conf->SetStackAmount(conf->GetStackAmount() - 1);
                         }
-                    });
 
-                me->GetScheduler().Schedule(3s, [this](TaskContext /*context*/)
-                    {
-                        me->GetMotionMaster()->MovePoint(0, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ() + 3.0f, false);
-                    });
-
-                break;
-            }
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            events.Update(diff);
-
-            if (!UpdateVictim())
-                return;
-
-            if (me->HasUnitState(UNIT_STATE_CASTING))
-                return;
-
-            while (uint32 eventId = events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_HOMING_MISSILE:
-                    me->CastSpell(me, SPELL_HOMING_MISSILE_CAST);
-                    events.ScheduleEvent(EVENT_HOMING_MISSILE, TIMER_HOMING_MISSILE);
-                    break;
-                case EVENT_GATLING_GUN:
-                    SelectSoundAndText(me, 5);
-                    me->CastSpell(me, SPELL_GATLING_GUN_CAST);
-                    events.ScheduleEvent(EVENT_GATLING_GUN, TIMER_GATLING_GUN);
-                    break;
-                case EVENT_ALPHA_CANNON:
-                    if (Unit * target = me->GetVictim())
-                        me->CastSpell(target, SPELL_ALPHA_CANNON_MISSILE);
-                    events.ScheduleEvent(EVENT_ALPHA_CANNON, TIMER_ALPHA_CANNON);
-                    break;
-                case EVENT_SUMMON_BIG_RED_ROCKET:
-                {
-                    std::list<Creature*> microList;
-                    me->GetCreatureListWithEntryInGrid(microList, NPC_MISSILE_TARGET, 100.0f);
-                    if (!microList.empty())
-                    {
-                        if (microList.size() >= 1)
-                            microList.resize(1);
-
-                        for (auto target : microList)
-                        {
-                            me->CastSpell(target, SPELL_BIG_RED_ROCKET_MISSILE, true);
-                        }
+                        dummy->DespawnOrUnsummon(750);
                     }
+                    });
+                });
 
-                    events.ScheduleEvent(EVENT_DRILL, 3 * IN_MILLISECONDS);
-                    break;
-                }
-                case EVENT_DRILL:
+            break;
+        }
+        }
+    }
+
+    void SummonSkyscorcher()
+    {
+        me->SummonCreature(NPC_VENTURE_SKYSCORCHER, 1136.92f, -3900.25f, 79.71f, TEMPSUMMON_CORPSE_DESPAWN);
+        me->SummonCreature(NPC_VENTURE_SKYSCORCHER, 1104.74f, -3956.37f, 79.72f, TEMPSUMMON_CORPSE_DESPAWN);
+    }
+};
+
+
+class bfa_spell_gatling_gun : public SpellScript
+{
+    PrepareSpellScript(bfa_spell_gatling_gun);
+
+    void HandleAfterCast()
+    {
+        Unit* caster = GetCaster();
+
+        if (!caster)
+            return;
+
+        caster->GetMotionMaster()->MoveRotate(8000, ROTATE_DIRECTION_LEFT);
+    }
+
+    void Register()
+    {
+        AfterCast += SpellCastFn(bfa_spell_gatling_gun::HandleAfterCast);
+    }
+};
+
+
+// Spell 260280 - Effect 0 [AT: 17012]
+struct at_mogulrazdunk_gatling_gun : AreaTriggerAI
+{
+    at_mogulrazdunk_gatling_gun(AreaTrigger* areatrigger) : AreaTriggerAI(areatrigger) { }
+
+    void OnUnitEnter(Unit* unit) override
+    {
+        if (Unit * caster = at->GetCaster())
+            if (unit->IsPlayer() || unit->IsPet())
+                caster->AddAura(SPELL_GATLING_GUN_DAMAGE, unit);
+
+    }
+
+    void OnUnitExit(Unit * unit) override
+    {
+        if (Unit * caster = at->GetCaster())
+            unit->RemoveAura(SPELL_GATLING_GUN_DAMAGE);
+    }
+};
+
+// 132338 Homing Missile
+struct bfa_npc_homing_missile : public ScriptedAI
+{
+    bfa_npc_homing_missile(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetSpeed(MOVE_WALK, 2.4f);
+        me->SetSpeed(MOVE_RUN, 0.85f);
+        me->SetUnitFlags(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE));
+        me->SetWalk(true);
+    }
+
+    EventMap events;
+
+    void DoAction(int32 action)
+    {
+        switch (action)
+        {
+        case ACTION_ENGAGE_MISSILE:
+            me->CastSpell(me, SPELL_HOMING_MISSILE_SPEED);
+            me->CastSpell(me, SPELL_HOMING_MISSILE_VISUAL);
+            events.ScheduleEvent(EVENT_MISSILE_EXPLODE, 10000);
+            events.ScheduleEvent(EVENT_FIXATE, 500);
+            break;
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+            case EVENT_FIXATE:
+            {
+                std::list<Player*> targets;
+                me->GetPlayerListInGrid(targets, 40.0f);
+
+                if (targets.size() > 1)
                 {
-                    SelectSoundAndText(me, 3);
-                    me->GetMotionMaster()->Clear();
-                    std::list<Unit*> targets;
-                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 0, 500.0f, true);
-
-                    if (!targets.empty())
-                        if (targets.size() >= 1)
-                            targets.resize(1);
+                    for (auto toDelete : targets)
+                        if (toDelete->GetRoleBySpecializationId(ROLE_TANK))
+                            targets.remove(toDelete);
 
                     for (auto target : targets)
-                    {
-                        me->CastSpell(target, SPELL_DRILL_SMASH_CAST);
-                    }
-                    events.ScheduleEvent(EVENT_SUMMON_BIG_RED_ROCKET, TIMER_BIG_RED_ROCKET);
-                    break;
+                        if (!target->IsWithinMeleeRange(me->ToTempSummon()->GetSummoner()))
+                            for (auto toDelete : targets)
+                                if (target->IsWithinMeleeRange(me->ToTempSummon()->GetSummoner()))
+                                    targets.remove(toDelete);
                 }
-                }
-            }
-            // no melee
-        }
-    };
 
-    CreatureAI* GetAI(Creature * creature) const override
-    {
-        return new bfa_boss_mogul_razdunk_AI(creature);
+                if (targets.size() > 1)
+                    targets.resize(1);
+
+                for (auto target : targets)
+                    me->GetAI()->AttackStart(target);
+
+
+                events.ScheduleEvent(EVENT_FOLLOW, 1000);
+                break;
+            }
+            case EVENT_FOLLOW:
+            {
+                if (Unit * taget = me->GetVictim())
+                    me->GetMotionMaster()->MoveFollow(taget, 0.0f, 0.0f);
+                break;
+            }
+            case EVENT_MISSILE_EXPLODE:
+                me->CastSpell(me, SPELL_HOMING_MISSILE_DAMAGE);
+                me->DespawnOrUnsummon();
+                break;
+            }
+        }
+
+        if (Unit * followed = me->GetVictim())
+            if (me->GetDistance(followed) < 2.0f)
+            {
+                me->CastSpell(followed, SPELL_HOMING_MISSILE_DAMAGE);
+                me->DespawnOrUnsummon();
+            }
     }
 };
 
-// ?
-class bfa_npc_homing_missile : public CreatureScript
+// 133436 Venture Co. Skyscorcher
+struct bfa_npc_venture_skyscorcher : public ScriptedAI
 {
-public:
-    bfa_npc_homing_missile() : CreatureScript("bfa_npc_homing_missile")
+    bfa_npc_venture_skyscorcher(Creature* creature) : ScriptedAI(creature)
+    { }
+
+    EventMap events;
+    Unit* concussion_charge_target;
+    Unit* azerite_heartseeker_target;
+
+    void Reset() override
     {
+        events.Reset();
     }
-    struct bfa_npc_homing_missile_AI : public ScriptedAI
+
+    void EnterCombat(Unit*) //override
     {
-        bfa_npc_homing_missile_AI(Creature* creature) : ScriptedAI(creature)
-        {
-            me->SetSpeed(MOVE_WALK, 0.5f);
-            me->SetSpeed(MOVE_FLIGHT, 0.5f);
-            me->SetSpeed(MOVE_RUN, 0.5f);
-            me->SetUnitFlags(UNIT_FLAG_NOT_SELECTABLE);
-            me->SetUnitFlags(UNIT_FLAG_NON_ATTACKABLE);
-            me->SetWalk(true);
-        }
+        events.ScheduleEvent(EVENT_BUSTER_SHOT, TIMER_BUSTER_SHOT);
+        events.ScheduleEvent(EVENT_CONCUSSION_CHARGE, TIMER_CONCUSSION_CHARGE);
+        events.ScheduleEvent(EVENT_AZERITE_HEARTSEEKER, TIMER_AZERITE_HEARTSEEKER);
+        events.ScheduleEvent(EVENT_JUMP_YET, TIMER_JUMP_YET);
+    }
 
-        EventMap events;
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
 
-        void Reset() override
-        {
-            me->CastSpell(me, SPELL_HOMING_MISSILE_SPEED, true);
-            me->CastSpell(me, SPELL_HOMING_MISSILE_VISUAL, true);
-        }
+        if (!UpdateVictim())
+            return;
 
-        void DoAction(int32 action)
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = events.ExecuteEvent())
         {
-            switch (action)
+            switch (eventId)
             {
-            case ACTION_ENGAGE_MISSILE:
-                events.Reset();
-                events.ScheduleEvent(EVENT_MISSILE_EXPLODE, 10 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_FIXATE, 500);
+            case EVENT_BUSTER_SHOT:
+            {
+                me->CastSpell(me->GetVictim(), SPELL_BUSTER_SHOT);
+                events.ScheduleEvent(EVENT_BUSTER_SHOT, TIMER_BUSTER_SHOT);
                 break;
             }
-        }
-
-        void DamageTaken(Unit* a, uint32& damage) override
-        {
-            damage = 0;
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            events.Update(diff);
-
-            while (uint32 eventId = events.ExecuteEvent())
+            case EVENT_CONCUSSION_CHARGE:
             {
-                switch (eventId)
-                {
-                case EVENT_FIXATE:
-                {
-                    std::list<Unit*> targets;
-                    //  SelectTargetList(targets, 1, SELECT_TARGET_RANDOM, 0, 500.0f, true);
+                if (concussion_charge_target = SelectTarget(SELECT_TARGET_RANDOM, 0, 90.0f, true))
+                    me->CastSpell(concussion_charge_target, SPELL_CONCUSSION_CHARGE_CAST);
 
-                    if (!targets.empty())
-                        if (targets.size() >= 1)
-                            targets.resize(1);
-
-                    for (auto target : targets)
-                    {
-                        //  me->GetThreatManager().AddThreat(target, 9999999999.9f);
-                        me->AI()->AttackStart(target);
-                    }
-
-                    events.ScheduleEvent(EVENT_FOLLOW, 1000);
-                    break;
-                }
-                case EVENT_FOLLOW:
-                {
-                    if (Unit * victim = me->GetVictim())
-                    {
-                        me->GetMotionMaster()->MoveFollow(victim, 0.0f, 0.0f);
-                        if (me->GetDistance(victim) < 2.0f)
-                        {
-                            me->CastSpell(victim, SPELL_HOMING_MISSILE_DAMAGE, true);
-                            me->DespawnOrUnsummon();
-                        }
-
-                    }
-
-                    events.ScheduleEvent(EVENT_FOLLOW, 1000);
-                    break;
-                }
-                case EVENT_MISSILE_EXPLODE:
-                    me->CastSpell(me, SPELL_HOMING_MISSILE_DAMAGE, true);
-                    me->DespawnOrUnsummon();
-                    break;
-                }
-            }
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new bfa_npc_homing_missile_AI(creature);
-    }
-};
-
-// ?
-class bfa_npc_boomba : public CreatureScript
-{
-public:
-    bfa_npc_boomba() : CreatureScript("bfa_npc_boomba")
-    {
-    }
-    struct bfa_npc_boomba_AI : public ScriptedAI
-    {
-        bfa_npc_boomba_AI(Creature* creature) : ScriptedAI(creature)
-        {
-            me->SetUnitFlags(UNIT_FLAG_NON_ATTACKABLE);
-            me->SetUnitFlags(UNIT_FLAG_IMMUNE_TO_PC);
-        }
-
-        EventMap events;
-
-        void MovementInform(uint32 type, uint32 pointId) override
-        {
-            switch (pointId)
-            {
-            case POINT_SPELLS:
-                me->AddUnitState(UNIT_STATE_ROOT);
-                events.ScheduleEvent(EVENT_MICRO_MISSILE, TIMER_MICRO_MISSILE);
+                events.ScheduleEvent(EVENT_CONCUSSION_CHARGE, TIMER_CONCUSSION_CHARGE);
                 break;
             }
-        }
-
-        void Reset() override
-        {
-            events.Reset();
-        }
-
-        void OnSpellFinished(SpellInfo const* spellInfo)// override
-        {
-            switch (spellInfo->Id)
+            case EVENT_AZERITE_HEARTSEEKER:
             {
-            case SPELL_MICRO_MISSILE_CAST:
-            {
-                std::list<Creature*> microList;
-                me->GetCreatureListWithEntryInGrid(microList, NPC_MISSILE_TARGET, 150.0f);
-                if (!microList.empty())
-                {
-                    if (microList.size() >= 15)
-                        microList.resize(15);
+                if (azerite_heartseeker_target = SelectTarget(SELECT_TARGET_RANDOM, 0, 90.0f, true))
+                    me->CastSpell(azerite_heartseeker_target, SPELL_AZERITE_HEARTSEEKER_CAST);
 
-                    for (auto target : microList)
-                        me->CastSpell(target, SPELL_MICRO_MISSILE_MISSILE, true);
-                }
+                events.ScheduleEvent(EVENT_AZERITE_HEARTSEEKER, TIMER_AZERITE_HEARTSEEKER);
                 break;
             }
-            }
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            events.Update(diff);
-
-            while (uint32 eventId = events.ExecuteEvent())
+            case EVENT_JUMP_YET:
             {
-                switch (eventId)
+                if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                 {
-                case EVENT_MICRO_MISSILE:
-                    me->CastSpell(me, SPELL_MICRO_MISSILE_CAST);
-                    events.ScheduleEvent(EVENT_MICRO_MISSILE, TIMER_MICRO_MISSILE);
-                    break;
+                    Position random = target->GetNearPosition(15.0f, float(2 * M_PI));
+                    me->CastSpell(random, SPELL_JUMP_YET);
                 }
             }
-        }
-    };
-
-    CreatureAI* GetAI(Creature * creature) const override
-    {
-        return new bfa_npc_boomba_AI(creature);
-    }
-};
-// ?
-class bfa_npc_venture_skyscorcher : public CreatureScript
-{
-public:
-    bfa_npc_venture_skyscorcher() : CreatureScript("bfa_npc_venture_skyscorcher")
-    {
-    }
-    struct bfa_npc_venture_skyscorcher_AI : public ScriptedAI
-    {
-        bfa_npc_venture_skyscorcher_AI(Creature* creature) : ScriptedAI(creature)
-        {
-        }
-
-        EventMap events;
-
-        void Reset() override
-        {
-            events.Reset();
-        }
-
-        void EnterCombat(Unit*) //override
-        {
-            events.ScheduleEvent(EVENT_CONCUSSION_CHARGE, TIMER_CONCUSSION_CHARGE);
-            events.ScheduleEvent(EVENT_AZERITE_HEARTSEEKER, TIMER_AZERITE_HEARTSEEKER);
-        }
-
-        void OnSpellFinished(SpellInfo const* spellInfo)// override
-        {
-            switch (spellInfo->Id)
-            {
-            case SPELL_CONCUSSION_CHARGE_CAST:
-            {
-                if (Unit * target = me->GetVictim())
-                    me->CastSpell(target, SPELL_CONCUSSION_CHARGE_MISSILE, true);
-                break;
-            }
-            case SPELL_AZERITE_HEARTSEEKER_CAST:
-                if (Unit * target = me->GetVictim())
-                    me->CastSpell(SPELL_AZERITE_HEARTSEEKER_DAMAGE, true);
             }
         }
+        DoMeleeAttackIfReady();
+    }
 
-        void UpdateAI(uint32 diff) override
+    void OnSpellFinished(SpellInfo const* spellInfo)// override
+    {
+        switch (spellInfo->Id)
         {
-            events.Update(diff);
-
-            if (!UpdateVictim())
+        case SPELL_CONCUSSION_CHARGE_CAST:
+        {
+            if (!concussion_charge_target)
                 return;
 
-            if (me->HasUnitState(UNIT_STATE_CASTING))
+            me->CastSpell(concussion_charge_target, SPELL_CONCUSSION_CHARGE_MISSILE);
+            break;
+        }
+        case SPELL_AZERITE_HEARTSEEKER_CAST:
+            if (!azerite_heartseeker_target)
                 return;
 
-            while (uint32 eventId = events.ExecuteEvent())
-            {
-                switch (eventId)
-                {
-                case EVENT_CONCUSSION_CHARGE:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                    {
-                        me->CastSpell(target, SPELL_CONCUSSION_CHARGE_CAST);
-                    }
-                    events.ScheduleEvent(EVENT_CONCUSSION_CHARGE, TIMER_CONCUSSION_CHARGE);
-                    break;
-                case EVENT_AZERITE_HEARTSEEKER:
-                    if (Unit * target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                    {
-                        me->CastSpell(target, SPELL_AZERITE_HEARTSEEKER_CAST);
-                    }
-                    events.ScheduleEvent(EVENT_AZERITE_HEARTSEEKER, TIMER_AZERITE_HEARTSEEKER);
-                    break;
-                }
-            }
-            DoMeleeAttackIfReady();
+            me->CastSpell(SPELL_AZERITE_HEARTSEEKER_DAMAGE, true);
+            break;
         }
-    };
-
-    CreatureAI* GetAI(Creature * creature) const override
-    {
-        return new bfa_npc_venture_skyscorcher_AI(creature);
-    }
-};
-
-// 260280
-class bfa_spell_gatling_gun : public SpellScriptLoader
-{
-public:
-    bfa_spell_gatling_gun() : SpellScriptLoader("bfa_spell_gatling_gun") { }
-
-    class bfa_spell_gatling_gun_AuraScript : public AuraScript
-    {
-        PrepareAuraScript(bfa_spell_gatling_gun_AuraScript);
-
-        float orientation;
-
-        void OnPeriodic(AuraEffect const* aurEff)
-        {
-            Unit* caster = GetCaster();
-            if (!caster)
-                return;
-
-            if (aurEff->GetTickNumber() == 1)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 5.76f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-            }
-            else if (aurEff->GetTickNumber() == 2)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 0.60f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-            }
-            else if (aurEff->GetTickNumber() == 3)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 1.61f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-            }
-            else if (aurEff->GetTickNumber() == 4)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 2.71f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-            }
-            else if (aurEff->GetTickNumber() == 5)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 3.87f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-            }
-            else if (aurEff->GetTickNumber() == 6)
-            {
-                caster->SetOrientation(0.0f);
-                orientation = 4.86f;
-                caster->SetOrientation(orientation);
-                caster->SetFacingTo(orientation, true);
-                CastOnCone();
-                this->Remove();
-            }
-        }
-
-        void CastOnCone()
-        {
-            std::list<Player*> playerList;
-            GetCaster()->GetPlayerListInGrid(playerList, 100.0f);
-            if (playerList.size())
-            {
-                for (auto player : playerList)
-                {
-                    if (GetCaster()->isInFront(player, 3.14f / 4))
-                    {
-                        if (Aura * tmp = GetCaster()->AddAura(SPELL_GATLING_GUN_DAMAGE, player))
-                        {
-                            tmp->SetMaxDuration(2000);
-                            tmp->SetDuration(2000);
-                        }
-                    }
-                }
-            }
-        }
-
-        void Register()
-        {
-            OnEffectPeriodic += AuraEffectPeriodicFn(bfa_spell_gatling_gun_AuraScript::OnPeriodic, EFFECT_2, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-        }
-    };
-
-    AuraScript* GetAuraScript() const
-    {
-        return new bfa_spell_gatling_gun_AuraScript;
     }
 };
 
 void AddSC_boss_mogulrazdunk()
 {
-    new bfa_boss_mogul_razdunk();
-
-    new bfa_npc_boomba();
-    new bfa_npc_homing_missile();
-    new bfa_npc_venture_skyscorcher();
-
-    new bfa_spell_gatling_gun();
+    RegisterCreatureAI(bfa_boss_mogul_razdunk);
+    // RegisterCreatureAI(bfa_npc_boomba);
+    RegisterCreatureAI(bfa_npc_homing_missile);
+    RegisterCreatureAI(bfa_npc_venture_skyscorcher);
+    RegisterSpellScript(bfa_spell_gatling_gun);
+    RegisterAreaTriggerAI(at_mogulrazdunk_gatling_gun);
 }
